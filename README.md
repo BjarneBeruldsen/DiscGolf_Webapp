@@ -1,1 +1,3 @@
-# APP2000-Discgolf
+# Discgolf Webapplikasjon 
+
+Mer info kommer
