@@ -1,0 +1,89 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output directories (React and Express)
+build/
+dist/
+
+# Tailwind CSS build artifacts
+*.css.map
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# MongoDB data (if using local MongoDB database)
+*.lock
+*.log
+mongod.lock
+mongodb.log
+/data/db/
+dump/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE/Editor specific files
+.vscode/
+.idea/
+*.code-workspace
+
+# MacOS specific
+.DS_Store
+
+# Windows specific
+Thumbs.db
+Desktop.ini
+
+# npm and Yarn lock files (optional)
+package-lock.json
+yarn.lock
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+# Coverage directory used by testing tools like Jest
+coverage/
+
+# Testing related
+jest/
+.jest/
+__tests__/
+
+# Cache directories
+.cache/
+.parcel-cache/
+.next/
+
+# TypeScript build files (if applicable)
+*.tsbuildinfo
+
+# Python files (in case you're using Python scripts)
+*.pyc
+__pycache__/
+
+# Tailwind CSS build directories
+src/styles/output.css
+public/styles/output.css
+
+# MongoDB backups
+dump/
+backup/
+
+# Miscellaneous
+*.bak
+*.swp
+*.swo
