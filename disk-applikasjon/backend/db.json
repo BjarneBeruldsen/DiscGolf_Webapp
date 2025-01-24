@@ -1,0 +1,45 @@
+{
+"klubb": [
+    {
+            "_id": 1,
+            "navn": "Disc Golf Klubb",
+            "kontaktinfo": "kontakt@example.com",
+            "baner": [
+            {
+                "_id": 1,
+                "navn": "Hovedbane",
+                "hull": [
+                {
+                    "nummer": 1,
+                    "distanse": 100,
+                    "par": 3
+                }
+                ],
+                "vanskelighetsgrad": "Medium",
+                "popularitet": 4.5,
+                "anmeldelser": [
+                {
+                    "bruker_id": 1,
+                    "vurdering": 4,
+                    "tekst": "Utfordrende bane!",
+                    "dato": "2025-01-23"
+                }
+                ]
+            }
+            ],
+            "medlemmer": [
+            { "id": 1 },
+            { "id": 2 }
+            ],
+            "turneringer": [
+            { "id": 1 },
+            { "id": 2 }
+            ],
+            "nyheter": [
+            { "id": 1 },
+            { "id": 2 }
+            ]
+        }
+    ]
+  }
+  
