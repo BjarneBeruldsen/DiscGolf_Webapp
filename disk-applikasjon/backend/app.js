@@ -24,7 +24,7 @@ kobleTilDB((err) => {
 //ulike ruter 
 app.get('/klubber', (req, res) => {
     const page = req.query.p || 0 
-    const klubberPrSide = 1
+    const klubberPrSide = 10
 
     let klubber = []; 
     
