@@ -2,6 +2,7 @@ import LagKlubbSide from './LagKlubbSide';
 import './App.css';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 
 function App() {
@@ -9,6 +10,7 @@ function App() {
       <Router>
         <div className="App">
           <Header />
+          <Footer />
           <div className="innhold">
               <Switch>
                 <Route exact path="/lagKlubb">
