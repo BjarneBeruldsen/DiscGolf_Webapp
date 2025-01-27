@@ -19,11 +19,18 @@ const LagKlubb = () => {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(klubb)
-        }).then(() => {
-            console.log('Ny klubb lagt til');
+        }).then((response) => {
+            if(!response.ok) {
+                throw new Error('Feil ved lagring av klubb');
+            }
+            else {
+                return response.json();
+            }
+        }).then((data) => {
+            console.log('Ny klubb lagt til', data);
             setLaster(false);
             alert('Ny klubb lagt til');
-            minne.push('/LagKlubbSide');
+            minne.push(`/LagKlubbSide/${data.insertedId}`);
         }).catch(error => {
             console.error('Feil ved lagring av klubb:', error);
             setLaster(false); 

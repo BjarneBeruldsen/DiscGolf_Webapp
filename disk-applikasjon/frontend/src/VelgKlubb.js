@@ -31,6 +31,7 @@ const VelgKlubb = () => {
     return (
         <div className="innhold">
             <h2>Velg en klubb</h2>
+            <p>Ikke registrert klubb?</p>
             <Link to="/LagKlubb">Opprett ny klubb</Link>
             <p>Velg en klubb du skal lage side til:</p>
             <form onSubmit={handleSubmit}>

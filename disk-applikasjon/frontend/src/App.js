@@ -16,7 +16,7 @@ function App() {
                 <Route exact path="/VelgKlubb">
                   <VelgKlubb />
                 </Route>
-                <Route exact path="/LagKlubbSide">
+                <Route exact path="/LagKlubbSide/:id">
                   <LagKlubbSide />
                 </Route>
               </Switch>
