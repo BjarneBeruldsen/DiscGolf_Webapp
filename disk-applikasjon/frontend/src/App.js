@@ -1,7 +1,7 @@
 import LagKlubb from './LagKlubb';
 import VelgKlubb from './VelgKlubb';
 import LagKlubbSide from './LagKlubbSide';
-import './App.css';
+import Klubbsider from './Klubbsider';
 import './output.css';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Header from "./components/Header";
@@ -23,6 +23,9 @@ function App() {
                 </Route>
                 <Route exact path="/LagKlubbSide/:id">
                   <LagKlubbSide />
+                </Route>
+                <Route exact path="/Klubbsider">
+                  <Klubbsider />
                 </Route>
               </Switch>
           </div>
