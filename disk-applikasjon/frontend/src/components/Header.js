@@ -18,7 +18,7 @@ const Header = () => {
           <li><a href="#">Regler/Tips</a></li>
           <li><a href="#">Klubber</a></li>
           <li><a href="#">Nyheter</a></li>
-          <li><a href="Logginn.js">Logg inn</a></li>
+          <li><a href="#">Logg inn</a></li>
         </ul>
       </nav>
 

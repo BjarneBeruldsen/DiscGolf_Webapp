@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
-const LagKlubbSide = () => {
-
+const LagKlubb = () => {
     const [klubbnavn, setKlubbnavn] = useState('');
     const [kontaktinfo, setKontaktinfo] = useState('');
     const [laster, setLaster] = useState(false);
@@ -11,13 +10,13 @@ const LagKlubbSide = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault(); 
-        const klubb = {klubbnavn, kontaktinfo}; 
+        const klubb = { klubbnavn, kontaktinfo }; 
 
         setLaster(true); 
         
         fetch('http://localhost:8000/klubber', {
             method: 'POST',
-            headers: {"Content-Type": "application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(klubb)
         }).then(() => {
             console.log('Ny klubb lagt til');
@@ -28,7 +27,7 @@ const LagKlubbSide = () => {
         .catch(error => {
             console.error('Feil ved lagring av klubb:', error);
             setLaster(false); 
-        })
+        });
     }
 
     return (
@@ -36,7 +35,7 @@ const LagKlubbSide = () => {
             <div className="w-full max-w-md">
                 <h2 className="text-3xl font-bold mb-4 text-center">Legg Til en klubb</h2>
                 <Link to="/VelgKlubb" className="text-blue-500 underline mb-4 block text-center">Har allerede en klubb?</Link>
-                <div className="nyhet-form mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+                <div className="nyhet-form mt-8 sm:mx-auto sm:w-full sm:max-w-md form-container">
                     <form onSubmit={handleSubmit} className="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
                         <label className="block text-sm font-medium mb-2">
                             Klubbnavn:
@@ -73,4 +72,4 @@ const LagKlubbSide = () => {
     );
 }
 
-export default LagKlubbSide;
+export default LagKlubb;
