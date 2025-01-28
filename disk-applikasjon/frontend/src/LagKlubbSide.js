@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 const LagKlubbside = () => {
     const { id } = useParams();
@@ -7,6 +8,7 @@ const LagKlubbside = () => {
     const [nyhetTittel, setNyhetTittel] = useState('');
     const [nyhet, setNyhet] = useState('');
     const [laster, setLaster] = useState(false);
+    const minne = useHistory();
 
     useEffect(() => {
         fetch(`http://localhost:8000/klubber/${id}`)
@@ -42,6 +44,7 @@ const LagKlubbside = () => {
             setNyhetTittel('');
             setNyhet('');
             alert('Ny nyhet lagt til');
+            minne.push(`/`);
         }).catch(error => {
             console.error('Feil ved lagring av nyhet:', error);
         });
@@ -91,7 +94,10 @@ const LagKlubbside = () => {
                                            px-4 py-2 focus:outline-none focus:border-blue-500"
                             />
                             </div>
-                           <button type="submit" className="w-full flex justify-center py-4 bg-blue-500 rounded-lg text-sm text-white">Legg til nyhet</button>
+                            <div className="mt-4">
+                            {!laster && <button type="submit" className="w-full flex justify-center py-4 bg-blue-500 rounded-lg text-sm text-white">Legg til nyhet</button>}
+                            {laster && <button disabled className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white">Legg til nyhet..</button>}
+                            </div>
                         </form>
                         </div>
                     </div>

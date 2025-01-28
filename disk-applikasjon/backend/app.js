@@ -109,3 +109,23 @@ app.patch('/klubber/:id', (req, res) => {
         })
     }
 })
+
+//Rute som legger nyheter til klubben sin klubbside
+app.post('/klubber/:id/nyheter', (req, res) => {
+    if(ObjectId.isValid(req.params.id) === false) {
+        return res.status(400).json({error: 'Ugyldig dokument-id'});
+    } else {
+        const nyNyhet = req.body;
+        db.collection('Klubb')
+        .updateOne(
+            { _id: new ObjectId(req.params.id) },
+            { $push: { nyheter: nyNyhet } }
+        )
+        .then(result => {
+            res.status(201).json(result);
+        })
+        .catch(err => {
+            res.status(500).json({error: 'Feil ved lagring av nyhet'});
+        });
+    }
+});
