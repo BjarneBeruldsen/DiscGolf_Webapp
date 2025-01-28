@@ -5,7 +5,7 @@ import './logginn.css';
 const Logginn = () => {
     return (
         <div class = "pass">
-            <input type="text" placeholder="Epost" />
+            <input type="text" placeholder="Bruker" />
             <input type="password" placeholder="passord" />
             <button>Logg inn</button>
 

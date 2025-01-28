@@ -7,8 +7,12 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Hjem from './sider/Hjem';
-import Logginn from './sider/Logginn'; 
-import Registrer from './sider/Registrer';
+import Innlogging from './sider/Innlogging'; 
+import Registrering from './sider/Registrering';
+import Utlogging from './sider/Utlogging';
+import Sletting from './sider/Sletting';
+
+
 
 
 function App() {
@@ -30,11 +34,11 @@ function App() {
                 <Route exact path="/Klubbsider">
                   <Klubbsider />
                 </Route>
-                <Route exact path="/Logginn">
-                  <Logginn />
+                <Route exact path="/Innlogging">
+                  <Innlogging />
                 </Route>
-                <Route exact path="/Registrer">
-                  <Registrer />
+                <Route exact path="/Registrering">
+                  <Registrering />
                 </Route>
                 <Route path="/">
                   <Hjem />
