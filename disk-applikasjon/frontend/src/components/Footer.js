@@ -3,7 +3,7 @@ import "./Footer.css";
 
 const Footer = () => {
     return (
-        <header>
+        <footer>
             <div className="tekst">
                 <h1>Over 5,000 Baner</h1>
                 <p>Registrer resultater og forbedre din spillopplevelse</p>
@@ -44,7 +44,7 @@ const Footer = () => {
                     <p>Norway</p>
                 </div>
             </div>
-        </header>
+        </footer>
     );
 };
 
