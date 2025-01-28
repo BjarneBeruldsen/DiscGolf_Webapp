@@ -1,6 +1,6 @@
-import LagKlubb from './LagKlubb';
+import LagKlubbSide from './LagKlubbSide';
 import VelgKlubb from './VelgKlubb';
-import LagKlubbSide from './LagKlubSide';
+import LagKlubSide from './LagKlubSide';
 import './App.css';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Header from "./components/Header";
@@ -16,13 +16,13 @@ function App() {
           <div className="innhold">
               <Switch>
                 <Route exact path="/LagKlubb">
-                  <LagKlubb />
+                  <LagKlubbSide />
                 </Route>
                 <Route exact path="/VelgKlubb">
                   <VelgKlubb />
                 </Route>
-                <Route exact path="/LagKlubbSide/:id">
-                  <LagKlubbSide />
+                <Route exact path="/LagKlubSide/:id">
+                  <LagKlubSide />
                 </Route>
               </Switch>
           </div>
