@@ -2,6 +2,7 @@ import LagKlubb from './LagKlubb';
 import VelgKlubb from './VelgKlubb';
 import LagKlubbSide from './LagKlubbSide';
 import './App.css';
+import './output.css';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Header from "./components/Header";
 import Footer from "./components/Footer";

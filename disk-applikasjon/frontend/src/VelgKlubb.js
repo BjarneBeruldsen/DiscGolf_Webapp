@@ -29,6 +29,7 @@ const VelgKlubb = () => {
     };
 
     return (
+        <div className="velg bg-gray-200 p-4 mt-8 flex justify-center">
         <div className="innhold bg-gray-200 p-4">
             <h2 className="text-3xl font-bold mb-4">Velg en klubb</h2>
             <p className="mb-4">Ikke registrert klubb?</p>
@@ -58,6 +59,7 @@ const VelgKlubb = () => {
                 </div>
             </form>
             </div>
+        </div>
         </div>
     );
 }

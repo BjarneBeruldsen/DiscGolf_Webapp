@@ -48,22 +48,23 @@ const LagKlubbside = () => {
     };
 
     return (
-        <div className="lagklubbside bg-gray-200 p-4">
+        <div className="flex justify-center bg-gray-200">
+        <div className="lagklubbside p-4 mt-8 sm:mx-auto sm:w-full sm:max-w-md">
             {klubb ? (
                 <>
-                    <h2 className="text-10xl font-bold">Opprett side for: {klubb.navn}</h2>
-                    <p>Kontaktinfo: {klubb.kontaktinfo}</p>
-                    <h3>Legg til baner</h3>
+                    <h2 className="text-3xl font-bold">Opprett side for: {klubb.navn}</h2>
+                    <p className="text-2xl font-bold">Kontaktinfo: {klubb.kontaktinfo}</p>
+                    <h3 className="text-2xl font-bold">Legg til baner</h3>
                     <p>Kommer senere..</p>
-                    <h3>Legg til turneringer</h3>
+                    <h3 className="text-2xl font-bold">Legg til turneringer</h3>
                     <p>Kommer senere..</p>
     
                     <div className="nyhet-form mt-8 sm:mx-auto sm:w-full sm:max-w-md">
                         <div className = "bg-white py-8 px-6 shadow rounded-lg sm:px-10">
-                        <h3 className="font-sans">Legg til nyheter</h3>
+                        <h3 className="text-2xl font-bold">Legg til nyheter</h3>
                         <form onSubmit={handleSubmit}>
                             <label className="block text-sm font-medium">
-                                Tittel: 
+                                Nyhetstittel: 
                             </label>
                             <div className="mt-2">
                             <input 
@@ -98,6 +99,7 @@ const LagKlubbside = () => {
             ) : (
                 <p>Laster klubbdata...</p>
             )}
+        </div>
         </div>
     );
 }
