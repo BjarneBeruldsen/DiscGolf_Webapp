@@ -12,10 +12,9 @@ const LagKlubbside = () => {
 
     useEffect(() => {
         fetch(`http://localhost:8000/klubber/${id}`)
-            .then(res => {
-                return res.json();
-            })
+            .then(res => res.json())
             .then(data => {
+                console.log('Klubb hentet:', data);
                 setLaster(false);
                 setKlubb(data);
             })
@@ -51,18 +50,18 @@ const LagKlubbside = () => {
     };
 
     return (
-        <div className="flex justify-center bg-gray-200">
+        <div className="flex justify-center bg-gray-200 mt-10">
         <div className="lagklubbside p-4 mt-8 sm:mx-auto sm:w-full sm:max-w-md">
             {klubb ? (
                 <>
-                    <h2 className="text-3xl font-bold">Opprett side for: {klubb.navn}</h2>
+                    <h2 className="text-3xl font-bold">Opprett side for: {klubb.klubbnavn}</h2>
                     <p className="text-2xl font-bold">Kontaktinfo: {klubb.kontaktinfo}</p>
                     <h3 className="text-2xl font-bold">Legg til baner</h3>
                     <p>Kommer senere..</p>
                     <h3 className="text-2xl font-bold">Legg til turneringer</h3>
                     <p>Kommer senere..</p>
     
-                    <div className="nyhet-form mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+                    <div className="nyhet-form mt-8 sm:mx-auto sm:w-full sm:max-w-md form-container">
                         <div className = "bg-white py-8 px-6 shadow rounded-lg sm:px-10">
                         <h3 className="text-2xl font-bold">Legg til nyheter</h3>
                         <form onSubmit={handleSubmit}>

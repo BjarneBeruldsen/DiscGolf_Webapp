@@ -23,16 +23,10 @@ kobleTilDB((err) => {
 
 //ulike ruter 
 app.get('/klubber', (req, res) => {
-    const page = req.query.p || 0 
-    const klubberPrSide = 1
+    let klubber = []
 
-    let klubber = []; 
-    
     db.collection('Klubb')
-    .find() 
-    .sort({navn: 1})
-    .skip(page * klubberPrSide)
-    .limit(klubberPrSide)
+    .find()
     .forEach(klubb => klubber.push(klubb))
     .then(() => {
         res.status(200).json(klubber)
@@ -40,6 +34,7 @@ app.get('/klubber', (req, res) => {
     .catch(() => {
         res.status(500).json({error: 'Feil ved henting av klubber'})
     })
+
 })
 
 app.get('/klubber/:id', (req, res) => {
