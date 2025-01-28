@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
-const LagKlubb = () => {
+const LagKlubbSide = () => {
 
     const [klubbnavn, setKlubbnavn] = useState('');
     const [kontaktinfo, setKontaktinfo] = useState('');
@@ -11,31 +11,25 @@ const LagKlubb = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault(); 
-        const klubb = { klubbnavn, kontaktinfo }; 
+        const klubb = {klubbnavn, kontaktinfo}; 
 
         setLaster(true); 
         
         fetch('http://localhost:8000/klubber', {
             method: 'POST',
-            headers: { "Content-Type": "application/json" },
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify(klubb)
-        }).then((response) => {
-            if(!response.ok) {
-                throw new Error('Feil ved lagring av klubb');
-            }
-            else {
-                return response.json();
-            }
-        }).then((data) => {
-            console.log('Ny klubb lagt til', data);
+        }).then(() => {
+            console.log('Ny klubb lagt til');
             setLaster(false);
             alert('Ny klubb lagt til');
-            minne.push(`/LagKlubbSide/${data.insertedId}`);
-        }).catch(error => {
+            minne.push('/');
+        })
+        .catch(error => {
             console.error('Feil ved lagring av klubb:', error);
             setLaster(false); 
-        });
-    };
+        })
+    }
 
     return ( 
         <div className="lag bg-gray-200 p-4">
@@ -74,7 +68,7 @@ const LagKlubb = () => {
             </form>
             </div>
         </div>
-    );
-};
-
-export default LagKlubb;
+     );
+}
+ 
+export default LagKlubbSide;

@@ -24,7 +24,7 @@ kobleTilDB((err) => {
 //ulike ruter 
 app.get('/klubber', (req, res) => {
     const page = req.query.p || 0 
-    const klubberPrSide = 10
+    const klubberPrSide = 1
 
     let klubber = []; 
     
@@ -109,24 +109,3 @@ app.patch('/klubber/:id', (req, res) => {
         })
     }
 })
-
-app.post('/klubber/:id/nyheter', (req, res) => {
-    const nyhet = req.body;
-    const klubbId = req.params.id;
-
-    if (!ObjectId.isValid(klubbId)) {
-        return res.status(400).json({ error: 'Ugyldig dokument-id' });
-    }
-
-    db.collection('Klubb')
-        .updateOne(
-            { _id: new ObjectId(klubbId) },
-            { $push: { nyheter: nyhet } }
-        )
-        .then(result => {
-            res.status(201).json(result);
-        })
-        .catch(err => {
-            res.status(500).json({ error: 'Feil ved lagring av nyhet' });
-        });
-});
