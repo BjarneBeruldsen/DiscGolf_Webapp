@@ -521,9 +521,6 @@
   }
 }
 @layer utilities {
-  .relative {
-    position: relative;
-  }
   .mt-2 {
     margin-top: calc(var(--spacing) * 2);
   }
@@ -547,12 +544,6 @@
   }
   .flex {
     display: flex;
-  }
-  .grid {
-    display: grid;
-  }
-  .inline-block {
-    display: inline-block;
   }
   .w-full {
     width: 100%;
