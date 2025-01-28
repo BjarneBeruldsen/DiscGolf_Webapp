@@ -14,13 +14,13 @@ const Header = () => {
       />
       <nav class="nav">
         <ul>
-          <li><Link to="Hjem">Hjem</Link></li>
+          <li><Link to="/hjem">Hjem</Link></li>
           <li><Link to="/VelgKlubb">Ny klubbside</Link></li>
           <li><Link to="#">Baner</Link></li>
           <li><Link to="#">Regler/Tips</Link></li>
           <li><Link to="/Klubbsider">Klubber</Link></li>
           <li><Link to="/nyheter">Nyheter</Link></li>
-          <li><Link to="/logginn">Logg inn</Link></li>
+          <li><Link to="/Logginn">Logg inn</Link></li>
 
         </ul>
       </nav>

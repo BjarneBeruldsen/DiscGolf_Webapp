@@ -30,6 +30,16 @@ function App() {
                 <Route exact path="/Klubbsider">
                   <Klubbsider />
                 </Route>
+                <Route exact path="/Logginn">
+                  <Logginn />
+                </Route>
+                <Route exact path="/Registrer">
+                  <Registrer />
+                </Route>
+                <Route path="/">
+                  <Hjem />
+                </Route>
+                
               </Switch>
           </div>
           <Footer />
