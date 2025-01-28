@@ -1,74 +1,105 @@
-import { useState } from 'react';   
-import { useHistory } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
-const LagKlubbSide = () => {
-
-    const [klubbnavn, setKlubbnavn] = useState('');
-    const [kontaktinfo, setKontaktinfo] = useState('');
+const LagKlubbside = () => {
+    const { id } = useParams();
+    const [klubb, setKlubb] = useState(null);
+    const [nyhetTittel, setNyhetTittel] = useState('');
+    const [nyhet, setNyhet] = useState('');
     const [laster, setLaster] = useState(false);
-    const minne = useHistory();
+
+    useEffect(() => {
+        fetch(`http://localhost:8000/klubber/${id}`)
+            .then(res => {
+                return res.json();
+            })
+            .then(data => {
+                setLaster(false);
+                setKlubb(data);
+            })
+            .catch(error => {
+                console.error('Feil ved henting av klubb:', error);
+            });
+    }, [id]);
 
     const handleSubmit = (e) => {
-        e.preventDefault(); 
-        const klubb = {klubbnavn, kontaktinfo}; 
+        e.preventDefault();
+        const nyNyhet = { nyhetTittel, nyhet };
 
-        setLaster(true); 
-        
-        fetch('http://localhost:8000/klubber', {
+        fetch(`http://localhost:8000/klubber/${id}/nyheter`, {
             method: 'POST',
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(klubb)
-        }).then(() => {
-            console.log('Ny klubb lagt til');
-            setLaster(false);
-            alert('Ny klubb lagt til');
-            minne.push('/');
-        })
-        .catch(error => {
-            console.error('Feil ved lagring av klubb:', error);
-            setLaster(false); 
-        })
-    }
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(nyNyhet)
+        }).then((response) => {
+            if(!response.ok) {
+                throw new Error('Feil ved lagring av nyhet');
+            }
+            else {
+                return response.json();
+            }
+        }).then((data) => {
+            console.log('Ny nyhet lagt til', data);
+            setNyhetTittel('');
+            setNyhet('');
+            alert('Ny nyhet lagt til');
+        }).catch(error => {
+            console.error('Feil ved lagring av nyhet:', error);
+        });
+    };
 
-    return ( 
-        <div className="lag bg-gray-200 p-4">
-            <h2 className="text-3xl font-bold mb-4">Legg Til en klubb</h2>
-            <Link to="/VelgKlubb" className="text-blue-500 underline mb-4 block">Har allerede en klubb?</Link>
-            <div className="nyhet-form mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-            <form onSubmit={handleSubmit} className="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
-                <label className="block text-sm font-medium">
-                    Klubbnavn:
-                </label>
-                <div className="mt-2">
-                    <input 
-                        type="text" 
-                        required
-                        value={klubbnavn}
-                        onChange={(e) => setKlubbnavn(e.target.value)}
-                        className="w-full border border-gray-600 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:border-blue-500"
-                    />
-                </div>
-                <label className="block text-sm font-medium mt-2">
-                    Kontaktinfo:
-                </label>
-                <div className="mt-2">
-                    <input 
-                        type="text" 
-                        required
-                        value={kontaktinfo}
-                        onChange={(e) => setKontaktinfo(e.target.value)}
-                        className="w-full border border-gray-600 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:border-blue-500"
-                    />
-                </div>
-                <div className="mt-4">
-                    {!laster && <button type="submit" className="w-full flex justify-center py-4 bg-blue-500 rounded-lg text-sm text-white">Legg til klubb</button>}
-                    {laster && <button disabled className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white">Legger til klubb..</button>}
-                </div>
-            </form>
-            </div>
+    return (
+        <div className="lagklubbside bg-gray-200 p-4">
+            {klubb ? (
+                <>
+                    <h2 className="text-10xl font-bold">Opprett side for: {klubb.navn}</h2>
+                    <p>Kontaktinfo: {klubb.kontaktinfo}</p>
+                    <h3>Legg til baner</h3>
+                    <p>Kommer senere..</p>
+                    <h3>Legg til turneringer</h3>
+                    <p>Kommer senere..</p>
+    
+                    <div className="nyhet-form mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+                        <div className = "bg-white py-8 px-6 shadow rounded-lg sm:px-10">
+                        <h3 className="font-sans">Legg til nyheter</h3>
+                        <form onSubmit={handleSubmit}>
+                            <label className="block text-sm font-medium">
+                                Tittel: 
+                            </label>
+                            <div className="mt-2">
+                            <input 
+                                type="text" 
+                                required
+                                value={nyhetTittel}
+                                onChange={(e) => setNyhetTittel(e.target.value)}
+                                className="w-full border border-gray-600 rounded-lg shadow-sm
+                                           px-4 py-2 focus:outline-none focus:border-blue-500"
+                            />
+                            </div>
+                            <label className="block text-sm font-medium mt-2">
+                                Nyhet:
+                            </label>
+                            <div className="mt-2">
+                            <textarea
+                                type="text"
+                                required
+                                rows="5"
+                                cols="50"
+                                value={nyhet}
+                                onChange={(e) => setNyhet(e.target.value)}
+                                className="w-full border border-gray-600 rounded-lg shadow-sm
+                                           px-4 py-2 focus:outline-none focus:border-blue-500"
+                            />
+                            </div>
+                           <button type="submit" className="w-full flex justify-center py-4 bg-blue-500 rounded-lg text-sm text-white">Legg til nyhet</button>
+                        </form>
+                        </div>
+                    </div>
+                </>
+            ) : (
+                <p>Laster klubbdata...</p>
+            )}
         </div>
-     );
+    );
 }
- 
-export default LagKlubbSide;
+
+export default LagKlubbside;
