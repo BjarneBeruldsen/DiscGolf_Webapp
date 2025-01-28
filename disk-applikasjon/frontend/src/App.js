@@ -6,6 +6,9 @@ import './output.css';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Hjem from './sider/Hjem';
+import Logginn from './sider/Logginn'; 
+import Registrer from './sider/Registrer';
 
 
 function App() {
