@@ -5,7 +5,7 @@ const Klubbsider = () => {
 
     useEffect(() => {
         console.log('Henter klubber');
-        fetch('http://localhost:8000/klubber')
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber`)
             .then(res => res.json())
             .then(data => {
                 console.log(data);
