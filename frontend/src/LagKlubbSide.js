@@ -57,9 +57,9 @@ const LagKlubbside = () => {
                     <h2 className="text-3xl font-bold">Opprett side for: {klubb.klubbnavn}</h2>
                     <p className="text-2xl font-bold">Kontaktinfo: {klubb.kontaktinfo}</p>
                     <h3 className="text-2xl font-bold">Legg til baner</h3>
-                    <p>Kommer senere..</p>
+                    <p>Kommer i senere versjon..</p>
                     <h3 className="text-2xl font-bold">Legg til turneringer</h3>
-                    <p>Kommer senere..</p>
+                    <p>Kommer i senere versjon..</p>
     
                     <div className="nyhet-form mt-8 sm:mx-auto sm:w-full sm:max-w-md form-container">
                         <div className = "bg-white py-8 px-6 shadow rounded-lg sm:px-10">
