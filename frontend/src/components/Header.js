@@ -8,9 +8,9 @@ const Header = () => {
     <header class="header"> 
       <span class="title">DiscGolf</span>
       <img 
-        class="logo"
-        src="https://cdn.discordapp.com/attachments/934547779773153340/1333095097125961840/G2KuNAhXAAAAABJRU5ErkJggg.png?ex=6797a50e&is=6796538e&hm=4268bfd85ba6c78c4b5c540071b84950c59720990a1e0653cabe71a1fc10bb29&" 
-        alt="logo"
+    className="logo"
+    src={`${process.env.PUBLIC_URL}/DiscgolfLogo.png`} 
+    alt="DiscGolf logo" 
       />
       <nav class="nav">
         <ul>
