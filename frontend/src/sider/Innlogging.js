@@ -20,7 +20,7 @@ const Innlogging = () => {
             const respons = await fetch("http://localhost:8000/Innlogging", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ bruker, passord }),
+                body: JSON.stringify({ bruker: bruker.trim().toLowerCase(), passord }),
             });
 
             const data = await respons.json();

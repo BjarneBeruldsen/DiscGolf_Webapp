@@ -41,7 +41,7 @@ passport.use(
     new LocalStrategy({ usernameField: "bruker", passwordField: "passord" }, 
     async (bruker, passord, done) => {
         try {
-            const funnetBruker = await db.collection("Brukere").findOne({ bruker: bruker });
+            const funnetBruker = await db.collection("Brukere").findOne({ bruker: bruker.trim().toLowerCase() });
             if (!funnetBruker) {
                 return done(null, false, { message: "Bruker ikke funnet" });
             }
@@ -67,7 +67,7 @@ passport.deserializeUser(async (id, done) => {
         if (!ObjectId.isValid(id)) {
             return done(new Error('Ugyldig ObjectId'));
         }
-        const bruker = await db.collection("Brukere").findOne({ _id: ObjectId.createFromHexString(id) }); //Får feil ved bruk av findOne({ _id: new ObjectId(id) }); må undersøkes hvorfor
+        const bruker = await db.collection("Brukere").findOne({ _id: ObjectId.createFromHexString(id) }); 
         if (!bruker) {
             return done(new Error('Bruker ikke funnet'));
         }
@@ -207,7 +207,7 @@ app.post("/Registrering", async (req, res) => {
     }
 
     try {
-        const funnetBruker = await db.collection("Brukere").findOne({ bruker: bruker });
+        const funnetBruker = await db.collection("Brukere").findOne({ bruker: bruker.trim().toLowerCase() });
         if (funnetBruker) {
             return res.status(400).json({ error: "Brukernavnet er allerede tatt" });
         }
@@ -217,7 +217,7 @@ app.post("/Registrering", async (req, res) => {
         const hashedPassword = await bcrypt.hash(passord, salt);
 
         // Lagrer bruker i databasen
-        const nyBruker = { bruker, passord: hashedPassword };
+        const nyBruker = { bruker: bruker.trim().toLowerCase(), passord: hashedPassword };
         await db.collection("Brukere").insertOne(nyBruker);
 
         res.status(201).json({ message: "Bruker registrert" });

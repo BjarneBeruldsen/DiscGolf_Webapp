@@ -9,11 +9,6 @@ import Footer from "./components/Footer";
 import Hjem from './sider/Hjem';
 import Innlogging from './sider/Innlogging'; 
 import Registrering from './sider/Registrering';
-import Utlogging from './sider/Utlogging';
-import Sletting from './sider/Sletting';
-
-
-
 
 function App() {
   return (
@@ -37,13 +32,10 @@ function App() {
                 <Route exact path="/Innlogging">
                   <Innlogging />
                 </Route>
-                <Route exact path="/Registrering">
-                  <Registrering />
-                </Route>
-                <Route path="/">
+                <Route exact path="/Registrering" component={Registrering} /> 
+                <Route exact path="/">
                   <Hjem />
                 </Route>
-                
               </Switch>
           </div>
           <Footer />

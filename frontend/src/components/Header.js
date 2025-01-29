@@ -17,6 +17,7 @@ const Header = () => {
           <li><Link to="/Klubbsider">Klubber</Link></li>
           <li><Link to="/nyheter">Nyheter</Link></li>
           <li><Link to="/Innlogging">Logg inn</Link></li>
+          <li><Link to="/Registrering">Bli medlem!</Link></li>
 
         </ul>
       </nav>
