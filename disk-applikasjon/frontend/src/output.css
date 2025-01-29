@@ -545,6 +545,9 @@
   .flex {
     display: flex;
   }
+  .inline-block {
+    display: inline-block;
+  }
   .w-full {
     width: 100%;
   }
