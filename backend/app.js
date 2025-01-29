@@ -252,13 +252,15 @@ app.post("/Innlogging", async (req, res, next) => {
 });
 
 //Rute for utlogging
-app.post("/Utlogging", (req, res) => {
-    req.logout(err => {
+app.post("/Utlogging", (req, res, next) => {
+    req.logout(function(err) {
         if (err) {
-            return res.status(500).json({ error: "Feil ved utlogging" });
+            return next(err);
         }
+        req.session.destroy(() => { 
+            res.status(200).json({ message: "Utlogging vellykket" });
+        });
     });
-    res.status(200).json({ message: "Utlogging vellykket" });
 });
 
 
