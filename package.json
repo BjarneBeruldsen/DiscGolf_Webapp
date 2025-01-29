@@ -2,5 +2,15 @@
   "dependencies": {
     "@tailwindcss/cli": "^4.0.0",
     "tailwindcss": "^4.0.0"
-  }
+  },
+  "name": "prosjekt",
+  "version": "1.0.0",
+  "description": "Rapport: https://uisn-my.sharepoint.com/:w:/r/personal/263542_usn_no/Documents/Applikasjonsutvikling/Rapport%20Gruppe%2015%20APP2000%201.docx?d=wadf9430c19d94a7d847d63706f8f760a&csf=1&web=1&e=2bSIP0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
 }
