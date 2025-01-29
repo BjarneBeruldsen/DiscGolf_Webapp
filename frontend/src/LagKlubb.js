@@ -50,7 +50,7 @@ const LagKlubb = () => {
                             />
                         </div>
                         <label className="block text-sm font-medium mb-2">
-                            Kontaktinfo:
+                            E-post:
                         </label>
                         <div className="mt-2 mb-4">
                             <input 
