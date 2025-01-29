@@ -31,7 +31,7 @@ const VelgKlubb = () => {
             <div className="innhold bg-gray-200 p-4">
                 <h2 className="text-3xl font-bold mb-4">Velg en klubb</h2>
                 <p className="mb-4">Ikke registrert klubb?</p>
-                <Link to="/LagKlubb" className="text-blue-500 underline mb-4 block">Opprett ny klubb</Link>
+                <Link to="/LagKlubb" className="text-blue-500 underline mb-4 block">Opprett ny klubb her</Link>
                 <p className="mb-4">Velg en klubb du skal lage side til:</p>
                 <div className="nyhet-form mt-8 sm:mx-auto sm:w-full sm:max-w-md form-container">
                     <form onSubmit={handleSubmit} className="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
