@@ -36,7 +36,7 @@ kobleTilDB((err) => {
     if(!err) {
         db = getDb();
 
-// Konfigurasjon av Passport.js
+//Konfigurasjon av Passport.js
 passport.use(
     new LocalStrategy({ usernameField: "bruker", passwordField: "passord" }, 
     async (bruker, passord, done) => {
@@ -192,10 +192,10 @@ app.post('/klubber/:id/nyheter', (req, res) => {
 });
 
 
-// Validering av passord
-const passordRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
+//Validering av passord
+const passordRegex = /^(?=.*[A-Z])[A-Za-z\d\-.@$!%*?&]{8,}$/;
 
-// Rute for registrering av bruker
+//Rute for registrering av bruker
 app.post("/Registrering", async (req, res) => {
     const { bruker, passord } = req.body;
 
@@ -203,7 +203,7 @@ app.post("/Registrering", async (req, res) => {
         return res.status(400).json({ error: "Alle felt må fylles ut" });
     }
     if (!passordRegex.test(passord)) {
-        return res.status(400).json({ error: "Passordet må være minst 8 tegn, ha én stor bokstav og ett tall." });
+        return res.status(400).json({ error: "Passordet må være minst 8 tegn, å ha minst en stor bokstav." });
     }
 
     try {
