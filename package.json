@@ -25,6 +25,11 @@
   "description": "Rapport: https://uisn-my.sharepoint.com/:w:/r/personal/263542_usn_no/Documents/Applikasjonsutvikling/Rapport%20Gruppe%2015%20APP2000%201.docx?d=wadf9430c19d94a7d847d63706f8f760a&csf=1&web=1&e=2bSIP0",
   "main": "index.js",
   "scripts": {
+    "start": "cd backend && node app.js",
+    "dev": "concurrently \"npm start --prefix backend\" \"npm start --prefix frontend\"",
+    "backend": "npm start --prefix backend",
+    "frontend": "npm start --prefix frontend",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {

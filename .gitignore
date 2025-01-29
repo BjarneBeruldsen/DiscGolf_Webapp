@@ -1,1 +1,12 @@
 node_modules
+
+# production
+/build
+/frontend/build
+
+/node_modules
+npm-debug.log
+.DS_Store
+
+# dotenv environment variables file
+/backend/.env
