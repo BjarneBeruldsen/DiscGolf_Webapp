@@ -11,7 +11,7 @@ const LagKlubbside = () => {
     const minne = useHistory();
 
     useEffect(() => {
-        fetch(`http://localhost:8000/klubber/${id}`)
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}`)
             .then(res => res.json())
             .then(data => {
                 console.log('Klubb hentet:', data);
@@ -27,7 +27,7 @@ const LagKlubbside = () => {
         e.preventDefault();
         const nyNyhet = { nyhetTittel, nyhet };
 
-        fetch(`http://localhost:8000/klubber/${id}/nyheter`, {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}/nyheter`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(nyNyhet)
