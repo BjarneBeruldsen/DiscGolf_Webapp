@@ -7,11 +7,7 @@ const Header = () => {
     <div>
     <header class="header"> 
       <span class="title">DiscGolf</span>
-      <img 
-    className="logo"
-    src={`${process.env.PUBLIC_URL}/DiscgolfLogo.png`} 
-    alt="DiscGolf logo" 
-      />
+      <img className="logo" src="/DiscgolfLogo.png" alt="DiscGolf logo" />
       <nav class="nav">
         <ul>
           <li><Link to="/hjem">Hjem</Link></li>
