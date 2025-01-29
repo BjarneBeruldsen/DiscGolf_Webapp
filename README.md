@@ -2,5 +2,7 @@ Rapport: https://uisn-my.sharepoint.com/:w:/r/personal/263542_usn_no/Documents/A
 
 Arbeidskrav 3: https://uisn-my.sharepoint.com/:w:/g/personal/263364_usn_no/ETgFoSpoboFDoPFqx9HQskgBI4WXoU92luCuc8INI48koQ?e=n7fqtV
 
+Nettside: https://disk-applikasjon-39f504b7af19.herokuapp.com/
+
 
 Mer info om applikasjonen kommer
