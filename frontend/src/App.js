@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import LagKlubb from './LagKlubb';
 import VelgKlubb from './VelgKlubb';
 import LagKlubbSide from './LagKlubbSide';
@@ -10,16 +9,8 @@ import Footer from "./components/Footer";
 import Hjem from './sider/Hjem';
 import Innlogging from './sider/Innlogging'; 
 import Registrering from './sider/Registrering';
-import logo from './bilder/DiscGolfLogo.png';
 
 function App() {
-  useEffect(() => {
-    const favicon = document.getElementById('favicon');
-    if (favicon) {
-      favicon.href = logo;
-    }
-  }, []);
-
   return (
       <Router>
         <div className="App">
