@@ -3,12 +3,12 @@
   "name": "DiscGolf App",
   "icons": [
     {
-      "src": "/DiscGolfLogo.png",
+      "src": "/DiscgolfLogo.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/DiscGolfLogo.png",
+      "src": "/DiscgolfLogo.png",
       "type": "image/png",
       "sizes": "512x512"
     }
