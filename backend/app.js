@@ -11,10 +11,24 @@ const path = require('path');
 require('dotenv').config();
 
 const app = express();
-app.use(cors({
-    credentials: true 
+
+app.use(cors({                                              
+    credentials: true  
 }));
+
 app.use(express.json());
+
+/* NB!
+Dersom logg ut hverken fungerer lokalt eller i heroku, kan det hende vi må endre CORS konfigen over til denne:
+
+app.use(cors({
+    origin: [
+        "http://localhost:3000", 
+        "https://disk-applikasjon-39f504b7af19.herokuapp.com"
+    ],
+    credentials: true
+}));
+*/
 
 //Deployment under
 
@@ -28,10 +42,11 @@ app.use(express.static(path.join(__dirname, '../frontend/build')));
 //Konfig av session for passport.js
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    resave: false,
+    resave: true,
     saveUninitialized: false,
     cookie: {
         secure: false, 
+        sameSite: "lax",
         httpOnly: true, 
         maxAge: 1000 * 60 * 60 * 24,
     }
@@ -72,14 +87,11 @@ passport.serializeUser((bruker, done) => {
 });
 
 passport.deserializeUser(async (id, done) => {
+    if (!ObjectId.isValid(id)) return done(new Error("Ugyldig ObjectId"));
+
     try {
-        if (!ObjectId.isValid(id)) {
-            return done(new Error('Ugyldig ObjectId'));
-        }
-        const bruker = await db.collection("Brukere").findOne({ _id: ObjectId.createFromHexString(id) }); 
-        if (!bruker) {
-            return done(new Error('Bruker ikke funnet'));
-        }
+        const bruker = await db.collection("Brukere").findOne({ _id: new ObjectId(id) });
+        if (!bruker) return done(new Error("Bruker ikke funnet"));
         done(null, bruker);
     } catch (err) {
         done(err);
@@ -264,27 +276,14 @@ app.post("/Innlogging", async (req, res, next) => {
 });
 
 //Rute for utlogging
-app.post("/Utlogging", (req, res, next) => {
-    if (!req.isAuthenticated()) {
-        return res.status(401).json({ error: "Ingen aktiv session. Du er ikke logget inn." });
-    }
+app.post("/Utlogging", (req, res) => {
+    if (!req.isAuthenticated()) return res.status(401).json({ error: "Ingen aktiv session" });
 
-    req.logout(function(err) {
-        if (err) {
-            return next(err);
-        }
-        req.session.destroy((err) => {
-            if (err) {
-                return res.status(500).json({ error: "Feil ved utlogging." });
-            }
-            res.clearCookie("connect.sid"); 
-            res.status(200).json({ message: "Utlogging vellykket." });
-        });
+    req.logout((err) => {
+        if (err) return res.status(500).json({ error: "Feil ved utlogging" });
+        req.session.destroy(() => res.clearCookie("connect.sid").status(200).json({ message: "Utlogging vellykket" }));
     });
 });
-
-//Sletting av bruker
-//Ila uka
 
 //Tilbakestille testdata fra klubb collection 
 app.delete('/tommeTestdata', (req, res) => {
@@ -296,3 +295,6 @@ app.delete('/tommeTestdata', (req, res) => {
             res.status(500).json({ error: 'Feil ved tømming av testdata' });
         });
 });
+
+
+
