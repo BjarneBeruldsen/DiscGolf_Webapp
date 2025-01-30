@@ -11,7 +11,9 @@ const path = require('path');
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    credentials: true 
+}));
 app.use(express.json());
 
 //Deployment under
@@ -25,7 +27,12 @@ app.use(express.static(path.join(__dirname, '../frontend/build')));
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        secure: false, 
+        httpOnly: true, 
+        maxAge: 1000 * 60 * 60 * 24,
+    }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -48,7 +55,7 @@ passport.use(
 
             const passordSjekk = await bcrypt.compare(passord, funnetBruker.passord);
             if (!passordSjekk) {
-                return done(null, false, { message: "Feil passord" });
+                return done(null, false, { message: "Feil passord eller brukernavn" });
             }
 
             return done(null, funnetBruker);
@@ -199,8 +206,11 @@ const passordRegex = /^(?=.*[A-Z])[A-Za-z\d\-.@$!%*?&]{8,}$/;
 app.post("/Registrering", async (req, res) => {
     const { bruker, passord } = req.body;
 
-   if (!bruker || !passord) {
-        return res.status(400).json({ error: "Alle felt må fylles ut" });
+    if (!bruker || !passord) {
+        return res.status(400).json({ error: "Alle felt må fylles ut." });
+    }
+    if (bruker.length > 15) {
+        return res.status(400).json({ error: "Brukernavn kan ikke være lengre enn 20 tegn." });
     }
     if (!passordRegex.test(passord)) {
         return res.status(400).json({ error: "Passordet må være minst 8 tegn, å ha minst en stor bokstav." });
@@ -253,16 +263,23 @@ app.post("/Innlogging", async (req, res, next) => {
 
 //Rute for utlogging
 app.post("/Utlogging", (req, res, next) => {
+    if (!req.isAuthenticated()) {
+        return res.status(401).json({ error: "Ingen aktiv session. Du er ikke logget inn." });
+    }
+
     req.logout(function(err) {
         if (err) {
             return next(err);
         }
-        req.session.destroy(() => { 
-            res.status(200).json({ message: "Utlogging vellykket" });
+        req.session.destroy((err) => {
+            if (err) {
+                return res.status(500).json({ error: "Feil ved utlogging." });
+            }
+            res.clearCookie("connect.sid"); 
+            res.status(200).json({ message: "Utlogging vellykket." });
         });
     });
 });
-
 
 //Sletting av bruker
 //Ila uka
