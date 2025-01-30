@@ -18,11 +18,13 @@ const LagKlubb = () => {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(klubb)
-        }).then(() => {
-            console.log('Ny klubb lagt til');
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log('Ny klubb lagt til', data);
             setLaster(false);
             alert('Ny klubb lagt til');
-            minne.push('/');
+            minne.push(`/LagKlubbSide/${data.insertedId}`);
         })
         .catch(error => {
             console.error('Feil ved lagring av klubb:', error);
@@ -50,7 +52,7 @@ const LagKlubb = () => {
                             />
                         </div>
                         <label className="block text-sm font-medium mb-2">
-                            E-post:
+                            Kontaktinfo:
                         </label>
                         <div className="mt-2 mb-4">
                             <input 
