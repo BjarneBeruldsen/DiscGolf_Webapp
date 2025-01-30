@@ -524,7 +524,6 @@
   .collapse {
     visibility: collapse;
   }
-<<<<<<< HEAD
   .absolute {
     position: absolute;
   }
@@ -542,16 +541,6 @@
   }
   .-mt-24 {
     margin-top: calc(var(--spacing) * -24);
-=======
-  .relative {
-    position: relative;
-  }
-  .m-2 {
-    margin: calc(var(--spacing) * 2);
-  }
-  .mt-1 {
-    margin-top: calc(var(--spacing) * 1);
->>>>>>> ferdigstillLagKlubbside
   }
   .mt-2 {
     margin-top: calc(var(--spacing) * 2);
@@ -589,7 +578,6 @@
   .flex {
     display: flex;
   }
-<<<<<<< HEAD
   .grid {
     display: grid;
   }
@@ -601,22 +589,6 @@
   }
   .inline-block {
     display: inline-block;
-=======
-  .inline-flex {
-    display: inline-flex;
-  }
-  .list-item {
-    display: list-item;
-  }
-  .table {
-    display: table;
-  }
-  .min-h-screen {
-    min-height: 100vh;
-  }
-  .w-80 {
-    width: calc(var(--spacing) * 80);
->>>>>>> ferdigstillLagKlubbside
   }
   .inline-flex {
     display: inline-flex;
@@ -672,12 +644,9 @@
   .resize {
     resize: both;
   }
-<<<<<<< HEAD
   .grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-=======
->>>>>>> ferdigstillLagKlubbside
   .flex-col {
     flex-direction: column;
   }
@@ -740,13 +709,10 @@
     border-style: var(--tw-border-style);
     border-width: 1px;
   }
-<<<<<<< HEAD
   .border-b {
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 1px;
   }
-=======
->>>>>>> ferdigstillLagKlubbside
   .border-gray-300 {
     border-color: var(--color-gray-300);
   }
@@ -765,12 +731,9 @@
   .bg-blue-500 {
     background-color: var(--color-blue-500);
   }
-<<<<<<< HEAD
   .bg-blue-600 {
     background-color: var(--color-blue-600);
   }
-=======
->>>>>>> ferdigstillLagKlubbside
   .bg-gray-100 {
     background-color: var(--color-gray-100);
   }
@@ -780,24 +743,12 @@
   .bg-gray-300 {
     background-color: var(--color-gray-300);
   }
-<<<<<<< HEAD
-=======
-  .bg-gray-400 {
-    background-color: var(--color-gray-400);
-  }
->>>>>>> ferdigstillLagKlubbside
   .bg-gray-500 {
     background-color: var(--color-gray-500);
   }
   .bg-gray-600 {
     background-color: var(--color-gray-600);
   }
-<<<<<<< HEAD
-=======
-  .bg-indigo-600 {
-    background-color: var(--color-indigo-600);
-  }
->>>>>>> ferdigstillLagKlubbside
   .bg-white {
     background-color: var(--color-white);
   }
@@ -816,12 +767,6 @@
   .p-8 {
     padding: calc(var(--spacing) * 8);
   }
-<<<<<<< HEAD
-=======
-  .px-3 {
-    padding-inline: calc(var(--spacing) * 3);
-  }
->>>>>>> ferdigstillLagKlubbside
   .px-4 {
     padding-inline: calc(var(--spacing) * 4);
   }
@@ -890,28 +835,22 @@
     --tw-font-weight: var(--font-weight-medium);
     font-weight: var(--font-weight-medium);
   }
-<<<<<<< HEAD
   .font-semibold {
     --tw-font-weight: var(--font-weight-semibold);
     font-weight: var(--font-weight-semibold);
   }
-=======
->>>>>>> ferdigstillLagKlubbside
   .text-black {
     color: var(--color-black);
   }
   .text-blue-500 {
     color: var(--color-blue-500);
   }
-<<<<<<< HEAD
   .text-gray-600 {
     color: var(--color-gray-600);
   }
   .text-gray-700 {
     color: var(--color-gray-700);
   }
-=======
->>>>>>> ferdigstillLagKlubbside
   .text-red-500 {
     color: var(--color-red-500);
   }
@@ -940,7 +879,6 @@
     outline-style: var(--tw-outline-style);
     outline-width: 1px;
   }
-<<<<<<< HEAD
   .hover\:text-gray-600 {
     &:hover {
       @media (hover: hover) {
@@ -952,47 +890,6 @@
     &:hover {
       @media (hover: hover) {
         color: var(--color-gray-800);
-=======
-  .hover\:bg-indigo-700 {
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-indigo-700);
-      }
-    }
-  }
-  .hover\:text-blue-400 {
-    &:hover {
-      @media (hover: hover) {
-        color: var(--color-blue-400);
-      }
-    }
-  }
-  .hover\:text-blue-800 {
-    &:hover {
-      @media (hover: hover) {
-        color: var(--color-blue-800);
-      }
-    }
-  }
-  .hover\:text-red-400 {
-    &:hover {
-      @media (hover: hover) {
-        color: var(--color-red-400);
-      }
-    }
-  }
-  .hover\:text-red-800 {
-    &:hover {
-      @media (hover: hover) {
-        color: var(--color-red-800);
-      }
-    }
-  }
-  .hover\:underline {
-    &:hover {
-      @media (hover: hover) {
-        text-decoration-line: underline;
->>>>>>> ferdigstillLagKlubbside
       }
     }
   }
@@ -1001,14 +898,6 @@
       border-color: var(--color-blue-500);
     }
   }
-<<<<<<< HEAD
-=======
-  .focus\:border-indigo-500 {
-    &:focus {
-      border-color: var(--color-indigo-500);
-    }
-  }
->>>>>>> ferdigstillLagKlubbside
   .focus\:ring-2 {
     &:focus {
       --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentColor);
@@ -1025,20 +914,6 @@
       --tw-ring-color: var(--color-gray-400);
     }
   }
-<<<<<<< HEAD
-=======
-  .focus\:ring-indigo-500 {
-    &:focus {
-      --tw-ring-color: var(--color-indigo-500);
-    }
-  }
-  .focus\:ring-offset-2 {
-    &:focus {
-      --tw-ring-offset-width: 2px;
-      --tw-ring-offset-shadow: var(--tw-ring-inset,) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-    }
-  }
->>>>>>> ferdigstillLagKlubbside
   .focus\:outline-none {
     &:focus {
       --tw-outline-style: none;
@@ -1140,7 +1015,6 @@ button {
   inherits: false;
   initial-value: skewY(0);
 }
-<<<<<<< HEAD
 @property --tw-space-y-reverse {
   syntax: "*";
   inherits: false;
@@ -1151,8 +1025,6 @@ button {
   inherits: false;
   initial-value: 0;
 }
-=======
->>>>>>> ferdigstillLagKlubbside
 @property --tw-border-style {
   syntax: "*";
   inherits: false;
