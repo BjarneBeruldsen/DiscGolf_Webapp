@@ -17,7 +17,7 @@ const Innlogging = () => {
         }
 
         try {
-            const respons = await fetch("http://localhost:8000/Innlogging", {
+            const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Innlogging`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ bruker: bruker.trim().toLowerCase(), passord }),

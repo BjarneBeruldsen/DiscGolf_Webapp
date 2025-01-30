@@ -14,7 +14,7 @@ const LagKlubb = () => {
 
         setLaster(true); 
         
-        fetch('http://localhost:8000/klubber', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(klubb)

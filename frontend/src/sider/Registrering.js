@@ -14,7 +14,7 @@ const Registrering = () => {
             return;
         }
         try {
-            const respons = await fetch("http://localhost:8000/Registrering", {
+            const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Registrering`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ bruker, passord }),
