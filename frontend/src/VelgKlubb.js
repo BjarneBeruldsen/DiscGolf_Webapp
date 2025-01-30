@@ -53,7 +53,7 @@ const VelgKlubb = () => {
                             </select>
                         </div>
                         <div className="mt-4">
-                            <button type="submit" className="w-full flex justify-center py-4 bg-blue-500 rounded-lg text-sm text-white">Velg klubb</button>
+                            <button type="submit" className="w-full flex justify-center py-4 bg--500 rounded-lg text-sm text-white">Velg klubb</button>
                         </div>
                     </form>
                 </div>
