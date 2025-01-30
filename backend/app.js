@@ -286,5 +286,13 @@ app.post("/Utlogging", (req, res, next) => {
 //Sletting av bruker
 //Ila uka
 
-//Tilbakestille testdata
-//Ila uka
+//Tilbakestille testdata fra klubb collection 
+app.delete('/tommeTestdata', (req, res) => {
+    db.collection('Klubb').deleteMany({})
+        .then(result => {
+            res.status(200).json({ message: 'Testdata tømt' });
+        })
+        .catch(err => {
+            res.status(500).json({ error: 'Feil ved tømming av testdata' });
+        });
+});

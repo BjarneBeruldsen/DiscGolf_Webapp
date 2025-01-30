@@ -5,17 +5,23 @@ const VelgKlubb = () => {
     const [klubber, setKlubber] = useState([]);
     const [valgtKlubb, setValgtKlubb] = useState('');
     const minne = useHistory();
+    const [laster, setLaster] = useState(false);
+
 
     useEffect(() => {
+        setLaster(true);
+
         console.log('Henter klubber');
         fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber`)
             .then(res => res.json())
             .then(data => {
                 console.log(data);
                 setKlubber(data);
+                setLaster(false);
             })
             .catch(error => {
                 console.error('Feil ved henting av klubber:', error);
+                setLaster(false);
             });
     }, []);
 
@@ -27,7 +33,7 @@ const VelgKlubb = () => {
     };
 
     return (
-        <div className="velg bg-gray-200 p-4 mt-8 flex justify-center">
+        <div className="velg bg-gray-200 p-4  flex justify-center">
             <div className="innhold bg-gray-200 p-4">
                 <h2 className="text-3xl font-bold mb-4">Velg en klubb</h2>
                 <p className="mb-4">Ikke registrert klubb?</p>
@@ -53,7 +59,8 @@ const VelgKlubb = () => {
                             </select>
                         </div>
                         <div className="mt-4">
-                            <button type="submit" className="w-full flex justify-center py-4 bg--500 rounded-lg text-sm text-white">Velg klubb</button>
+                        {!laster && <button type="submit" className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white">Velg klubb</button>}
+                        {laster && <button disabled className="w-full flex justify-center py-4 bg-gray-400 rounded-lg text-sm text-white">Velg klubb..</button>}
                         </div>
                     </form>
                 </div>
