@@ -285,6 +285,15 @@ app.post("/Utlogging", (req, res) => {
     });
 });
 
+//Sjekk av session
+app.get("/sjekk-session", (req, res) => {
+    if (req.isAuthenticated()) {
+        return res.status(200).json({ bruker: req.user });
+    } else {
+        return res.status(401).json({ error: "Ingen aktiv session" });
+    }
+});
+
 //Tilbakestille testdata fra klubb collection 
 app.delete('/tommeTestdata', (req, res) => {
     db.collection('Klubb').deleteMany({})
