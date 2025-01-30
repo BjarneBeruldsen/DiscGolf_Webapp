@@ -64,8 +64,8 @@ const LagKlubb = () => {
                             />
                         </div>
                         <div className="mt-4">
-                            {!laster && <button type="submit" className="w-full flex justify-center py-4 bg-blue-500 rounded-lg text-sm text-white">Legg til klubb</button>}
-                            {laster && <button disabled className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white">Legger til klubb..</button>}
+                            {!laster && <button type="submit" className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white">Legg til klubb</button>}
+                            {laster && <button disabled className="w-full flex justify-center py-4 bg-gray-400 rounded-lg text-sm text-white">Legger til klubb..</button>}
                         </div>
                     </form>
                 </div>

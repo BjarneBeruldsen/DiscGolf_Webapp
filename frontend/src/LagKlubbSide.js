@@ -94,8 +94,8 @@ const LagKlubbside = () => {
                             />
                             </div>
                             <div className="mt-4">
-                            {!laster && <button type="submit" className="w-full flex justify-center py-4 bg-blue-500 rounded-lg text-sm text-white">Legg til nyhet</button>}
-                            {laster && <button disabled className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white">Legg til nyhet..</button>}
+                            {!laster && <button type="submit" className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white">Legg til nyhet</button>}
+                            {laster && <button disabled className="w-full flex justify-center py-4 bg-gray-300 rounded-lg text-sm text-white">Legg til nyhet..</button>}
                             </div>
                         </form>
                         </div>

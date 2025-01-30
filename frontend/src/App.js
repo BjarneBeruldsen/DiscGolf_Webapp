@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import Hjem from './sider/Hjem';
 import Innlogging from './sider/Innlogging'; 
 import Registrering from './sider/Registrering';
+import Klubbside from './Klubbside';
 
 function App() {
   return (
@@ -28,6 +29,9 @@ function App() {
                 </Route>
                 <Route exact path="/Klubbsider">
                   <Klubbsider />
+                </Route>
+                <Route exact path="/Klubbside/:id">
+                  <Klubbside />
                 </Route>
                 <Route exact path="/Innlogging">
                   <Innlogging />
