@@ -21,6 +21,8 @@ app.use(express.json());
 //legger serving fra statiske filer fra REACT applikasjonen 
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
+
+
 //Deployment over 
 
 //Konfig av session for passport.js
