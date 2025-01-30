@@ -18,6 +18,9 @@ function App() {
           <Header />
           <div className="innhold">
               <Switch>
+                <Route exact path="/Hjem">
+                  <Hjem />
+                </Route>
                 <Route exact path="/LagKlubb">
                   <LagKlubb />
                 </Route>
