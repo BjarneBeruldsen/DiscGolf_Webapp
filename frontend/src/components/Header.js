@@ -1,39 +1,46 @@
 import React from "react";
-import "./Header.css";
 import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
     <div>
-    <header class="header"> 
-      <span class="title">DiscGolf</span>
-      <img className="logo" src="/DiscgolfLogo.png" alt="Diskgolf logo"/>
-      <nav class="nav">
-        <ul>
-          <li><Link to="/hjem">Hjem</Link></li>
-          <li><Link to="/VelgKlubb">Ny klubbside</Link></li>
-          <li><Link to="#">Baner</Link></li>
-          <li><Link to="#">Regler/Tips</Link></li>
-          <li><Link to="/Klubbsider">Klubber</Link></li>
-          <li><Link to="/nyheter">Nyheter</Link></li>
-          <li><Link to="/Innlogging">Logg inn</Link></li>
-          <li><Link to="/Registrering">Bli medlem!</Link></li>
-
-        </ul>
-      </nav>
-
-
-
-    </header>
-   
-    
-        <div class="bilde">
-            <img 
-                src="https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
-                alt="bilde"/>
+     
+      <header className="flex items-center justify-between p-4 bg-white border-b border-gray-300">
+        
+       
+        <div className="flex items-center space-x-3">
+          <img
+            className="w-10 h-10 rounded-full"
+            src="/DiscgolfLogo.png"
+            alt="DiscGolf logo"
+          />
+          <span className="text-xl font-bold">DiscGolf</span>
         </div>
+
+        
+        <nav>
+          <ul className="flex space-x-6">
+            <li><Link to="/hjem" className="text-black font-bold hover:text-gray-600">Hjem</Link></li>
+            <li><Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600">Ny klubbside</Link></li>
+            <li><Link to="#" className="text-black font-bold hover:text-gray-600">Baner</Link></li>
+            <li><Link to="#" className="text-black font-bold hover:text-gray-600">Regler/Tips</Link></li>
+            <li><Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600">Klubber</Link></li>
+            <li><Link to="/nyheter" className="text-black font-bold hover:text-gray-600">Nyheter</Link></li>
+            <li><Link to="/Innlogging" className="text-black font-bold hover:text-gray-600">Logg inn</Link></li>
+            <li><Link to="/Registrering" className="text-black font-bold hover:text-gray-600">Bli medlem!</Link></li>
+          </ul>
+        </nav>
+      </header>
+
+      
+      <div className="w-full max-h-[600px] overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt="bilde"
+          className="w-full h-full object-cover"
+        />
+      </div>
     </div>
-   
   );
 };
 

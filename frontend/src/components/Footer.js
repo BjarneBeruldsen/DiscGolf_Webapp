@@ -1,57 +1,50 @@
 import React from "react";
-import "./Footer.css";
 
 const Footer = () => {
-    return (
-        <footer>
-            <div className="tekst">
-                <h1>Over 5,000 Baner</h1>
-                <p>Registrer resultater og forbedre din spillopplevelse</p>
-            </div>
+  return (
+    <footer className="bg-gray-200 text-gray-700">
+      {/* Top Section with New Background Color */}
+      <div className="bg-white text-grey-200 py-6 text-center font-bold">
+        <h1 className="text-2xl">Over 5,000 Baner</h1>
+        <p className="text-lg">Registrer resultater og forbedre din spillopplevelse</p>
+      </div>
 
-           
+      {/* Footer Content */}
+      <div className="grid grid-cols-3 gap-6 px-8 py-6">
+        {/* Left Column */}
+        <div>
+          <h1 className="text-xl font-bold">DiscGolf</h1>
+          <p className="mt-2">
+            Disc golf er en spennende utendørs sport der målet er å kaste en frisbee i en kurv på færrest mulig kast.
+            Med over 18 000 baner verden over, er sporten i vekst og passer for spillere i alle aldre og ferdighetsnivåer.
+          </p>
+        </div>
 
+        {/* Center Navigation - Made inline-block */}
+        <div className="text-center">
+          <ul className="inline-block space-x-6 text-lg font-medium">
+            <li className="inline"><a href="#" className="hover:text-gray-800">Baner</a></li>
+            <li className="inline"><a href="#" className="hover:text-gray-800">Regler/Tips</a></li>
+            <li className="inline"><a href="#" className="hover:text-gray-800">Klubber</a></li>
+            <li className="inline"><a href="#" className="hover:text-gray-800">Nyheter</a></li>
+          </ul>
+        </div>
 
+        {/* Right Column - Contact Info */}
+        <div className="text-center">
+          <p className="font-semibold">Kontakt oss</p>
+          <p>Telefon: 1256789</p>
+          <p>Email: DiscgolfBø@gmail.com</p>
+          <p>BØ, Norway</p>
+        </div>
+      </div>
 
-            <div className="footer">
-        
-                <ul>
-                    <li>
-                        
-            <h1 className="t2">DiscGolf</h1>
-                        <p>Disc golf er en spennende utendørs sport der målet er å kaste en
-                            frisbee i en kurv på færrest mulig kast. Med over 18 000 baner verden over,
-                            er sporten i vekst og passer for spillere i alle aldre og ferdighetsnivåer.</p>
-                    </li>
-
-                </ul>
-
-                <ul>
-                <div className="footer2">
-                <ul>
-                    <li><a href="#">Baner</a></li>
-                    <li><a href="#">Regler/Tips</a></li>
-                    <li><a href="#">Klubber</a></li>
-                    <li><a href="#">Nyheter</a></li>
-                </ul>
-            </div>
-            <li class="copyr">
-                        <p>© 2024 DiscGolf. All Rights Reserved.</p>
-                    </li>
-
-                    
-                </ul>
-
-                <div className="info">
-                    <p>Kontakt oss</p>
-                    <p>Telefon:1256789</p>
-                    <p>DiscgolfBø@gmail.com</p>
-                    <p>BØ</p>
-                    <p>Norway</p>
-                </div>
-            </div>
-        </footer>
-    );
+      {/* Copyright Section - Background now matches the footer */}
+      <div className="text-center py-2 bg-grey-200 text-black text-sm">
+        <p>© 2024 DiscGolf. All Rights Reserved.</p>
+      </div>
+    </footer>
+  );
 };
 
 export default Footer;
