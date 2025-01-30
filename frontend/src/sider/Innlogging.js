@@ -7,25 +7,10 @@ const Innlogging = () => {
     const [loggetInnBruker, setLoggetInnBruker] = useState(null);
 
     useEffect(() => {
-        const sjekkSession = async () => {
-            try {
-                const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/debug-session`, {
-                    method: "GET",
-                    credentials: "include",
-                });
-
-                const data = await respons.json();
-                if (respons.ok) {
-                    setLoggetInnBruker(data.bruker);
-                } else {
-                    setLoggetInnBruker(null);
-                }
-            } catch {
-                setLoggetInnBruker(null);
-            }
-        };
-
-        sjekkSession();
+        const lagretBruker = localStorage.getItem("bruker");
+        if (lagretBruker) {
+            setLoggetInnBruker(JSON.parse(lagretBruker));
+        }
     }, []);
 
     const handleSubmit = async (e) => {
