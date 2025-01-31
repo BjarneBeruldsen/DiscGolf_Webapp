@@ -45,7 +45,7 @@ app.use(session({
     resave: true,
     saveUninitialized: false,
     cookie: {
-        secure: false, 
+        secure: false,              //Må gjøre mer testing med denne virker som det ikke funker på min nettleser med denne på true
         sameSite: "lax",
         httpOnly: true, 
         maxAge: 1000 * 60 * 60 * 24,
