@@ -1,1 +1,0 @@
-//Må lages utloggingsknapp/popup 

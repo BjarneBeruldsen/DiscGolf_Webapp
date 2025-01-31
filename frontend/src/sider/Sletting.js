@@ -1,1 +1,0 @@
-//Sletting av bruker men usikker på om det er nødvendig

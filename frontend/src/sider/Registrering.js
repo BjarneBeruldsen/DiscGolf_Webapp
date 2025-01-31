@@ -39,7 +39,7 @@ const Registrering = () => {
                 onSubmit={handleSubmit} 
                 className="flex flex-col items-center bg-white p-8 rounded-lg shadow-md w-80"
             >
-                <h2 className="text-xl font-bold mb-4">Registrering av medlem</h2>
+                <h2 className="text-xl font-bold mb-4">Registrering deg som bruker!</h2>
 
                 <input
                     type="text"
