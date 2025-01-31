@@ -90,7 +90,7 @@ passport.deserializeUser(async (id, done) => {
     if (!ObjectId.isValid(id)) return done(new Error("Ugyldig ObjectId"));
 
     try {
-        const bruker = await db.collection("Brukere").findOne({ _id: ObjectId.createFromHexString(req.params.id) });        
+        const bruker = await db.collection("Brukere").findOne({ _id: new ObjectId(id) });
         if (!bruker) return done(new Error("Bruker ikke funnet"));
         done(null, bruker);
     } catch (err) {
