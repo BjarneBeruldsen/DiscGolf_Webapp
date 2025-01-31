@@ -60,7 +60,7 @@ const Registrering = () => {
 
                 <button
                     type="submit"
-                    className="bg-gray-600 text-black px-4 py-2 mt-4 rounded-lg w-full border border-gray-500"
+                    className="bg-gray-600 text-white px-4 py-2 mt-4 rounded-lg w-full border border-gray-500"
                 >
                     Registrer deg
                 </button>

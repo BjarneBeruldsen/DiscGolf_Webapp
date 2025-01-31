@@ -114,7 +114,7 @@ const Innlogging = () => {
                     />
                     <button
                         type="submit"
-                        className="bg-gray-600 text-black border-radius-2 px-4 py-2 mt-4 rounded-lg w-full border border-gray-500"
+                        className="bg-gray-600 text-white border-radius-2 px-4 py-2 mt-4 rounded-lg w-full border border-gray-500"
                     >
                         Logg inn
                     </button>
