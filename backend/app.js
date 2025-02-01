@@ -261,11 +261,21 @@ app.post("/Innlogging", async (req, res, next) => {
 
 //Rute for utlogging
 app.post("/Utlogging", (req, res) => {
-    if (!req.isAuthenticated()) return res.status(401).json({ error: "Ingen aktiv session" });
+    if (!req.isAuthenticated()) {
+        return res.status(401).json({ error: "Ingen aktiv session" });
+    }
 
     req.logout((err) => {
-        if (err) return res.status(500).json({ error: "Feil ved utlogging" });
-        req.session.destroy(() => res.clearCookie("connect.sid").status(200).json({ message: "Utlogging vellykket" }));
+        if (err) {
+            return res.status(500).json({ error: "Feil ved utlogging" });
+        }
+        req.session.destroy(() => {
+            res.clearCookie("connect.sid", {
+                secure: true,       
+                sameSite: "none",   
+                path: '/'           
+            }).status(200).json({ message: "Utlogging vellykket" });
+        });
     });
 });
 
