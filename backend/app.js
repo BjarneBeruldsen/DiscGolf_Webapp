@@ -12,9 +12,11 @@ require('dotenv').config();
 
 const app = express();
 
-app.use(cors({                                              
-    credentials: true  
+app.use(cors({
+    origin: ["http://localhost:3000", "https://disk-applikasjon-39f504b7af19.herokuapp.com"],      //Er fortsatt usikker på dette, men lokalt testing funker ikke uten å sette localhost som origin, gjelder da innlogging/utlogging og registrering
+    credentials: true
 }));
+
 app.use(express.json());
 
 //Deployment under
@@ -22,6 +24,7 @@ app.use(express.json());
 //legger serving fra statiske filer fra REACT applikasjonen 
 
 app.use(express.static(path.join(__dirname, '../frontend/build')));
+
 
 //Deployment over 
 
@@ -31,11 +34,11 @@ app.use(session({
     resave: true,
     saveUninitialized: false,
     cookie: {
-        secure: true,                   //Må settes til false når man ikke jobber lokalt og true når man pusher til Heroku
-        sameSite: "lax",               //Må settes til none når secure er true
-        httpOnly: true, 
-        maxAge: 1000 * 60 * 60 * 24,
-    }
+    secure: true,                        //Settes til true når du pusher til github og false ved testing lokalt
+    sameSite: "none",                   //Settes til none når secure er true
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24,
+}
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -92,7 +95,6 @@ app.listen(PORT, () => {
         console.error("Feil ved oppkobling til databasen", err);
     }
 });
-
 
 //Ulike ruter 
 app.get('/klubber', (req, res) => {
@@ -157,10 +159,8 @@ app.delete('/klubber/:id', (req, res) => {
     }
 })
 
-
 app.patch('/klubber/:id', (req, res) => {
     const oppdatering = req.body
-
 
 
     if(ObjectId.isValid(req.params.id) === false) {
@@ -198,7 +198,6 @@ app.post('/klubber/:id/nyheter', (req, res) => {
     }
 });
 
-
 //Validering av passord
 const passordRegex = /^(?=.*[A-Z])[A-Za-z\d\-.@$!%*?&]{8,}$/;
 
@@ -235,7 +234,6 @@ app.post("/Registrering", async (req, res) => {
         res.status(500).json({ error: "Feil ved registrering" });
     }
 });
-
 
 //Rute for innlogging
 app.post("/Innlogging", async (req, res, next) => {
@@ -291,9 +289,7 @@ app.delete('/tommeTestdata', (req, res) => {
         });
 });
 
-
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
-
 
