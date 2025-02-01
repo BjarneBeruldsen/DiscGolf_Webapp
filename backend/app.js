@@ -12,14 +12,9 @@ require('dotenv').config();
 
 const app = express();
 
-app.use(cors({
-    origin: [
-        "http://localhost:3000", 
-        "https://disk-applikasjon-39f504b7af19.herokuapp.com"
-    ],
-    credentials: true
+app.use(cors({                                              
+    credentials: true  
 }));
-
 app.use(express.json());
 
 //Deployment under
@@ -37,7 +32,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         secure: true,                   //Må settes til false når man ikke jobber lokalt og true når man pusher til Heroku
-        sameSite: "none",               //Må settes til none når secure er true
+        sameSite: "lax",               //Må settes til none når secure er true
         httpOnly: true, 
         maxAge: 1000 * 60 * 60 * 24,
     }
