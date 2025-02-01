@@ -12,15 +12,6 @@ require('dotenv').config();
 
 const app = express();
 
-app.use(cors({                                              
-    credentials: true  
-}));
-
-app.use(express.json());
-
-/* NB!
-Dersom logg ut hverken fungerer lokalt eller i heroku, kan det hende vi må endre CORS konfigen over til denne:
-
 app.use(cors({
     origin: [
         "http://localhost:3000", 
@@ -28,15 +19,14 @@ app.use(cors({
     ],
     credentials: true
 }));
-*/
+
+app.use(express.json());
 
 //Deployment under
 
 //legger serving fra statiske filer fra REACT applikasjonen 
 
 app.use(express.static(path.join(__dirname, '../frontend/build')));
-
-
 
 //Deployment over 
 
@@ -46,8 +36,8 @@ app.use(session({
     resave: true,
     saveUninitialized: false,
     cookie: {
-        secure: false,              //Må gjøre mer testing med denne virker som det ikke funker på min nettleser med denne på true
-        sameSite: "lax",
+        secure: true,                   //Må settes til false når man ikke jobber lokalt og true når man pusher til Heroku
+        sameSite: "none",               //Må settes til none når secure er true
         httpOnly: true, 
         maxAge: 1000 * 60 * 60 * 24,
     }
