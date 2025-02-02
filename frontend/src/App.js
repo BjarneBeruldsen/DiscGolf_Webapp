@@ -58,6 +58,11 @@ function App() {
     };
 
     sjekkSession();
+
+    const lagretBruker = localStorage.getItem("bruker");
+    if (lagretBruker) {
+      setLoggetInnBruker(JSON.parse(lagretBruker)); 
+    }
   }, []);
 
   return (
