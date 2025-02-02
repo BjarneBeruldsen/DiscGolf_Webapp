@@ -13,6 +13,7 @@ require('dotenv').config();
 const app = express();
 
 app.use(cors({
+    origin: "https://disk-applikasjon-39f504b7af19.herokuapp.com", 
     credentials: true
 }));
 
@@ -32,8 +33,16 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    },
-));
+    cookie: {
+        secure: process.env.NODE_ENV === "production", 
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24, // 1 dag
+    }
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 //Oppkobling mot databasen 
 let db
@@ -43,9 +52,6 @@ kobleTilDB((err) => {
 
 
 //Konfigurasjon av Passport.js
-app.use(passport.initialize());
-app.use(passport.session());
-
 passport.use(
     new LocalStrategy({ usernameField: "bruker", passwordField: "passord" }, 
     async (bruker, passord, done) => {
@@ -255,6 +261,7 @@ app.post("/Innlogging", async (req, res, next) => {
     })(req, res, next);
 });
 
+//Utlogging
 app.post("/Utlogging", async (req, res) => {
     try {
         if (!req.isAuthenticated()) {
