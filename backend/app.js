@@ -31,16 +31,14 @@ app.use(express.static(path.join(__dirname, '../frontend/build')));
 //Konfig av session
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     cookie: {
-        cookie: {
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            httpOnly: true,
-            maxAge: 1000 * 60 * 60 * 24,
-        }
-}
+        secure: process.env.NODE_ENV === "production", 
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24,
+    },
 }));
 
 //Oppkobling mot databasen 
@@ -49,9 +47,11 @@ kobleTilDB((err) => {
     if(!err) {
         db = getDb();
 
+
+//Konfigurasjon av Passport.js
 app.use(passport.initialize());
 app.use(passport.session());
-//Konfigurasjon av Passport.js
+
 passport.use(
     new LocalStrategy({ usernameField: "bruker", passwordField: "passord" }, 
     async (bruker, passord, done) => {
@@ -261,16 +261,32 @@ app.post("/Innlogging", async (req, res, next) => {
     })(req, res, next);
 });
 
-//Rute for utlogging
-app.post("/Utlogging", (req, res) => {
-    if (!req.isAuthenticated()) return res.status(401).json({ error: "Ingen aktiv session" });
+app.post("/Utlogging", async (req, res) => {
+    try {
+        if (!req.isAuthenticated()) {
+            return res.status(401).json({ error: "Ingen aktiv session" });
+        }
 
-    req.logout((err) => {
-        if (err) return res.status(500).json({ error: "Feil ved utlogging" });
-        req.session.destroy(() => res.clearCookie("connect.sid").status(200).json({ message: "Utlogging vellykket" }));
-    });
+        req.logout((err) => {
+            if (err) {
+                console.error("Feil ved utlogging:", err);
+                return res.status(500).json({ error: "Feil ved utlogging" });
+            }
+            req.session.destroy((err) => {
+                if (err) {
+                    console.error("Feil ved sletting av session:", err);
+                    return res.status(500).json({ error: "Feil ved sletting av session" });
+                }
+                res.clearCookie("connect.sid", { path: "/" });
+                return res.status(200).json({ message: "Utlogging vellykket" });
+            });
+        });
+
+    } catch (error) {
+        console.error("Uventet feil:", error);
+        res.status(500).json({ error: "Serverfeil" });
+    }
 });
-
 
 //Sjekk av session
 app.get("/sjekk-session", (req, res) => {
