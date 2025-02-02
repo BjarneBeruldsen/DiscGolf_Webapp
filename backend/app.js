@@ -13,7 +13,6 @@ require('dotenv').config();
 const app = express();
 
 app.use(cors({
-    origin: process.env.NODE_ENV === "production" ? "https://disk-applikasjon-39f504b7af19.herokuapp.com" : "http://localhost:3000",
     credentials: true
 }));
 
@@ -33,13 +32,8 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: {
-        secure: process.env.NODE_ENV === "production", 
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24,
     },
-}));
+));
 
 //Oppkobling mot databasen 
 let db
@@ -312,6 +306,9 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
 
+
+
+//Debugging
 app.get("/debug-session", (req, res) => {
     res.json({ session: req.session, user: req.user });
 });
