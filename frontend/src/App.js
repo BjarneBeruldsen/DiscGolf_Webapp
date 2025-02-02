@@ -18,6 +18,22 @@ import Baner from './sider/Baner';
 function App() {
   const [loggetInnBruker, setLoggetInnBruker] = useState(null);
 
+  const loggUtBruker = async () => {
+    try {
+      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Utlogging`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (respons.ok) {
+        localStorage.removeItem("bruker");
+        setLoggetInnBruker(null);
+      }
+    } catch (error) {
+      console.error("Feil ved utlogging:", error);
+    }
+  };
+
   useEffect(() => {
     const sjekkSession = async () => {
       try {
@@ -25,26 +41,29 @@ function App() {
           method: "GET",
           credentials: "include",
         });
-        
+
         const data = await respons.json();
         if (respons.ok && data.bruker) {
           setLoggetInnBruker(data.bruker);
+          localStorage.setItem("bruker", JSON.stringify(data.bruker));
         } else {
           setLoggetInnBruker(null);
+          localStorage.removeItem("bruker");
         }
       } catch (error) {
         console.error("Feil ved henting av session:", error);
         setLoggetInnBruker(null);
+        localStorage.removeItem("bruker");
       }
     };
-  
+
     sjekkSession();
-  }, []); 
+  }, []);
 
   return (
       <Router>
         <div className="App">
-        <Header loggetInnBruker={loggetInnBruker} setLoggetInnBruker={setLoggetInnBruker} />
+          <Header loggetInnBruker={loggetInnBruker} loggUtBruker={loggUtBruker} />
           <div className="innhold">
               <Switch>
                 <Route exact path="/Hjem">
@@ -59,23 +78,30 @@ function App() {
                 <Route exact path="/LagKlubbSide/:id">
                   <LagKlubbSide />
                 </Route>
-                <Route exact path="/Klubbsider">
+                <Route exact path="/Klubbsider"> 
                   <Klubbsider />
                 </Route>
                 <Route exact path="/Klubbside/:id">
                   <Klubbside />
-                  </Route>
-                  <Route exact path="/Baner">
+                </Route>
+                <Route exact path="/Baner">
                   <Baner/>
-                  </Route>
-                  <Route exact path="/nyheter">
+                </Route>
+                <Route exact path="/nyheter">
                   <Nyheter />
-                  </Route>
-                  <Route exact path="/medlemskap">
+                </Route>
+                <Route exact path="/medlemskap">
                   <Medlemskap />
-                  </Route>
-                  <Route exact path="/Innlogging">
-  {loggetInnBruker ? <Redirect to="/hjem" /> : <Innlogging setLoggetInnBruker={setLoggetInnBruker} />}
+                </Route>
+                <Route exact path="/Innlogging">
+                  {loggetInnBruker ? (
+                    <Redirect to="/Hjem" />
+                  ) : (
+                    <Innlogging 
+                      setLoggetInnBruker={setLoggetInnBruker} 
+                      setLoggUtBruker={loggUtBruker} 
+                    />
+                  )}
                 </Route>
                 <Route exact path="/Registrering">
                   <Registrering />

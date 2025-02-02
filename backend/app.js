@@ -13,7 +13,7 @@ require('dotenv').config();
 const app = express();
 
 app.use(cors({
-    origin: ["http://localhost:3000", "https://disk-applikasjon-39f504b7af19.herokuapp.com"],      //Er fortsatt usikker på dette, men lokalt testing funker ikke uten å sette localhost som origin, gjelder da innlogging/utlogging og registrering
+    origin: ["http://localhost:3000", "https://disk-applikasjon-39f504b7af19.herokuapp.com"],      //Er fortsatt usikker på dette, men lokal testing funker ikke uten å sette localhost(frontend) som origin, gjelder da innlogging/utlogging og registrering
     credentials: true
 }));
 
@@ -35,7 +35,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
     secure: true,                        //Settes til true når du pusher til github og false ved testing lokalt
-    sameSite: "none",                   //Settes til none når secure er true
+    sameSite: "none",                   //Settes til none når secure er true og MÅ settes til "lax" ved testing lokalt
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24,
 }
@@ -55,7 +55,7 @@ passport.use(
     async (bruker, passord, done) => {
         try {
             const funnetBruker = await db.collection("Brukere").findOne({ bruker: bruker.trim().toLowerCase() });
-            if (!funnetBruker) {
+            if (!funnetBruker) {                                                                                                      
                 return done(null, false, { message: "Bruker ikke funnet" });
             }
 
@@ -79,7 +79,7 @@ passport.deserializeUser(async (id, done) => {
     if (!ObjectId.isValid(id)) return done(new Error("Ugyldig ObjectId"));
 
     try {
-        const bruker = await db.collection("Brukere").findOne({ _id: new ObjectId(id) });
+        const bruker = await db.collection("Brukere").findOne({ _id: new ObjectId(id) });     //Usikker på denne må undersøkes nærmere står at den er deprecated
         if (!bruker) return done(new Error("Bruker ikke funnet"));
         done(null, bruker);
     } catch (err) {
@@ -250,7 +250,7 @@ app.post("/Innlogging", async (req, res, next) => {
         }
         req.logIn(bruker, (err) => {
             if (err) {
-                return next(err); 
+                return next(err);                                                                                    
             }
 //Fjerner passord fra brukerobjektet før det sendes til frontend
             const brukerUtenPassord = { id: bruker._id, bruker: bruker.bruker };
@@ -261,29 +261,20 @@ app.post("/Innlogging", async (req, res, next) => {
 
 //Rute for utlogging
 app.post("/Utlogging", (req, res) => {
-    if (!req.isAuthenticated()) {
-        return res.status(401).json({ error: "Ingen aktiv session" });
-    }
+    if (!req.isAuthenticated()) return res.status(401).json({ error: "Ingen aktiv session" });
 
     req.logout((err) => {
-        if (err) {
-            return res.status(500).json({ error: "Feil ved utlogging" });
-        }
-        req.session.destroy(() => {
-            res.clearCookie("connect.sid", {
-                secure: true,       
-                sameSite: "none",   
-                path: '/'           
-            }).status(200).json({ message: "Utlogging vellykket" });
-        });
+        if (err) return res.status(500).json({ error: "Feil ved utlogging" });
+        req.session.destroy(() => res.clearCookie("connect.sid").status(200).json({ message: "Utlogging vellykket" }));
     });
 });
+
 
 //Sjekk av session
 app.get("/sjekk-session", (req, res) => {
     if (req.isAuthenticated()) {
         return res.status(200).json({ bruker: req.user });
-    } else {
+    } else {                                                                      //https://www.passportjs.org/concepts/authentication/sessions/
         return res.status(401).json({ error: "Ingen aktiv session" });
     }
 });

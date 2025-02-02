@@ -1,36 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const capitalize = (str) => {
-  if (!str) return "";
-  return str.charAt(0).toUpperCase() + str.slice(1);
+const storBokstav = (str) => {                                  //https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
+  if (!str) return "";                                               
+  return str.charAt(0).toUpperCase() + str.slice(1);             
 };
 
-const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
-  const handleLogout = async () => {
-    try {
-      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Utlogging`, {
-        method: "POST",
-        credentials: "include",
-      });
-
-      if (respons.ok) {
-        localStorage.removeItem("bruker");
-        setLoggetInnBruker(null);
-      } else {
-        console.error("Feil ved utlogging");
-      }
-    } catch (error) {
-      console.error("Feil ved utlogging:", error);
-    }
-  };
-
+const Header = ({ loggetInnBruker, loggUtBruker }) => {
   return (
-     <div>
-     
+    <div>
       <header className="flex items-center justify-between p-4 bg-white border-b border-gray-300">
-        
-       
         <div className="flex items-center space-x-3">
           <img
             className="w-10 h-10 rounded-full"
@@ -40,7 +19,6 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
           <span className="text-xl font-bold">DiscGolf</span>
         </div>
 
-        
         <nav>
           <ul className="flex space-x-6">
             <li><Link to="/Hjem" className="text-black font-bold hover:text-gray-600">Hjem</Link></li>
@@ -53,11 +31,11 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
             {loggetInnBruker ? (
               <>
                 <li className="text-black font-bold hover:text-gray-600">
-                <Link to="/medlemskap">{capitalize(loggetInnBruker.bruker)}</Link>
+                  <Link to="/medlemskap">{storBokstav(loggetInnBruker.bruker)}</Link>
                 </li>
                 <li className="flex items-center">
                   <button 
-                    onClick={handleLogout} 
+                    onClick={loggUtBruker} 
                     className="text-black font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg"
                   >
                     Logg ut
@@ -73,7 +51,6 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
           </ul>
         </nav>
       </header>
-
       <div className="w-full max-h-[600px] overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
