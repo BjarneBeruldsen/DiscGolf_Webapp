@@ -4,5 +4,6 @@ Arbeidskrav 3: [https://uisn-my.sharepoint.com/:w:/g/personal/263364_usn_no/EcNi
 
 Nettside: https://disk-applikasjon-39f504b7af19.herokuapp.com/
 
+NB! Sjekk issues
 
 Mer info om applikasjonen kommer
