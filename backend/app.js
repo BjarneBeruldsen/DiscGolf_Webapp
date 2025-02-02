@@ -35,7 +35,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
     secure: true,                        //Settes til true når du pusher til github og false ved testing lokalt
-    sameSite: "lax",                   //Settes til none når secure er true og MÅ settes til "lax" ved testing lokalt
+    sameSite: "none",                   //Settes til none når secure er true og MÅ settes til "lax" ved testing lokalt
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24,
 }
