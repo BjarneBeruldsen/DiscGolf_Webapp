@@ -13,7 +13,7 @@ require('dotenv').config();
 const app = express();
 
 app.use(cors({
-    origin: ["http://localhost:3000", "https://disk-applikasjon-39f504b7af19.herokuapp.com"],      //Er fortsatt usikker på dette, men lokal testing funker ikke uten å sette localhost(frontend) som origin, gjelder da innlogging/utlogging og registrering
+    origin: process.env.NODE_ENV === "production" ? "https://disk-applikasjon-39f504b7af19.herokuapp.com" : "http://localhost:3000",
     credentials: true
 }));
 
@@ -34,14 +34,14 @@ app.use(session({
     resave: true,
     saveUninitialized: false,
     cookie: {
-    secure: true,                        //Settes til true når du pusher til github og false ved testing lokalt
-    sameSite: "none",                   //Settes til none når secure er true og MÅ settes til "lax" ved testing lokalt
-    httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24,
+        cookie: {
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24,
+        }
 }
 }));
-app.use(passport.initialize());
-app.use(passport.session());
 
 //Oppkobling mot databasen 
 let db
@@ -49,6 +49,8 @@ kobleTilDB((err) => {
     if(!err) {
         db = getDb();
 
+app.use(passport.initialize());
+app.use(passport.session());
 //Konfigurasjon av Passport.js
 passport.use(
     new LocalStrategy({ usernameField: "bruker", passwordField: "passord" }, 
@@ -294,3 +296,6 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
 
+app.get("/debug-session", (req, res) => {
+    res.json({ session: req.session, user: req.user });
+});
