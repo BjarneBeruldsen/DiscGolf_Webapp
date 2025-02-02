@@ -13,7 +13,7 @@ require('dotenv').config();
 const app = express();
 
 app.use(cors({
-    origin: "https://disk-applikasjon-39f504b7af19.herokuapp.com", 
+    origin: ["https://disk-applikasjon-39f504b7af19.herokuapp.com", "http://localhost:3000"], 
     credentials: true
 }));
 
@@ -81,7 +81,7 @@ passport.deserializeUser(async (id, done) => {
     if (!ObjectId.isValid(id)) return done(new Error("Ugyldig ObjectId"));
 
     try {
-        const bruker = await db.collection("Brukere").findOne({ _id: new ObjectId(id) });     //Usikker på denne må undersøkes nærmere står at den er deprecated
+        const bruker = await db.collection("Brukere").findOne({ _id: new ObjectId(id) });     //Står at den er deprecated, men fungerer og ingenting annet fungerer som alternativ
         if (!bruker) return done(new Error("Bruker ikke funnet"));
         done(null, bruker);
     } catch (err) {
