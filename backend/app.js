@@ -26,17 +26,6 @@ app.use(express.json());
 // Legger serving fra statiske filer fra REACT applikasjonen
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
-// Deployment over
-
-// Håndter alle andre ruter med React Router
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
-});
-
-//Debugging
-app.get("/debug-session", (req, res) => {
-    res.json({ session: req.session, user: req.user });
-});
 
 // Konfigurasjon av session
 app.use(session({
@@ -325,3 +314,16 @@ app.delete('/tommeTestdata', (req, res) => {
         });
 });
 
+// Håndter alle andre ruter med React Router
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+});
+
+//Debugging
+app.get("/debugging", (req, res) => {
+    res.json({
+        session: req.session,
+        user: req.user,
+        cookies: req.headers.cookie,
+    });
+});

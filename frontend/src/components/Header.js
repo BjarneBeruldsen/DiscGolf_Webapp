@@ -1,12 +1,20 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import loggUtBruker from "../sider/Utlogging";
 
 const storBokstav = (str) => {                                  //https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
   if (!str) return "";                                               
   return str.charAt(0).toUpperCase() + str.slice(1);             
 };
 
-const Header = ({ loggetInnBruker, loggUtBruker }) => {
+const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
+  const loggUt = async () => {
+      const utloggingVellykket = await loggUtBruker();
+      if (utloggingVellykket) {
+          setLoggetInnBruker(null); 
+      }
+  };
+
   return (
     <div>
       <header className="flex items-center justify-between p-4 bg-white border-b border-gray-300">
@@ -35,7 +43,7 @@ const Header = ({ loggetInnBruker, loggUtBruker }) => {
                 </li>
                 <li className="flex items-center">
                   <button 
-                    onClick={loggUtBruker} 
+                    onClick={loggUt} 
                     className="text-black font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg"
                   >
                     Logg ut
