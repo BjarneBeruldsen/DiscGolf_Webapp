@@ -264,7 +264,9 @@ app.post("/Innlogging", async (req, res, next) => {
 //Utlogging
 app.post("/Utlogging", async (req, res) => {
     try {
+        console.log("Utlogging forespørsel mottatt");
         if (!req.isAuthenticated()) {
+            console.log("Bruker ikke autentisert");
             return res.status(401).json({ error: "Ingen aktiv session" });
         }
 
@@ -279,6 +281,7 @@ app.post("/Utlogging", async (req, res) => {
                     return res.status(500).json({ error: "Feil ved sletting av session" });
                 }
                 res.clearCookie("connect.sid", { path: "/" });
+                console.log("Utlogging vellykket");
                 return res.status(200).json({ message: "Utlogging vellykket" });
             });
         });
@@ -291,9 +294,12 @@ app.post("/Utlogging", async (req, res) => {
 
 //Sjekk av session
 app.get("/sjekk-session", (req, res) => {
+    console.log("Sjekk session forespørsel mottatt");
     if (req.isAuthenticated()) {
+        console.log("Bruker er autentisert:", req.user);
         return res.status(200).json({ bruker: req.user });
-    } else {                                                                      //https://www.passportjs.org/concepts/authentication/sessions/
+    } else {
+        console.log("Ingen aktiv session");
         return res.status(401).json({ error: "Ingen aktiv session" });
     }
 });
