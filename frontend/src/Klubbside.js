@@ -47,7 +47,7 @@ const Klubbside = () => {
                 { error && <div>{ error }</div> }
                 { klubb && (
                     <article className="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
-                        <h2 className="text-3xl font-bold">{ klubb.klubbnavn }</h2>
+                        <h2 className="text-3xl font-bold">{ klubb.klubbnavn } sin klubbside</h2>
                         <p className="text-2xl font-bold">Kontaktinfo: { klubb.kontaktinfo }</p>
                         <h3 className="text-2xl font-bold mt-4">Nyheter: </h3>
                         { klubb.nyheter && klubb.nyheter.map((nyhet, index) => (
