@@ -15,8 +15,8 @@ const app = express();
 app.use(cors({
     origin: ["https://disk-applikasjon-39f504b7af19.herokuapp.com", "http://localhost:3000"], 
     credentials: true,
-    //methods: ["GET", "POST", "PATCH", "DELETE"],                 
-    //allowedHeaders: ["Content-Type", "Authorization"],
+    //methods: ["GET", "POST", "PATCH", "DELETE"],                 //Ikke nødvendig for nå
+    //allowedHeaders: ["Content-Type", "Authorization"],          //Ikke nødvendig for nå
 }));
 
 app.use(express.json());
@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, '../frontend/build')));
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: true,
-    saveUninitialized: true,
+    saveUninitialized: true,              //Disse alle må være true 
     proxy: true,
     cookie: {
         secure: true,                  //Må være true for at cookies skal fungere på nettsiden og false dersom siden skal funke lokalt

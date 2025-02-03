@@ -5,7 +5,7 @@ const Registrering = () => {
     const [passord, setPassord] = useState("");
     const [melding, setMelding] = useState("");
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event) => {             //https://react-hook-form.com/docs/useform/handlesubmit
         event.preventDefault();
         setMelding("");
 
