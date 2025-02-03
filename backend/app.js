@@ -19,16 +19,7 @@ app.use(cors({
 
 app.use(express.json());
 
-//Deployment under
-
-//legger serving fra statiske filer fra REACT applikasjonen 
-
-app.use(express.static(path.join(__dirname, '../frontend/build')));
-
-
-//Deployment over 
-
-//Konfig av session
+// Konfigurasjon av session
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -91,7 +82,7 @@ passport.deserializeUser(async (id, done) => {
 
 //Start av server
 app.listen(PORT, () => {
-    console.log('Server kjører på port 8000');
+    console.log(`Server kjører på port ${PORT}`);
 });
     } else {
         console.error("Feil ved oppkobling til databasen", err);
@@ -315,11 +306,16 @@ app.delete('/tommeTestdata', (req, res) => {
         });
 });
 
+// Deployment under
+// Legger serving fra statiske filer fra REACT applikasjonen
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+// Deployment over
+
+// Håndter alle andre ruter med React Router
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
-
-
 
 //Debugging
 app.get("/debug-session", (req, res) => {
