@@ -13,7 +13,7 @@ require('dotenv').config();
 const app = express();
 
 app.use(cors({
-    origin: ["https://disk-applikasjon-39f504b7af19.herokuapp.com", "http://localhost:3000"], 
+    origin: ["https://disk-applikasjon-39f504b7af19.herokuapp.com/", "http://localhost:3000"], 
     credentials: true
 }));
 
