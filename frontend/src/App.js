@@ -23,6 +23,7 @@ function App() {
       const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Utlogging`, {
         method: "POST",
         credentials: "include",
+        headers: { "Content-Type": "application/json" },
       });
 
       if (respons.ok) {

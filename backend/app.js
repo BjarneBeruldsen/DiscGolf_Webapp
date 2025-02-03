@@ -13,22 +13,15 @@ require('dotenv').config();
 const app = express();
 
 app.use(cors({
-    origin: ["https://disk-applikasjon-39f504b7af19.herokuapp.com/", "http://localhost:3000"], 
-    credentials: true
+    origin: ["https://disk-applikasjon-39f504b7af19.herokuapp.com", "http://localhost:3000"], 
+    credentials: true,
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
 app.use(express.json());
 
-//Deployment under
-
-//legger serving fra statiske filer fra REACT applikasjonen 
-
-app.use(express.static(path.join(__dirname, '../frontend/build')));
-
-
-//Deployment over 
-
-//Konfig av session
+// Konfigurasjon av session
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -91,7 +84,7 @@ passport.deserializeUser(async (id, done) => {
 
 //Start av server
 app.listen(PORT, () => {
-    console.log('Server kjører på port 8000');
+    console.log(`Server kjører på port ${PORT}`);
 });
     } else {
         console.error("Feil ved oppkobling til databasen", err);
@@ -264,7 +257,9 @@ app.post("/Innlogging", async (req, res, next) => {
 //Utlogging
 app.post("/Utlogging", async (req, res) => {
     try {
+        console.log("Utlogging forespørsel mottatt");
         if (!req.isAuthenticated()) {
+            console.log("Bruker ikke autentisert");
             return res.status(401).json({ error: "Ingen aktiv session" });
         }
 
@@ -279,6 +274,7 @@ app.post("/Utlogging", async (req, res) => {
                     return res.status(500).json({ error: "Feil ved sletting av session" });
                 }
                 res.clearCookie("connect.sid", { path: "/" });
+                console.log("Utlogging vellykket");
                 return res.status(200).json({ message: "Utlogging vellykket" });
             });
         });
@@ -291,9 +287,12 @@ app.post("/Utlogging", async (req, res) => {
 
 //Sjekk av session
 app.get("/sjekk-session", (req, res) => {
+    console.log("Sjekk session forespørsel mottatt");
     if (req.isAuthenticated()) {
+        console.log("Bruker er autentisert:", req.user);
         return res.status(200).json({ bruker: req.user });
-    } else {                                                                      //https://www.passportjs.org/concepts/authentication/sessions/
+    } else {
+        console.log("Ingen aktiv session");
         return res.status(401).json({ error: "Ingen aktiv session" });
     }
 });
@@ -309,11 +308,16 @@ app.delete('/tommeTestdata', (req, res) => {
         });
 });
 
+// Deployment under
+// Legger serving fra statiske filer fra REACT applikasjonen
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+// Deployment over
+
+// Håndter alle andre ruter med React Router
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
-
-
 
 //Debugging
 app.get("/debug-session", (req, res) => {
