@@ -30,12 +30,12 @@ app.use(express.static(path.join(__dirname, '../frontend/build')));
 // Konfigurasjon av session
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
+    proxy: true,
     cookie: {
         secure: true, 
         sameSite: "none",
-        httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24, // 1 dag
     }
 }));

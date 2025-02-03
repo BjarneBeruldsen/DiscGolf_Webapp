@@ -20,3 +20,4 @@ const loggUtBruker = async () => {
 };
 
 export default loggUtBruker;
+
