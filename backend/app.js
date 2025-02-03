@@ -14,9 +14,7 @@ const app = express();
 
 app.use(cors({
     origin: ["https://disk-applikasjon-39f504b7af19.herokuapp.com", "http://localhost:3000"], 
-    credentials: true,
-    methods: ["GET", "POST", "PATCH", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
 }));
 
 app.use(express.json());
