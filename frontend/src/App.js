@@ -41,6 +41,7 @@ function App() {
         const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/sjekk-session`, {
           method: "GET",
           credentials: "include",
+          headers: { "Content-Type": "application/json" },
         });
 
         const data = await respons.json();
