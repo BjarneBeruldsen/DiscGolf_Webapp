@@ -35,8 +35,8 @@ app.use(session({
     proxy: true,
     cookie: {
         secure: true,                    //Må være true for at cookies skal fungere på nettsiden og false dersom siden skal funke lokalt
-        httpOnly: true,              
-        sameSite: "strict",             //Må være none for at cookies skal fungere på nettsiden, sett den til "lax" for at siden skal funke lokalt
+        httpOnly: true,                  //Må være false når man tester lokalt og true ellers
+        sameSite: "strict",             //Må være strict for at cookies skal fungere på nettsiden, sett den til "lax" for at siden skal funke lokalt
         maxAge: 1000 * 60 * 60 * 24, // 1 dag
     }
 }));
