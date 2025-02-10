@@ -22,6 +22,7 @@ app.use(cors({
     credentials: true,
 }));
 
+//Default Helmet konfigurasjon med litt konfigurasjoner for at bilder vi bruker skal lastes opp riktig og fremtidig ressurser https://helmetjs.github.io/ & https://github.com/helmetjs/helmet
 app.use(
     helmet({
       contentSecurityPolicy: {
@@ -33,12 +34,7 @@ app.use(
     })
   );
 
-
-                                                    //False pga eksterne bilder ikke funker med true
-//app.use(helmet({ contentSecurityPolicy: false })); // Default Helmet konfigurasjon https://helmetjs.github.io/ & https://github.com/helmetjs/helmet
-
-app.use(express.json());
-
+  app.use(express.json());
 
 //Deployment under
 //Legger serving fra statiske filer fra REACT applikasjonen
