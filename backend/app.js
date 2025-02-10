@@ -35,8 +35,8 @@ app.use(express.static(path.join(__dirname, '../frontend/build')));
 //Konfigurasjon av session
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,              
+    resave: true,
+    saveUninitialized: true,              
     proxy: true,                          //Må være true for at Heroku skal funke
     cookie: {
         secure: true,                    //Må være true for at cookies skal fungere på nettsiden og false dersom siden skal funke lokalt
@@ -94,8 +94,8 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
-
-//Må testes mer
+//----------------------------------------------------------------------------------------------------------------------------
+//Må testes mer!
 //Dette fungerer lokalt
 //Default Helmet konfig lagt til cross originpolicy , https://expressjs.com/en/advanced/best-practice-security.html & https://github.com/helmetjs/helmet
 /*
@@ -124,7 +124,7 @@ app.use(
     })
 );
 */
-
+//----------------------------------------------------------------------------------------------------------------------------
 
 //Start av server
 app.listen(PORT, () => {
