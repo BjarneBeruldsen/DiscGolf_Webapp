@@ -20,9 +20,9 @@ app.disable('x-powered-by'); //Disabled for sikkerhet da man kan se hvilken tekn
 app.use(cors({
     origin: ["https://disk-applikasjon-39f504b7af19.herokuapp.com", "http://localhost:3000"], 
     credentials: true,
-    //methods: ["GET", "POST", "PATCH", "DELETE"],                 //Ikke nødvendig for nå
-    //allowedHeaders: ["Content-Type", "Authorization"],          //Ikke nødvendig for nå
 }));
+
+app.use(helmet()); // Default Helmet konfigurasjon https://helmetjs.github.io/ & https://github.com/helmetjs/helmet
 
 app.use(express.json());
 
@@ -93,40 +93,6 @@ passport.deserializeUser(async (id, done) => {
         done(err);
     }
 });
-
-app.use(helmet()); // Default Helmet konfigurasjon https://helmetjs.github.io/ & https://github.com/helmetjs/helmet
-
-//----------------------------------------------------------------------------------------------------------------------------
-//Må testes mer!
-//Dette fungerer lokalt
-//Default Helmet konfig lagt til cross originpolicy , https://expressjs.com/en/advanced/best-practice-security.html & https://github.com/helmetjs/helmet
-
-/*
-app.use(
-    helmet({
-        crossOriginEmbedderPolicy: true, //Blokkerer upålitelige ressurser fra å kjøre kan endres til false eller slettes dersom det skaper problemer
-        crossOriginResourcePolicy: { policy: "same-origin" }, //Tillater bare ressurser fra samme domene kan endres til cross-origin hvis det er nødvendig
-    })
-);
-*/
-
-/*
-
-//Copilot foreslo å legge til disse istedenfor default helmet over
-//Dette funker lokalt også
-app.use(
-    helmet({
-        contentSecurityPolicy: true, //Blokkerer eksterne skript hvis ikke tillatt eksplisitt
-        referrerPolicy: { policy: "strict-origin-when-cross-origin" }, //Begrenset referrer-informasjon
-        frameguard: { action: "sameorigin" }, //Forhindrer clickjacking
-        xContentTypeOptions: true, //Hindrer MIME-type sniffing                          
-        hsts: { maxAge: 31536000, includeSubDomains: true, preload: true }, //Tvinger HTTPS
-        crossOriginEmbedderPolicy: true, //Blokkerer upålitelige ressurser fra å kjøre i iframe
-        crossOriginResourcePolicy: { policy: "same-origin" }, //Tillater bare ressurser fra samme domene
-    })
-);
-*/
-//----------------------------------------------------------------------------------------------------------------------------
 
 //Start av server
 app.listen(PORT, () => {
