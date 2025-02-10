@@ -22,8 +22,20 @@ app.use(cors({
     credentials: true,
 }));
 
+app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"], //Tillater kun egne ressurser som standard
+          imgSrc: ["'self'", "data:", "https://images.unsplash.com"], //Tillater lokale og Unsplash-bilder
+        },
+      },
+    })
+  );
+
+
                                                     //False pga eksterne bilder ikke funker med true
-app.use(helmet({ contentSecurityPolicy: false })); // Default Helmet konfigurasjon https://helmetjs.github.io/ & https://github.com/helmetjs/helmet
+//app.use(helmet({ contentSecurityPolicy: false })); // Default Helmet konfigurasjon https://helmetjs.github.io/ & https://github.com/helmetjs/helmet
 
 app.use(express.json());
 
