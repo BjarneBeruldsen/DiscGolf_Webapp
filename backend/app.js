@@ -94,18 +94,21 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
+app.use(helmet()); // Default Helmet konfigurasjon https://helmetjs.github.io/ & https://github.com/helmetjs/helmet
+
 //----------------------------------------------------------------------------------------------------------------------------
 //Må testes mer!
 //Dette fungerer lokalt
 //Default Helmet konfig lagt til cross originpolicy , https://expressjs.com/en/advanced/best-practice-security.html & https://github.com/helmetjs/helmet
 
+/*
 app.use(
     helmet({
         crossOriginEmbedderPolicy: true, //Blokkerer upålitelige ressurser fra å kjøre kan endres til false eller slettes dersom det skaper problemer
         crossOriginResourcePolicy: { policy: "same-origin" }, //Tillater bare ressurser fra samme domene kan endres til cross-origin hvis det er nødvendig
     })
 );
-
+*/
 
 /*
 
