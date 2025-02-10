@@ -22,7 +22,8 @@ app.use(cors({
     credentials: true,
 }));
 
-app.use(helmet()); // Default Helmet konfigurasjon https://helmetjs.github.io/ & https://github.com/helmetjs/helmet
+                                                    //False pga eksterne bilder ikke funker med true
+app.use(helmet({ contentSecurityPolicy: false })); // Default Helmet konfigurasjon https://helmetjs.github.io/ & https://github.com/helmetjs/helmet
 
 app.use(express.json());
 
