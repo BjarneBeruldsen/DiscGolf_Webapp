@@ -1,5 +1,8 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require("express-rate-limit");
+const { body, validationResult } = require('express-validator');
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
@@ -12,6 +15,8 @@ require('dotenv').config();
 
 const app = express();
 
+app.disable('x-powered-by'); //Disabled for sikkerhet da man kan se hvilken teknologi som brukes 
+
 app.use(cors({
     origin: ["https://disk-applikasjon-39f504b7af19.herokuapp.com", "http://localhost:3000"], 
     credentials: true,
@@ -22,22 +27,22 @@ app.use(cors({
 app.use(express.json());
 
 
-// Deployment under
-// Legger serving fra statiske filer fra REACT applikasjonen
+//Deployment under
+//Legger serving fra statiske filer fra REACT applikasjonen
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 
-// Konfigurasjon av session
+//Konfigurasjon av session
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    resave: true,
-    saveUninitialized: true,              //Disse alle må være true 
-    proxy: true,
+    resave: false,
+    saveUninitialized: false,              
+    proxy: true,                          //Må være true for at Heroku skal funke
     cookie: {
         secure: true,                    //Må være true for at cookies skal fungere på nettsiden og false dersom siden skal funke lokalt
         httpOnly: true,                  //Må være false når man tester lokalt og true ellers
         sameSite: "strict",             //Må være strict for at cookies skal fungere på nettsiden, sett den til "lax" for at siden skal funke lokalt
-        maxAge: 1000 * 60 * 60 * 24, // 1 dag
+        maxAge: 1000 * 60 * 60 * 24, //1 dag
     }
 }));
 
@@ -60,7 +65,7 @@ passport.use(
             if (!funnetBruker) {                                                                                                      
                 return done(null, false, { message: "Bruker ikke funnet" });
             }
-
+                                                                                            //https://www.passportjs.org/concepts/authentication/password/
             const passordSjekk = await bcrypt.compare(passord, funnetBruker.passord);
             if (!passordSjekk) {
                 return done(null, false, { message: "Feil passord eller brukernavn" });
@@ -88,6 +93,33 @@ passport.deserializeUser(async (id, done) => {
         done(err);
     }
 });
+
+//Må testes mer
+//Dette fungerer lokalt
+//Default Helmet konfig lagt til cross originpolicy , https://expressjs.com/en/advanced/best-practice-security.html & https://github.com/helmetjs/helmet
+app.use(
+    helmet({
+        crossOriginEmbedderPolicy: true, //Blokkerer upålitelige ressurser fra å kjøre kan endres til false eller slettes dersom det skaper problemer
+        crossOriginResourcePolicy: { policy: "same-origin" }, //Tillater bare ressurser fra samme domene kan endres til cross-origin hvis det er nødvendig
+    })
+);
+
+/*
+
+//Copilot foreslo å legge til disse istedenfor default helmet over
+//Begge funker lokalt
+app.use(
+    helmet({
+        contentSecurityPolicy: true, //Blokkerer eksterne skript hvis ikke tillatt eksplisitt
+        referrerPolicy: { policy: "strict-origin-when-cross-origin" }, //Begrenset referrer-informasjon
+        frameguard: { action: "sameorigin" }, //Forhindrer clickjacking
+        xContentTypeOptions: true, //Hindrer MIME-type sniffing                          
+        hsts: { maxAge: 31536000, includeSubDomains: true, preload: true }, //Tvinger HTTPS
+        crossOriginEmbedderPolicy: true, //Blokkerer upålitelige ressurser fra å kjøre i iframe
+        crossOriginResourcePolicy: { policy: "same-origin" }, //Tillater bare ressurser fra samme domene
+    })
+);
+*/
 
 //Start av server
 app.listen(PORT, () => {
@@ -164,7 +196,6 @@ app.delete('/klubber/:id', (req, res) => {
 app.patch('/klubber/:id', (req, res) => {
     const oppdatering = req.body
 
-
     if(ObjectId.isValid(req.params.id) === false) {
         return res.status(400).json({error: 'Ugyldig dokument-id'})
     }
@@ -200,34 +231,46 @@ app.post('/klubber/:id/nyheter', (req, res) => {
     }
 });
 
-//Validering av passord
-const passordRegex = /^(?=.*[A-Z])[A-Za-z\d\-.@$!%*?&]{8,}$/;
+//Registrering av bruker
+//Rate limit for å stoppe brute force angrep https://www.npmjs.com/package/express-rate-limit
+const registreringStopp = rateLimit({
+    windowMs: 60 * 60 * 1000, //1 time 
+    max: 10, //Maks 10 registreringsforsøk fra samme IP
+    message: { error: "For mange registreringsforsøk, prøv igjen senere" },
+});
+
+//Validering av registrering med express-validator: https://express-validator.github.io/docs/
+const registreringValidering = [
+    body('bruker')
+        .trim()
+        .isLength({ min: 3, max: 10 }).withMessage("Brukernavnet må være mellom 3 og 10 tegn.")
+        .isAlphanumeric().withMessage("Brukernavnet kan bare inneholde bokstaver og tall."),
+    body('passord')
+        .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.")
+        .matches(/[A-Z]/).withMessage("Passordet må inneholde minst én stor bokstav.")
+        //.matches(/[0-9]/).withMessage("Passordet må inneholde minst ett tall.") //Ikke gyldig med passord for admin/test for prosjektet
+        .matches(/[-.@$!%*?&]/).withMessage("Passordet må inneholde minst ett spesialtegn."),
+];
 
 //Rute for registrering av bruker
-app.post("/Registrering", async (req, res) => {
-    const { bruker, passord } = req.body;
+app.post("/Registrering", registreringValidering, registreringStopp, async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() }); 
+    }
 
-    if (!bruker || !passord) {
-        return res.status(400).json({ error: "Alle felt må fylles ut." });
-    }
-    if (bruker.length > 15) {
-        return res.status(400).json({ error: "Brukernavn kan ikke være lengre enn 20 tegn." });
-    }
-    if (!passordRegex.test(passord)) {
-        return res.status(400).json({ error: "Passordet må være minst 8 tegn, å ha minst en stor bokstav." });
-    }
+    const { bruker, passord } = req.body;
 
     try {
         const funnetBruker = await db.collection("Brukere").findOne({ bruker: bruker.trim().toLowerCase() });
         if (funnetBruker) {
             return res.status(400).json({ error: "Brukernavnet er allerede tatt" });
         }
-
-        // Kryptering av passord
+        //Kryptering av passord
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(passord, salt);
 
-        // Lagrer bruker i databasen
+        //Lagrer bruker i databasen
         const nyBruker = { bruker: bruker.trim().toLowerCase(), passord: hashedPassword };
         await db.collection("Brukere").insertOne(nyBruker);
 
@@ -237,26 +280,42 @@ app.post("/Registrering", async (req, res) => {
     }
 });
 
+//Innlogging av bruker
+//Rate limit for å stoppe brute force angrep https://www.npmjs.com/package/express-rate-limit
+const loggeInnStopp = rateLimit({
+    windowMs: 15 * 60 * 1000, //15 minutter
+    max: 10, //Maks 10 logg inn fra samme IP
+    message: { error: "For mange innloggingsforsøk, prøv igjen senere" },
+});
+
+//Validering av innlogging med express-validator
+const innloggingValidering = [
+    body('bruker')
+        .trim()
+        .notEmpty().withMessage("Brukernavn må fylles ut.")
+        .isAlphanumeric().withMessage("Brukernavnet kan bare inneholde bokstaver og tall."),
+    body('passord')
+        .notEmpty().withMessage("Passord må fylles ut.")
+];
+
 //Rute for innlogging
-app.post("/Innlogging", async (req, res, next) => {
-    const { bruker, passord } = req.body;
-   if (!bruker || !passord) {
-        return res.status(400).json({ error: "Alle felt må fylles ut" });
-       }
+app.post("/Innlogging", loggeInnStopp, innloggingValidering, (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() }); 
+    }
     passport.authenticate("local", (err, bruker, info) => {
-        if (err) {
-            return next(err);
-        }
-        if (!bruker) {
-            return res.status(400).json({ error: info.message }); 
-        }
+        if (err) return next(err);
+        if (!bruker) return res.status(400).json({ error: info.message });
         req.logIn(bruker, (err) => {
-            if (err) {
-                return next(err);                                                                                    
-            }
-//Fjerner passord fra brukerobjektet før det sendes til frontend
+            if (err) return next(err);
+            
+            //Fjerner passord før sending til frontend
             const brukerUtenPassord = { id: bruker._id, bruker: bruker.bruker };
-            return res.status(200).json({ message: "Innlogging vellykket", bruker: brukerUtenPassord });
+            return res.status(200).json({
+                message: "Innlogging vellykket",
+                bruker: brukerUtenPassord,
+            });
         });
     })(req, res, next);
 });
@@ -320,15 +379,3 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
 
-
-
-/*
-//Debugging dersom det trengs i fremtiden
-app.get("/debugging", (req, res) => {
-    res.json({
-        session: req.session,
-        user: req.user,
-        cookies: req.headers.cookie,
-    });
-});
-*/

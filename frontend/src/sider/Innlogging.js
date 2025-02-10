@@ -7,7 +7,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
   const [melding, setMelding] = useState("");
   const minne = useHistory(); 
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {                //https://react-hook-form.com/docs/useform/handlesubmit
     e.preventDefault();
     setMelding("");
 
@@ -25,19 +25,19 @@ const Innlogging = ({ setLoggetInnBruker }) => {
       });
 
       const data = await respons.json();
-      if (respons.ok) {
-        setMelding("Innlogging vellykket!");
-        setLoggetInnBruker(data.bruker);
-        localStorage.setItem("bruker", JSON.stringify(data.bruker));
 
-        minne.push("/Hjem"); 
+      if (!respons.ok) {
+          setMelding(data.errors ? data.errors.map(err => err.msg).join(", ") : data.error || "Innlogging feilet.");
       } else {
-        setMelding(data.error || "Innlogging feilet");
+          setMelding("Innlogging vellykket!");
+          setLoggetInnBruker(data.bruker);
+          localStorage.setItem("bruker", JSON.stringify(data.bruker));
+          minne.push("/Hjem"); 
       }
-    } catch {
+  } catch {
       setMelding("Feil ved innlogging");
-    }
-  };
+  }
+};
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">

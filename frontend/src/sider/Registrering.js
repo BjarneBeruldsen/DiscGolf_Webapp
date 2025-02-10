@@ -5,7 +5,7 @@ const Registrering = () => {
     const [passord, setPassord] = useState("");
     const [melding, setMelding] = useState("");
 
-    const handleSubmit = async (event) => {             //https://react-hook-form.com/docs/useform/handlesubmit
+    const handleSubmit = async (event) => {         //https://react-hook-form.com/docs/useform/handlesubmit
         event.preventDefault();
         setMelding("");
 
@@ -13,6 +13,7 @@ const Registrering = () => {
             setMelding("Brukernavn og passord må fylles ut");
             return;
         }
+
         try {
             const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Registrering`, {
                 method: "POST",
@@ -22,13 +23,12 @@ const Registrering = () => {
 
             const data = await respons.json();
 
-            if (respons.ok) {
-                setMelding("Registrering vellykket! Du kan nå logge inn.");
+            if (!respons.ok) {
+                setMelding(data.errors ? data.errors.map(err => err.msg).join(", ") : data.error || "Registrering feilet.");
             } else {
-                setMelding(data.error || "Registrering feilet.");
+                setMelding("Registrering vellykket! Du kan nå logge inn.");
             }
         } catch (error) {
-            console.error("Feil ved registrering:", error);
             setMelding("Noe gikk galt. Prøv igjen.");
         }
     };
@@ -39,7 +39,7 @@ const Registrering = () => {
                 onSubmit={handleSubmit} 
                 className="flex flex-col items-center bg-white p-8 rounded-lg shadow-md w-80"
             >
-                <h2 className="text-xl font-bold mb-4">Registrering deg som bruker!</h2>
+                <h2 className="text-xl font-bold mb-4">Registrer deg som bruker!</h2>
 
                 <input
                     type="text"
