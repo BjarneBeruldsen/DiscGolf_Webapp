@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-//const helmet = require('helmet');
+const helmet = require('helmet');
 const rateLimit = require("express-rate-limit");
 const { body, validationResult } = require('express-validator');
 const session = require('express-session');
@@ -35,8 +35,8 @@ app.use(express.static(path.join(__dirname, '../frontend/build')));
 //Konfigurasjon av session
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    resave: true,
-    saveUninitialized: true,              
+    resave: false,
+    saveUninitialized: false,              
     proxy: true,                          //Må være true for at Heroku skal funke
     cookie: {
         secure: true,                    //Må være true for at cookies skal fungere på nettsiden og false dersom siden skal funke lokalt
@@ -98,7 +98,7 @@ passport.deserializeUser(async (id, done) => {
 //Må testes mer!
 //Dette fungerer lokalt
 //Default Helmet konfig lagt til cross originpolicy , https://expressjs.com/en/advanced/best-practice-security.html & https://github.com/helmetjs/helmet
-/*
+
 app.use(
     helmet({
         crossOriginEmbedderPolicy: true, //Blokkerer upålitelige ressurser fra å kjøre kan endres til false eller slettes dersom det skaper problemer
@@ -106,7 +106,6 @@ app.use(
     })
 );
 
-*/
 
 /*
 
