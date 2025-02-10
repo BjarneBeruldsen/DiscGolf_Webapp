@@ -94,20 +94,24 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
+
 //Må testes mer
 //Dette fungerer lokalt
 //Default Helmet konfig lagt til cross originpolicy , https://expressjs.com/en/advanced/best-practice-security.html & https://github.com/helmetjs/helmet
+/*
 app.use(
     helmet({
-        crossOriginEmbedderPolicy: false, //Blokkerer upålitelige ressurser fra å kjøre kan endres til false eller slettes dersom det skaper problemer
-        crossOriginResourcePolicy: { policy: "cross-origin" }, //Tillater bare ressurser fra samme domene kan endres til cross-origin hvis det er nødvendig
+        crossOriginEmbedderPolicy: true, //Blokkerer upålitelige ressurser fra å kjøre kan endres til false eller slettes dersom det skaper problemer
+        crossOriginResourcePolicy: { policy: "same-origin" }, //Tillater bare ressurser fra samme domene kan endres til cross-origin hvis det er nødvendig
     })
 );
+
+*/
 
 /*
 
 //Copilot foreslo å legge til disse istedenfor default helmet over
-//Begge funker lokalt
+//Dette funker lokalt også
 app.use(
     helmet({
         contentSecurityPolicy: true, //Blokkerer eksterne skript hvis ikke tillatt eksplisitt
@@ -120,6 +124,7 @@ app.use(
     })
 );
 */
+
 
 //Start av server
 app.listen(PORT, () => {
