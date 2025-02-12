@@ -24,7 +24,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
             src="/DiscgolfLogo.png"
             alt="DiscGolf logo"
           />
-          <span className="text-xl font-bold">DiscGolf</span>
+          <Link to= "/Hjem" className="text-xl font-bold">DiscGolf</Link>
         </div>
 
         <nav>
