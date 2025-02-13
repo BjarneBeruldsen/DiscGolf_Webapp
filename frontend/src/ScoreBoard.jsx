@@ -10,7 +10,7 @@ const ScoreBoard = () => {
 ,    ]);
 
     useEffect(() => {
-        setPoeng(par);
+        setPoeng(poeng-par);
     }, [par]);
 
     const oppdaterpoeng = (id, endring) => {
