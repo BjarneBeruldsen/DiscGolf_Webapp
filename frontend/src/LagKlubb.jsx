@@ -1,6 +1,7 @@
 import { useState } from 'react';   
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { sjekkKlubbnavn, sjekkKontaktinfo } from './validation';
 
 const LagKlubb = () => {
     const [klubbnavn, setKlubbnavn] = useState('');
@@ -8,9 +9,19 @@ const LagKlubb = () => {
     const [laster, setLaster] = useState(false);
     const [feil, setFeil] = useState(null);
     const minne = useHistory();
+    const [errorMelding, setErrorMelding] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault(); 
+
+        try {
+        sjekkKlubbnavn(klubbnavn);
+        sjekkKontaktinfo(kontaktinfo);
+        } catch(error) {
+            setErrorMelding(error.message);
+            return;
+        }
+
         const klubb = { klubbnavn, kontaktinfo }; 
 
         setLaster(true); 
@@ -36,8 +47,10 @@ const LagKlubb = () => {
         .catch(error => {
             console.error('Feil ved lagring av klubb:', error);
             setLaster(false); 
+            setErrorMelding(error.message);
         });
     }
+
 
     return (
         <div className="lag bg-gray-200 p-4 flex justify-center">
@@ -55,20 +68,22 @@ const LagKlubb = () => {
                                 required
                                 value={klubbnavn}
                                 onChange={(e) => setKlubbnavn(e.target.value)}
+                                setErrorMelding={""}
                                 className="w-full border border-gray-600 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:border-blue-500"
                             />
                         </div>
                         <label className="block text-sm font-medium mb-2">
-                            Klubbmail:
+                            Mailadresse:
                         </label>
                         <div className="mt-2 mb-4">
                             <input 
-                                type="text" 
+                                type="email" 
                                 required
                                 value={kontaktinfo}
                                 onChange={(e) => setKontaktinfo(e.target.value)}
                                 className="w-full border border-gray-600 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:border-blue-500"
                             />
+                            <span>{errorMelding}</span>
                         </div>
                         {feil && (
                             <div className="mt-4 mb-4 text-red-500">
