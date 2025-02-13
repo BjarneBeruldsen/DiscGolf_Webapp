@@ -35,6 +35,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
             <li><Link to="#" className="text-black font-bold hover:text-gray-600">Regler/Tips</Link></li>
             <li><Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600">Klubber</Link></li>
             <li><Link to="/nyheter" className="text-black font-bold hover:text-gray-600">Nyheter</Link></li>
+            <li><Link to="/ScoreBoard" className="text-black font-bold hover:text-gray-600">ScoreBoard</Link></li>
 
             {loggetInnBruker ? (
               <>
