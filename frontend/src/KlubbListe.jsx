@@ -6,7 +6,7 @@ const KlubbListe = (props) => {
 
     return ( 
         <div className="klubbliste innhold bg-gray-200 py-4 flex flex-col items-center">
-            <h2>Klubber</h2>
+            <h2>Klubbliste</h2>
             {klubber.map((klubb) => (
                 <div className="klubbVisning bg-gray-500 mb-4 p-4 rounded-lg shadow max-w-md w-full text-white" key={klubb._id}>
                  <h2 className="text-xl font-bold">{klubb.klubbnavn}</h2>
