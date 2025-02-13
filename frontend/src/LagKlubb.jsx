@@ -7,6 +7,7 @@ const LagKlubb = () => {
     const [kontaktinfo, setKontaktinfo] = useState('');
     const [laster, setLaster] = useState(false);
     const minne = useHistory();
+    const [errorMelding, setErrorMelding] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault(); 
@@ -21,6 +22,7 @@ const LagKlubb = () => {
         })
         .then(res => res.json())
         .then(data => {
+            sjekkInput(klubbnavn, kontaktinfo);
             console.log('Ny klubb lagt til', data);
             setLaster(false);
             alert('Ny klubb lagt til');
@@ -30,6 +32,16 @@ const LagKlubb = () => {
             console.error('Feil ved lagring av klubb:', error);
             setLaster(false); 
         });
+    }
+
+    //metode som sjekker om input er gyldig
+    const sjekkInput = (klubbnavn, kontaktinfo) => { 
+        if(klubbnavn.length < 3 || klubbnavn.length > 30) {
+            throw new Error('Klubbnavn må være mellom 3 og 30 tegn');
+        }
+        if(kontaktinfo.length < 8 || kontaktinfo.length > 30) {
+            throw new Error('Kontaktinfo må være mellom 3 og 30 tegn');
+        }
     }
 
     return (
@@ -48,6 +60,7 @@ const LagKlubb = () => {
                                 required
                                 value={klubbnavn}
                                 onChange={(e) => setKlubbnavn(e.target.value)}
+                                setErrorMelding={""}
                                 className="w-full border border-gray-600 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:border-blue-500"
                             />
                         </div>
@@ -56,12 +69,13 @@ const LagKlubb = () => {
                         </label>
                         <div className="mt-2 mb-4">
                             <input 
-                                type="text" 
+                                type="email" 
                                 required
                                 value={kontaktinfo}
                                 onChange={(e) => setKontaktinfo(e.target.value)}
                                 className="w-full border border-gray-600 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:border-blue-500"
                             />
+                            <span>{errorMelding}</span>
                         </div>
                         <div className="mt-4">
                             {!laster && <button type="submit" className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white">Legg til klubb</button>}
