@@ -113,20 +113,38 @@ app.listen(PORT, () => {
 });
 
 //Ulike ruter 
-app.get('/klubber', (req, res) => {
-    let klubber = []
+app.post('/klubber', [
+    body('klubbnavn')
+        .trim()
+        .isAlpha('nb-NO', { ignore: ' ' }).withMessage("Klubbnavnet kan bare inneholde bokstaver.")
+        .isLength({ max: 30 }).withMessage("Klubbnavnet kan ikke være lengre enn 20 tegn.")
+        .notEmpty().withMessage("Klubbnavn må fylles ut.")
+        .custom(async (value) => {
+            const klubb = await db.collection('Klubb').findOne({ klubbnavn: value });
+            if (klubb) {
+                throw new Error('Klubbnavnet er allerede tatt');
+            }
+            return true;
+        }),
+    body('kontaktinfo')
+        .trim()
+        .isLength({ max: 30 }).withMessage("Kontaktinfo kan ikke være lengre enn 30 tegn.")
+        .notEmpty().withMessage("Kontaktinfo må fylles ut.")
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
 
-    db.collection('Klubb')
-    .find()
-    .forEach(klubb => klubber.push(klubb))
-    .then(() => {
-        res.status(200).json(klubber)
-    })
-    .catch(() => {
-        res.status(500).json({error: 'Feil ved henting av klubber'})
-    })
+    const klubb = req.body;
 
-})
+    try {
+        const result = await db.collection('Klubb').insertOne(klubb);
+        res.status(201).json(result);
+    } catch (err) {
+        res.status(500).json({ error: 'Feil ved lagring av klubb' });
+    }
+});
 
 app.get('/klubber/:id', (req, res) => {
 
@@ -144,6 +162,8 @@ app.get('/klubber/:id', (req, res) => {
         })
     }
 })
+
+
 
 app.post('/klubber', (req, res) => {
     const klubb = req.body
