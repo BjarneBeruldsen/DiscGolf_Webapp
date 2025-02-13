@@ -1,14 +1,25 @@
 import { useParams, useHistory } from 'react-router-dom';
 import UseFetch from './UseFetch';
 import { useState } from 'react';
+import { sjekkKlubbnavn } from './validation';
 
 const Klubbside = () => {
     const { id } = useParams(); // Henter id fra URL-parametrene
     const { data: klubb, laster, error } = UseFetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}`);
     const [nyttNavn, setNyttNavn] = useState('');
     const history = useHistory();
+    const [errorMelding, setErrorMelding] = useState('');
 
     const handleUpdate = () => {
+        setErrorMelding('');
+        try {
+            sjekkKlubbnavn(nyttNavn);
+        }
+        catch(error) {
+            setErrorMelding(error.message);
+            return;
+        }
+
         fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}`, {
             method: 'PATCH',
             headers: { "Content-Type": "application/json" },
@@ -64,6 +75,7 @@ const Klubbside = () => {
                                 onChange={(e) => setNyttNavn(e.target.value)} 
                                 className="w-full border border-gray-600 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:border-blue-500"
                             />
+                            <span className='text-red-500'>{errorMelding}</span>
                             <button onClick={handleUpdate} className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white mt-2">Oppdater klubbnavn</button>
                             <button onClick={handleDelete} className="w-full flex justify-center py-4 bg-red-500 rounded-lg text-sm text-white mt-2">Slett klubb</button>
                         </div>

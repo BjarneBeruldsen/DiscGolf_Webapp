@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { sjekkNyhetTittel, sjekkNyhet } from './validation';
 
 
 const LagKlubbside = () => {
@@ -11,7 +12,7 @@ const LagKlubbside = () => {
     const [laster, setLaster] = useState(false);
     const minne = useHistory();
     const [visNyhetForm, setVisNyhetForm] = useState(false);
-    
+    const [errorMelding, setErrorMelding] = useState('');    
 
     useEffect(() => {
         fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}`)
@@ -28,6 +29,17 @@ const LagKlubbside = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        try {
+            sjekkNyhetTittel(nyhetTittel);
+            sjekkNyhet(nyhet);
+        }
+        catch(error) {
+            setErrorMelding(error.message);
+            setLaster(false);
+            return;
+        }
+
         const nyNyhet = { nyhetTittel, nyhet };
 
         fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}/nyheter`, {
@@ -108,6 +120,7 @@ const LagKlubbside = () => {
                                            px-4 py-2 focus:outline-none focus:border-blue-500"
                             />
                             </div>
+                            <span className='text-red-500'>{ errorMelding }</span>
                             <div className="mt-4">
                             {!laster && <button type="submit" className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white">Legg til nyhet</button>}
                             {laster && <button disabled className="w-full flex justify-center py-4 bg-gray-300 rounded-lg text-sm text-white">Legg til nyhet..</button>}

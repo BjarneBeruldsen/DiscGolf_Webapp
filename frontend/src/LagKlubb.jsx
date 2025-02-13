@@ -7,12 +7,12 @@ const LagKlubb = () => {
     const [klubbnavn, setKlubbnavn] = useState('');
     const [kontaktinfo, setKontaktinfo] = useState('');
     const [laster, setLaster] = useState(false);
-    const [feil, setFeil] = useState(null);
     const minne = useHistory();
     const [errorMelding, setErrorMelding] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault(); 
+        setErrorMelding('');
 
         try {
         sjekkKlubbnavn(klubbnavn);
@@ -25,7 +25,6 @@ const LagKlubb = () => {
         const klubb = { klubbnavn, kontaktinfo }; 
 
         setLaster(true); 
-        setFeil(null);
 
         fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber`, {
             method: 'POST',
@@ -35,7 +34,6 @@ const LagKlubb = () => {
         .then(res => res.json())
         .then(data => {
             if (data.errors) {
-                setFeil(data.errors);
                 setLaster(false);
             } else {
                 console.log('Ny klubb lagt til', data);
@@ -83,15 +81,8 @@ const LagKlubb = () => {
                                 onChange={(e) => setKontaktinfo(e.target.value)}
                                 className="w-full border border-gray-600 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:border-blue-500"
                             />
-                            <span>{errorMelding}</span>
+                            <span className='text-red-500'>{errorMelding}</span>
                         </div>
-                        {feil && (
-                            <div className="mt-4 mb-4 text-red-500">
-                                {feil.map((feil, index) => (
-                                    <p key={index}>{feil.msg}</p>
-                                ))}
-                            </div>
-                        )}
                         <div className="mt-4">
                             {!laster && <button type="submit" className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white">Legg til klubb</button>}
                             {laster && <button disabled className="w-full flex justify-center py-4 bg-gray-400 rounded-lg text-sm text-white">Legger til klubb..</button>}
