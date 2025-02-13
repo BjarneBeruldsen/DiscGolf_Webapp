@@ -1,6 +1,7 @@
 import { useState } from 'react';   
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { sjekkKlubbnavn, sjekkKontaktinfo } from './validation';
 
 const LagKlubb = () => {
     const [klubbnavn, setKlubbnavn] = useState('');
@@ -11,6 +12,15 @@ const LagKlubb = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault(); 
+
+        try {
+        sjekkKlubbnavn(klubbnavn);
+        sjekkKontaktinfo(kontaktinfo);
+        } catch(error) {
+            setErrorMelding(error.message);
+            return;
+        }
+
         const klubb = { klubbnavn, kontaktinfo }; 
 
         setLaster(true); 
@@ -22,7 +32,6 @@ const LagKlubb = () => {
         })
         .then(res => res.json())
         .then(data => {
-            sjekkInput(klubbnavn, kontaktinfo);
             console.log('Ny klubb lagt til', data);
             setLaster(false);
             alert('Ny klubb lagt til');
@@ -31,18 +40,10 @@ const LagKlubb = () => {
         .catch(error => {
             console.error('Feil ved lagring av klubb:', error);
             setLaster(false); 
+            setErrorMelding(error.message);
         });
     }
 
-    //metode som sjekker om input er gyldig
-    const sjekkInput = (klubbnavn, kontaktinfo) => { 
-        if(klubbnavn.length < 3 || klubbnavn.length > 30) {
-            throw new Error('Klubbnavn må være mellom 3 og 30 tegn');
-        }
-        if(kontaktinfo.length < 8 || kontaktinfo.length > 30) {
-            throw new Error('Kontaktinfo må være mellom 3 og 30 tegn');
-        }
-    }
 
     return (
         <div className="lag bg-gray-200 p-4 flex justify-center">
@@ -65,7 +66,7 @@ const LagKlubb = () => {
                             />
                         </div>
                         <label className="block text-sm font-medium mb-2">
-                            Kontaktinfo:
+                            Mailadresse:
                         </label>
                         <div className="mt-2 mb-4">
                             <input 
