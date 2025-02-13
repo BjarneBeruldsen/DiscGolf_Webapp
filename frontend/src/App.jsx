@@ -15,6 +15,7 @@ import Medlemskap from './sider/Medlemskap';
 import Nyheter from './sider/Nyheter';
 import Baner from './sider/Baner';
 import loggUtBruker from "./sider/Utlogging";
+import ScoreBoard from './ScoreBoard';
 
 
 function App() {
@@ -100,6 +101,9 @@ function App() {
                 </Route>
                 <Route exact path="/">
                   <Hjem />
+                </Route>
+                <Route exact path="/scoreboard">
+                  <ScoreBoard />
                 </Route>
               </Switch>
           </div>
