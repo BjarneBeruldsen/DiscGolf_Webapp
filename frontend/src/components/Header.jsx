@@ -33,7 +33,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
           <Link to= "/Hjem" className="text-xl font-bold">DiscGolf</Link>
         </div>
 
-        <nav className="hidden lg:flex">
+        <nav className="hidden-lg">
           <ul className="flex space-x-6">
             <li><Link to="/Hjem" className="text-black font-bold hover:text-gray-600">Hjem</Link></li>
             <li><Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600">Ny klubbside</Link></li>
@@ -66,8 +66,8 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
           </ul>
         </nav>
 
-        <div className="">
-          <button onClick={toggleMeny} className="block lg:hidden text-black font-bold hover:bg-gray-200 border rounded-lg shadow">
+        <div className="block-sm-md">
+          <button onClick={toggleMeny} className="text-black font-bold hover:bg-gray-200 border rounded-lg shadow">
             Meny
           </button>
         </div>

@@ -1,23 +1,9 @@
 @import "tailwindcss";
 
-.klubbVisning { /* CSS'en i denne er generert av AI */
-    margin-bottom: 1rem; /* 16px */
-    margin-top: 1rem;
-    padding: 1rem; /* 16px */
-    border-radius: 0.5rem; /* 8px */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.hidden-lg {
+    @apply hidden lg:flex;
 }
 
-.form-container { /* CSS'en i denne er generert av AI */
-    margin-top: 2rem; /* 32px */
-    margin-bottom: 2rem; /* 32px */
-}
-
-.form-container input, /* CSS'en i denne er generert av AI */
-.form-container button {
-    margin-top: 0.5rem; /* 8px */
-}
-
-button { /* CSS'en i denne er generert av AI */
-    padding: 0.75rem 1.5rem; /* 12px 24px */
+.block-sm-md {
+    @apply block sm:block md:block lg:hidden;
 }
