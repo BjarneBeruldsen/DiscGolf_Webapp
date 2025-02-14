@@ -66,8 +66,8 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
           </ul>
         </nav>
 
-        <div className="sm:block md:block lg:hidden xl:hidden">
-          <button onClick={toggleMeny} className="text-black font-bold hover:bg-gray-200 border rounded-lg shadow">
+        <div className="">
+          <button onClick={toggleMeny} className="block lg:hidden text-black font-bold hover:bg-gray-200 border rounded-lg shadow">
             Meny
           </button>
         </div>
