@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 const ScoreBoard = () => {
     const [poeng, setPoeng] = useState(0);
     const [par, setPar] = useState(3);
+    const [total, setTotal] = useState(0);
     const [spillere, setSpillere] = useState([
-        { id: 1, navn: "B1", poeng: 0 },
-        { id: 2, navn: "B2", poeng: 0 },
-        { id: 3, navn: "B3", poeng: 0 }
+        { id: 1, navn: "B1", poeng: 0, total: 0 },
+        { id: 2, navn: "B2", poeng: 0, total: 0 },
+        { id: 3, navn: "B3", poeng: 0, total: 0 }
 ,    ]);
 
     useEffect(() => {
@@ -15,7 +16,7 @@ const ScoreBoard = () => {
 
     const oppdaterpoeng = (id, endring) => {
         setSpillere(spillere.map(spiller => 
-            spiller.id === id ? { ...spiller, poeng: spiller.poeng + endring } : spiller
+            spiller.id === id ? { ...spiller, poeng: spiller.poeng + endring, total: spiller.total + endring } : spiller
         ));
     };
 
@@ -30,8 +31,8 @@ const ScoreBoard = () => {
                 <div className="midtpanel font-bold">
                     {spillere.map(spiller => (
                         <div key={spiller.id} className="spiller flex justify-center items-center my-2 border-b">
-                            <p className="p-5">{spiller.navn}</p>
-                            <button onClick={() => oppdaterpoeng(spiller.id, -1)} className="rounded-full bg-gray-200 hover:bg-gray-500 shadow mx-2">-</button>
+                            <p className="p-5">{spiller.navn}({spiller.total})</p>
+                            <button onClick={() => oppdaterpoeng(spiller.id, -1)} className="rounded-full bg-gray-200 hover:bg-gray-500 shadow">-</button>
                             <p className="p-5">{spiller.poeng}</p>
                             <button onClick={() => oppdaterpoeng(spiller.id, 1)} className="rounded-full bg-gray-200 hover:bg-gray-500 shadow mx-2">+</button>
                         </div>
