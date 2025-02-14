@@ -85,7 +85,7 @@ const LagKlubbside = () => {
     
 
                     <h3 className="text-2xl font-bold">Legg til nyheter</h3>
-                    <button onClick={ behandleVisning  } className="bg-gray-500 rounded-xl mt-4 text-white">Legg til nyhet</button>
+                    <button onClick={ behandleVisning  } className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white mt-2">Legg til nyhet</button>
                     </div>
                     {visNyhetForm && (
                     <div className="nyhet-form mt-8 sm:mx-auto sm:w-full sm:max-w-md form-container">
@@ -122,7 +122,7 @@ const LagKlubbside = () => {
                             </div>
                             <span className='text-red-500'>{ errorMelding }</span>
                             <div className="mt-4">
-                            {!laster && <button type="submit" className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white">Legg til nyhet</button>}
+                            {!laster && <button type="submit" className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white mt-2">Legg til nyhet</button>}
                             {laster && <button disabled className="w-full flex justify-center py-4 bg-gray-300 rounded-lg text-sm text-white">Legg til nyhet..</button>}
                             </div>
                         </form>

@@ -21,6 +21,10 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
     setMenyÅpen(!menyÅpen);
   };
 
+  const lukkMeny = () => { 
+    setMenyÅpen(false);
+  };
+
   return (
     <div>
       <header className="flex items-center justify-between p-4 bg-white border-b border-gray-300">
@@ -35,13 +39,13 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
 
         <nav className="hidden-lg">
           <ul className="flex space-x-6">
-            <li><Link to="/Hjem" className="text-black font-bold hover:text-gray-600">Hjem</Link></li>
-            <li><Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600">Ny klubbside</Link></li>
-            <li><Link to="/Baner" className="text-black font-bold hover:text-gray-600">Baner</Link></li>
-            <li><Link to="#" className="text-black font-bold hover:text-gray-600">Regler/Tips</Link></li>
-            <li><Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600">Klubber</Link></li>
-            <li><Link to="/nyheter" className="text-black font-bold hover:text-gray-600">Nyheter</Link></li>
-            <li><Link to="/ScoreBoard" className="text-black font-bold hover:text-gray-600">ScoreBoard</Link></li>
+            <li><Link to="/Hjem" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Hjem</Link></li>
+            <li><Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Ny klubbside</Link></li>
+            <li><Link to="/Baner" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Baner</Link></li>
+            <li><Link to="#" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Regler/Tips</Link></li>
+            <li><Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Klubber</Link></li>
+            <li><Link to="/nyheter" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Nyheter</Link></li>
+            <li><Link to="/ScoreBoard" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>ScoreBoard</Link></li>
 
             {loggetInnBruker ? (
               <>
@@ -67,7 +71,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
         </nav>
 
         <div className="block-sm-md">
-          <button onClick={toggleMeny} className="text-black font-bold hover:bg-gray-200 border rounded-lg shadow">
+          <button onClick={toggleMeny} className="text-black font-bold hover:bg-gray-200 border rounded-lg shadow p-2">
             Meny
           </button>
         </div>
