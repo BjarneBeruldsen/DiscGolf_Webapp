@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import loggUtBruker from "../sider/Utlogging";
 
@@ -8,11 +8,17 @@ const storBokstav = (str) => {                                  //https://stacko
 };
 
 const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
+  const [menyÅpen, setMenyÅpen] = useState(false);
+
   const loggUt = async () => {
       const utloggingVellykket = await loggUtBruker();
       if (utloggingVellykket) {
           setLoggetInnBruker(null); 
       }
+  };
+
+  const toggleMeny = () => {
+    setMenyÅpen(!menyÅpen);
   };
 
   return (
@@ -27,7 +33,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
           <Link to= "/Hjem" className="text-xl font-bold">DiscGolf</Link>
         </div>
 
-        <nav>
+        <nav className="hidden lg:flex">
           <ul className="flex space-x-6">
             <li><Link to="/Hjem" className="text-black font-bold hover:text-gray-600">Hjem</Link></li>
             <li><Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600">Ny klubbside</Link></li>
@@ -59,7 +65,49 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
             )}
           </ul>
         </nav>
+
+        <div className="lg:hidden">
+          <button onClick={toggleMeny} className="text-black font-bold hover:bg-gray-200 border rounded-lg shadow">
+            Meny
+          </button>
+        </div>
       </header>
+
+      {menyÅpen && (
+        <nav className="lg:hidden bg-white border-t border-gray-300">
+          <ul className="flex flex-col space-y-4 p-4">
+            <li><Link to="/Hjem" className="text-black font-bold hover:text-gray-600">Hjem</Link></li>
+            <li><Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600">Ny klubbside</Link></li>
+            <li><Link to="/Baner" className="text-black font-bold hover:text-gray-600">Baner</Link></li>
+            <li><Link to="#" className="text-black font-bold hover:text-gray-600">Regler/Tips</Link></li>
+            <li><Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600">Klubber</Link></li>
+            <li><Link to="/nyheter" className="text-black font-bold hover:text-gray-600">Nyheter</Link></li>
+            <li><Link to="/ScoreBoard" className="text-black font-bold hover:text-gray-600">ScoreBoard</Link></li>
+
+            {loggetInnBruker ? (
+              <>
+                <li className="text-black font-bold hover:text-gray-600">
+                  <Link to="/medlemskap">{storBokstav(loggetInnBruker.bruker)}</Link>
+                </li>
+                <li className="flex items-center">
+                  <button 
+                    onClick={loggUt} 
+                    className="text-black font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg"
+                  >
+                    Logg ut
+                  </button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li><Link to="/Innlogging" className="text-black font-bold hover:text-gray-600">Logg inn</Link></li>
+                <li><Link to="/Registrering" className="text-black font-bold hover:text-gray-600">Bli medlem!</Link></li>
+              </>
+            )}
+          </ul>
+        </nav>
+      )}
+
       <div className="w-full max-h-[600px] overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"

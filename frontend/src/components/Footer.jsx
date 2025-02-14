@@ -4,16 +4,12 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <footer className="bg-gray-200 text-gray-700">
-      
-
       <div className="bg-white text-grey-200 py-6 text-center font-bold">
         <h1 className="text-2xl">Over 5,000 Baner</h1>
         <p className="text-lg">Registrer resultater og forbedre din spillopplevelse</p>
       </div>
 
-      <div className="grid grid-cols-3 gap-6 px-8 py-6">
-        
-
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-8 py-6">
         <div>
           <h1 className="text-xl font-bold">DiscGolf</h1>
           <p className="mt-2">
@@ -22,7 +18,6 @@ const Footer = () => {
           </p>
         </div>
 
-       
         <div className="text-center">
           <ul className="inline-block space-x-6 text-lg font-medium">
             <li className="inline"><Link to="/Hjem" className="hover:text-gray-800">Hjem</Link></li>
