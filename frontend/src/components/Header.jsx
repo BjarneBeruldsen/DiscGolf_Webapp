@@ -66,9 +66,11 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
           </ul>
         </nav>
 
-        <div className="lg:hidden">
+        <div className="block lg:hidden">
           <button onClick={toggleMeny} className="text-black font-bold hover:bg-gray-200 border rounded-lg shadow">
-            Meny
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
           </button>
         </div>
       </header>
