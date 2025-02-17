@@ -81,7 +81,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
         <nav className="lg:hidden bg-white border-t border-gray-300">
           <ul className="flex flex-col space-y-4 p-4">
             <li><Link to="/Hjem" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Hjem</Link></li>
-            <li><Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Ny klubbside</Link></li>
+            <li><Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Rediger klubbside</Link></li>
             <li><Link to="/Baner" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Baner</Link></li>
             <li><Link to="#" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Regler/Tips</Link></li>
             <li><Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Klubber</Link></li>
