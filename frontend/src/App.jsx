@@ -17,7 +17,6 @@ import Baner from './sider/Baner';
 import loggUtBruker from "./sider/Utlogging";
 import ScoreBoard from './ScoreBoard';
 
-
 function App() {
   const [loggetInnBruker, setLoggetInnBruker] = useState(null);
 
