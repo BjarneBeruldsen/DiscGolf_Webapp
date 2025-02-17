@@ -15,8 +15,8 @@ const LagKlubb = () => {
         setErrorMelding('');
 
         try {
-        sjekkKlubbnavn(klubbnavn);
-        sjekkKontaktinfo(kontaktinfo);
+            sjekkKlubbnavn(klubbnavn);
+            sjekkKontaktinfo(kontaktinfo);
         } catch(error) {
             setErrorMelding(error.message);
             return;

@@ -213,6 +213,26 @@ app.post('/klubber/:id/nyheter', (req, res) => {
     }
 });
 
+//rute som legger til bane til git klubb
+app.post('/klubber/:id/baner', (req, res) => {
+    if(ObjectId.isValid(req.params.id) === false) {
+        return res.status(400).json({error: 'Ugyldig dokument-id'});
+    } else {
+        const nyBane = req.body;
+        db.collection('Klubb')
+        .updateOne(
+            { _id: new ObjectId(req.params.id) },
+            { $push: { baner: nyBane } }
+        )
+        .then(result => {
+            res.status(201).json(result);
+        })
+        .catch(err => {
+            res.status(500).json({error: 'Feil ved lagring av bane'});
+        });
+    }
+});
+
 //Registrering av bruker
 //Rate limit for å stoppe brute force angrep https://www.npmjs.com/package/express-rate-limit
 const registreringStopp = rateLimit({

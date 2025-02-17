@@ -40,7 +40,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
         <nav className="hidden-lg">
           <ul className="flex space-x-6">
             <li><Link to="/Hjem" className="text-black font-bold hover:text-gray-600">Hjem</Link></li>
-            <li><Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600">Ny klubbside</Link></li>
+            <li><Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600">Rediger klubbside</Link></li>
             <li><Link to="/Baner" className="text-black font-bold hover:text-gray-600" >Baner</Link></li>
             <li><Link to="#" className="text-black font-bold hover:text-gray-600" >Regler/Tips</Link></li>
             <li><Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600" >Klubber</Link></li>
