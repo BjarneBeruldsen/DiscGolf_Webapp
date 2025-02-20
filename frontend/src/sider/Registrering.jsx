@@ -1,9 +1,12 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+
 
 const Registrering = () => {
     const [bruker, setBruker] = useState("");
     const [passord, setPassord] = useState("");
     const [melding, setMelding] = useState("");
+    const minne = useHistory(); 
 
     const handleSubmit = async (event) => {         //https://react-hook-form.com/docs/useform/handlesubmit
         event.preventDefault();
@@ -26,7 +29,10 @@ const Registrering = () => {
             if (!respons.ok) {
                 setMelding(data.errors ? data.errors.map(err => err.msg).join(", ") : data.error || "Registrering feilet.");
             } else {
-                setMelding("Registrering vellykket! Du kan nå logge inn.");
+                setMelding("Registrering vellykket! Du blir omdirigert til innlogging...");
+                setTimeout(() => {
+                minne.push("/Innlogging");
+                     }, 2000);
             }
         } catch (error) {
             setMelding("Noe gikk galt. Prøv igjen.");

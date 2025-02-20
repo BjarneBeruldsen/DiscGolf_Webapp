@@ -83,7 +83,11 @@ function App() {
                   <Nyheter />
                 </Route>
                 <Route exact path="/medlemskap">
-                  <Medlemskap />
+                {loggetInnBruker ? (
+                  <Medlemskap loggetInnBruker={loggetInnBruker} />
+                ) : (
+                  <Redirect to="/Innlogging" />
+                )}
                 </Route>
                 <Route exact path="/Innlogging">
                   {loggetInnBruker ? (

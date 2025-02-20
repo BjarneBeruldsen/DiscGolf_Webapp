@@ -2,26 +2,26 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import loggUtBruker from "../sider/Utlogging";
 
-const storBokstav = (str) => {                                  //https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
-  if (!str) return "";                                               
-  return str.charAt(0).toUpperCase() + str.slice(1);             
+const storBokstav = (str) => {
+  if (!str) return "";                                            //https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
+  return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
 const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
   const [menyÅpen, setMenyÅpen] = useState(false);
 
   const loggUt = async () => {
-      const utloggingVellykket = await loggUtBruker();
-      if (utloggingVellykket) {
-          setLoggetInnBruker(null); 
-      }
+    const utloggingVellykket = await loggUtBruker();
+    if (utloggingVellykket) {
+      setLoggetInnBruker(null);
+    }
   };
 
   const toggleMeny = () => {
     setMenyÅpen(!menyÅpen);
   };
 
-  const lukkMeny = () => { 
+  const lukkMeny = () => {
     setMenyÅpen(false);
   };
 
@@ -29,23 +29,18 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
     <div>
       <header className="flex items-center justify-between p-4 bg-white border-b border-gray-300">
         <div className="flex items-center space-x-3">
-          <img
-            className="w-10 h-10 rounded-full"
-            src="/DiscgolfLogo.png"
-            alt="DiscGolf logo"
-          />
-          <Link to= "/Hjem" className="text-xl font-bold">DiscGolf</Link>
+          <img className="w-10 h-10 rounded-full" src="/DiscgolfLogo.png" alt="DiscGolf logo" />
+          <Link to="/Hjem" className="text-xl font-bold">DiscGolf</Link>
         </div>
 
         <nav className="hidden-lg">
           <ul className="flex space-x-6">
             <li><Link to="/Hjem" className="text-black font-bold hover:text-gray-600">Hjem</Link></li>
             <li><Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600">Rediger klubbside</Link></li>
-            <li><Link to="/Baner" className="text-black font-bold hover:text-gray-600" >Baner</Link></li>
-            <li><Link to="#" className="text-black font-bold hover:text-gray-600" >Regler/Tips</Link></li>
-            <li><Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600" >Klubber</Link></li>
-            <li><Link to="/nyheter" className="text-black font-bold hover:text-gray-600" >Nyheter</Link></li>
-            <li><Link to="/ScoreBoard" className="text-black font-bold hover:text-gray-600" >ScoreBoard</Link></li>
+            <li><Link to="/Baner" className="text-black font-bold hover:text-gray-600">Baner</Link></li>
+            <li><Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600">Klubber</Link></li>
+            <li><Link to="/nyheter" className="text-black font-bold hover:text-gray-600">Nyheter</Link></li>
+            <li><Link to="/ScoreBoard" className="text-black font-bold hover:text-gray-600">ScoreBoard</Link></li>
 
             {loggetInnBruker ? (
               <>
@@ -53,10 +48,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
                   <Link to="/medlemskap">{storBokstav(loggetInnBruker.bruker)}</Link>
                 </li>
                 <li className="flex items-center">
-                  <button 
-                    onClick={loggUt} 
-                    className="text-black font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg"
-                  >
+                  <button onClick={loggUt} className="text-black font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg">
                     Logg ut
                   </button>
                 </li>
@@ -83,29 +75,35 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
             <li><Link to="/Hjem" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Hjem</Link></li>
             <li><Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Rediger klubbside</Link></li>
             <li><Link to="/Baner" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Baner</Link></li>
-            <li><Link to="#" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Regler/Tips</Link></li>
             <li><Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Klubber</Link></li>
             <li><Link to="/nyheter" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Nyheter</Link></li>
             <li><Link to="/ScoreBoard" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>ScoreBoard</Link></li>
 
             {loggetInnBruker ? (
               <>
-                <li className="text-black font-bold hover:text-gray-600">
-                  <Link to="/medlemskap">{storBokstav(loggetInnBruker.bruker)}</Link>
-                </li>
                 <li className="flex items-center">
-                  <button 
-                    onClick={loggUt} 
-                    className="text-black font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg"
-                  >
+                  <button onClick={loggUt} className="text-black font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg">
                     Logg ut
                   </button>
+                </li>
+                <li className="flex items-center">
+                  <Link to="/medlemskap" onClick={lukkMeny} className="text-red-600 font-bold hover:text-red-700 px-4 py-2 border border-red-500 rounded-lg">
+                    Slett Bruker
+                  </Link>
                 </li>
               </>
             ) : (
               <>
-                <li><Link to="/Innlogging" className="text-black font-bold hover:text-gray-600">Logg inn</Link></li>
-                <li><Link to="/Registrering" className="text-black font-bold hover:text-gray-600">Bli medlem!</Link></li>
+                <li>
+                  <Link to="/Innlogging" onClick={lukkMeny} className="text-black font-bold hover:text-gray-600">
+                    Logg inn
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/Registrering" onClick={lukkMeny} className="text-black font-bold hover:text-gray-600">
+                    Bli medlem!
+                  </Link>
+                </li>
               </>
             )}
           </ul>
@@ -116,7 +114,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
         <img
           src="https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="bilde"
-          className="w-full h-full object-cover" 
+          className="w-full h-full object-cover"
         />
       </div>
     </div>
