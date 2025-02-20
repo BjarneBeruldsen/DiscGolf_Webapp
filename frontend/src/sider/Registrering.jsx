@@ -32,7 +32,7 @@ const Registrering = () => {
                 setMelding("Registrering vellykket! Du blir omdirigert til innlogging...");
                 setTimeout(() => {
                 minne.push("/Innlogging");
-                     }, 2000);
+                     }, 1000);
             }
         } catch (error) {
             setMelding("Noe gikk galt. Prøv igjen.");

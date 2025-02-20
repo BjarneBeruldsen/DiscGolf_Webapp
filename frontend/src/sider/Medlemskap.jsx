@@ -1,15 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
-const Medlemskap = ({ loggetInnBruker }) => {
+const Medlemskap = ({ loggetInnBruker, setLoggetInnBruker }) => {
   const [visSlettSkjema, setVisSlettSkjema] = useState(false);
   const [passord, setPassord] = useState("");
   const [melding, setMelding] = useState("");
-  const minne = useHistory(); 
+  const minne = useHistory();
 
-  const storBokstav = (str) => {                                  //https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
-    if (!str) return "";                                               
-    return str.charAt(0).toUpperCase() + str.slice(1);             
+  useEffect(() => {
+    if (!loggetInnBruker) {
+      minne.push("/Hjem");
+    }
+  }, [loggetInnBruker, minne]);
+
+  const storBokstav = (str) => {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
   const handleSlettBruker = async (e) => {
@@ -22,7 +28,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ bruker: loggetInnBruker.bruker.toLowerCase(), passord }),
+        body: JSON.stringify({ bruker: loggetInnBruker?.bruker?.toLowerCase(), passord }),
       });
 
       const data = await respons.json();
@@ -32,14 +38,23 @@ const Medlemskap = ({ loggetInnBruker }) => {
         setPassord("");
         setVisSlettSkjema(false);
         localStorage.removeItem("bruker");
-        minne.push("/Hjem");
+      
+        setLoggetInnBruker(null);
+
+        setTimeout(() => {
+          minne.push("/Hjem");
+        }, 1000);
       } else {
         setMelding(data.error);
       }
     } catch (error) {
       setMelding("Uventet feil, prøv igjen.");
     }
-};
+  };
+
+  if (!loggetInnBruker) {
+    return <p className="text-center text-red-500">Brukeren er slettet. Omdirigerer...</p>;
+  }
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
