@@ -353,6 +353,37 @@ app.post("/Utlogging", async (req, res) => {
     }
 });
 
+//Sletting av bruker
+app.post("/SletteBruker", async (req, res) => {
+    try {
+        const { bruker, passord } = req.body;  
+
+        if (!bruker || !passord) {
+            return res.status(400).json({ error: "Brukernavn og passord må oppgis" });
+        }
+        const funnetBruker = await db.collection("Brukere").findOne({ bruker: bruker });
+
+        if (!funnetBruker) {
+            return res.status(404).json({ error: "Bruker ikke funnet" });
+        }
+        const passordSjekk = await bcrypt.compare(passord, funnetBruker.passord);
+
+        if (!passordSjekk) {
+            return res.status(401).json({ error: "Feil passord" });
+        }
+        const slettetBruker = await db.collection("Brukere").deleteOne({ _id: funnetBruker._id });
+
+        if (slettetBruker.deletedCount === 0) {
+            return res.status(500).json({ error: "Kunne ikke slette brukeren" });
+        }
+        return res.status(200).json({ message: "Bruker slettet" });
+
+    } catch (error) {
+        console.error("Uventet feil:", error);
+        res.status(500).json({ error: "Serverfeil" });
+    }
+});
+
 //Sjekk av session
 app.get("/sjekk-session", (req, res) => {
     console.log("Sjekk session forespørsel mottatt");
