@@ -1,22 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useState } from "react";
 
-const Medlemskap = ({ loggetInnBruker, setLoggetInnBruker }) => {
+const Medlemskap = ({ loggetInnBruker }) => {
   const [visSlettSkjema, setVisSlettSkjema] = useState(false);
   const [passord, setPassord] = useState("");
   const [melding, setMelding] = useState("");
-  const minne = useHistory();
-
-  useEffect(() => {
-    if (!loggetInnBruker) {
-      minne.push("/Hjem");
-    }
-  }, [loggetInnBruker, minne]);
-
-  const storBokstav = (str) => {
-    if (!str) return "";
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  };
 
   const handleSlettBruker = async (e) => {
     e.preventDefault();
@@ -28,7 +15,7 @@ const Medlemskap = ({ loggetInnBruker, setLoggetInnBruker }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ bruker: loggetInnBruker?.bruker?.toLowerCase(), passord }),
+        body: JSON.stringify({ bruker: loggetInnBruker.bruker, passord }),
       });
 
       const data = await respons.json();
@@ -38,12 +25,7 @@ const Medlemskap = ({ loggetInnBruker, setLoggetInnBruker }) => {
         setPassord("");
         setVisSlettSkjema(false);
         localStorage.removeItem("bruker");
-      
-        setLoggetInnBruker(null);
-
-        setTimeout(() => {
-          minne.push("/Hjem");
-        }, 1000);
+        window.location.href = "/Hjem"; //Funker ikke med minne.push("/Hjem"); (useHistory)
       } else {
         setMelding(data.error);
       }
@@ -52,16 +34,12 @@ const Medlemskap = ({ loggetInnBruker, setLoggetInnBruker }) => {
     }
   };
 
-  if (!loggetInnBruker) {
-    return <p className="text-center text-red-500">Brukeren er slettet. Omdirigerer...</p>;
-  }
-
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
         <h2 className="text-2xl mb-4 text-gray-700">Medlemskap</h2>
         <p className="mb-4">
-          Velkommen, <span className="font-bold">{storBokstav(loggetInnBruker.bruker)}</span>
+          Velkommen, <span className="font-bold">{loggetInnBruker.bruker}</span>
         </p>
         <p className="mb-4">Du er registrert som medlem av DiscGolf.</p>
 
