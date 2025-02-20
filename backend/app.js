@@ -361,7 +361,7 @@ app.post("/SletteBruker", async (req, res) => {
         if (!bruker || !passord) {
             return res.status(400).json({ error: "Brukernavn og passord må oppgis" });
         }
-        const funnetBruker = await db.collection("Brukere").findOne({ bruker: bruker });
+        const funnetBruker = await db.collection("Brukere").findOne({ bruker: bruker.toLowerCase() });
 
         if (!funnetBruker) {
             return res.status(404).json({ error: "Bruker ikke funnet" });
