@@ -22,7 +22,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ bruker: storBokstav(loggetInnBruker.bruker), passord }), // Riktig bruk av storBokstav()
+        body: JSON.stringify({ bruker: storBokstav(loggetInnBruker.bruker), passord }), 
       });
 
       const data = await respons.json();
