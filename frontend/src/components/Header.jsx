@@ -22,7 +22,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
 
   return (
     <div>
-      <header className="flex items-center justify-between p-4 bg-white border-b border-gray-300">
+      <header className="flex items-center justify-between p-4 bg-brown-300 border-b border-gray-300">
         <div className="flex items-center space-x-3">
           <img className="w-10 h-10 rounded-full" src="/DiscgolfLogo.png" alt="DiscGolf logo" />
           <Link to="/Hjem" className="text-xl font-bold">DiscGolf</Link>
