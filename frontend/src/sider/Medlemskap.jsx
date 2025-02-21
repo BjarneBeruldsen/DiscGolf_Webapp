@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom"; 
 
 const Medlemskap = ({ loggetInnBruker }) => {
   const [visSlettSkjema, setVisSlettSkjema] = useState(false);
   const [passord, setPassord] = useState("");
   const [melding, setMelding] = useState("");
+  const history = useHistory(); 
 
   const handleSlettBruker = async (e) => {
     e.preventDefault();
@@ -15,6 +17,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ bruker: loggetInnBruker.bruker, passord }),
       });
 
@@ -25,7 +28,10 @@ const Medlemskap = ({ loggetInnBruker }) => {
         setPassord("");
         setVisSlettSkjema(false);
         localStorage.removeItem("bruker");
-        window.location.href = "/Hjem"; //Funker ikke med minne.push("/Hjem"); (useHistory)
+
+        setTimeout(() => {
+          history.push("/Innlogging"); 
+        }, 1000);
       } else {
         setMelding(data.error);
       }
