@@ -48,6 +48,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
 };
 
   return (
+    <header>
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <form onSubmit={handleSubmit} className="flex flex-col items-center bg-white p-8 rounded-lg shadow-md w-80">
         <input
@@ -72,6 +73,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
         {melding && <p className="mt-4 text-red-500">{melding}</p>}
       </form>
     </div>
+    </header>
   );
 };
 
