@@ -40,7 +40,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
             {loggetInnBruker ? (
               <>
                 <li className="text-black font-bold hover:text-gray-600">
-                <Link to="/medlemskap" onClick={lukkMeny}>
+                <Link to="/Medlemskap" onClick={lukkMeny}>
                  Mitt Medlemskap
                  </Link>
                 </li>
@@ -79,7 +79,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
         {loggetInnBruker ? (
                 <>
                   <li className="text-black font-bold hover:text-gray-600">
-                    <Link to="/medlemskap" onClick={lukkMeny}>
+                    <Link to="/Medlemskap" onClick={lukkMeny}>
                       Mitt Medlemskap
                     </Link>
                   </li>
