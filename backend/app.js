@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const nocache = require('nocache');
 const rateLimit = require("express-rate-limit");
 const { body, validationResult } = require('express-validator');
 const session = require('express-session');
@@ -17,6 +18,13 @@ const app = express();
 
 app.disable('x-powered-by'); //Disabled for sikkerhet da man kan se hvilken teknologi som brukes 
 
+//Sikrer at nettleserer ikke lagrer cache for sensitive data
+app.use("/Innlogging", nocache());  //https://github.com/helmetjs/nocache
+app.use("/Utlogging", nocache());   //https://ivanpiskunov.medium.com/a-little-bit-about-node-js-security-by-hands-17470dddf4d0 
+app.use("/SletteBruker", nocache()); //https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+app.use("/Registrering", nocache());
+app.use("/Sjekk-session", nocache());
+
 app.use(cors({
     origin: ["https://disk-applikasjon-39f504b7af19.herokuapp.com", "http://localhost:3000"], 
     credentials: true,
@@ -25,12 +33,10 @@ app.use(cors({
 //Default Helmet konfigurasjon med litt konfigurasjoner for at bilder vi bruker skal lastes opp riktig og fremtidig ressurser https://helmetjs.github.io/ & https://github.com/helmetjs/helmet
 app.use(
     helmet({
-      contentSecurityPolicy: {
+      contentSecurityPolicy: {             
+        useDefaults: true, 
         directives: {
-          defaultSrc: ["'self'"], //Tillater kun egne ressurser som standard
-          imgSrc: ["'self'", "data:", "https://images.unsplash.com"], //Tillater lokale og Unsplash-bilder
-          scriptSrc: ["'self'", "'unsafe-inline'", "https://disk-applikasjon-39f504b7af19.herokuapp.com"], //Tillater inline scripts og scripts fra Heroku
-          connectSrc: ["'self'", "https://disk-applikasjon-39f504b7af19.herokuapp.com"], //Tillater kun tilkoblinger til Heroku
+          imgSrc: ["'self'", "https://images.unsplash.com"], //Legger kun til Unsplash
         },
       },
     })
