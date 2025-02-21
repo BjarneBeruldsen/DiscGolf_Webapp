@@ -23,6 +23,12 @@ app.disable('x-powered-by'); //Disabled for sikkerhet da man kan se hvilken tekn
 //https://ivanpiskunov.medium.com/a-little-bit-about-node-js-security-by-hands-17470dddf4d0 
 //https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
 
+app.use("/Innlogging", nocache());  
+app.use("/Utlogging", nocache());   
+app.use("/SletteBruker", nocache()); 
+app.use("/Registrering", nocache());
+app.use("/Sjekk-session", nocache());
+
 app.use(cors({
     origin: ["https://disk-applikasjon-39f504b7af19.herokuapp.com", "http://localhost:3000"], 
     credentials: true,
@@ -262,7 +268,7 @@ const registreringValidering = [
 ];
 
 //Rute for registrering av bruker
-app.post("/Registrering", nocache(), registreringValidering, registreringStopp, async (req, res) => {
+app.post("/Registrering", registreringValidering, registreringStopp, async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() }); 
@@ -309,7 +315,7 @@ const innloggingValidering = [
         .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.") 
 ];
 //Rute for innlogging
-app.post("/Innlogging", nocache(), loggeInnStopp, innloggingValidering, (req, res, next) => {
+app.post("/Innlogging", loggeInnStopp, innloggingValidering, (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() }); 
@@ -331,7 +337,7 @@ app.post("/Innlogging", nocache(), loggeInnStopp, innloggingValidering, (req, re
 });
 
 //Utlogging
-app.post("/Utlogging", nocache(), async (req, res) => {
+app.post("/Utlogging", async (req, res) => {
     try {
         console.log("Utlogging forespørsel mottatt");
         if (!req.isAuthenticated()) {
@@ -361,7 +367,7 @@ app.post("/Utlogging", nocache(), async (req, res) => {
 });
 
 //Sletting av bruker
-app.post("/SletteBruker", nocache(), [
+app.post("/SletteBruker", [
     body('passord')
     .notEmpty().withMessage("Passord må fylles ut.")     //Validering av innlogging med express-validator https://express-validator.github.io/docs/
     .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.") 
@@ -408,7 +414,7 @@ app.post("/SletteBruker", nocache(), [
 });
 
 //Sjekk av session
-app.get("/sjekk-session", nocache(), (req, res) => {
+app.get("/sjekk-session", (req, res) => {
     console.log("Sjekk session forespørsel mottatt");
     if (req.isAuthenticated()) {
         console.log("Bruker er autentisert:", req.user);
