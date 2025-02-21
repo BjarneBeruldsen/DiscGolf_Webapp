@@ -1,23 +1,29 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-
 const Registrering = () => {
     const [bruker, setBruker] = useState("");
+    const [epost, setEpost] = useState(""); // Ny e-post state
     const [passord, setPassord] = useState("");
     const [melding, setMelding] = useState("");
     const minne = useHistory(); 
 
-    const handleSubmit = async (event) => {         //https://react-hook-form.com/docs/useform/handlesubmit
+    const handleSubmit = async (event) => {         
         event.preventDefault();
         setMelding("");
 
-        //Frontend validering 
-        const brukernavnRegex = /^[a-zA-Z0-9]{3,10}$/; //3-10 tegn, kun bokstaver og tall
-        const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,}$/; //Minst 8 tegn, en stor bokstav, ett spesialtegn
-
+        // Frontend validering 
+        const brukernavnRegex = /^[a-zA-Z0-9]{3,10}$/; // 3-10 tegn, kun bokstaver og tall
+        const epostRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // E-post må være gyldig
+        const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,}$/; // Minst 8 tegn, ett spesialtegn
+    
         if (!brukernavnRegex.test(bruker)) {
             setMelding("Brukernavn må være 3-10 tegn langt og kun inneholde bokstaver og tall.");
+            return;
+        }
+
+        if (!epostRegex.test(epost)) {
+            setMelding("E-post må være en gyldig adresse.");
             return;
         }
 
@@ -30,7 +36,7 @@ const Registrering = () => {
             const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Registrering`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ bruker, passord }),
+                body: JSON.stringify({ bruker, epost, passord }), 
                 credentials: "include",
             });
 
@@ -57,6 +63,14 @@ const Registrering = () => {
             >
                 <h2 className="text-xl font-bold mb-4">Registrer deg som bruker!</h2>
 
+                <input
+                    type="email" 
+                    placeholder="E-post"
+                    value={epost}
+                    onChange={(e) => setEpost(e.target.value)}
+                    required
+                    className="px-4 py-3 mb-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-green-400"
+                />
                 <input
                     type="text"
                     placeholder="Brukernavn"
