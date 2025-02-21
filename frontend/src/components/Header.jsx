@@ -79,33 +79,33 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
             <li><Link to="/nyheter" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Nyheter</Link></li>
             <li><Link to="/ScoreBoard" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>ScoreBoard</Link></li>
 
-            {loggetInnBruker ? (
-              <>
-                <li className="flex items-center">
-                  <button onClick={loggUt} className="text-black font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg">
-                    Logg ut
-                  </button>
-                </li>
-                <li className="flex items-center">
-                  <Link to="/medlemskap" onClick={lukkMeny} className="text-red-600 font-bold hover:text-red-700 px-4 py-2 border border-red-500 rounded-lg">
-                    Slett Bruker
-                  </Link>
-                </li>
-              </>
-            ) : (
-              <>
-                <li>
-                  <Link to="/Innlogging" onClick={lukkMeny} className="text-black font-bold hover:text-gray-600">
-                    Logg inn
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/Registrering" onClick={lukkMeny} className="text-black font-bold hover:text-gray-600">
-                    Bli medlem!
-                  </Link>
-                </li>
-              </>
-            )}
+        {loggetInnBruker ? (
+                <>
+                  <li className="text-black font-bold hover:text-gray-600">
+                    <Link to="/medlemskap" onClick={lukkMeny}>
+                      {storBokstav(loggetInnBruker.bruker)}
+                    </Link>
+                  </li>
+                  <li className="flex items-center">
+                    <button onClick={loggUt} className="text-black font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg">
+                      Logg ut
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link to="/Innlogging" onClick={lukkMeny} className="text-black font-bold hover:text-gray-600">
+                      Logg inn
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/Registrering" onClick={lukkMeny} className="text-black font-bold hover:text-gray-600">
+                      Bli medlem!
+                    </Link>
+                  </li>
+                </>
+              )}
           </ul>
         </nav>
       )}
