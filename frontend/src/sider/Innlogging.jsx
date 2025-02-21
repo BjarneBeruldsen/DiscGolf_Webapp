@@ -11,11 +11,19 @@ const Innlogging = ({ setLoggetInnBruker }) => {
     e.preventDefault();
     setMelding("");
 
-    if (!bruker || !passord) {
-      setMelding("Alle felt må fylles ut");
-      return;
-    }
+    //Frontend validering
+    const brukernavnRegex = /^[a-zA-Z0-9]{3,10}$/; //3-10 tegn, kun bokstaver og tall
+    const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,}$/; //Minst 8 tegn, en stor bokstav, ett spesialtegn
 
+    if (!brukernavnRegex.test(bruker)) {
+        setMelding("Brukernavn må være 3-10 tegn langt og kun inneholde bokstaver og tall.");
+        return;
+    }
+    
+    if (!passordRegex.test(passord)) {
+        setMelding("Passord må være minst 8 tegn, inneholde én stor bokstav og ett spesialtegn.");
+        return;
+    }
     try {
       const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Innlogging`, {
         method: "POST",

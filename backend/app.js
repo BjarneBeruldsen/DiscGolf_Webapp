@@ -355,27 +355,30 @@ app.post("/Utlogging", async (req, res) => {
 });
 
 //Sletting av bruker
-app.post("/SletteBruker", async (req, res) => {
+app.post("/SletteBruker", [
+    body('passord').notEmpty().withMessage("Passord må fylles ut.")
+], async (req, res) => {
     if (!req.isAuthenticated()) {
         return res.status(401).json({ error: "Ingen aktiv session" });
     }
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
     try {
-        const { bruker, passord } = req.body;
-        if (!bruker || !passord) {
-            return res.status(400).json({ error: "Brukernavn og passord må oppgis" });
+        const { passord } = req.body;
+        const bruker = req.user; 
+        if (!passord) {
+            return res.status(400).json({ error: "Passord må oppgis" });
         }
-        const funnetBruker = await db.collection("Brukere").findOne({ bruker: bruker.trim().toLowerCase() });
-        if (!funnetBruker) {
-            return res.status(404).json({ error: "Bruker ikke funnet" });
-        }
-        const passordSjekk = await bcrypt.compare(passord, funnetBruker.passord);
+        const passordSjekk = await bcrypt.compare(passord, bruker.passord);
         if (!passordSjekk) {
             return res.status(401).json({ error: "Feil passord" });
         }
-        if (!ObjectId.isValid(funnetBruker._id)) {
+        if (!ObjectId.isValid(bruker._id)) {
             return res.status(400).json({ error: "Ugyldig bruker-ID" });
         }
-        const slettetBruker = await db.collection("Brukere").deleteOne({ _id: new ObjectId(funnetBruker._id) });
+        const slettetBruker = await db.collection("Brukere").deleteOne({ _id: new ObjectId(bruker._id) });
         if (slettetBruker.deletedCount === 0) {
             return res.status(500).json({ error: "Kunne ikke slette brukeren" });
         }
@@ -383,8 +386,7 @@ app.post("/SletteBruker", async (req, res) => {
             if (err) {
                 return res.status(500).json({ error: "Feil ved utlogging" });
             }
-
-            req.session.destroy((err) => {
+              req.session.destroy((err) => {
                 if (err) {
                     return res.status(500).json({ error: "Feil ved sletting av session" });
                 }

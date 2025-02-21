@@ -12,8 +12,17 @@ const Registrering = () => {
         event.preventDefault();
         setMelding("");
 
-        if (!bruker || !passord) {
-            setMelding("Brukernavn og passord må fylles ut");
+        //Frontend validering 
+        const brukernavnRegex = /^[a-zA-Z0-9]{3,10}$/; //3-10 tegn, kun bokstaver og tall
+        const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,}$/; //Minst 8 tegn, en stor bokstav, ett spesialtegn
+
+        if (!brukernavnRegex.test(bruker)) {
+            setMelding("Brukernavn må være 3-10 tegn langt og kun inneholde bokstaver og tall.");
+            return;
+        }
+
+        if (!passordRegex.test(passord)) {
+            setMelding("Passord må være minst 8 tegn, inneholde én stor bokstav og ett spesialtegn.");
             return;
         }
 
@@ -22,6 +31,7 @@ const Registrering = () => {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ bruker, passord }),
+                credentials: "include",
             });
 
             const data = await respons.json();
@@ -31,8 +41,8 @@ const Registrering = () => {
             } else {
                 setMelding("Registrering vellykket! Du blir omdirigert til innlogging...");
                 setTimeout(() => {
-                minne.push("/Innlogging");
-                     }, 1000);
+                    minne.push("/Innlogging");
+                }, 1000);
             }
         } catch (error) {
             setMelding("Noe gikk galt. Prøv igjen.");
