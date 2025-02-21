@@ -7,6 +7,7 @@ import './output.css';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Bilde from "./components/Bilde";
 import Hjem from './sider/Hjem';
 import Innlogging from './sider/Innlogging'; 
 import Registrering from './sider/Registrering';
@@ -58,8 +59,9 @@ function App() {
         <Header loggetInnBruker={loggetInnBruker} setLoggetInnBruker={setLoggetInnBruker} />
           <div className="innhold">
               <Switch>
-                <Route exact path="/Hjem">
-                  <Hjem />
+                <Route exact path="/Hjem"><Bilde/> <Hjem />
+                  <Footer/>
+                 
                 </Route>
                 <Route exact path="/LagKlubb">
                   <LagKlubb />
@@ -98,6 +100,7 @@ function App() {
                       setLoggUtBruker={loggUtBruker} 
                     />
                   )}
+                  <Footer/>
                 </Route>
                 <Route exact path="/Registrering">
                   <Registrering />
@@ -110,7 +113,7 @@ function App() {
                 </Route>
               </Switch>
           </div>
-          <Footer />
+         
         </div>
       </Router>
   );
