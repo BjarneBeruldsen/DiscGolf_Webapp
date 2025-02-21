@@ -7,28 +7,32 @@ const Innlogging = ({ setLoggetInnBruker }) => {
   const [melding, setMelding] = useState("");
   const minne = useHistory(); 
 
-  const handleSubmit = async (e) => {                //https://react-hook-form.com/docs/useform/handlesubmit
+  const handleSubmit = async (e) => {                   //https://react-hook-form.com/docs/useform/handlesubmit
     e.preventDefault();
     setMelding("");
 
-    //Frontend validering
-    const brukernavnRegex = /^[a-zA-Z0-9]{3,10}$/; //3-10 tegn, kun bokstaver og tall
-    const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,}$/; //Minst 8 tegn, en stor bokstav, ett spesialtegn
+    // Frontend validering
+    const brukernavnRegex = /^[a-zA-Z0-9]{3,10}$/; // 3-10 tegn, kun bokstaver og tall
+    const epostRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // E-post-validering
+    const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,}$/; // Minst 8 tegn, ett spesialtegn
 
-    if (!brukernavnRegex.test(bruker)) {
-        setMelding("Brukernavn må være 3-10 tegn langt og kun inneholde bokstaver og tall.");
+    const erEpost = epostRegex.test(bruker);
+    const erBrukernavn = brukernavnRegex.test(bruker);
+
+    if (!erEpost && !erBrukernavn) {
+        setMelding("Skriv inn enten brukernavn (3-10 tegn) eller en gyldig e-post.");
         return;
     }
-    
+
     if (!passordRegex.test(passord)) {
-        setMelding("Passord må være minst 8 tegn, inneholde én stor bokstav og ett spesialtegn.");
+        setMelding("Passord må være minst 8 tegn og ha ett spesialtegn.");
         return;
     }
     try {
       const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Innlogging`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bruker: bruker.trim().toLowerCase(), passord }),
+        body: JSON.stringify({ bruker: bruker.trim().toLowerCase(), passord }), 
         credentials: "include",
       });
 
@@ -56,7 +60,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
       <form onSubmit={handleSubmit} className="flex flex-col items-center bg-white p-8 rounded-lg shadow-md w-80">
         <input
           type="text"
-          placeholder="Brukernavn"
+          placeholder="Brukernavn eller e-post"
           value={bruker}
           onChange={(e) => setBruker(e.target.value)}
           required

@@ -1063,6 +1063,11 @@
       --tw-ring-color: var(--color-gray-400);
     }
   }
+  .focus\:ring-green-400 {
+    &:focus {
+      --tw-ring-color: var(--color-green-400);
+    }
+  }
   .focus\:ring-red-400 {
     &:focus {
       --tw-ring-color: var(--color-red-400);

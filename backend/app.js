@@ -83,16 +83,19 @@ passport.use(
     new LocalStrategy({ usernameField: "bruker", passwordField: "passord" }, 
     async (bruker, passord, done) => {
         try {
-            const funnetBruker = await db.collection("Brukere").findOne({ bruker: bruker.trim().toLowerCase() });
+            const funnetBruker = await db.collection("Brukere").findOne({ 
+                $or: [
+                    { bruker: bruker.trim().toLowerCase() }, 
+                    { epost: bruker.trim().toLowerCase() }
+                ]
+            });
             if (!funnetBruker) {                                                                                                      
-                return done(null, false, { message: "Bruker ikke funnet" });
-            }
-                                                                                            //https://www.passportjs.org/concepts/authentication/password/
+                return done(null, false, { message: "Brukernavn eller e-post ikke funnet" });
+            }                                                                                   //https://www.passportjs.org/concepts/authentication/password/
             const passordSjekk = await bcrypt.compare(passord, funnetBruker.passord);
             if (!passordSjekk) {
                 return done(null, false, { message: "Feil passord eller brukernavn" });
             }
-
             return done(null, funnetBruker);
         } catch (err) {
             return done(err);
@@ -262,9 +265,13 @@ const registreringValidering = [
         .isAlphanumeric().withMessage("Brukernavnet kan bare inneholde bokstaver og tall."),
     body('passord')
         .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.")
-        .matches(/[A-Z]/).withMessage("Passordet må inneholde minst én stor bokstav.")
+        .matches(/[A-Z]/).withMessage("Passordet må inneholde minst en stor bokstav.")
         //.matches(/[0-9]/).withMessage("Passordet må inneholde minst ett tall.") //Ikke gyldig med passord for admin/test for prosjektet
         .matches(/[-.@$!%*?&]/).withMessage("Passordet må inneholde minst ett spesialtegn."),
+    body('epost')
+        .trim()
+        .isEmail().withMessage("E-post må være gyldig.")
+        .normalizeEmail() 
 ];
 
 //Rute for registrering av bruker
@@ -273,20 +280,25 @@ app.post("/Registrering", registreringValidering, registreringStopp, async (req,
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() }); 
     }
-
-    const { bruker, passord } = req.body;
-
+    const { bruker, passord, epost } = req.body;
     try {
-        const funnetBruker = await db.collection("Brukere").findOne({ bruker: bruker.trim().toLowerCase() });
+        const funnetBruker = await db.collection("Brukere").findOne({ 
+            $or: [{ bruker: bruker.trim().toLowerCase() }, { epost: epost.trim().toLowerCase() }] 
+        });
         if (funnetBruker) {
-            return res.status(400).json({ error: "Brukernavnet er allerede tatt" });
+            return res.status(400).json({ error: "Bruker eller e-post allerede registrert" });
         }
+
         //Kryptering av passord
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(passord, salt);
 
         //Lagrer bruker i databasen
-        const nyBruker = { bruker: bruker.trim().toLowerCase(), passord: hashedPassword };
+        const nyBruker = { 
+            bruker: bruker.trim().toLowerCase(), 
+            passord: hashedPassword, 
+            epost: epost.trim().toLowerCase(),
+        };
         await db.collection("Brukere").insertOne(nyBruker);
 
         res.status(201).json({ message: "Bruker registrert" });
@@ -307,12 +319,18 @@ const loggeInnStopp = rateLimit({
 const innloggingValidering = [
     body('bruker')
         .trim()
-        .notEmpty().withMessage("Brukernavn må fylles ut.")
-        .isLength({ min: 3, max: 10 }).withMessage("Brukernavn må være mellom 3 og 10 tegn.")
-        .isAlphanumeric().withMessage("Brukernavn kan bare inneholde bokstaver og tall."),
+        .notEmpty().withMessage("Brukernavn eller e-post må fylles ut.")
+        .custom((value) => {
+            const erBrukernavn = /^[a-zA-Z0-9]{3,10}$/.test(value);
+            const erEpost = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+            if (!erBrukernavn && !erEpost) {
+                throw new Error("Må være brukernavn (3-10 tegn) eller en gyldig e-post.");
+            }
+            return true;
+        }),
     body('passord')
         .notEmpty().withMessage("Passord må fylles ut.") 
-        .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.") 
+        .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.")
 ];
 //Rute for innlogging
 app.post("/Innlogging", loggeInnStopp, innloggingValidering, (req, res, next) => {
@@ -412,6 +430,11 @@ app.post("/SletteBruker", [
         res.status(500).json({ error: "Serverfeil", details: error.message });
     }
 });
+
+//Endring av brukerinfo
+
+
+
 
 //Sjekk av session
 app.get("/sjekk-session", (req, res) => {
