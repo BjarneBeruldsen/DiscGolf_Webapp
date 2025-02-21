@@ -18,7 +18,7 @@ const app = express();
 app.disable('x-powered-by'); //Disabled for sikkerhet da man kan se hvilken teknologi som brukes 
 
 app.use(cors({
-    origin: ["https://disk-applikasjon-39f504b7af19.herokuapp.com", "http://localhost:3000"], 
+    origin: "*", //["https://disk-applikasjon-39f504b7af19.herokuapp.com", "http://localhost:3000"], 
     credentials: true,
 }));
 
@@ -29,6 +29,8 @@ app.use(
         directives: {
           defaultSrc: ["'self'"], //Tillater kun egne ressurser som standard
           imgSrc: ["'self'", "data:", "https://images.unsplash.com"], //Tillater lokale og Unsplash-bilder
+          scriptSrc: ["'self'", "'unsafe-inline'", "https://disk-applikasjon-39f504b7af19.herokuapp.com"],
+          connectSrc: ["'self'", "https://disk-applikasjon-39f504b7af19.herokuapp.com"],
         },
       },
     })
@@ -355,26 +357,36 @@ app.post("/Utlogging", async (req, res) => {
 
 //Sletting av bruker
 app.post("/SletteBruker", async (req, res) => {
+    if (!req.isAuthenticated()) {
+        console.log("⛔ Ingen aktiv session for sletting");
+        return res.status(401).json({ error: "Ingen aktiv session" });
+    }
+    
     try {
         const { bruker, passord } = req.body;
 
+        console.log("➡️ Forespørsel mottatt for sletting av:", bruker);
+
         if (!bruker || !passord) {
+            console.log("⛔ Feil: Brukernavn eller passord mangler");
             return res.status(400).json({ error: "Brukernavn og passord må oppgis" });
         }
-        const funnetBruker = await db.collection("Brukere").findOne({ bruker: bruker.toLowerCase() });
 
-        console.log("Bruker funnet:", funnetBruker);
+        const funnetBruker = await db.collection("Brukere").findOne({ bruker: bruker.trim().toLowerCase() });
+        console.log("🔍 Bruker funnet i database:", funnetBruker);
 
         if (!funnetBruker) {
             return res.status(404).json({ error: "Bruker ikke funnet" });
         }
+
         const passordSjekk = await bcrypt.compare(passord, funnetBruker.passord);
         if (!passordSjekk) {
             return res.status(401).json({ error: "Feil passord" });
         }
+
         const slettetBruker = await db.collection("Brukere").deleteOne({ _id: new ObjectId(funnetBruker._id) });
 
-        console.log("Sletting utført:", slettetBruker);
+        console.log("🗑️ Sletting utført:", slettetBruker);
 
         if (slettetBruker.deletedCount === 0) {
             return res.status(500).json({ error: "Kunne ikke slette brukeren" });
@@ -383,7 +395,7 @@ app.post("/SletteBruker", async (req, res) => {
         return res.status(200).json({ message: "Bruker slettet" });
 
     } catch (error) {
-        console.error("Uventet feil:", error);
+        console.error("❌ Uventet feil:", error);
         res.status(500).json({ error: "Serverfeil", details: error.message });
     }
 });
