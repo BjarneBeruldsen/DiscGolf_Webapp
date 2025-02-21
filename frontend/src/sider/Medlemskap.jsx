@@ -1,16 +1,22 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom"; 
 
 const Medlemskap = ({ loggetInnBruker }) => {
   const [visSlettSkjema, setVisSlettSkjema] = useState(false);
   const [passord, setPassord] = useState("");
   const [melding, setMelding] = useState("");
-  const history = useHistory(); 
 
+  //Andre funksjoner som skal også være med i medlemskap
+  //F.eks. endre brukerinfo
+
+
+
+
+
+  //Sletting av bruker 
   const handleSlettBruker = async (e) => {
     e.preventDefault();
     setMelding("");
-
+  
     try {
       const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/SletteBruker`, {
         method: "POST",
@@ -20,26 +26,21 @@ const Medlemskap = ({ loggetInnBruker }) => {
         credentials: "include",
         body: JSON.stringify({ bruker: loggetInnBruker.bruker, passord }),
       });
-
+  
       const data = await respons.json();
-
+  
       if (respons.ok) {
-        setMelding("Bruker slettet.");
-        setPassord("");
-        setVisSlettSkjema(false);
         localStorage.removeItem("bruker");
-
-        setTimeout(() => {
-          history.push("/Innlogging"); 
-        }, 1000);
+        window.location.href = "/Hjem"; 
       } else {
         setMelding(data.error);
       }
-    } catch (error) {
+    } catch {
       setMelding("Uventet feil, prøv igjen.");
     }
   };
 
+  
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
