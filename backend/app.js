@@ -292,16 +292,17 @@ const loggeInnStopp = rateLimit({
     message: { error: "For mange innloggingsforsøk, prøv igjen senere" },
 });
 
-//Validering av innlogging med express-validator
+//Validering av innlogging med express-validator https://express-validator.github.io/docs/
 const innloggingValidering = [
     body('bruker')
         .trim()
         .notEmpty().withMessage("Brukernavn må fylles ut.")
-        .isAlphanumeric().withMessage("Brukernavnet kan bare inneholde bokstaver og tall."),
+        .isLength({ min: 3, max: 10 }).withMessage("Brukernavn må være mellom 3 og 10 tegn.")
+        .isAlphanumeric().withMessage("Brukernavn kan bare inneholde bokstaver og tall."),
     body('passord')
-        .notEmpty().withMessage("Passord må fylles ut.")
+        .notEmpty().withMessage("Passord må fylles ut.") 
+        .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.") 
 ];
-
 //Rute for innlogging
 app.post("/Innlogging", loggeInnStopp, innloggingValidering, (req, res, next) => {
     const errors = validationResult(req);
@@ -356,7 +357,9 @@ app.post("/Utlogging", async (req, res) => {
 
 //Sletting av bruker
 app.post("/SletteBruker", [
-    body('passord').notEmpty().withMessage("Passord må fylles ut.")
+    body('passord')
+    .notEmpty().withMessage("Passord må fylles ut.")     //Validering av innlogging med express-validator https://express-validator.github.io/docs/
+    .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.") 
 ], async (req, res) => {
     if (!req.isAuthenticated()) {
         return res.status(401).json({ error: "Ingen aktiv session" });
