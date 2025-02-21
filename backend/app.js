@@ -431,6 +431,11 @@ app.post("/SletteBruker", [
     }
 });
 
+//Endring av brukerinfo
+
+
+
+
 //Sjekk av session
 app.get("/sjekk-session", (req, res) => {
     console.log("Sjekk session forespørsel mottatt");
