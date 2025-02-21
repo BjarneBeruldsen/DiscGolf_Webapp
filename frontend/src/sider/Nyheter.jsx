@@ -2,7 +2,7 @@ import React from "react";
 
 const Nyheter = () => {
   return (
-    <div>
+    <div className="min-h-screen">
       <h1>Nyheter</h1>
       <p>""</p>
     </div>

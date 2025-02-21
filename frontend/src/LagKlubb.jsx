@@ -51,7 +51,7 @@ const LagKlubb = () => {
 
 
     return (
-        <div className="lag bg-gray-200 p-4 flex justify-center">
+        <div className="lag bg-gray-200 p-4 flex justify-center min-h-screen">
             <div className="w-full max-w-md">
                 <h2 className="text-3xl font-bold mb-4 text-center">Legg Til en klubb</h2>
                 <Link to="/VelgKlubb" className="text-blue-500 underline mb-4 block text-center">Har allerede en klubb?</Link>

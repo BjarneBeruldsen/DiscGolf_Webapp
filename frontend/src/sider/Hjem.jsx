@@ -17,7 +17,7 @@ const Hjem = () => {
     };
 
     return (
-        <div className="flex justify-center items-center mt-8">
+        <div className="flex justify-center items-center mt-8 h-[100vh]">
             <button onClick={handleTommeTestdata} className="py-4 px-8 bg-red-500 rounded-lg text-sm text-white">
                 Tøm testdata
             </button>
