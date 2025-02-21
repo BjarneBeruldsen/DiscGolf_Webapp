@@ -18,12 +18,10 @@ const app = express();
 
 app.disable('x-powered-by'); //Disabled for sikkerhet da man kan se hvilken teknologi som brukes 
 
-//Sikrer at nettleserer ikke lagrer cache for sensitive data
-app.use("/Innlogging", nocache());  //https://github.com/helmetjs/nocache
-app.use("/Utlogging", nocache());   //https://ivanpiskunov.medium.com/a-little-bit-about-node-js-security-by-hands-17470dddf4d0 
-app.use("/SletteBruker", nocache()); //https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
-app.use("/Registrering", nocache());
-app.use("/Sjekk-session", nocache());
+//NoCache Sikrer at nettleserer ikke lagrer cache for sensitive data/sider
+//https://github.com/helmetjs/nocache
+//https://ivanpiskunov.medium.com/a-little-bit-about-node-js-security-by-hands-17470dddf4d0 
+//https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
 
 app.use(cors({
     origin: ["https://disk-applikasjon-39f504b7af19.herokuapp.com", "http://localhost:3000"], 
@@ -31,6 +29,7 @@ app.use(cors({
 }));
 
 //Default Helmet konfigurasjon med litt konfigurasjoner for at bilder vi bruker skal lastes opp riktig og fremtidig ressurser https://helmetjs.github.io/ & https://github.com/helmetjs/helmet
+//Må nok endres etterhvert når kart/vær osv legges til
 app.use(
     helmet({
       contentSecurityPolicy: {             
@@ -263,7 +262,7 @@ const registreringValidering = [
 ];
 
 //Rute for registrering av bruker
-app.post("/Registrering", registreringValidering, registreringStopp, async (req, res) => {
+app.post("/Registrering", nocache(), registreringValidering, registreringStopp, async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() }); 
@@ -310,7 +309,7 @@ const innloggingValidering = [
         .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.") 
 ];
 //Rute for innlogging
-app.post("/Innlogging", loggeInnStopp, innloggingValidering, (req, res, next) => {
+app.post("/Innlogging", nocache(), loggeInnStopp, innloggingValidering, (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() }); 
@@ -332,7 +331,7 @@ app.post("/Innlogging", loggeInnStopp, innloggingValidering, (req, res, next) =>
 });
 
 //Utlogging
-app.post("/Utlogging", async (req, res) => {
+app.post("/Utlogging", nocache(), async (req, res) => {
     try {
         console.log("Utlogging forespørsel mottatt");
         if (!req.isAuthenticated()) {
@@ -362,7 +361,7 @@ app.post("/Utlogging", async (req, res) => {
 });
 
 //Sletting av bruker
-app.post("/SletteBruker", [
+app.post("/SletteBruker", nocache(), [
     body('passord')
     .notEmpty().withMessage("Passord må fylles ut.")     //Validering av innlogging med express-validator https://express-validator.github.io/docs/
     .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.") 
@@ -409,7 +408,7 @@ app.post("/SletteBruker", [
 });
 
 //Sjekk av session
-app.get("/sjekk-session", (req, res) => {
+app.get("/sjekk-session", nocache(), (req, res) => {
     console.log("Sjekk session forespørsel mottatt");
     if (req.isAuthenticated()) {
         console.log("Bruker er autentisert:", req.user);
