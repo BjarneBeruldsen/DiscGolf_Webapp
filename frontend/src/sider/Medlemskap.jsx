@@ -1,12 +1,19 @@
 import React, { useState } from "react";
 
+
+const storBokstav = (str) => {
+  if (!str) return "";                                            //https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
 const Medlemskap = ({ loggetInnBruker }) => {
   const [visSlettSkjema, setVisSlettSkjema] = useState(false);
   const [passord, setPassord] = useState("");
   const [melding, setMelding] = useState("");
+  //Her legger vi til alle funksjoner som skal være med inn under medlemskap
+//Endring av brukerinformasjon
 
-  //Andre funksjoner som skal også være med i medlemskap
-  //F.eks. endre brukerinfo
+
 
 
 
@@ -31,7 +38,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
   
       if (respons.ok) {
         localStorage.removeItem("bruker");
-        window.location.href = "/Hjem"; 
+        window.location.href = "/Hjem"; //Kan ikke bruke usehistory her
       } else {
         setMelding(data.error);
       }
@@ -40,13 +47,12 @@ const Medlemskap = ({ loggetInnBruker }) => {
     }
   };
 
-  
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
         <h2 className="text-2xl mb-4 text-gray-700">Medlemskap</h2>
         <p className="mb-4">
-          Velkommen, <span className="font-bold">{loggetInnBruker.bruker}</span>
+          Velkommen, <span className="font-bold">{storBokstav(loggetInnBruker.bruker)}</span>
         </p>
         <p className="mb-4">Du er registrert som medlem av DiscGolf.</p>
 
