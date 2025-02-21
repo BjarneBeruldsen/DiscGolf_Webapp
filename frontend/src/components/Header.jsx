@@ -2,11 +2,6 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import loggUtBruker from "../sider/Utlogging";
 
-const storBokstav = (str) => {
-  if (!str) return "";                                            //https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
-  return str.charAt(0).toUpperCase() + str.slice(1);
-};
-
 const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
   const [menyÅpen, setMenyÅpen] = useState(false);
 
@@ -45,7 +40,9 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
             {loggetInnBruker ? (
               <>
                 <li className="text-black font-bold hover:text-gray-600">
-                  <Link to="/medlemskap">{storBokstav(loggetInnBruker.bruker)}</Link>
+                <Link to="/medlemskap" onClick={lukkMeny}>
+                 Mitt Medlemskap
+                 </Link>
                 </li>
                 <li className="flex items-center">
                   <button onClick={loggUt} className="text-black font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg">
@@ -83,7 +80,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
                 <>
                   <li className="text-black font-bold hover:text-gray-600">
                     <Link to="/medlemskap" onClick={lukkMeny}>
-                      {storBokstav(loggetInnBruker.bruker)}
+                      Mitt Medlemskap
                     </Link>
                   </li>
                   <li className="flex items-center">
