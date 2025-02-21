@@ -60,8 +60,6 @@ function App() {
           <div className="innhold">
               <Switch>
                 <Route exact path="/Hjem"><Bilde/> <Hjem />
-                  <Footer/>
-                 
                 </Route>
                 <Route exact path="/LagKlubb">
                   <LagKlubb />
@@ -100,7 +98,6 @@ function App() {
                       setLoggUtBruker={loggUtBruker} 
                     />
                   )}
-                  <Footer/>
                 </Route>
                 <Route exact path="/Registrering">
                   <Registrering />
@@ -112,6 +109,7 @@ function App() {
                   <ScoreBoard />
                 </Route>
               </Switch>
+              <Footer />
           </div>
          
         </div>
