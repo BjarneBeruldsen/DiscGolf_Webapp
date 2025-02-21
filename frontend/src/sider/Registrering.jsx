@@ -3,12 +3,12 @@ import { useHistory } from "react-router-dom";
 
 const Registrering = () => {
     const [bruker, setBruker] = useState("");
-    const [epost, setEpost] = useState(""); // Ny e-post state
+    const [epost, setEpost] = useState(""); 
     const [passord, setPassord] = useState("");
     const [melding, setMelding] = useState("");
     const minne = useHistory(); 
 
-    const handleSubmit = async (event) => {         
+    const handleSubmit = async (event) => {         //https://react-hook-form.com/docs/useform/handlesubmit
         event.preventDefault();
         setMelding("");
 
@@ -28,7 +28,7 @@ const Registrering = () => {
         }
 
         if (!passordRegex.test(passord)) {
-            setMelding("Passord må være minst 8 tegn, inneholde én stor bokstav og ett spesialtegn.");
+            setMelding("Passord må være minst 8 tegn og ha ett spesialtegn.");
             return;
         }
 
@@ -56,7 +56,8 @@ const Registrering = () => {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <header>
+        <div className="flex justify-center items-center min-h-screen bg-gray-100 ">
             <form 
                 onSubmit={handleSubmit} 
                 className="flex flex-col items-center bg-white p-8 rounded-lg shadow-md w-80"
@@ -98,6 +99,7 @@ const Registrering = () => {
                 {melding && <p className="mt-4 text-red-500">{melding}</p>}
             </form>
         </div>
+       </header>
     );
 };
 

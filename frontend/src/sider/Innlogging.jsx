@@ -25,7 +25,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
     }
 
     if (!passordRegex.test(passord)) {
-        setMelding("Passord må være minst 8 tegn og inneholde én stor bokstav og ett spesialtegn.");
+        setMelding("Passord må være minst 8 tegn og ha ett spesialtegn.");
         return;
     }
     try {
