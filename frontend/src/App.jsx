@@ -59,6 +59,8 @@ function App() {
         <Header loggetInnBruker={loggetInnBruker} setLoggetInnBruker={setLoggetInnBruker} />
           <div className="innhold">
               <Switch>
+              <Route exact path="/"><Bilde/> <Hjem />
+              </Route>
                 <Route exact path="/Hjem"><Bilde/> <Hjem />
                 </Route>
                 <Route exact path="/LagKlubb">
@@ -109,6 +111,7 @@ function App() {
                   <ScoreBoard />
                 </Route>
               </Switch>
+              
               <Footer />
           </div>
          
