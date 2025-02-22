@@ -2,13 +2,13 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-200 text-gray-700 mt-auto">
-      <div className="bg-white text-gray-200 py-6 text-center font-bold">
+    <footer className="bg-gray-200 text-gray-700 mt-auto py-4">
+      <div className="bg-white text-gray-700 py-6 text-center font-bold">
         <h1 className="text-2xl">Over 5,000 Baner</h1>
         <p className="text-lg">Registrer resultater og forbedre din spillopplevelse</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-6 py-6 text-center lg:text-left">
+      <div className="max-w-screen-lg mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 px-6 py-6 text-center lg:text-left">
         <div>
           <h1 className="text-xl font-bold">DiscGolf</h1>
           <p className="mt-2">
@@ -34,7 +34,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="w-full text-center py-2 bg-gray-200 text-gray-900 text-sm relative z-10">
+      <div className="w-full flex justify-center py-2 bg-gray-200 text-black text-sm">
         <p>© 2024 DiscGolf. All Rights Reserved.</p>
       </div>
     </footer>
