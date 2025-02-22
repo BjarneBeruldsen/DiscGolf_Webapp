@@ -20,14 +20,14 @@ const Footer = () => {
           </p>
         </div>
         
-        <div className="justify-self-center text-center flex flex-col lg:flex-row gap-4">
+        <div className="justify-self-center text-center flex flex-col lg:flex-row gap-4 self-start">
           <Link to="/Hjem" className="hover:text-gray-700">Hjem</Link>
           <Link to="/OmOss" className="hover:text-gray-700">Om oss</Link>
           <Link to="/Personvern" className="hover:text-gray-700">Personvern</Link>
           <Link to="/Sikkerhet" className="hover:text-gray-700">Sikkerhet</Link>
         </div>
         
-        <div className="justify-self-end text-right">
+        <div className="justify-self-end text-right self-start">
           <p className="font-semibold">Kontakt oss</p>
           <p>Telefon: 1256789</p>
           <p>Email: DiscgolfBø@gmail.com</p>
