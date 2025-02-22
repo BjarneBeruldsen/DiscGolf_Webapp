@@ -2,14 +2,14 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-gray-200 text-gray-700 mt-auto py-8">
-      <div className="bg-white text-gray-700 py-6 text-center font-bold">
+    <footer className="w-full bg-gray-200 text-gray-900 mt-auto py-8">
+      <div className="bg-white text-gray-900 py-6 text-center font-bold">
         <h1 className="text-2xl">Over 5,000 Baner</h1>
         <p className="text-lg">Registrer resultater og forbedre din spillopplevelse</p>
       </div>
 
-      <div className="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 px-10 py-6 text-center md:text-left">
-        <div>
+      <div className="w-full flex flex-wrap justify-between px-10 py-6 text-center md:text-left">
+        <div className="w-full md:w-1/3">
           <h1 className="text-xl font-bold">DiscGolf</h1>
           <p className="mt-2">
             Disc golf er en spennende utendørs sport der målet er å kaste en frisbee i en kurv på færrest mulig kast.
@@ -17,7 +17,7 @@ const Footer = () => {
           </p>
         </div>
 
-        <div>
+        <div className="w-full md:w-1/3 mt-4 md:mt-0">
           <ul className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-6 text-lg font-medium">
             <li><Link to="/Hjem" className="hover:text-gray-800">Hjem</Link></li>
             <li><Link to="#" className="hover:text-gray-800">Om oss</Link></li>
@@ -26,7 +26,7 @@ const Footer = () => {
           </ul>
         </div>
 
-        <div className="text-center md:text-right">
+        <div className="w-full md:w-1/3 text-center md:text-right mt-4 md:mt-0">
           <p className="font-semibold">Kontakt oss</p>
           <p>Telefon: 1256789</p>
           <p>Email: DiscgolfBø@gmail.com</p>
