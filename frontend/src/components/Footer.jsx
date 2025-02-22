@@ -27,7 +27,7 @@ const Footer = () => {
           <Link to="/Sikkerhet" className="hover:text-gray-700">Sikkerhet</Link>
         </div>
         
-        <div className="justify-self-end text-right self-start">
+        <div className="text-right self-start">
           <p className="font-semibold text-center">Kontakt oss</p>
           <p className="text-center">Telefon: 1256789</p>
           <p className="text-center">Email: DiscgolfBø@gmail.com</p>
