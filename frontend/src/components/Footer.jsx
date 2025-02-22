@@ -1,10 +1,10 @@
+import React from "react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-gray-200 text-gray-900">
-      
-      <div className="bg-white text-center py-6 font-bold">
+    <footer className="bg-gray-200 text-gray-700 mt-auto">
+      <div className="bg-white text-grey-200 py-6 text-center font-bold">
         <h1 className="text-2xl">Over 5,000 Baner</h1>
         <p className="text-lg">Registrer resultater og forbedre din spillopplevelse</p>
       </div>
@@ -18,7 +18,6 @@ const Footer = () => {
           </p>
         </div>
 
-       
         <div className="text-center">
           <ul className="inline-block space-x-6 text-lg font-medium">
             <li className="inline"><Link to="/Hjem" className="hover:text-gray-800">Hjem</Link></li>
@@ -36,8 +35,8 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="w-full text-center py-2 bg-gray-200 border-color-white shadow-sm shadow-black text-black text-sm">
-        <p>© 2025 DiscGolf. All Rights Reserved.</p>
+      <div className="text-center py-2 bg-grey-200 text-black text-sm">
+        <p>© 2024 DiscGolf. All Rights Reserved.</p>
       </div>
     </footer>
   );
