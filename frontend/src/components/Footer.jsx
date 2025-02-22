@@ -13,18 +13,20 @@ const Footer = () => {
         
         <div className="text-left">
           <h1 className="text-xl font-bold">DiscGolf</h1>
-          <p className="mt-2">
+          <p className="mt-2 text-left">
             Disc golf er en spennende utendørs sport der målet er å kaste en frisbee i en kurv 
             på færrest mulig kast. Med over 18,000 baner verden over, er sporten i vekst og 
             passer for spillere i alle aldre og ferdighetsnivåer.
           </p>
         </div>
         
-        <div className="justify-self-center text-center self-start flex flex-col lg:flex-row gap-4">
-          <Link to="/Hjem" className="hover:text-gray-700">Hjem</Link>
-          <Link to="/OmOss" className="hover:text-gray-700">Om oss</Link>
-          <Link to="/Personvern" className="hover:text-gray-700">Personvern</Link>
-          <Link to="/Sikkerhet" className="hover:text-gray-700">Sikkerhet</Link>
+        <div className="text-center">
+          <ul className="inline-block space-x-6 text-center ">
+          <Link to="/Hjem" className="hover:text-gray-700 font-semibold">Hjem</Link>
+          <Link to="/OmOss" className="hover:text-gray-700 font-semibold">Om oss</Link>
+          <Link to="/Personvern" className="hover:text-gray-700 font-semibold">Personvern</Link>
+          <Link to="/Sikkerhet" className="hover:text-gray-700 font-semibold">Sikkerhet</Link>
+          </ul>
         </div>
         
         <div className="text-right">
