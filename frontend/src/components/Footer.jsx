@@ -3,15 +3,15 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <footer className="w-full bg-gray-200 text-gray-900">
-
+  
       <div className="bg-white text-center py-6 font-bold">
         <h1 className="text-2xl">Over 5,000 Baner</h1>
         <p className="text-lg">Registrer resultater og forbedre din spillopplevelse</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 w-full p-6 items-start">
-        
-        <div className="justify-self-start text-left max-w-xl whitespace-normal break-words">
+      
+        <div className="justify-self-start text-left max-w-xl whitespace-normal break-words self-start">
           <h1 className="text-xl font-bold">DiscGolf</h1>
           <p className="mt-2">
             Disc golf er en spennende utendørs sport der målet er å kaste en frisbee i en kurv 
@@ -31,7 +31,7 @@ const Footer = () => {
           <p className="font-semibold">Kontakt oss</p>
           <p>Telefon: 1256789</p>
           <p>Email: DiscgolfBø@gmail.com</p>
-          <p>BØ, Norway</p>
+          <p>Bø, Norway</p>
         </div>
       </div>
 
