@@ -9,9 +9,9 @@ const Footer = () => {
         <p className="text-lg">Registrer resultater og forbedre din spillopplevelse</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 w-full p-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-8 py-6">
         
-        <div className="justify-self-start text-left self-start">
+        <div>
           <h1 className="text-xl font-bold">DiscGolf</h1>
           <p className="mt-2">
             Disc golf er en spennende utendørs sport der målet er å kaste en frisbee i en kurv 
@@ -35,7 +35,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="w-full text-center py-2 bg-gray-300 text-black text-sm">
+      <div className="w-full text-center py-2 bg-gray-200 border-color-white shadow-sm shadow-black text-black text-sm">
         <p>© 2025 DiscGolf. All Rights Reserved.</p>
       </div>
     </footer>
