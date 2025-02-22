@@ -599,8 +599,8 @@
   .max-w-md {
     max-width: var(--container-md);
   }
-  .max-w-screen-lg {
-    max-width: var(--breakpoint-lg);
+  .max-w-screen-xl {
+    max-width: var(--breakpoint-xl);
   }
   .grid-cols-1 {
     grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -744,6 +744,9 @@
   .px-8 {
     padding-inline: calc(var(--spacing) * 8);
   }
+  .px-10 {
+    padding-inline: calc(var(--spacing) * 10);
+  }
   .py-2 {
     padding-block: calc(var(--spacing) * 2);
   }
@@ -808,6 +811,9 @@
   }
   .text-gray-700 {
     color: var(--color-gray-700);
+  }
+  .text-gray-900 {
+    color: var(--color-gray-900);
   }
   .text-red-500 {
     color: var(--color-red-500);
@@ -946,23 +952,18 @@
       padding-inline: calc(var(--spacing) * 10);
     }
   }
-  .lg\:hidden {
-    @media (width >= 64rem) {
-      display: none;
-    }
-  }
-  .lg\:grid-cols-3 {
-    @media (width >= 64rem) {
+  .md\:grid-cols-3 {
+    @media (width >= 48rem) {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
-  .lg\:flex-row {
-    @media (width >= 64rem) {
+  .md\:flex-row {
+    @media (width >= 48rem) {
       flex-direction: row;
     }
   }
-  .lg\:space-y-0 {
-    @media (width >= 64rem) {
+  .md\:space-y-0 {
+    @media (width >= 48rem) {
       :where(& > :not(:last-child)) {
         --tw-space-y-reverse: 0;
         margin-block-start: calc(calc(var(--spacing) * 0) * var(--tw-space-y-reverse));
@@ -970,8 +971,8 @@
       }
     }
   }
-  .lg\:space-x-6 {
-    @media (width >= 64rem) {
+  .md\:space-x-6 {
+    @media (width >= 48rem) {
       :where(& > :not(:last-child)) {
         --tw-space-x-reverse: 0;
         margin-inline-start: calc(calc(var(--spacing) * 6) * var(--tw-space-x-reverse));
@@ -979,14 +980,19 @@
       }
     }
   }
-  .lg\:text-left {
-    @media (width >= 64rem) {
+  .md\:text-left {
+    @media (width >= 48rem) {
       text-align: left;
     }
   }
-  .lg\:text-right {
-    @media (width >= 64rem) {
+  .md\:text-right {
+    @media (width >= 48rem) {
       text-align: right;
+    }
+  }
+  .lg\:hidden {
+    @media (width >= 64rem) {
+      display: none;
     }
   }
 }
