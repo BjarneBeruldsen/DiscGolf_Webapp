@@ -11,7 +11,7 @@ const Footer = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-8 py-6">
         
-        <div>
+        <div className="text-left">
           <h1 className="text-xl font-bold">DiscGolf</h1>
           <p className="mt-2">
             Disc golf er en spennende utendørs sport der målet er å kaste en frisbee i en kurv 
