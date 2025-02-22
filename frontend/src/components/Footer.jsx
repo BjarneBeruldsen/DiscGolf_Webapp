@@ -2,36 +2,58 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-200 text-gray-700 mt-auto">
-      <div className="bg-white text-grey-200 py-6 text-center font-bold">
+    <footer className="bg-gray-200 text-gray-700 mt-auto w-full">
+
+      <div className="bg-white text-gray-800 py-6 text-center font-bold">
         <h1 className="text-2xl">Over 5,000 Baner</h1>
         <p className="text-lg">Registrer resultater og forbedre din spillopplevelse</p>
       </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-8 py-6">
-        <div>
-          <h1 className="text-xl font-bold">DiscGolf</h1>
-          <p className="mt-2">
-            Disc golf er en spennende utendørs sport der målet er å kaste en frisbee i en kurv på færrest mulig kast.
-            Med over 18,000 baner verden over, er sporten i vekst og passer for spillere i alle aldre og ferdighetsnivåer.
-          </p>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full px-4 py-4">
+        
+        <div className="flex justify-start">
+          <div className="text-left">
+            <h1 className="text-xl font-bold mb-2">DiscGolf</h1>
+            <p className="text-sm lg:text-base">
+              Disc golf er en spennende utendørs sport der målet er å kaste en frisbee i en kurv
+              på færrest mulig kast. Med over 18,000 baner verden over, er sporten i vekst og
+              passer for spillere i alle aldre og ferdighetsnivåer.
+            </p>
+          </div>
         </div>
-
-        <div className="text-center">
-          <ul className="inline-block space-x-6 text-lg font-medium">
-            <li className="inline"><Link to="/Hjem" className="hover:text-gray-800">Hjem</Link></li>
-            <li className="inline"><Link to="#" className="hover:text-gray-800">Om oss</Link></li>
-            <li className="inline"><Link to="#" className="hover:text-gray-800">Personvern og informasjonskapsler</Link></li>
-            <li className="inline"><Link to="#" className="hover:text-gray-800">Sikkerhet</Link></li>
-
+        
+        <div className="flex justify-center items-center">
+          <ul className="flex flex-col lg:flex-row gap-4 lg:gap-6 text-base text-center">
+            <li>
+              <Link to="/Hjem" className="hover:text-gray-800 block">
+                Hjem
+              </Link>
+            </li>
+            <li>
+              <Link to="#" className="hover:text-gray-800 block">
+                Om oss
+              </Link>
+            </li>
+            <li>
+              <Link to="#" className="hover:text-gray-800 block">
+                Personvern og informasjonskapsler
+              </Link>
+            </li>
+            <li>
+              <Link to="#" className="hover:text-gray-800 block">
+                Sikkerhet
+              </Link>
+            </li>
           </ul>
         </div>
-
-        <div className="text-right">
-          <p className="font-semibold">Kontakt oss</p>
-          <p>Telefon: 1256789</p>
-          <p>Email: DiscgolfBø@gmail.com</p>
-          <p>BØ, Norway</p>
+        
+        <div className="flex justify-end">
+          <div className="text-right">
+            <p className="font-semibold mb-2">Kontakt oss</p>
+            <p>Telefon: 1256789</p>
+            <p>Email: DiscgolfBø@gmail.com</p>
+            <p>BØ, Norway</p>
+          </div>
         </div>
       </div>
 
