@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import LagKlubb from './LagKlubb';
-import VelgKlubb from './VelgKlubb';
-import LagKlubbSide from './LagKlubbSide';
-import Klubbsider from './Klubbsider';
+import LagKlubb from './KlubbHåndtering/LagKlubb';
+import VelgKlubb from './KlubbHåndtering/VelgKlubb';
+import LagKlubbSide from './KlubbHåndtering/LagKlubbSide';
+import Klubbsider from './KlubbHåndtering/Klubbsider';
 import './output.css';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import Bilde from "./components/Bilde";
-import Hjem from './sider/Hjem';
-import Innlogging from './sider/Innlogging'; 
-import Registrering from './sider/Registrering';
-import Klubbside from './Klubbside';
-import Medlemskap from './sider/Medlemskap';
-import Nyheter from './sider/Nyheter';
-import Baner from './sider/Baner';
-import loggUtBruker from "./sider/Utlogging";
-import ScoreBoard from './ScoreBoard';
+import Header from "./_components/Header";
+import Footer from "./_components/Footer";
+import Bilde from "./_components/Bilde";
+import Hjem from './_components/Hjem';
+import Innlogging from './BrukerHåndtering/Innlogging'; 
+import Registrering from './BrukerHåndtering/Registrering';
+import Klubbside from './KlubbHåndtering/Klubbside';
+import Medlemskap from './BrukerHåndtering/Medlemskap';
+import Nyheter from './KlubbHåndtering/Nyheter';
+import Baner from './KlubbHåndtering/Baner';
+import loggUtBruker from "./BrukerHåndtering/Utlogging";
+import ScoreBoard from './KlubbHåndtering/ScoreBoard';
 
 function App() {
   const [loggetInnBruker, setLoggetInnBruker] = useState(null);

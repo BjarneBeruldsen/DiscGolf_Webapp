@@ -47,7 +47,7 @@ const Registrering = () => {
             } else {
                 setMelding("Registrering vellykket! Du blir omdirigert til innlogging...");
                 setTimeout(() => {
-                    minne.push("/Innlogging");
+                    minne.push("/BrukerHåndtering/Innlogging");
                 }, 1000);
             }
         } catch (error) {

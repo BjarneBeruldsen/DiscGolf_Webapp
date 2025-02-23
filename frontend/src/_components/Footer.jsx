@@ -35,7 +35,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="text-center py-2 bg-grey-200 text-black text-sm">
+      <div className="text-center py-2 bg-gray-200 text-black text-sm">
         <p>© 2024 DiscGolf. All Rights Reserved.</p>
       </div>
     </footer>
