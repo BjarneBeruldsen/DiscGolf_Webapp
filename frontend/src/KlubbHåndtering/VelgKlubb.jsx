@@ -28,7 +28,7 @@ const VelgKlubb = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (valgtKlubb) {
-            minne.push(`/KlubbHåndtering/LagKlubbSide/${valgtKlubb}`);
+            minne.push(`/LagKlubbSide/${valgtKlubb}`);
         }
     };
 
