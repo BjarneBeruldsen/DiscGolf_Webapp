@@ -29,9 +29,8 @@ const Footer = () => {
         
         <div className="text-center justify-items-center">
           <p className="font-semibold">Kontakt oss</p>
-          <p>Telefon: 1256789</p>
           <p>Email: DiscgolfBø@gmail.com</p>
-          <p>BØ, Norway</p>
+          <p>Bø, Norway</p>
         </div>
       </div>
 
