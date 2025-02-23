@@ -27,7 +27,7 @@ const Footer = () => {
           </ul>
         </div>
         
-        <div className="text-right justify-items-center">
+        <div className="justify-items-center">
           <p className="font-semibold">Kontakt oss</p>
           <p>Telefon: 1256789</p>
           <p>Email: DiscgolfBø@gmail.com</p>
