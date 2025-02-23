@@ -30,7 +30,7 @@ const Footer = () => {
         <div className="text-center justify-items-center">
           <p className="font-semibold">Kontakt oss</p>
           <p>Email: DiscgolfBø@gmail.com</p>
-          <p>Bø, Norway</p>
+          <p>Bø, Norge</p>
         </div>
       </div>
 
