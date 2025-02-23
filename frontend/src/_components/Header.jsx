@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import loggUtBruker from "../BrukerHåndtering/Utlogging";
+import loggUtBruker from "../BrukerHandtering/Utlogging";
 
 const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
   const [menyÅpen, setMenyÅpen] = useState(false);
