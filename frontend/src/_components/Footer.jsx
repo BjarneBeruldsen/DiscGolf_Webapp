@@ -22,6 +22,7 @@ const Footer = () => {
             <li className="inline"><Link to="/Personvern" className="hover:text-gray-800">Personvern</Link></li>
             <li className="inline"><Link to="/Sikkerhet" className="hover:text-gray-800">Sikkerhet</Link></li>
             <li className="inline"><Link to="/Informasjonskapsler" className="hover:text-gray-800">Informasjonskapsler</Link></li>
+            <li className="inline"><Link to="/KontaktOss" className="hover:text-gray-800">Kontakt Oss</Link></li>
           </ul>
         </div>
         
