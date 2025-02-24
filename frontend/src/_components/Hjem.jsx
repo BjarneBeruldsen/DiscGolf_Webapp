@@ -29,7 +29,7 @@ const Hjem = () => {
             </button>
         </div>*/
 <header>
-    <div className="bg-white text-grey-200 py-6 text-center">
+    <div className=" text-grey-200 py-6 text-center bg-gray-40">
         <h1 className="text-2xl font-normal">Over 5,000 Baner</h1>
         <p className="text-lg text-[#656565]">Registrer resultater og forbedre din spillopplevelse</p>
         <div className="flex justify-center">
