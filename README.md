@@ -2,6 +2,6 @@ Hovedrapport: https://uisn-my.sharepoint.com/:w:/r/personal/263542_usn_no/Docume
 
 Nettside: https://disk-applikasjon-39f504b7af19.herokuapp.com/
 
-NB! Sjekk issues
+NB! Sjekk issues & Projects
 
 Mer info om applikasjonen kommer
