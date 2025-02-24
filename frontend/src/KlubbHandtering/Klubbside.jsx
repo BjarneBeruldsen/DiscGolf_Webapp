@@ -76,8 +76,9 @@ const Klubbside = () => {
                                 className="w-full border border-gray-600 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:border-blue-500"
                             />
                             <span className='text-red-500'>{errorMelding}</span>
-                            <button onClick={handleUpdate} className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white mt-2">Oppdater klubbnavn</button>
-                            <button onClick={handleDelete} className="w-full flex justify-center py-4 bg-red-500 rounded-lg text-sm text-white mt-2">Slett klubb</button>
+                            
+                            {/* <button onClick={handleUpdate} className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white mt-2">Oppdater klubbnavn</button>
+                            <button onClick={handleDelete} className="w-full flex justify-center py-4 bg-red-500 rounded-lg text-sm text-white mt-2">Slett klubb</button> */}
                         </div>
                     </article>
                 )}

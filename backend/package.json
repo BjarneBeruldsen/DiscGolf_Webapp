@@ -1,4 +1,11 @@
 {
+  "name": "prosjekt",
+  "version": "1.0.0",
+  "description": "Disk applikasjon",
+  "main": "backend/app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "connect-mongo": "^5.1.0",
