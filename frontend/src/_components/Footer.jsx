@@ -4,10 +4,7 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <footer className="bg-gray-200 text-gray-700 mt-auto">
-      <div className="bg-white text-grey-200 py-6 text-center font-bold">
-        <h1 className="text-2xl">Over 5,000 Baner</h1>
-        <p className="text-lg">Registrer resultater og forbedre din spillopplevelse</p>
-      </div>
+      
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-8 py-6">
         <div>
