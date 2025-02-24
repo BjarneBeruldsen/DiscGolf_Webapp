@@ -17,6 +17,10 @@ import Nyheter from './KlubbHandtering/Nyheter';
 import Baner from './KlubbHandtering/Baner';
 import loggUtBruker from "./BrukerHandtering/Utlogging";
 import ScoreBoard from './KlubbHandtering/ScoreBoard';
+import Personvern from './_components/Personvern';
+import Sikkerhet from './_components/Sikkerhet';
+import Informasjonskapsler from './_components/Informasjonskapsler';
+import KontaktOss from './_components/KontaktOss';
 
 function App() {
   const [loggetInnBruker, setLoggetInnBruker] = useState(null);
@@ -60,7 +64,7 @@ function App() {
   }, []);
 
   if (laster) {
-    return <p className="text-center text-gray-700 mt-10">Laster inn.</p>;
+    return <p className="text-center text-gray-700 mt-10">Laster inn...</p>;
   }
 
   return (
@@ -120,11 +124,13 @@ function App() {
                 <Route exact path="/scoreboard">
                   <ScoreBoard />
                 </Route>
+                <Route exact path="/Personvern" component={Personvern} />
+                <Route exact path="/Sikkerhet" component={Sikkerhet} />
+                <Route exact path="/Informasjonskapsler" component={Informasjonskapsler} />
+                <Route exact path="/KontaktOss" component={KontaktOss} />
               </Switch>
-              
               <Footer />
           </div>
-         
         </div>
       </Router>
   );
