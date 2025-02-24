@@ -22,41 +22,53 @@ function App() {
   const [loggetInnBruker, setLoggetInnBruker] = useState(null);
   const [laster, setLaster] = useState(true);
 
-  useEffect(() => {
-    const lagretBruker = localStorage.getItem("bruker");
-    if (lagretBruker) {
-      setLoggetInnBruker(JSON.parse(lagretBruker));
-    }
+  const sjekkSession = async () => {
+    try {
+      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/sjekk-session`, {
+        method: "GET",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+      });
 
-    const sjekkSession = async () => {
-      try {
-        const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/sjekk-session`, {
-          method: "GET",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-        });
-
+      if (respons.status === 401) {
+        console.log("Brukeren er ikke logget inn (401 Unauthorized)");
+        setLoggetInnBruker(null);
+        localStorage.removeItem("bruker");
+      } else {
         const data = await respons.json();
-        if (respons.ok && data.bruker) {
+        if (data.bruker) {
+          console.log("Bruker er logget inn:", data.bruker);
           setLoggetInnBruker(data.bruker);
           localStorage.setItem("bruker", JSON.stringify(data.bruker));
         } else {
+          console.log("Ingen bruker funnet i session");
           setLoggetInnBruker(null);
           localStorage.removeItem("bruker");
         }
-      } catch (error) {
-        setLoggetInnBruker(null);
-        localStorage.removeItem("bruker");
-      } finally {
-        setLaster(false);
       }
-    };
+    } catch (error) {
+      console.error("Feil ved henting av session:", error);
+      setLoggetInnBruker(null);
+      localStorage.removeItem("bruker");
+    } finally {
+      setLaster(false);
+    }
+  };
 
-    sjekkSession();
+  useEffect(() => {
+    console.log("Sjekker localStorage...");
+    const lagretBruker = localStorage.getItem("bruker");
+
+    if (lagretBruker) {
+      console.log("Bruker funnet i localStorage:", JSON.parse(lagretBruker));
+      setLoggetInnBruker(JSON.parse(lagretBruker));
+    }
+
+    sjekkSession(); 
   }, []);
 
   if (laster) {
-    return <p className="text-center text-gray-700 mt-10">Laster inn</p>;
+    return <p className="text-center text-gray-700 mt-10">Laster inn.</p>;
   }
 
   return (
