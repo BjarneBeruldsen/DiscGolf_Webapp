@@ -33,7 +33,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
     setMelding("");
 
     if (brukernavnInput !== loggetInnBruker.bruker) {
-      setMelding("Brukernavnet stemmer ikke!");
+      setMelding("Brukernavnet stemmer ikke.");
       return;
     }
 
