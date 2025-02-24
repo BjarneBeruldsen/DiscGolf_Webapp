@@ -20,38 +20,44 @@ import ScoreBoard from './KlubbHandtering/ScoreBoard';
 
 function App() {
   const [loggetInnBruker, setLoggetInnBruker] = useState(null);
+  const [laster, setLaster] = useState(true);
 
   useEffect(() => {
-      const lagretBruker = localStorage.getItem("bruker");
-      if (lagretBruker) {
-          setLoggetInnBruker(JSON.parse(lagretBruker));
+    const lagretBruker = localStorage.getItem("bruker");
+    if (lagretBruker) {
+      setLoggetInnBruker(JSON.parse(lagretBruker));
+    }
+
+    const sjekkSession = async () => {
+      try {
+        const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/sjekk-session`, {
+          method: "GET",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        const data = await respons.json();
+        if (respons.ok && data.bruker) {
+          setLoggetInnBruker(data.bruker);
+          localStorage.setItem("bruker", JSON.stringify(data.bruker));
+        } else {
+          setLoggetInnBruker(null);
+          localStorage.removeItem("bruker");
+        }
+      } catch (error) {
+        setLoggetInnBruker(null);
+        localStorage.removeItem("bruker");
+      } finally {
+        setLaster(false);
       }
+    };
 
-      const sjekkSession = async () => {
-          try {
-              const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/sjekk-session`, {
-                  method: "GET",
-                  credentials: "include",
-                  headers: { "Content-Type": "application/json" },
-              });
-
-              const data = await respons.json();
-              if (respons.ok && data.bruker) {
-                  setLoggetInnBruker(data.bruker);
-                  localStorage.setItem("bruker", JSON.stringify(data.bruker));
-              } else {
-                  setLoggetInnBruker(null);
-                  localStorage.removeItem("bruker");
-              }
-          } catch (error) {
-              console.error("Feil ved henting av session:", error);
-              setLoggetInnBruker(null);
-              localStorage.removeItem("bruker");
-          }
-      };
-
-      sjekkSession();
+    sjekkSession();
   }, []);
+
+  if (laster) {
+    return <p className="text-center text-gray-700 mt-10">Laster inn</p>;
+  }
 
   return (
       <Router>

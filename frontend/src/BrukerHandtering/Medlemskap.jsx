@@ -1,44 +1,55 @@
-import React, { useState } from "react";
-
-
-const storBokstav = (str) => {
-  if (!str) return "";                                            //https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
-  return str.charAt(0).toUpperCase() + str.slice(1);
-};
+import React, { useState, useEffect } from "react";
 
 const Medlemskap = ({ loggetInnBruker }) => {
-  const [visSlettSkjema, setVisSlettSkjema] = useState(false);
+  const [valgtKategori, setValgtKategori] = useState("brukerinnstillinger");
+  const [visSlettBoks, setVisSlettBoks] = useState(false);
+  const [brukernavnInput, setBrukernavnInput] = useState("");
   const [passord, setPassord] = useState("");
   const [melding, setMelding] = useState("");
-  //Her legger vi til alle funksjoner som skal være med inn under medlemskap
-//Endring av brukerinformasjon
+  const [venter, setVenter] = useState(true);
 
+  useEffect(() => {
+    if (loggetInnBruker !== undefined) {
+      setVenter(false);
+    }
+  }, [loggetInnBruker]);
 
+  if (venter) {
+    return <p className="text-center text-gray-700 mt-10">Laster inn</p>;
+  }
 
+  if (!loggetInnBruker) {
+    window.location.href = "/Innlogging";
+    return null;
+  }
 
+  const byttKategori = (kategori) => {
+    setVisSlettBoks(false);
+    setValgtKategori(kategori);
+  };
 
-
-
-  //Sletting av bruker 
   const handleSlettBruker = async (e) => {
     e.preventDefault();
     setMelding("");
-  
+
+    if (brukernavnInput !== loggetInnBruker.bruker) {
+      setMelding("Brukernavnet stemmer ikke!");
+      return;
+    }
+
     try {
       const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/SletteBruker`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ bruker: loggetInnBruker.bruker, passord }),
       });
-  
+
       const data = await respons.json();
-  
+
       if (respons.ok) {
         localStorage.removeItem("bruker");
-        window.location.href = "/Hjem"; //Kan ikke bruke usehistory her
+        window.location.href = "/Hjem";
       } else {
         setMelding(data.error);
       }
@@ -48,50 +59,70 @@ const Medlemskap = ({ loggetInnBruker }) => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <h2 className="text-2xl mb-4 text-gray-700">Medlemskap</h2>
-        <p className="mb-4">
-          Velkommen, <span className="font-bold">{storBokstav(loggetInnBruker.bruker)}</span>
-        </p>
-        <p className="mb-4">Du er registrert som medlem av DiscGolf.</p>
+    <div className="flex min-h-screen bg-gray-100">
+      <div className="w-1/4 bg-white p-6 shadow-md">
+        <h2 className="text-lg font-bold mb-6">Innstillinger</h2>
+        <ul className="space-y-4">
+          {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
+            <li key={kategori}>
+              <button
+                className={`w-full text-left p-3 rounded transition duration-200 ${
+                  valgtKategori === kategori ? "bg-gray-300 font-bold" : "hover:bg-gray-200"
+                }`}
+                onClick={() => byttKategori(kategori)}
+              >
+                {kategori.charAt(0).toUpperCase() + kategori.slice(1)}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
 
-        {!visSlettSkjema && (
-          <button
-            onClick={() => setVisSlettSkjema(true)}
-            className="bg-red-600 text-white px-4 py-2 rounded-lg w-full border border-red-500 hover:bg-red-700"
-          >
-            Slett Bruker
-          </button>
-        )}
+      <div className="flex-1 flex justify-center items-center">
+        <div className="bg-white p-8 rounded-lg border border-gray-300 shadow-md w-full max-w-md">
+          {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (
+            <>
+              <h2 className="text-xl font-bold text-black mb-4">Brukerinnstillinger</h2>
+              <div className="space-y-4">
+                <input type="text" value={loggetInnBruker.bruker || ""} readOnly className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100" />
+                <input type="email" value={loggetInnBruker.epost || ""} readOnly className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100" />
+                <input type="password" placeholder="Nytt passord" className="w-full px-3 py-2 border border-gray-300 rounded" />
+                <button className="bg-black text-white px-4 py-2 rounded w-full hover:bg-gray-800">Lagre Endringer</button>
+              </div>
+              <hr className="my-6 border-gray-300" />
+              <button onClick={() => setVisSlettBoks(true)} className="bg-red-600 text-white px-4 py-2 rounded w-full hover:bg-red-700">
+                Slett Bruker
+              </button>
+            </>
+          )}
 
-        {visSlettSkjema && (
-          <form onSubmit={handleSlettBruker} className="mt-4">
-            <h3 className="text-xl font-bold text-red-600">Bekreft sletting</h3>
-            <p className="text-red-500 mb-4">Denne handlingen kan ikke angres!</p>
-            <input
-              type="password"
-              placeholder="Bekreft passord"
-              value={passord}
-              onChange={(e) => setPassord(e.target.value)}
-              required
-              className="px-4 py-3 mb-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-red-400"
-            />
-            <button
-              type="submit"
-              className="bg-red-600 text-white px-4 py-2 rounded-lg w-full border border-red-500 hover:bg-red-700"
-            >
-              Bekreft Sletting
-            </button>
-            <button
-              onClick={() => setVisSlettSkjema(false)}
-              className="bg-gray-300 text-gray-700 px-4 py-2 mt-2 rounded-lg w-full border border-gray-400 hover:bg-gray-400"
-            >
-              Avbryt
-            </button>
-            {melding && <p className="mt-4 text-red-500">{melding}</p>}
-          </form>
-        )}
+          {["personvern", "sikkerhet", "min klubb"].includes(valgtKategori) && (
+            <>
+              <h2 className="text-xl font-bold text-black mb-4">
+                {valgtKategori.charAt(0).toUpperCase() + valgtKategori.slice(1)}
+              </h2>
+              <p className="text-gray-600">Funksjoner kommer snart</p>
+            </>
+          )}
+
+          {visSlettBoks && (
+            <div className="flex flex-col justify-center items-center w-full">
+              <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-300 w-full max-w-md">
+                <h3 className="text-xl font-bold text-black">Bekreft sletting</h3>
+                <p className="text-gray-600 mb-4">Denne handlingen kan ikke angres!</p>
+                <input type="text" placeholder="Skriv inn brukernavn" value={brukernavnInput} onChange={(e) => setBrukernavnInput(e.target.value)} required className="w-full px-3 py-2 border border-gray-300 rounded mb-3" />
+                <input type="password" placeholder="Bekreft passord" value={passord} onChange={(e) => setPassord(e.target.value)} required className="w-full px-3 py-2 border border-gray-300 rounded" />
+                <button type="submit" onClick={handleSlettBruker} className="bg-red-600 text-white px-4 py-2 rounded w-full mt-2 hover:bg-red-700">
+                  Bekreft Sletting
+                </button>
+                <button onClick={() => setVisSlettBoks(false)} className="bg-gray-300 text-black px-4 py-2 rounded w-full mt-2 hover:bg-gray-400">
+                  Avbryt
+                </button>
+                {melding && <p className="mt-4 text-red-600">{melding}</p>}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
