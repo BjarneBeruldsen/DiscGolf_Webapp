@@ -18,9 +18,10 @@ const Footer = () => {
         <div className="text-center">
           <ul className="inline-block space-x-6 text-lg font-medium">
             <li className="inline"><Link to="/Hjem" className="hover:text-gray-800">Hjem</Link></li>
-            <li className="inline"><Link to="#" className="hover:text-gray-800">Om oss</Link></li>
-            <li className="inline"><Link to="#" className="hover:text-gray-800">Personvern</Link></li>
-            <li className="inline"><Link to="#" className="hover:text-gray-800">Sikkerhet</Link></li>
+            <li className="inline"><Link to="/OmOss" className="hover:text-gray-800">Om oss</Link></li>
+            <li className="inline"><Link to="/Personvern" className="hover:text-gray-800">Personvern</Link></li>
+            <li className="inline"><Link to="/Sikkerhet" className="hover:text-gray-800">Sikkerhet</Link></li>
+            <li className="inline"><Link to="/Informasjonskapsler" className="hover:text-gray-800">Informasjonskapsler</Link></li>
           </ul>
         </div>
         
