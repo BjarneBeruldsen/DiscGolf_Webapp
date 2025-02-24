@@ -17,10 +17,15 @@ const Hjem = () => {
     };
 
     return (
-        <div className="flex justify-center items-center mt-8 h-[40vh]">
+       //Midlertidig deaktivert grunnet designing av frontend hjem
+       /* <div className="flex justify-center items-center mt-8 h-[40vh]">
             <button onClick={handleTommeTestdata} className="py-4 px-8 bg-red-500 rounded-lg text-sm text-white">
                 Tøm testdata
             </button>
+        </div>*/
+        
+        <div>
+
         </div>
     );
 };
