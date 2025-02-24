@@ -33,7 +33,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
             <li><Link to="/Hjem" className="text-black font-bold hover:text-gray-600">Hjem</Link></li>
             <li><Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600">Rediger klubbside</Link></li>
             <li><Link to="/Baner" className="text-black font-bold hover:text-gray-600">Baner</Link></li>
-            <li><Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600">Klubber</Link></li>
+            <li><Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600">Klubbsider</Link></li>
             <li><Link to="/nyheter" className="text-black font-bold hover:text-gray-600">Nyheter</Link></li>
             <li><Link to="/ScoreBoard" className="text-black font-bold hover:text-gray-600">ScoreBoard</Link></li>
 
@@ -72,7 +72,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
             <li><Link to="/Hjem" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Hjem</Link></li>
             <li><Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Rediger klubbside</Link></li>
             <li><Link to="/Baner" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Baner</Link></li>
-            <li><Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Klubber</Link></li>
+            <li><Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Klubbesider</Link></li>
             <li><Link to="/nyheter" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Nyheter</Link></li>
             <li><Link to="/ScoreBoard" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>ScoreBoard</Link></li>
 
