@@ -5,7 +5,7 @@ const Nyhetsliste = ({ nyheter, handleLiker, antLiker }) => {
         <div>
             {nyheter.map((nyhet, index) => (
                 <div className='flex justify-center' key={index}>
-                    <div className="m-4 bg-white rounded-lg shadow-sm p-4 w-full md:w-180">
+                    <div className="m-4 bg-white rounded-lg shadow-sm p-4 w-full md-w-180">
                         <div className='topp-panel border-b'>
                             <h4 className="flex justify-center text-xl font-bold">{ nyhet.nyhetTittel }</h4>
                             <p className="mt-2 flex justify-center">{ nyhet.nyhet }</p>

@@ -7,7 +7,7 @@ const BaneListe = (props) => {
         <div>
             {baner && baner.length > 0 ? (
                 <div className="flex justify-center">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 ">
+                    <div className="grid grid-cols-1 lg-grid-cols-2 gap-6">
                         {baner.map((bane, index) => {
                             const antallHull = bane.hull ? bane.hull.length : 0;
                             return (
@@ -24,7 +24,9 @@ const BaneListe = (props) => {
                                         <div className="beskrivelse pr-4 wrap">
                                             <p>{bane.beskrivelse}</p>
                                         </div>
-                                        <button type="submit" className="py-2 px-2 bg-green-800 rounded-lg text-sm text-white mt-2 hover:bg-green-900">Spill</button>
+                                        <div className="knapp flex justify-end">
+                                            <button type="submit" className="py-2 px-2 bg-green-800 rounded-lg text-sm text-white mt-2 hover:bg-green-900">Spill</button>
+                                        </div>
                                     </div>
                                 </div>
                             );
