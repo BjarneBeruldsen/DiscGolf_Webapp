@@ -67,7 +67,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
       </header>
 
       {menyÅpen && (
-        <nav className="lg:hidden bg-white border-t border-gray-300">
+        <nav className="lg:hidden bg-white border-t border-gray-300 border-b">
           <ul className="flex flex-col space-y-4 p-4">
             <li><Link to="/Hjem" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Hjem</Link></li>
             <li><Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Rediger klubbside</Link></li>
