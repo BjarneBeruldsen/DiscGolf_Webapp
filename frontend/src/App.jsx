@@ -31,40 +31,32 @@ function App() {
       });
 
       if (respons.status === 401) {
-        console.log("Brukeren er ikke logget inn (401 Unauthorized)");
         setLoggetInnBruker(null);
         localStorage.removeItem("bruker");
       } else {
         const data = await respons.json();
         if (data.bruker) {
-          console.log("Bruker er logget inn:", data.bruker);
           setLoggetInnBruker(data.bruker);
           localStorage.setItem("bruker", JSON.stringify(data.bruker));
         } else {
-          console.log("Ingen bruker funnet i session");
           setLoggetInnBruker(null);
           localStorage.removeItem("bruker");
         }
       }
-    } catch (error) {
-      console.error("Feil ved henting av session:", error);
+    } catch {
       setLoggetInnBruker(null);
       localStorage.removeItem("bruker");
     } finally {
       setLaster(false);
     }
   };
-
   useEffect(() => {
-    console.log("Sjekker localStorage...");
     const lagretBruker = localStorage.getItem("bruker");
-
     if (lagretBruker) {
-      console.log("Bruker funnet i localStorage:", JSON.parse(lagretBruker));
       setLoggetInnBruker(JSON.parse(lagretBruker));
     }
-
-    sjekkSession(); 
+    
+    sjekkSession();
   }, []);
 
   if (laster) {
