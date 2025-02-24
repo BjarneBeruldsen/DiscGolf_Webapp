@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import { validering } from './validation';
 
 const LagBane = ({ klubbId, onBaneLagtTil }) => {
     const [hullNr, setHullNr] = useState(1);
     const [avstand, setAvstand] = useState('');
     const [par, setPar] = useState('');
     const [baneNavn, setBaneNavn] = useState('');
+    const [vanskelighet, setVanskelighet] = useState('');
+    const [beskrivelse, setBeskrivelse] = useState('');
     const [hull, setHull] = useState([]);
     const [errorMelding, setErrorMelding] = useState('');
 
@@ -19,7 +22,16 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
     };
 
     const handleLagreBane = () => {
-        const nyBane = { baneNavn, hull };
+        setErrorMelding('');
+        try {
+            validering(beskrivelse, 2, 60)
+        }
+        catch(error) {
+            setErrorMelding(error.message + ' i beskrivelsen');
+            return;
+        }
+
+        const nyBane = { baneNavn, hull, vanskelighet, beskrivelse };
 
         fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${klubbId}/baner`, {
             method: 'POST',
@@ -99,6 +111,25 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                         required
                         value={baneNavn}
                         onChange={(e) => setBaneNavn(e.target.value)}
+                        className="w-full border border-gray-600 rounded-lg shadow-sm
+                                   px-4 py-2 focus:outline-none focus:border-blue-500 font-serif"
+                    />
+                    <label>
+                        Vanskelighetsgrad:
+                    </label>
+                    <select id="vanskelighetsgrad" name='vanskelighetsgrad' value={vanskelighet} onChange={(e) => setVanskelighet(e.target.value)} className="w-full border border-gray-600 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:border-blue-500 font-serif">
+                        <option value="Lett">Lett</option>
+                        <option value="Middels">Middels</option>
+                        <option value="Vanskelig">Vanskelig</option>
+                    </select>
+                    <label>
+                        Beskriv banen:
+                    </label>
+                    <input 
+                        type="text"
+                        required
+                        value={beskrivelse}
+                        onChange={(e) => setBeskrivelse(e.target.value)}
                         className="w-full border border-gray-600 rounded-lg shadow-sm
                                    px-4 py-2 focus:outline-none focus:border-blue-500 font-serif"
                     />

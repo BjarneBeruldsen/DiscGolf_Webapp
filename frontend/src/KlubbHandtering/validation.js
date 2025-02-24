@@ -1,3 +1,10 @@
+export const validering = (tekst, minLengde, maxLengde) => {
+    if (tekst.length < minLengde || tekst.length > maxLengde) {
+        throw new Error(`Teksten må være mellom ${minLengde} og ${maxLengde} tegn`);
+    }
+}
+
+
 export const sjekkKlubbnavn = (klubbnavn) => { 
     if (klubbnavn.length < 3 || klubbnavn.length >= 40) {
         throw new Error('Klubbnavn må være mellom 3 og 40 tegn');
@@ -23,8 +30,6 @@ export const sjekkNyhetTittel = (nyhetTittel) => {
 }
 
 export const sjekkNyhet = (nyhet) => {
-    if (nyhet.length < 10 || nyhet.length >= 1000) {
-        throw new Error('Nyhet må være mellom 10 og 1000 tegn');
-    }
+    validering(nyhet, 10, 1000);
 }
 

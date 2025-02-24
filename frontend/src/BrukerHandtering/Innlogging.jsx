@@ -12,7 +12,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
     setMelding("");
 
     // Frontend validering
-    const brukernavnRegex = /^[a-zA-Z0-9]{3,10}$/; // 3-10 tegn, kun bokstaver og tall
+    const brukernavnRegex = /^[a-zA-Z0-9]{3,15}$/; // 3-15 tegn, kun bokstaver og tall
     const epostRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // E-post-validering
     const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,}$/; // Minst 8 tegn, ett spesialtegn
 
@@ -20,7 +20,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
     const erBrukernavn = brukernavnRegex.test(bruker);
 
     if (!erEpost && !erBrukernavn) {
-        setMelding("Skriv inn enten brukernavn (3-10 tegn) eller en gyldig e-post.");
+        setMelding("Skriv inn enten brukernavn (3-15 tegn) eller en gyldig e-post.");
         return;
     }
 
