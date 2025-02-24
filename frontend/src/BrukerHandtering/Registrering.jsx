@@ -73,7 +73,7 @@ const Registrering = () => {
                     value={epost}
                     onChange={(e) => setEpost(e.target.value)}
                     required
-                    className="px-4 py-3 mb-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-green-400"
+                    className="px-4 py-3 mb-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
                 <input
                     type="text"
@@ -89,7 +89,7 @@ const Registrering = () => {
                     value={passord}
                     onChange={(e) => setPassord(e.target.value)}
                     required
-                    className="px-4 py-3 mb-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-gray-400"
+                    className="px-4 py-3 mb-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
 
                 <button

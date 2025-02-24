@@ -72,7 +72,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
           value={passord}
           onChange={(e) => setPassord(e.target.value)}
           required
-          className="px-5 py-3 m-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-gray-400"
+          className="px-5 py-3 m-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
         <button type="submit" className="bg-gray-600 text-white px-4 py-2 mt-4 rounded-lg w-full border border-gray-500">
           Logg inn
