@@ -13,7 +13,7 @@ const BaneListe = (props) => {
                 ))
             ) : (
                 <div className='flex justify-center'>
-                    <h1>Ingen baner tilgjengelig</h1>
+                    <h1>Ingen baner tilgjengelig...</h1>
                 </div>
             )}
         </div> 
