@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from "react-router-dom";
+
 const Sikkerhet = () => {
   return (
     <div className="min-h-screen bg-white py-8">
@@ -7,42 +7,32 @@ const Sikkerhet = () => {
         <h1 className="text-3xl font-bold text-center mb-6">Sikkerhet</h1>
         <div className="space-y-6">
           <section>
-            <h2 className="text-2xl font-semibold mb-4">Personvern</h2>
-            <p className="text-gray-700 mb-4">
-              Vi tar personvernet ditt på alvor. All personlig informasjon du deler med oss blir behandlet konfidensielt og i henhold til gjeldende lovverk, inkludert GDPR (Generell databeskyttelsesforordning). Vårt mål er å sikre at dine data er trygge, og at du har full kontroll over hvordan de brukes.
-            </p>
-            <p className="text-gray-700 font-semibold mb-2">Hvilke data samler vi inn?</p>
-            <p className="text-gray-700 mb-4">
-              Vi samler inn informasjon som er nødvendig for å gi deg en god brukeropplevelse. Dette kan inkludere:
+            <h2 className="text-2xl font-semibold mb-4">Sikkerhetstiltak</h2>
+            <p className="text-gray-700">
+              Vi tar sikkerhet på alvor og implementerer strenge tiltak for å beskytte data og brukerinformasjon. Våre sikkerhetstiltak inkluderer:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-700">
               <li>
-                <strong>Navn og kontaktinformasjon:</strong> Når du registrerer deg for en brukerkonto, melder deg på nyhetsbrev eller kontakter oss direkte.
+                <strong>Logging og overvåkning:</strong> Vi bruker <span className="font-semibold">Winston</span> for sentralisert logging og overvåkning av potensielle sikkerhetshendelser.
               </li>
               <li>
-                <strong>Bruksdata:</strong> Informasjon om hvordan du bruker nettsiden vår, for eksempel hvilke sider du besøker og hvilke funksjoner du bruker.
+                <strong>Sikkerhetsheadere:</strong> <span className="font-semibold">Helmet</span> er implementert for å styrke HTTP-headere og beskytte mot vanlige angrep som cross-site scripting (XSS) og clickjacking.
               </li>
               <li>
-                <strong>Tekniske data:</strong> IP-adresse, nettlesertype, enhetsinformasjon og andre tekniske detaljer som hjelper oss med å forbedre nettsidens ytelse. <Link className="text-blue-500" to ="/Personvern">Les mer på Personvern.</Link>
-              </li> 
+                <strong>Autentisering og tilgangskontroll:</strong> <span className="font-semibold">Passport.js</span> håndterer sikker brukerautentisering med støtte for OAuth, JWT og strategibasert autentisering.
+              </li>
+              <li>
+                <strong>Sikker hosting:</strong> Applikasjonen kjører på <span className="font-semibold">Heroku</span> med tvungen HTTPS og automatisk oppdatering av sikkerhetsavhengigheter.
+              </li>
+              <li>
+                <strong>Beskyttelse mot angrep:</strong> Vi bruker rate limiting, input-sanitization og andre teknikker for å forhindre brute-force-angrep, SQL-injeksjon og andre vanlige trusler.
+              </li>
             </ul>
-          </section>
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">Datasikkerhet</h2>
-            <p className="text-gray-700">
-              Vi bruker avanserte sikkerhetstiltak for å beskytte dine data mot uautorisert tilgang, endring, avsløring eller ødeleggelse.
-            </p>
-          </section>
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">Cookies</h2>
-            <p className="text-gray-700">
-              Vår nettside bruker cookies for å forbedre brukeropplevelsen. Du kan administrere eller deaktivere cookies gjennom nettleserinnstillingene dine. <Link className="text-blue-500" to ="/informasjonskapsler">Les mer på Informasjonskapsler.</Link>
-            </p>
           </section>
           <section>
             <h2 className="text-2xl font-semibold mb-4">Kontakt Oss</h2>
             <p className="text-gray-700">
-              Hvis du har spørsmål eller bekymringer angående sikkerheten på vår nettside, kan du <Link className='text-blue-500' to="/KontaktOss">kontakte</Link> oss på{' '}
+              Hvis du har spørsmål eller bekymringer angående sikkerheten på vår nettside, kan du kontakte oss på{' '}
               <a href="mailto:DiscgolfBø@gmail.no" className="text-blue-500 hover:underline">
                 DiscgolfBø@gmail.no
               </a>
