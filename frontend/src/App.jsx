@@ -21,6 +21,7 @@ import Personvern from './_components/Personvern';
 import Sikkerhet from './_components/Sikkerhet';
 import Informasjonskapsler from './_components/Informasjonskapsler';
 import KontaktOss from './_components/KontaktOss';
+import OmOss from './_components/OmOss';
 
 function App() {
   const [loggetInnBruker, setLoggetInnBruker] = useState(null);
@@ -97,6 +98,9 @@ function App() {
                 </Route>
                 <Route exact path="/nyheter">
                   <Nyheter />
+                </Route>
+                <Route exact path="/OmOss">
+                  <OmOss/>
                 </Route>
                 <Route exact path="/medlemskap">
                 {loggetInnBruker ? (
