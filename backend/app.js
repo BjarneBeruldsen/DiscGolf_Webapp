@@ -261,7 +261,7 @@ const registreringStopp = rateLimit({
 const registreringValidering = [
     body('bruker')
         .trim()
-        .isLength({ min: 3, max: 10 }).withMessage("Brukernavnet må være mellom 3 og 10 tegn.")
+        .isLength({ min: 3, max: 15 }).withMessage("Brukernavnet må være mellom 3 og 15 tegn.")
         .isAlphanumeric().withMessage("Brukernavnet kan bare inneholde bokstaver og tall."),
     body('passord')
         .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.")
@@ -321,10 +321,10 @@ const innloggingValidering = [
         .trim()
         .notEmpty().withMessage("Brukernavn eller e-post må fylles ut.")
         .custom((value) => {
-            const erBrukernavn = /^[a-zA-Z0-9]{3,10}$/.test(value);
+            const erBrukernavn = /^[a-zA-Z0-9]{3,15}$/.test(value);
             const erEpost = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
             if (!erBrukernavn && !erEpost) {
-                throw new Error("Må være brukernavn (3-10 tegn) eller en gyldig e-post.");
+                throw new Error("Må være brukernavn (3-15 tegn) eller en gyldig e-post.");
             }
             return true;
         }),
