@@ -57,7 +57,7 @@ app.use(
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 
-//Konfigurasjon av session
+//Konfigurasjon av session      https://www.geeksforgeeks.org/how-to-handle-sessions-in-express/ & https://expressjs.com/en/resources/middleware/session.html  
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
