@@ -85,12 +85,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
         {loggetInnBruker ? (
                 <>
                   <li className="text-white font-bold hover:text-gray-600">
-                    <Link 
-                    to="/Medlemskap" 
-                    onClick={() =>  {
-                    lukkMeny();
-                    window.location.reload();
-                    }}>
+                  <Link to="/Medlemskap" onClick={lukkMeny}>
                       Mitt Medlemskap
                     </Link>
                   </li>

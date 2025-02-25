@@ -348,8 +348,12 @@ app.post("/Innlogging", loggeInnStopp, innloggingValidering, (req, res, next) =>
         req.logIn(bruker, (err) => {
             if (err) return next(err);
             
-            //Fjerner passord før sending til frontend
-            const brukerUtenPassord = { id: bruker._id, bruker: bruker.bruker };
+            // Fjerner passord fra innlogget bruker men tar med epost slik at den er synlig i medlemskap blant annet. 
+            const brukerUtenPassord = { 
+                id: bruker._id, 
+                bruker: bruker.bruker,
+                epost: bruker.epost 
+            };
             return res.status(200).json({
                 message: "Innlogging vellykket",
                 bruker: brukerUtenPassord,
@@ -436,6 +440,9 @@ app.post("/SletteBruker", [
 });
 
 //Endring av brukerinfo
+
+
+
 
 
 

@@ -101,12 +101,19 @@ const Registrering = () => {
                 >
                     Registrer deg
                 </button>
-                <p className="text-blue-500"><Link to="./Innlogging">Har du allerede konto?</Link></p>
 
-                {melding && <p className="mt-4 text-red-500">{melding}</p>}
+                <p className="text-blue-500 mt-4">
+                    <Link to="./Innlogging">Har du allerede konto?</Link>
+                </p>
+
+                {melding && (
+                    <p className="mt-4 text-red-500 text-center">
+                        {melding}
+                    </p>
+                )}
             </form>
         </div>
-       </header>
+    </header>
     );
 };
 

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 
 const Medlemskap = ({ loggetInnBruker }) => {
+  const [bruker, setBruker] = useState(loggetInnBruker || null);
   const [valgtKategori, setValgtKategori] = useState("brukerinnstillinger");
   const [visSlettBoks, setVisSlettBoks] = useState(false);
   const [brukernavnInput, setBrukernavnInput] = useState("");
@@ -11,48 +12,54 @@ const Medlemskap = ({ loggetInnBruker }) => {
   const [venter, setVenter] = useState(true);
 
   useEffect(() => {
-    if (loggetInnBruker !== undefined) {
-      setVenter(false);
+    if (!loggetInnBruker?.epost) {
+      const lagretBruker = localStorage.getItem("bruker");
+      if (lagretBruker) {
+        setBruker(JSON.parse(lagretBruker));
+      }
+    } else {
+      setBruker(loggetInnBruker);
     }
+    setVenter(false);
   }, [loggetInnBruker]);
-
+  
   if (venter) {
-    return <p className="text-center text-gray-700 mt-10">Laster inn</p>;
+    return <p className="text-center text-gray-700 mt-10">Laster inn...</p>;
   }
-
-  if (!loggetInnBruker) {
+  
+  if (!bruker) {
     window.location.href = "/Innlogging";
     return null;
   }
-
+  
   const byttKategori = (kategori) => {
     setVisSlettBoks(false);
     setValgtKategori(kategori);
   };
-
+  
   const handleSlettBruker = async (e) => {
     e.preventDefault();
     setMelding("");
-
-    if (brukernavnInput !== loggetInnBruker.bruker) {
+  
+    if (brukernavnInput !== bruker.bruker) {
       setMelding("Brukernavnet stemmer ikke.");
       return;
     }
-
+  
     try {
       const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/SletteBruker`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ bruker: loggetInnBruker.bruker, passord }),
+        body: JSON.stringify({ bruker: bruker.bruker, passord }),
       });
-
+  
       const data = await respons.json();
-
+  
       if (respons.ok) {
         localStorage.removeItem("bruker");
         window.location.href = "/Hjem";
-        window.location.reload(); 
+        window.location.reload();
       } else {
         setMelding(data.error);
       }
@@ -90,8 +97,8 @@ const Medlemskap = ({ loggetInnBruker }) => {
             <>
               <h2 className="text-xl font-bold text-black mb-4">Brukerinnstillinger</h2>
               <div className="space-y-4">
-                <input type="text" value={loggetInnBruker.bruker || ""} readOnly className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100" />
-                <input type="email" value={loggetInnBruker.epost || ""} readOnly className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100" />
+               <input type="text" value={bruker.bruker || ""} readOnly className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100" />
+               <input type="email" value={bruker.epost || ""} readOnly className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100" />
                 <input type="password" placeholder="Nytt passord (funker ikke enda)" className="w-full px-3 py-2 border border-gray-300 rounded" />
                 <button className="bg-black text-white px-4 py-2 rounded w-full hover:bg-gray-800">Lagre Endringer</button>
               </div>
