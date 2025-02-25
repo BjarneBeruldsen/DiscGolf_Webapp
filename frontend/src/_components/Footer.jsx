@@ -4,32 +4,36 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <footer className="bg-[#D9D9D9] text-gray-700 mt-auto">
-      
+      <div className="container mx-auto px-4 py-6">
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-8 py-6">
-        <div>
-          <h1 className="text-xl font-bold">DiscGolf</h1>
-          <p className="mt-2">
-            Disc golf er en spennende utendørs sport der målet er å kaste en frisbee i en kurv på færrest mulig kast.
-            Med over 18,000 baner verden over, er sporten i vekst og passer for spillere i alle aldre og ferdighetsnivåer.
-          </p>
-        </div>
+        <div className="flex flex-col items-center space-y-6 md:flex-row md:justify-between md:items-start md:space-y-0">
 
-        <div className="text-center">
-          <ul className="inline-block space-x-6 text-lg font-medium">
-            <li className="inline"><Link to="/Hjem" className="hover:text-gray-800">Hjem</Link></li>
-            <li className="inline"><Link to="/OmOss" className="hover:text-gray-800">Om oss</Link></li>
-            <li className="inline"><Link to="/Personvern" className="hover:text-gray-800">Personvern</Link></li>
-            <li className="inline"><Link to="/Sikkerhet" className="hover:text-gray-800">Sikkerhet</Link></li>
-            <li className="inline"><Link to="/Informasjonskapsler" className="hover:text-gray-800">Informasjonskapsler</Link></li>
-            <li className="inline"><Link to="/KontaktOss" className="hover:text-gray-800">Kontakt Oss</Link></li>
-          </ul>
-        </div>
-        
-        <div className="text-center justify-items-center">
-          <p className="font-semibold">Kontakt oss</p>
-          <p>Email: DiscgolfBø@gmail.com</p>
-          <p>Bø, Norge</p>
+          <div className="text-center md:text-left">
+            <h1 className="text-xl font-bold text-gray-800">DiscGolf</h1>
+            <p className="text-sm text-gray-700 mt-2 max-w-lg">
+              Disc golf er en spennende utendørs sport der målet er å kaste en frisbee i en kurv på færrest mulig kast.
+              Med over 18,000 baner verden over, er sporten i vekst og passer for spillere i alle aldre og ferdighetsnivåer.
+            </p>
+          </div>
+
+          
+          <div className="text-center">
+            <ul className="flex flex-wrap justify-center space-x-4 space-y-2 md:space-x-6 md:space-y-0 text-lg font-medium">
+              <li><Link to="/Hjem" className="hover:text-gray-800">Hjem</Link></li>
+              <li><Link to="/OmOss" className="hover:text-gray-800">Om oss</Link></li>
+              <li><Link to="/Personvern" className="hover:text-gray-800">Personvern</Link></li>
+              <li><Link to="/Sikkerhet" className="hover:text-gray-800">Sikkerhet</Link></li>
+              <li><Link to="/Informasjonskapsler" className="hover:text-gray-800">Informasjonskapsler</Link></li>
+              <li><Link to="/KontaktOss" className="hover:text-gray-800">Kontakt Oss</Link></li>
+            </ul>
+          </div>
+
+          
+          <div className="text-center">
+            <p className="font-semibold text-gray-800">Kontakt oss</p>
+            <p className="text-sm text-gray-700">Email: DiscgolfBø@gmail.com</p>
+            <p className="text-sm text-gray-700">Bø, Norge</p>
+          </div>
         </div>
       </div>
 
