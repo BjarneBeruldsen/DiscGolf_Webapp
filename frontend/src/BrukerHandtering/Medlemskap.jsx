@@ -52,6 +52,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
       if (respons.ok) {
         localStorage.removeItem("bruker");
         window.location.href = "/Hjem";
+        window.location.reload(); 
       } else {
         setMelding(data.error);
       }
