@@ -41,13 +41,13 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
 
             {loggetInnBruker ? (
               <>
-                <li className="text-black font-bold hover:text-gray-600">
+                <li className="text-white font-bold hover:text-gray-600">
                 <Link to="/Medlemskap" onClick={lukkMeny}>
                  Mitt Medlemskap
                  </Link>
                 </li>
                 <li className="flex items-center">
-                  <button onClick={loggUt} className="text-black font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg">
+                  <button onClick={loggUt} className="text-white font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg">
                     Logg ut
                   </button>
                 </li>
