@@ -1,5 +1,4 @@
 //Author: Laurent Zogaj
-
 const loggUtBruker = async () => {
     try {
         const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Utlogging`, {
@@ -10,6 +9,8 @@ const loggUtBruker = async () => {
 
         if (respons.ok) {
             localStorage.removeItem("bruker");
+            window.location.reload();
+            window.location.href = "/Hjem"; 
             return true; 
         } else {
             console.error("Utlogging feilet:", respons.statusText);
@@ -22,4 +23,3 @@ const loggUtBruker = async () => {
 };
 
 export default loggUtBruker;
-
