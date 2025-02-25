@@ -43,9 +43,8 @@ app.use(
       contentSecurityPolicy: {
         useDefaults: true,
         directives: {
-          scriptSrc: ["'self'", "https://trusted-cdn.com"],
-          objectSrc: ["'none'"],
-          upgradeInsecureRequests: [],
+          imgSrc: ["'self'", "https://images.unsplash.com"], //Tilater kun bilder fra eget domene og unsplash
+          upgradeInsecureRequests: [], 
         },
       },
     })
