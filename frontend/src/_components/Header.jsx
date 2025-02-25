@@ -79,6 +79,8 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
             <li><Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Klubbesider</Link></li>
             <li><Link to="/nyheter" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Nyheter</Link></li>
             <li><Link to="/ScoreBoard" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>ScoreBoard</Link></li>
+            <li><Link to="/Innlogging" onClick={lukkMeny} className="text-black font-bold hover:text-gray-600">Logg Inn</Link></li>
+            <li><Link to="/Registrering" onClick={lukkMeny} className="text-black font-bold hover:text-gray-600">Bli medlem!</Link></li>  
 
         {loggetInnBruker ? (
                 <>
@@ -102,12 +104,12 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
                 <>
                   <li>
                     <Link to="/Innlogging" onClick={lukkMeny} className="text-white font-bold hover:text-gray-600">
-                      Logg inn
+                     
                     </Link>
                   </li>
                   <li>
                     <Link to="/Registrering" onClick={lukkMeny} className="text-white font-bold hover:text-gray-600">
-                      Bli medlem!
+                      
                     </Link>
                   </li>
                 </>
