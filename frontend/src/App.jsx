@@ -36,8 +36,8 @@ function App() {
         credentials: "include",
         headers: { "Content-Type": "application/json" },
       });
-
-      if (respons.status === 401) {
+  
+      if (!respons.ok) {
         setLoggetInnBruker(null);
         localStorage.removeItem("bruker");
       } else {
@@ -50,19 +50,16 @@ function App() {
           localStorage.removeItem("bruker");
         }
       }
-    } catch {
+    } catch (error) {
+      console.error("Feil under session-sjekk:", error);
       setLoggetInnBruker(null);
       localStorage.removeItem("bruker");
     } finally {
       setLaster(false);
     }
   };
+
   useEffect(() => {
-    const lagretBruker = localStorage.getItem("bruker");
-    if (lagretBruker) {
-      setLoggetInnBruker(JSON.parse(lagretBruker));
-    }
-    
     sjekkSession();
   }, []);
 
@@ -71,71 +68,73 @@ function App() {
   }
 
   return (
-      <Router>
-        <div className="App">
+    <Router>
+      <div className="App">
         <Header loggetInnBruker={loggetInnBruker} setLoggetInnBruker={setLoggetInnBruker} />
-          <div className="innhold">
-              <Switch>
-              <Route exact path="/"><Bilde/> <Hjem />
-              </Route>
-                <Route exact path="/Hjem"><Bilde/> <Hjem />
-                </Route>
-                <Route exact path="/LagKlubb">
-                  <LagKlubb />
-                </Route>
-                <Route exact path="/VelgKlubb">
-                  <VelgKlubb />
-                </Route>
-                <Route exact path="/LagKlubbSide/:id">
-                  <LagKlubbSide />
-                </Route>
-                <Route exact path="/Klubbsider"> 
-                  <Klubbsider />
-                </Route>
-                <Route exact path="/Klubbside/:id">
-                  <Klubbside />
-                </Route>
-                <Route exact path="/Baner">
-                  <Baner/>
-                </Route>
-                <Route exact path="/nyheter">
-                  <Nyheter />
-                </Route>
-                <Route exact path="/OmOss">
-                  <OmOss/>
-                </Route>
-                <Route exact path="/medlemskap">
-                {loggetInnBruker ? (
-                  <Medlemskap loggetInnBruker={loggetInnBruker} />
-                ) : (
-                  <Redirect to="/Innlogging" />
-                )}
-                </Route>
-                <Route exact path="/Innlogging">
-                <Innlogging 
-                  setLoggetInnBruker={setLoggetInnBruker} 
-                  setLoggUtBruker={loggUtBruker} 
-                />
-                </Route>
-                <Route exact path="/Registrering">
-                  <Registrering />
-                </Route>
-                <Route exact path="/">
-                  <Hjem />
-                </Route>
-                <Route exact path="/scoreboard">
-                  <ScoreBoard />
-                </Route>
-                <Route exact path="/Personvern" component={Personvern} />
-                <Route exact path="/Sikkerhet" component={Sikkerhet} />
-                <Route exact path="/Informasjonskapsler" component={Informasjonskapsler} />
-                <Route exact path="/KontaktOss" component={KontaktOss} />
-              </Switch>
-              <Footer />
-          </div>
+        <div className="innhold">
+          <Switch>
+            <Route exact path="/">
+              <Bilde />
+              <Hjem />
+            </Route>
+            <Route exact path="/Hjem">
+              <Bilde />
+              <Hjem />
+            </Route>
+            <Route exact path="/LagKlubb">
+              <LagKlubb />
+            </Route>
+            <Route exact path="/VelgKlubb">
+              <VelgKlubb />
+            </Route>
+            <Route exact path="/LagKlubbSide/:id">
+              <LagKlubbSide />
+            </Route>
+            <Route exact path="/Klubbsider">
+              <Klubbsider />
+            </Route>
+            <Route exact path="/Klubbside/:id">
+              <Klubbside />
+            </Route>
+            <Route exact path="/Baner">
+              <Baner />
+            </Route>
+            <Route exact path="/nyheter">
+              <Nyheter />
+            </Route>
+            <Route exact path="/OmOss">
+              <OmOss />
+            </Route>
+            <Route exact path="/medlemskap">
+              {loggetInnBruker ? (
+                <Medlemskap loggetInnBruker={loggetInnBruker} />
+              ) : (
+                <Redirect to="/Innlogging" />
+              )}
+            </Route>
+            <Route exact path="/Innlogging">
+              <Innlogging
+                setLoggetInnBruker={setLoggetInnBruker}
+                setLoggUtBruker={loggUtBruker}
+              />
+            </Route>
+            <Route exact path="/Registrering">
+              <Registrering />
+            </Route>
+            <Route exact path="/scoreboard">
+              <ScoreBoard />
+            </Route>
+            <Route exact path="/Personvern" component={Personvern} />
+            <Route exact path="/Sikkerhet" component={Sikkerhet} />
+            <Route exact path="/Informasjonskapsler" component={Informasjonskapsler} />
+            <Route exact path="/KontaktOss" component={KontaktOss} />
+          </Switch>
+          <Footer />
         </div>
-      </Router>
+      </div>
+    </Router>
   );
 }
 
 export default App;
+
