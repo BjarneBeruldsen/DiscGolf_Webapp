@@ -1,3 +1,5 @@
+//Authors: Bjarne Beruldsen, Abdinasir Ali & Laurent Zogaj
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import loggUtBruker from "../BrukerHandtering/Utlogging";

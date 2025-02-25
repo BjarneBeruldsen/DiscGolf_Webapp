@@ -1,3 +1,5 @@
+//Author: Laurent Zogaj
+
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -39,7 +41,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
       const data = await respons.json();
 
       if (!respons.ok) {
-          setMelding(data.errors ? data.errors.map(err => err.msg).join(", ") : data.error || "Innlogging feilet.");
+          setMelding(data.errors ? data.errors.map(err => err.msg).join(", ") : data.error || "Innlogging feilet."); 
       } else {
           setMelding("Innlogging vellykket!");
           setLoggetInnBruker(data.bruker);

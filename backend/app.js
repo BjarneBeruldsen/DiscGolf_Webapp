@@ -1,3 +1,5 @@
+//Authors: Bjarne Beruldsen & Laurent Zogaj
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');

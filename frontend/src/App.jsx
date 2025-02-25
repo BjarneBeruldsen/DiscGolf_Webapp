@@ -1,3 +1,5 @@
+//Authors: Bjarne Beruldsen, Abdinasir Ali & Laurent Zogaj
+
 import React, { useState, useEffect } from 'react';
 import LagKlubb from './KlubbHandtering/LagKlubb';
 import VelgKlubb from './KlubbHandtering/VelgKlubb';

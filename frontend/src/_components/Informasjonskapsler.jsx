@@ -1,3 +1,5 @@
+//Author: Laurent Zogaj
+
 import React from 'react';
 
 const Informasjonskapsler = () => {

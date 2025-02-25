@@ -1,3 +1,5 @@
+//Author: Laurent Zogaj
+
 import React, { useState, useEffect } from "react";
 
 const Medlemskap = ({ loggetInnBruker }) => {
