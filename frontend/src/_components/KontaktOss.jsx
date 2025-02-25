@@ -5,7 +5,7 @@ const KontaktOss = () => {
     return (
         <header className='justify-items-center min-h-[90vh]'>
                         
-                <h1 className='text-3xl mt-30'>kontakt oss</h1>
+                <h1 className='text-3xl mt-30'>Kontakt oss</h1>
                 <form onSubmit=""
                 className='flex flex-col items-center bg-gray-200 p-8 rounded-lg shadow-md w-80 mb-30 '
                 >
