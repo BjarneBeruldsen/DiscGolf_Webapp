@@ -40,10 +40,12 @@ app.use(cors({
 //Må nok endres etterhvert når kart/vær osv legges til
 app.use(
     helmet({
-      contentSecurityPolicy: {             
-        useDefaults: true, 
+      contentSecurityPolicy: {
+        useDefaults: true,
         directives: {
-          imgSrc: ["'self'", "https://images.unsplash.com"], //Legger kun til Unsplash
+          scriptSrc: ["'self'", "https://trusted-cdn.com"],
+          objectSrc: ["'none'"],
+          upgradeInsecureRequests: [],
         },
       },
     })
