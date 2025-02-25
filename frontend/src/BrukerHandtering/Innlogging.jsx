@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Innlogging = ({ setLoggetInnBruker }) => {
   const [bruker, setBruker] = useState("");
@@ -82,6 +83,9 @@ const Innlogging = ({ setLoggetInnBruker }) => {
           Logg inn
         </button>
         {melding && <p className="mt-4 text-red-500">{melding}</p>}
+        <button className="bg-gray-600 text-white px-4 py-2 mt-4 rounded-lg w-full border border-gray-500">
+          <Link to="./registrering">Opprett ny Bruker</Link>
+        </button>
       </form>
     </div>
     </header>

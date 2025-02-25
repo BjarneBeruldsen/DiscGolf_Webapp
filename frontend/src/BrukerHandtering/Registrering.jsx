@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Registrering = () => {
     const [bruker, setBruker] = useState("");
@@ -100,6 +101,7 @@ const Registrering = () => {
                 >
                     Registrer deg
                 </button>
+                <p className="text-blue-500"><Link to="./Innlogging">Har du allerede konto?</Link></p>
 
                 {melding && <p className="mt-4 text-red-500">{melding}</p>}
             </form>
