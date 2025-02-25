@@ -23,17 +23,19 @@ const Informasjonskapsler = () => {
             <h2 className="text-2xl font-semibold mt-6 mb-2">3. Hvordan administrerer jeg informasjonskapsler?</h2>
             <p>Du kan administrere informasjonskapsler i nettleseren din og slette dem når som helst.</p>
 
+            {/* 
             <h2 className="text-2xl font-semibold mt-6 mb-2">4. Trekk tilbake samtykke</h2>
             <button
                 onClick={() => {
                     localStorage.removeItem("samtykkeForInformasjonskapsler");
-                    document.cookie = "samtykkeForInformasjonskapsler=; path=/; max-age=0"; //Har ikke fått testet dette godt nok enda 
+                    document.cookie = "samtykkeForInformasjonskapsler=; path=/; max-age=0"; //Har ikke fått testet dette godt nok enda, må testes mer og legge til en cookie banner som er koblet til denne funksjonen, på et vis.
                     window.location.reload(); 
                 }}
                 className="bg-red-500 px-4 py-2 mt-2 text-white"
             >
                 Trekk tilbake samtykke
             </button>
+            */}
         </div>
     );
 };
