@@ -49,6 +49,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
           setMelding("Innlogging vellykket!");
           setTimeout(() => {
             minne.push("/Hjem");
+            window.location.reload();
       }, 1000);
     }
   } catch {
