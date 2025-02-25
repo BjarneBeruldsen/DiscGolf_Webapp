@@ -11,6 +11,8 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
     const utloggingVellykket = await loggUtBruker();
     if (utloggingVellykket) {
       setLoggetInnBruker(null);
+      window.location.href = "/Hjem"; 
+      window.location.reload();
     }
   };
 

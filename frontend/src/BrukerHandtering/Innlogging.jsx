@@ -43,13 +43,15 @@ const Innlogging = ({ setLoggetInnBruker }) => {
       if (!respons.ok) {
           setMelding(data.errors ? data.errors.map(err => err.msg).join(", ") : data.error || "Innlogging feilet."); 
       } else {
-          setMelding("Innlogging vellykket!");
           setLoggetInnBruker(data.bruker);
           localStorage.setItem("bruker", JSON.stringify(data.bruker));
-          minne.push("/Hjem"); 
-      }
+          setMelding("Innlogging vellykket!");
+          setTimeout(() => {
+            minne.push("/Hjem");
+      }, 1000);
+    }
   } catch {
-      setMelding("Feil ved innlogging");
+    setMelding("Feil ved innlogging");
   }
 };
 

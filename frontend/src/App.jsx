@@ -112,14 +112,10 @@ function App() {
                 )}
                 </Route>
                 <Route exact path="/Innlogging">
-                  {loggetInnBruker ? (
-                    <Redirect to="/Hjem" />
-                  ) : (
-                    <Innlogging 
-                      setLoggetInnBruker={setLoggetInnBruker} 
-                      setLoggUtBruker={loggUtBruker} 
-                    />
-                  )}
+                <Innlogging 
+                  setLoggetInnBruker={setLoggetInnBruker} 
+                  setLoggUtBruker={loggUtBruker} 
+                />
                 </Route>
                 <Route exact path="/Registrering">
                   <Registrering />
