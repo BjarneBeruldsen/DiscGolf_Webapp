@@ -3,12 +3,18 @@ import React from 'react';
 const KontaktOss = () => {
 
     return (
-        <header className='justify-items-center min-h-[90vh]'>
+        <div className="flex flex-col items-center justify-center min-h-[90vh] bg-no-repeat bg-cover zoomed-out-bg  "
+        style={{ 
+            backgroundImage: `url('https://zewailcity.edu.eg/_next/image?url=https%3A%2F%2Fzcadminpanel.zewailcity.edu.eg%2Fuploads%2Fcontactus_1c630b0d93.jpg&w=3840&q=75')`
+          }}
+        
+        >
                         
-                <h1 className='text-3xl mt-30'>Kontakt oss</h1>
+                <h1 className='text-3xl mt-30 font-semibold'></h1>
                 <form onSubmit=""
-                className='flex flex-col items-center bg-gray-200 p-8 rounded-lg shadow-md w-80 mb-30 '
+                className='flex flex-col items-center bg-white p-8 rounded-lg shadow-md w-85'
                 >
+                    <h1 className='text-3xl  font-semibold'>Kontakt oss</h1>
                 <div className="space-y-2">
                     <ul>
                     <input 
@@ -47,7 +53,7 @@ const KontaktOss = () => {
                 </form>
                     
            
-        </header>
+        </div>
     );
 
 };
