@@ -91,7 +91,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
               <div className="space-y-4">
                 <input type="text" value={loggetInnBruker.bruker || ""} readOnly className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100" />
                 <input type="email" value={loggetInnBruker.epost || ""} readOnly className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100" />
-                <input type="password" placeholder="Nytt passord" className="w-full px-3 py-2 border border-gray-300 rounded" />
+                <input type="password" placeholder="Nytt passord (funker ikke enda)" className="w-full px-3 py-2 border border-gray-300 rounded" />
                 <button className="bg-black text-white px-4 py-2 rounded w-full hover:bg-gray-800">Lagre Endringer</button>
               </div>
               <hr className="my-6 border-gray-300" />
