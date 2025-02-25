@@ -103,12 +103,12 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
               ) : (
                 <>
                   <li>
-                    <Link to="/Innlogging" onClick={lukkMeny} className="text-black font-bold hover:text-gray-600">
+                    <Link to="/Innlogging" onClick={lukkMeny} className="text-white font-bold hover:text-gray-600">
                       Logg inn
                     </Link>
                   </li>
                   <li>
-                    <Link to="/Registrering" onClick={lukkMeny} className="text-black font-bold hover:text-gray-600">
+                    <Link to="/Registrering" onClick={lukkMeny} className="text-white font-bold hover:text-gray-600">
                       Bli medlem!
                     </Link>
                   </li>
