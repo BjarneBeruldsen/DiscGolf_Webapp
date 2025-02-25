@@ -9,23 +9,23 @@ const Sikkerhet = () => {
           <section>
             <h2 className="text-2xl font-semibold mb-4">Sikkerhetstiltak</h2>
             <p className="text-gray-700">
-              Vi tar sikkerhet på alvor og implementerer strenge tiltak for å beskytte data og brukerinformasjon. Våre sikkerhetstiltak inkluderer:
+              Vi tar sikkerhet på alvor og implementerer robuste tiltak for å beskytte både brukerdata og systemet vårt. 
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-700">
               <li>
-                <strong>Logging og overvåkning:</strong> Vi bruker <span className="font-semibold">Winston</span> for sentralisert logging og overvåkning av potensielle sikkerhetshendelser.
+                <strong>Kontinuerlig overvåkning:</strong> Alle aktiviteter logges og overvåkes for å oppdage uvanlige mønstre eller sikkerhetstrusler.
               </li>
               <li>
-                <strong>Sikkerhetsheadere:</strong> <span className="font-semibold">Helmet</span> er implementert for å styrke HTTP-headere og beskytte mot vanlige angrep som cross-site scripting (XSS) og clickjacking.
+                <strong>Beskyttelse av data:</strong> Vi anvender sikre standarder for kryptering og lagring for å forhindre uautorisert tilgang.
               </li>
               <li>
-                <strong>Autentisering og tilgangskontroll:</strong> <span className="font-semibold">Passport.js</span> håndterer sikker brukerautentisering med støtte for OAuth, JWT og strategibasert autentisering.
+                <strong>Sikre forbindelser:</strong> All trafikk til og fra tjenesten skjer via sikre protokoller for å beskytte mot datalekkasjer.
               </li>
               <li>
-                <strong>Sikker hosting:</strong> Applikasjonen kjører på <span className="font-semibold">Heroku</span> med tvungen HTTPS og automatisk oppdatering av sikkerhetsavhengigheter.
+                <strong>Tilgangskontroll:</strong> Strenge regler for autentisering og autorisasjon sikrer at kun autoriserte brukere har tilgang til sensitiv informasjon.
               </li>
               <li>
-                <strong>Beskyttelse mot angrep:</strong> Vi bruker rate limiting, input-sanitization og andre teknikker for å forhindre brute-force-angrep, SQL-injeksjon og andre vanlige trusler.
+                <strong>Forebygging av angrep:</strong> Systemet er beskyttet mot vanlige angrep som brute-force, injeksjonsangrep og forsøk på uautorisert tilgang.
               </li>
             </ul>
           </section>
