@@ -62,7 +62,8 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,              
-    proxy: true,                          //Må være true for at Heroku skal funke
+    proxy: true,                         //Må være true for at Heroku skal funke
+    rolling: true,                          
     cookie: {
         secure: true,                    //Må være true for at cookies skal fungere på nettsiden og false dersom siden skal funke lokalt
         httpOnly: true,                  //Må være false når man tester lokalt og true ellers
