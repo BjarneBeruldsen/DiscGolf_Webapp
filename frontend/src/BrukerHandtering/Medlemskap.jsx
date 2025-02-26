@@ -61,11 +61,11 @@ const Medlemskap = ({ loggetInnBruker }) => {
   };
 
   return (
-    <div
-      className="flex flex-col sm:flex-row min-h-screen bg-no-repeat bg-cover bg-fixed md:bg-scroll relative p-4"
-      style={{ backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fA%3D%3D')` }}
-    >
-      <div className="w-full sm:w-1/3 md:w-1/4 bg-white p-6 shadow-md rounded-lg sm:rounded-none">
+    <div className="flex flex-col sm:flex-row min-h-screen bg-no-repeat bg-cover bg-fixed md:bg-scroll p-4 relative"
+      style={{ backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fA%3D%3D')` }}>
+      
+      {/* Sidemeny */}
+      <div className="w-full sm:w-1/3 md:w-1/4 bg-white p-6 shadow-md rounded-lg sm:h-full">
         <h2 className="text-lg font-bold mb-6">Innstillinger</h2>
         <ul className="space-y-4">
           {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
@@ -74,8 +74,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
                 className={`w-full text-left p-3 rounded transition duration-200 ${
                   valgtKategori === kategori ? "bg-gray-300 font-bold" : "hover:bg-gray-200"
                 }`}
-                onClick={() => byttKategori(kategori)}
-              >
+                onClick={() => byttKategori(kategori)}>
                 {kategori.charAt(0).toUpperCase() + kategori.slice(1)}
               </button>
             </li>
@@ -83,8 +82,9 @@ const Medlemskap = ({ loggetInnBruker }) => {
         </ul>
       </div>
 
-      <div className="flex-1 flex justify-center items-center mt-4 sm:mt-0">
-        <div className="bg-white p-6 sm:p-8 rounded-lg border border-gray-300 shadow-md w-full max-w-lg">
+      {/* Innhold */}
+      <div className="flex-1 flex justify-center items-center mt-4 sm:mt-0 sm:min-h-[calc(100vh-2rem)]">
+        <div className="bg-white p-6 sm:p-8 rounded-lg border border-gray-300 shadow-md w-full max-w-lg mx-4">
           {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (
             <>
               <h2 className="text-xl font-bold text-black mb-4">Brukerinnstillinger</h2>
@@ -101,11 +101,10 @@ const Medlemskap = ({ loggetInnBruker }) => {
             </>
           )}
 
+          {/* Ulike kategorier */}
           {["personvern", "sikkerhet", "min klubb"].includes(valgtKategori) && (
             <>
-              <h2 className="text-xl font-bold text-black mb-4">
-                {valgtKategori.charAt(0).toUpperCase() + valgtKategori.slice(1)}
-              </h2>
+              <h2 className="text-xl font-bold text-black mb-4">{valgtKategori.charAt(0).toUpperCase() + valgtKategori.slice(1)}</h2>
               <p className="text-gray-600">Funksjoner kommer snart</p>
             </>
           )}
@@ -115,22 +114,8 @@ const Medlemskap = ({ loggetInnBruker }) => {
               <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-300 w-full max-w-md">
                 <h3 className="text-xl font-bold text-black">Bekreft sletting</h3>
                 <p className="text-gray-600 mb-4">Denne handlingen kan ikke angres!</p>
-                <input
-                  type="text"
-                  placeholder="Skriv inn brukernavn"
-                  value={brukernavnInput}
-                  onChange={(e) => setBrukernavnInput(e.target.value)}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded mb-3"
-                />
-                <input
-                  type="password"
-                  placeholder="Bekreft passord"
-                  value={passord}
-                  onChange={(e) => setPassord(e.target.value)}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded"
-                />
+                <input type="text" placeholder="Skriv inn brukernavn" value={brukernavnInput} onChange={(e) => setBrukernavnInput(e.target.value)} required className="w-full px-3 py-2 border border-gray-300 rounded mb-3" />
+                <input type="password" placeholder="Bekreft passord" value={passord} onChange={(e) => setPassord(e.target.value)} required className="w-full px-3 py-2 border border-gray-300 rounded" />
                 <button type="submit" onClick={handleSlettBruker} className="bg-red-600 text-white px-4 py-2 rounded w-full mt-2 hover:bg-red-700">
                   Bekreft Sletting
                 </button>
