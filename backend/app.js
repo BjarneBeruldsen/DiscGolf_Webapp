@@ -18,6 +18,8 @@ require('dotenv').config();
 
 const app = express();
 
+app.set("trust proxy", 1); //Heroku
+
 app.disable('x-powered-by'); //Disabled for sikkerhet da man kan se hvilken teknologi som brukes 
 
 //NoCache Sikrer at nettleserer ikke lagrer cache for sensitive data/sider
@@ -63,7 +65,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false,              
     proxy: true,                         //Må være true for at Heroku skal funke
-    rolling: true,                          
+    rolling: true,                       //Fornyer session ved hvert request
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }), //Lagrer session i MongoDB                          
     cookie: {
         secure: true,                    //Må være true for at cookies skal fungere på nettsiden og false dersom siden skal funke lokalt
         httpOnly: true,                  //Må være false når man tester lokalt og true ellers
