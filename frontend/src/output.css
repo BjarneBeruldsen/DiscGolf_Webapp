@@ -1342,6 +1342,11 @@
       max-width: var(--container-xl);
     }
   }
+  .lg\:grid-cols-\[350px_1fr\] {
+    @media (width >= 64rem) {
+      grid-template-columns: 350px 1fr;
+    }
+  }
   .xl\:max-w-xl {
     @media (width >= 80rem) {
       max-width: var(--container-xl);

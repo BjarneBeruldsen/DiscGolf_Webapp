@@ -63,15 +63,15 @@ const Medlemskap = ({ loggetInnBruker }) => {
   
   return (
     <div
-      className="grid grid-cols-1 md:grid-cols-[350px_1fr] min-h-screen bg-cover bg-center"
+      className="grid grid-cols-1 lg:grid-cols-[350px_1fr] min-h-screen bg-cover bg-center"
       style={{
-        backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fA%3D%3D')`,
+        backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3')`,
       }}
     >
       <aside className="bg-white p-6 shadow-md">
         <h2 className="text-xl font-bold mb-6">Innstillinger</h2>
         <ul className="space-y-4">
-          {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
+          {["brukerinnstillinger","personvern","sikkerhet","min klubb"].map((kategori) => (
             <li key={kategori}>
               <button
                 className={`w-full text-left p-3 rounded transition duration-200 ${
@@ -109,9 +109,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
                   placeholder="Nytt passord (funker ikke enda)"
                   className="w-full px-3 py-2 border border-gray-300 rounded"
                 />
-                <button className="bg-black text-white px-4 py-2 rounded w-full hover:bg-gray-800">
-                  Lagre Endringer
-                </button>
+                <button className="bg-black text-white px-4 py-2 rounded w-full hover:bg-gray-800">Lagre Endringer</button>
               </div>
               <hr className="my-6 border-gray-300" />
               <button
@@ -123,7 +121,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
             </>
           )}
 
-          {["personvern", "sikkerhet", "min klubb"].includes(valgtKategori) && (
+          {["personvern","sikkerhet","min klubb"].includes(valgtKategori) && (
             <>
               <h2 className="text-xl font-bold text-black mb-4">
                 {valgtKategori.charAt(0).toUpperCase() + valgtKategori.slice(1)}
