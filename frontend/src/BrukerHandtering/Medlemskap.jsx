@@ -61,16 +61,18 @@ const Medlemskap = ({ loggetInnBruker }) => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-center relative"
-      style={{ backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fA%3D%3D')`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+    <div className="flex flex-col md:flex-row min-h-screen bg-center bg-cover relative w-full"
+      style={{ backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fA%3D%3D')` }}>
       
       {/* Sidemeny */}
-      <div className="w-full md:w-1/4 bg-white p-4 md:p-6 shadow-md">
+      <div className="w-full sm:w-1/3 md:w-1/4 lg:w-1/5 bg-white p-4 md:p-6 shadow-md">
         <h2 className="text-lg md:text-xl font-bold mb-4 md:mb-6">Innstillinger</h2>
         <ul className="grid grid-cols-1 gap-2 md:gap-4">
           {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
             <li key={kategori}>
-              <button className={`w-full text-left p-2 md:p-3 rounded transition duration-200 text-sm md:text-base ${valgtKategori === kategori ? "bg-gray-300 font-bold" : "hover:bg-gray-200"}`} onClick={() => byttKategori(kategori)}>
+              <button className={`w-full text-left p-2 md:p-3 rounded transition duration-200 text-sm md:text-base ${
+                valgtKategori === kategori ? "bg-gray-300 font-bold" : "hover:bg-gray-200"
+              }`} onClick={() => byttKategori(kategori)}>
                 {kategori.charAt(0).toUpperCase() + kategori.slice(1)}
               </button>
             </li>
@@ -79,8 +81,8 @@ const Medlemskap = ({ loggetInnBruker }) => {
       </div>
   
       {/* Innhold */}
-      <div className="flex-1 flex justify-center items-center p-4 md:p-8">
-        <div className="bg-white p-4 md:p-8 rounded-lg border border-gray-300 shadow-md w-full max-w-lg">
+      <div className="flex-1 flex justify-center items-center p-4 md:p-8 w-full">
+        <div className="bg-white p-4 md:p-8 rounded-lg border border-gray-300 shadow-md w-full max-w-[90%] md:max-w-[600px]">
           {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (
             <>
               <h2 className="text-lg md:text-xl font-bold text-black mb-4">Brukerinnstillinger</h2>
