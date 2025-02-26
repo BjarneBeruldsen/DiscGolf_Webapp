@@ -1278,6 +1278,16 @@
       width: calc(1/5 * 100%);
     }
   }
+  .lg\:max-w-lg {
+    @media (width >= 64rem) {
+      max-width: var(--container-lg);
+    }
+  }
+  .xl\:max-w-xl {
+    @media (width >= 80rem) {
+      max-width: var(--container-xl);
+    }
+  }
 }
 .hidden-lg {
   display: none;
