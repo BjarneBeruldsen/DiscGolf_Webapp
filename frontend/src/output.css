@@ -554,9 +554,6 @@
   .mx-2 {
     margin-inline: calc(var(--spacing) * 2);
   }
-  .mx-4 {
-    margin-inline: calc(var(--spacing) * 4);
-  }
   .mx-auto {
     margin-inline: auto;
   }
@@ -631,6 +628,9 @@
   }
   .min-h-screen {
     min-height: 100vh;
+  }
+  .w-1\/4 {
+    width: calc(1/4 * 100%);
   }
   .w-6 {
     width: calc(var(--spacing) * 6);
@@ -818,9 +818,6 @@
   }
   .bg-cover {
     background-size: cover;
-  }
-  .bg-fixed {
-    background-attachment: fixed;
   }
   .bg-center {
     background-position: center;
@@ -1123,26 +1120,6 @@
       margin-inline: auto;
     }
   }
-  .sm\:mt-0 {
-    @media (width >= 40rem) {
-      margin-top: calc(var(--spacing) * 0);
-    }
-  }
-  .sm\:h-full {
-    @media (width >= 40rem) {
-      height: 100%;
-    }
-  }
-  .sm\:min-h-\[calc\(100vh-2rem\)\] {
-    @media (width >= 40rem) {
-      min-height: calc(100vh - 2rem);
-    }
-  }
-  .sm\:w-1\/3 {
-    @media (width >= 40rem) {
-      width: calc(1/3 * 100%);
-    }
-  }
   .sm\:w-full {
     @media (width >= 40rem) {
       width: 100%;
@@ -1153,24 +1130,9 @@
       max-width: var(--container-md);
     }
   }
-  .sm\:flex-row {
-    @media (width >= 40rem) {
-      flex-direction: row;
-    }
-  }
-  .sm\:p-8 {
-    @media (width >= 40rem) {
-      padding: calc(var(--spacing) * 8);
-    }
-  }
   .sm\:px-10 {
     @media (width >= 40rem) {
       padding-inline: calc(var(--spacing) * 10);
-    }
-  }
-  .md\:w-1\/4 {
-    @media (width >= 48rem) {
-      width: calc(1/4 * 100%);
     }
   }
   .md\:flex-row {
@@ -1204,11 +1166,6 @@
         margin-inline-start: calc(calc(var(--spacing) * 6) * var(--tw-space-x-reverse));
         margin-inline-end: calc(calc(var(--spacing) * 6) * calc(1 - var(--tw-space-x-reverse)));
       }
-    }
-  }
-  .md\:bg-scroll {
-    @media (width >= 48rem) {
-      background-attachment: scroll;
     }
   }
   .md\:text-left {

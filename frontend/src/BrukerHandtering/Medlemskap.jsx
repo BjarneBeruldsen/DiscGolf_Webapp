@@ -35,7 +35,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
   };
   const handleSlettBruker = async (e) => {
     e.preventDefault();
-    setMelding(""); 
+    setMelding("");
     if (brukernavnInput !== bruker.bruker) {
       setMelding("Brukernavnet stemmer ikke.");
       return;
@@ -47,7 +47,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
         credentials: "include",
         body: JSON.stringify({ bruker: bruker.bruker, passord }),
       });
-      const data = await respons.json();
+      const data = await respons.json();  
       if (respons.ok) {
         localStorage.removeItem("bruker");
         window.location.href = "/Hjem";
@@ -61,11 +61,11 @@ const Medlemskap = ({ loggetInnBruker }) => {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row min-h-screen bg-no-repeat bg-cover bg-fixed md:bg-scroll p-4 relative"
-      style={{ backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fA%3D%3D')` }}>
-      
-      {/* Sidemeny */}
-      <div className="w-full sm:w-1/3 md:w-1/4 bg-white p-6 shadow-md rounded-lg sm:h-full">
+    <div 
+      className="flex min-h-screen bg-cover bg-center relative"
+      style={{ backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')` }}
+    >
+      <div className="w-1/4 bg-white p-6 shadow-md">
         <h2 className="text-lg font-bold mb-6">Innstillinger</h2>
         <ul className="space-y-4">
           {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
@@ -74,7 +74,8 @@ const Medlemskap = ({ loggetInnBruker }) => {
                 className={`w-full text-left p-3 rounded transition duration-200 ${
                   valgtKategori === kategori ? "bg-gray-300 font-bold" : "hover:bg-gray-200"
                 }`}
-                onClick={() => byttKategori(kategori)}>
+                onClick={() => byttKategori(kategori)}
+              >
                 {kategori.charAt(0).toUpperCase() + kategori.slice(1)}
               </button>
             </li>
@@ -82,15 +83,14 @@ const Medlemskap = ({ loggetInnBruker }) => {
         </ul>
       </div>
 
-      {/* Innhold */}
-      <div className="flex-1 flex justify-center items-center mt-4 sm:mt-0 sm:min-h-[calc(100vh-2rem)]">
-        <div className="bg-white p-6 sm:p-8 rounded-lg border border-gray-300 shadow-md w-full max-w-lg mx-4">
+      <div className="flex-1 flex justify-center items-center">
+        <div className="bg-white p-8 rounded-lg border border-gray-300 shadow-md w-full max-w-md">
           {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (
             <>
               <h2 className="text-xl font-bold text-black mb-4">Brukerinnstillinger</h2>
               <div className="space-y-4">
-                <input type="text" value={bruker.bruker || ""} readOnly className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100" />
-                <input type="email" value={bruker.epost || ""} readOnly className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100" />
+               <input type="text" value={bruker.bruker || ""} readOnly className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100" />
+               <input type="email" value={bruker.epost || ""} readOnly className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100" />
                 <input type="password" placeholder="Nytt passord (funker ikke enda)" className="w-full px-3 py-2 border border-gray-300 rounded" />
                 <button className="bg-black text-white px-4 py-2 rounded w-full hover:bg-gray-800">Lagre Endringer</button>
               </div>
@@ -101,10 +101,11 @@ const Medlemskap = ({ loggetInnBruker }) => {
             </>
           )}
 
-          {/* Ulike kategorier */}
           {["personvern", "sikkerhet", "min klubb"].includes(valgtKategori) && (
             <>
-              <h2 className="text-xl font-bold text-black mb-4">{valgtKategori.charAt(0).toUpperCase() + valgtKategori.slice(1)}</h2>
+              <h2 className="text-xl font-bold text-black mb-4">
+                {valgtKategori.charAt(0).toUpperCase() + valgtKategori.slice(1)}
+              </h2>
               <p className="text-gray-600">Funksjoner kommer snart</p>
             </>
           )}
