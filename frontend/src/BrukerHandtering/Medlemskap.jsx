@@ -61,28 +61,32 @@ const Medlemskap = ({ loggetInnBruker }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] min-h-screen bg-cover bg-center w-full"
-      style={{ backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fA%3D%3D')` }}>
-      
-      {/* Sidemeny */}
-      <div className="w-full md:max-w-[300px] bg-white p-4 md:p-6 shadow-md">
+    <div
+      className="grid grid-cols-1 md:grid-cols-[300px_1fr] min-h-screen w-full bg-cover bg-center"
+      style={{
+        backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fA%3D%3D')`,
+      }}
+    >
+      <aside className="bg-white p-4 md:p-6 shadow-md">
         <h2 className="text-lg md:text-xl font-bold mb-4 md:mb-6">Innstillinger</h2>
-        <ul className="grid gap-2 md:gap-4">
+        <ul className="space-y-2 md:space-y-4">
           {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
             <li key={kategori}>
-              <button className={`w-full text-left p-2 md:p-3 rounded transition duration-200 text-sm md:text-base ${
-                valgtKategori === kategori ? "bg-gray-300 font-bold" : "hover:bg-gray-200"
-              }`} onClick={() => byttKategori(kategori)}>
+              <button
+                className={`w-full text-left p-2 md:p-3 rounded transition duration-200 text-sm md:text-base ${
+                  valgtKategori === kategori ? "bg-gray-300 font-bold" : "hover:bg-gray-200"
+                }`}
+                onClick={() => byttKategori(kategori)}
+              >
                 {kategori.charAt(0).toUpperCase() + kategori.slice(1)}
               </button>
             </li>
           ))}
         </ul>
-      </div>
+      </aside>
   
-      {/* Innhold */}
-      <div className="flex justify-center items-start md:items-center p-4 md:p-8">
-        <div className="bg-white p-4 md:p-8 rounded-lg border border-gray-300 shadow-md w-full max-w-md lg:max-w-lg xl:max-w-xl">
+      <main className="flex justify-start items-start p-4 md:p-8">
+        <div className="bg-white w-full max-w-md md:max-w-lg lg:max-w-xl p-4 md:p-8 rounded-lg border border-gray-300 shadow-md">
           {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (
             <>
               <h2 className="text-lg md:text-xl font-bold text-black mb-4">Brukerinnstillinger</h2>
@@ -105,7 +109,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
           )}
   
           {visSlettBoks && (
-            <div className="flex flex-col justify-center items-center w-full">
+            <div className="flex flex-col justify-center items-center w-full mt-4">
               <div className="bg-white p-4 md:p-6 rounded-lg border border-gray-300 shadow-md w-full max-w-xs md:max-w-md">
                 <h3 className="text-lg md:text-xl font-bold text-black">Bekreft sletting</h3>
                 <p className="text-gray-600 mb-3 md:mb-4 text-sm md:text-base">Denne handlingen kan ikke angres!</p>
@@ -118,7 +122,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
             </div>
           )}
         </div>
-      </div>
+      </main>
     </div>
   );
 };
