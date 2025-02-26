@@ -521,6 +521,9 @@
   }
 }
 @layer utilities {
+  .fixed {
+    position: fixed;
+  }
   .relative {
     position: relative;
   }
@@ -1340,6 +1343,11 @@
   .lg\:max-w-xl {
     @media (width >= 64rem) {
       max-width: var(--container-xl);
+    }
+  }
+  .lg\:grid-cols-\[280px_1fr\] {
+    @media (width >= 64rem) {
+      grid-template-columns: 280px 1fr;
     }
   }
   .lg\:grid-cols-\[350px_1fr\] {
