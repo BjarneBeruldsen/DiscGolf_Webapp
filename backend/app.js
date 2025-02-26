@@ -454,7 +454,7 @@ app.get("/sjekk-session", (req, res) => {
         console.log("Bruker er autentisert:", req.user);
         return res.status(200).json({ bruker: req.user });
     } else {
-        console.log("Ingen aktiv session");
+        console.warn("Ingen aktiv session – ingen bruker logget inn");
         return res.status(401).json({ error: "Ingen aktiv session" });
     }
 });
