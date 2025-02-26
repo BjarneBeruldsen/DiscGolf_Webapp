@@ -1233,6 +1233,11 @@
       grid-template-columns: 300px 1fr;
     }
   }
+  .md\:grid-cols-\[350px_1fr\] {
+    @media (width >= 48rem) {
+      grid-template-columns: 350px 1fr;
+    }
+  }
   .md\:flex-row {
     @media (width >= 48rem) {
       flex-direction: row;
