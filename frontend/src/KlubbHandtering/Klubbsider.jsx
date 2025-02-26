@@ -1,3 +1,4 @@
+// Author: Bjarne Hovd Beruldsen
 import UseFetch from "./UseFetch";
 import KlubbListe from "./KlubbListe";
 

@@ -1,3 +1,4 @@
+// Author: Bjarne Hovd Beruldsen
 import React from "react";
 
 const Baner = () => {

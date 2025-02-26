@@ -1,3 +1,4 @@
+// Author: Bjarne Hovd Beruldsen
 import { useEffect, useState } from "react";
 
 const ScoreBoard = () => {

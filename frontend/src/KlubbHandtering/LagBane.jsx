@@ -1,3 +1,4 @@
+// Author: Bjarne Hovd Beruldsen
 import { useState } from 'react';
 import { validering } from './validation';
 

@@ -1,3 +1,4 @@
+// Author: Bjarne Hovd Beruldsen
 import { Link } from "react-router-dom";
 
 const KlubbListe = (props) => {

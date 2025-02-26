@@ -1,3 +1,5 @@
+// Author: Bjarne Hovd Beruldsen
+
 import { useParams, useHistory } from 'react-router-dom';
 import UseFetch from './UseFetch';
 import { useEffect, useState } from 'react';

@@ -1,3 +1,4 @@
+// Author: Bjarne Hovd Beruldsen
 const Medlemmerliste = () => {
     return ( 
     <div>
