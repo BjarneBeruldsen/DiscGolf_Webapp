@@ -38,6 +38,9 @@ function App() {
       });
   
       if (!respons.ok) {
+        if (respons.status === 401) {
+          console.error("Ingen bruker er logget inn");
+        }
         setLoggetInnBruker(null);
         localStorage.removeItem("bruker");
       } else {
