@@ -136,7 +136,7 @@ app.listen(PORT, () => {
     }
 });
 
-//Ulike ruter 
+//Klubbhåndterings ruter 
 app.get('/klubber', (req, res) => {
     let klubber = []
     db.collection('Klubb')
@@ -257,6 +257,8 @@ app.post('/klubber/:id/baner', (req, res) => {
     }
 });
 
+//Brukerhåndterings ruter
+
 //Registrering av bruker
 //Rate limit for å stoppe brute force angrep https://www.npmjs.com/package/express-rate-limit
 const registreringStopp = rateLimit({
@@ -340,6 +342,7 @@ const innloggingValidering = [
         .notEmpty().withMessage("Passord må fylles ut.") 
         .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.")
 ];
+
 //Rute for innlogging
 app.post("/Innlogging", loggeInnStopp, innloggingValidering, (req, res, next) => {
     const errors = validationResult(req);
@@ -462,6 +465,9 @@ app.get("/sjekk-session", (req, res) => {
         return res.status(401).json({ error: "Ingen aktiv session" });
     }
 });
+
+
+//Andre ruter
 
 //Tilbakestille testdata fra klubb collection 
 app.delete('/tommeTestdata', (req, res) => {
