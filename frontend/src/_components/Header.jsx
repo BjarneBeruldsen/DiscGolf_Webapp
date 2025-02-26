@@ -88,7 +88,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
                     </Link>
                   </li>
                   <li className="flex items-center">
-                    <button onClick={loggUt} className="text-white font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg">
+                    <button onClick={loggUt} className="text-black font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg">
                       Logg ut
                     </button>
                   </li>
@@ -96,12 +96,12 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
               ) : (
                 <>
                   <li>
-                    <Link to="/Innlogging" onClick={lukkMeny} className="text-white font-bold hover:text-gray-600">
+                    <Link to="/Innlogging" onClick={lukkMeny} className="text-black font-bold hover:text-gray-600">
                      
                     </Link>
                   </li>
                   <li>
-                    <Link to="/Registrering" onClick={lukkMeny} className="text-white font-bold hover:text-gray-600">
+                    <Link to="/Registrering" onClick={lukkMeny} className="text-black font-bold hover:text-gray-600">
                       
                     </Link>
                   </li>
