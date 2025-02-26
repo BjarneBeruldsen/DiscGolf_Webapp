@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { sjekkNyhetTittel, sjekkNyhet } from './validation';
 import LagBane from './LagBane';
+import LagTurnering from './LagTurnering';
 
 const LagKlubbside = () => {
     const { id } = useParams();
@@ -14,6 +15,7 @@ const LagKlubbside = () => {
     const minne = useHistory();
     const [visNyhetForm, setVisNyhetForm] = useState(false);
     const [visBaneForm, setVisBaneForm] = useState(false);
+    const [visTurneringForm, setVisTurneringForm] = useState(false);
     const [errorMelding, setErrorMelding] = useState('');    
 
     useEffect(() => {
@@ -66,9 +68,10 @@ const LagKlubbside = () => {
         });
     };
 
-    const behandleVisning = () => {
-        setVisNyhetForm(!visNyhetForm); 
-        setVisBaneForm(false);
+    const behandleVisning = (seksjon) => {
+        setVisNyhetForm(seksjon === 'nyhet'); 
+        setVisBaneForm(seksjon === 'bane');
+        setVisTurneringForm(seksjon === 'turnering')
     }
 
     const behandleVisningBane = () => {
@@ -81,8 +84,9 @@ const LagKlubbside = () => {
         alert('Ny bane lagt til');
     }
 
+
     return (
-        <div className="flex justify-center bg-gray-200">
+        <div className=" bg-gray-200">
             <div className="lagklubbside p-4 mt-8">
                 {klubb ? (
                     <>
@@ -91,18 +95,22 @@ const LagKlubbside = () => {
                                 <h2 className="text-3xl font-bold">Klubb: {klubb.klubbnavn}</h2>
                                 <p className="text-2xl font-bold">Kontaktinfo: {klubb.kontaktinfo}</p>
                             </div>
-                            <div className='border-b py-4'>
-                                <h3 className="text-2xl font-bold">Legg til baner</h3>
-                                <button onClick={ behandleVisningBane  } className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white mt-2">Legg til bane</button>
-                            </div>
-                            <div className='border-b py-4'>
-                                <h3 className="text-2xl font-bold">Legg til turneringer</h3>
-                                <p>Kommer i senere versjon..</p>
-                            </div>
-        
-                            <div className='py-4'>
-                                <h3 className="text-2xl font-bold">Legg til nyheter</h3>
-                                <button onClick={ behandleVisning  } className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white mt-2">Legg til nyhet</button>
+                            <div className='flex justify-center'>
+                            <button onClick={() => behandleVisning("nyhet")} className="justify-center py-2 px-2 m-2 bg-gray-500 rounded-lg text-sm text-white hover:bg-gray-800">Nyhet
+                                <svg className="w-6 inline-block" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
+                                </svg>
+                            </button>
+                            <button onClick={() => behandleVisning("bane")} className="justify-center py-2 px-2 m-2 bg-gray-500 rounded-lg text-sm text-white hover:bg-gray-800">Bane
+                                <svg className="w-6 inline-block" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
+                                </svg>
+                            </button>
+                            <button onClick={() => behandleVisning("turnering")} className="justify-center py-2 px-2 m-2 bg-gray-500 rounded-lg text-sm text-white hover:bg-gray-800">Turnering
+                                <svg className="w-6 inline-block" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
+                                </svg>
+                            </button>
                             </div>
                         </div>
                         {visNyhetForm && (
@@ -148,6 +156,7 @@ const LagKlubbside = () => {
                             </div>
                         )}
                         {visBaneForm && <LagBane klubbId={id} onBaneLagtTil={handleBaneLagtTil} />}
+                        {visTurneringForm && <LagTurnering klubbId={id} />}
                     </>
                 ) : (
                     <p>Laster klubbdata...</p>

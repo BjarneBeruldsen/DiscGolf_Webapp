@@ -25,7 +25,7 @@ const BaneListe = (props) => {
                                         <div className="beskrivelse pr-4 wrap">
                                             <p>{bane.beskrivelse}</p>
                                         </div>
-                                        <div className="knapp flex justify-end">
+                                        <div className="knapp">
                                             <button type="submit" className="py-2 px-2 bg-green-800 rounded-lg text-sm text-white mt-2 hover:bg-green-900">Spill</button>
                                         </div>
                                     </div>
