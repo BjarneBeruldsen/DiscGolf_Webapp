@@ -86,7 +86,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
         </ul>
       </aside>
   
-      <main className="flex justify-center items-start p-6">
+      <main className="flex justify-center items-start p-6 border-2 border-red-500 bg-gray-100">
         <div className="bg-white w-full max-w-xl p-6 rounded-lg border border-gray-300 shadow-md">
           {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (
             <>
