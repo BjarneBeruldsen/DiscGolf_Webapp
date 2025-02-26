@@ -19,7 +19,7 @@ require('dotenv').config();
 
 const app = express();
 
-app.set("trust proxy", 1); //Heroku
+app.set("trust proxy", 1); //Heroku kjører proxy og må settes til trust for at ulike ting skal fungere ordentlig som express-rate-limit (IP) og session
 
 app.disable('x-powered-by'); //Disabled for sikkerhet da man kan se hvilken teknologi som brukes 
 
@@ -63,10 +63,10 @@ app.use(express.static(path.join(__dirname, '../frontend/build')));
 //Konfigurasjon av session      https://www.geeksforgeeks.org/how-to-handle-sessions-in-express/ & https://expressjs.com/en/resources/middleware/session.html  
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,              
+    resave: false,                       //Lagrer session på hver request selv om ingen endringer er gjort
+    saveUninitialized: false,            //Lagrer session selv uten ny data 
     proxy: true,                         //Må være true for at Heroku skal funke
-    rolling: true,                       //Fornyer session ved hvert request
+    rolling: false,                       //Fornyer session ved hvert request, ikke vits forholder oss til maxAge
     store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }), //Lagrer session i MongoDB                          
     cookie: {
         secure: true,                    //Må være true for at cookies skal fungere på nettsiden og false dersom siden skal funke lokalt
