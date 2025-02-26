@@ -48,6 +48,7 @@ function App() {
         if (data.bruker) {
           setLoggetInnBruker(data.bruker);
           localStorage.setItem("bruker", JSON.stringify(data.bruker));
+          console.log("Bruker er logget inn:");
         } else {
           setLoggetInnBruker(null);
           localStorage.removeItem("bruker");
