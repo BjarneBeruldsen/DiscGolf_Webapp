@@ -11,6 +11,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
     const utloggingVellykket = await loggUtBruker();
     if (utloggingVellykket) {
       setLoggetInnBruker(null);
+      lukkMeny();
     }
   };
 
@@ -42,9 +43,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
             {loggetInnBruker ? (
               <>
                 <li className="text-white font-bold hover:text-gray-600">
-                <Link to="/Medlemskap" onClick={lukkMeny}>
-                 Mitt Medlemskap
-                 </Link>
+                  <Link to="/Medlemskap" onClick={lukkMeny}>Mitt Medlemskap</Link>
                 </li>
                 <li className="flex items-center">
                   <button onClick={loggUt} className="text-white font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg">
@@ -74,44 +73,30 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
             <li><Link to="/Hjem" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Hjem</Link></li>
             <li><Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Rediger klubbside</Link></li>
             <li><Link to="/Baner" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Baner</Link></li>
-            <li><Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Klubbesider</Link></li>
+            <li><Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Klubbsider</Link></li>
             <li><Link to="/nyheter" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Nyheter</Link></li>
             <li><Link to="/ScoreBoard" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>ScoreBoard</Link></li>
-            <li><Link to="/Innlogging" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>Logg Inn</Link></li>
-            <li><Link to="/Registrering" className="text-black font-bold hover:text-gray-600"onClick={lukkMeny}>Bli medlem!</Link></li>  
 
-        {loggetInnBruker ? (
-                <>
-                  <li className="text-black font-bold hover:text-gray-600">
-                  <Link to="/Medlemskap" onClick={lukkMeny}>
-                      Mitt Medlemskap
-                    </Link>
-                  </li>
-                  <li className="flex items-center">
-                    <button onClick={loggUt} className="text-black font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg">
-                      Logg ut
-                    </button>
-                  </li>
-                </>
-              ) : (
-                <>
-                  <li>
-                    <Link to="/Innlogging" onClick={lukkMeny} className="text-black font-bold hover:text-gray-600">
-                     
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/Registrering" onClick={lukkMeny} className="text-black font-bold hover:text-gray-600">
-                      
-                    </Link>
-                  </li>
-                </>
-              )}
+            {loggetInnBruker ? (
+              <>
+                <li className="text-black font-bold hover:text-gray-600">
+                  <Link to="/Medlemskap" onClick={lukkMeny}>Mitt Medlemskap</Link>
+                </li>
+                <li className="flex items-center">
+                  <button onClick={loggUt} className="text-black font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg">
+                    Logg ut
+                  </button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li><Link to="/Innlogging" onClick={lukkMeny} className="text-black font-bold hover:text-gray-600">Logg inn</Link></li>
+                <li><Link to="/Registrering" onClick={lukkMeny} className="text-black font-bold hover:text-gray-600">Bli medlem!</Link></li>
+              </>
+            )}
           </ul>
         </nav>
       )}
-
-    
     </div>
   );
 };
