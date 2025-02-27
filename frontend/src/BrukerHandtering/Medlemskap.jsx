@@ -107,9 +107,18 @@ const Medlemskap = ({ loggetInnBruker }) => {
       </div>
   
       {/* Hovedinnhold */}
-      <div className="flex-1 flex flex-col items-center p-4 lg:p-8">
-        {/* Flytter boksen litt ned for luft */}
-        <div className="mt-8 bg-white p-6 lg:p-8 rounded-lg border border-gray-300 shadow-md w-full max-w-md lg:max-w-2xl">
+      {/*
+        - flex-1 for at denne delen skal fylle resten av skjermen.
+        - flex-col for å stable innholdet vertikalt.
+        - items-start, justify-start på mobil -> boksen øverst til venstre.
+        - lg:items-center, lg:justify-center på desktop -> boksen midtstilt vertikalt og horisontalt.
+      */}
+      <div className="flex-1 flex flex-col p-4 lg:p-8 items-start justify-start lg:items-center lg:justify-center">
+        {/*
+          - mt-8 på mobil for å få litt luft fra toppen.
+          - lg:mt-0 for å nullstille top-margen på desktop (der vi vil ha boksen midt på skjermen).
+        */}
+        <div className="mt-8 lg:mt-0 bg-white p-6 lg:p-8 rounded-lg border border-gray-300 shadow-md w-full max-w-md lg:max-w-2xl">
           {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (
             <>
               <h2 className="text-xl font-bold text-black mb-4">Brukerinnstillinger</h2>
