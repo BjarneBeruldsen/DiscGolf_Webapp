@@ -63,11 +63,12 @@ const Medlemskap = ({ loggetInnBruker }) => {
   
   return (
     <div
-      className="flex flex-col lg:flex-row min-h-screen bg-cover bg-center"
+      className="flex flex-col lg:flex-row items-start min-h-screen bg-cover bg-center w-full"
       style={{
         backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3')`,
       }}
     >
+
       <div className="block lg:hidden w-full bg-white p-6 shadow-md">
         <h2 className="text-lg font-bold mb-6">Innstillinger</h2>
         <ul className="space-y-4">
@@ -85,9 +86,9 @@ const Medlemskap = ({ loggetInnBruker }) => {
           ))}
         </ul>
       </div>
-  
-      <aside className="hidden lg:block w-[250px] bg-white p-6 shadow-md rounded-lg">
-        <h2 className="text-lg font-bold mb-6">Innstillinger</h2>
+
+      <aside className="hidden lg:block w-[350px] bg-white p-8 shadow-md rounded-r-lg self-start">
+        <h2 className="text-xl font-bold mb-6">Innstillinger</h2>
         <ul className="space-y-4">
           {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
             <li key={kategori}>
@@ -103,7 +104,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
           ))}
         </ul>
       </aside>
-  
+
       <main className="flex-1 flex items-center justify-center p-4 lg:p-8">
         <div className="bg-white p-6 lg:p-8 rounded-lg border border-gray-300 shadow-md w-full max-w-md lg:max-w-2xl">
           {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (

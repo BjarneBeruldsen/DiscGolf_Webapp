@@ -653,6 +653,9 @@
   .w-\[250px\] {
     width: 250px;
   }
+  .w-\[350px\] {
+    width: 350px;
+  }
   .w-full {
     width: 100%;
   }
@@ -688,6 +691,9 @@
   }
   .items-center {
     align-items: center;
+  }
+  .items-start {
+    align-items: flex-start;
   }
   .justify-between {
     justify-content: space-between;
@@ -739,6 +745,9 @@
       margin-inline-start: calc(calc(var(--spacing) * 6) * var(--tw-space-x-reverse));
       margin-inline-end: calc(calc(var(--spacing) * 6) * calc(1 - var(--tw-space-x-reverse)));
     }
+  }
+  .self-start {
+    align-self: flex-start;
   }
   .rounded {
     border-radius: 0.25rem;
