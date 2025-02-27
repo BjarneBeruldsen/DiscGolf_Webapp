@@ -68,17 +68,15 @@ const Medlemskap = ({ loggetInnBruker }) => {
         backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3')`,
       }}
     >
-      {/* Sidemeny for desktop (venstre) */}
-      <div className="hidden lg:block w-1/4 bg-white p-6 shadow-md lg:min-h-screen">
+      {/* Meny for mobil (viser på små skjermer, skjules på lg) */}
+      <div className="block lg:hidden w-full bg-white p-6 shadow-md">
         <h2 className="text-lg font-bold mb-6">Innstillinger</h2>
         <ul className="space-y-4">
           {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
             <li key={kategori}>
               <button
                 className={`w-full text-left p-3 rounded transition duration-200 ${
-                  valgtKategori === kategori 
-                    ? "bg-gray-300 font-bold" 
-                    : "hover:bg-gray-200"
+                  valgtKategori === kategori ? "bg-gray-300 font-bold" : "hover:bg-gray-200"
                 }`}
                 onClick={() => byttKategori(kategori)}
               >
@@ -89,52 +87,57 @@ const Medlemskap = ({ loggetInnBruker }) => {
         </ul>
       </div>
   
-      {/* Dropdown for mobil */}
-      <div className="block lg:hidden p-4 bg-white shadow-md">
-        <select
-          className="w-full p-3 border rounded"
-          onChange={(e) => byttKategori(e.target.value)}
-          value={valgtKategori}
-        >
+      {/* Meny for desktop (skjules på mobil) */}
+      <div className="hidden lg:block w-1/4 bg-white p-6 shadow-md">
+        <h2 className="text-lg font-bold mb-6">Innstillinger</h2>
+        <ul className="space-y-4">
           {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
-            <option key={kategori} value={kategori}>
-              {kategori.charAt(0).toUpperCase() + kategori.slice(1)}
-            </option>
+            <li key={kategori}>
+              <button
+                className={`w-full text-left p-3 rounded transition duration-200 ${
+                  valgtKategori === kategori ? "bg-gray-300 font-bold" : "hover:bg-gray-200"
+                }`}
+                onClick={() => byttKategori(kategori)}
+              >
+                {kategori.charAt(0).toUpperCase() + kategori.slice(1)}
+              </button>
+            </li>
           ))}
-        </select>
+        </ul>
       </div>
   
       {/* Hovedinnhold */}
-      <div className="flex-1 flex justify-center items-start p-4 lg:p-8">
-        <div className="bg-white p-6 lg:p-8 rounded-lg border border-gray-300 shadow-md w-full max-w-md lg:max-w-2xl">
+      <div className="flex-1 flex flex-col items-center p-4 lg:p-8">
+        {/* Flytter boksen litt ned for luft */}
+        <div className="mt-8 bg-white p-6 lg:p-8 rounded-lg border border-gray-300 shadow-md w-full max-w-md lg:max-w-2xl">
           {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (
             <>
               <h2 className="text-xl font-bold text-black mb-4">Brukerinnstillinger</h2>
               <div className="space-y-4">
-                <input 
-                  type="text" 
-                  value={bruker.bruker} 
-                  readOnly 
-                  className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100" 
+                <input
+                  type="text"
+                  value={bruker.bruker}
+                  readOnly
+                  className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
                 />
-                <input 
-                  type="email" 
-                  value={bruker.epost} 
-                  readOnly 
-                  className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100" 
+                <input
+                  type="email"
+                  value={bruker.epost}
+                  readOnly
+                  className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
                 />
-                <input 
-                  type="password" 
-                  placeholder="Nytt passord (funker ikke enda)" 
-                  className="w-full px-3 py-2 border border-gray-300 rounded" 
+                <input
+                  type="password"
+                  placeholder="Nytt passord (funker ikke enda)"
+                  className="w-full px-3 py-2 border border-gray-300 rounded"
                 />
                 <button className="bg-black text-white px-4 py-2 rounded w-full hover:bg-gray-800">
                   Lagre Endringer
                 </button>
               </div>
               <hr className="my-6 border-gray-300" />
-              <button 
-                onClick={() => setVisSlettBoks(true)} 
+              <button
+                onClick={() => setVisSlettBoks(true)}
                 className="bg-red-600 text-white px-4 py-2 rounded w-full hover:bg-red-700"
               >
                 Slett Bruker

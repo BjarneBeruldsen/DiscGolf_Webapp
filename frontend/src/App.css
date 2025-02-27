@@ -66,3 +66,45 @@
 .bg-center {
   @apply bg-center;
 }
+.block {
+  @apply block;
+}
+.lg\:hidden {
+  @apply lg:hidden;
+}
+.hidden {
+  @apply hidden;
+}
+.lg\:block {
+  @apply lg:block;
+}
+.p-6 {
+  @apply p-6;
+}
+.shadow-md {
+  @apply shadow-md;
+}
+.w-full {
+  @apply w-full;
+}
+.text-lg {
+  @apply text-lg;
+}
+.font-bold {
+  @apply font-bold;
+}
+.mb-6 {
+  @apply mb-6;
+}
+.space-y-4 {
+  @apply space-y-4;
+}
+.transition {
+  @apply transition;
+}
+.duration-200 {
+  @apply duration-200;
+}
+.hover\:bg-gray-200 {
+  @apply hover:bg-gray-200;
+}
