@@ -62,113 +62,159 @@ const Medlemskap = ({ loggetInnBruker }) => {
 
   
   return (
-    <div
-      className="grid grid-cols-1 lg:grid-cols-[300px_1fr] min-h-screen w-full bg-cover bg-center"
-      style={{
-        backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3')`,
-      }}
-    >
-      <aside className="bg-white p-6 shadow-md h-full">
-        <h2 className="text-xl font-bold mb-6">Innstillinger</h2>
-        <ul className="space-y-4">
-          {["brukerinnstillinger","personvern","sikkerhet","min klubb"].map((kategori) => (
-            <li key={kategori}>
-              <button
-                className={`w-full text-left p-3 rounded transition duration-200 ${
-                  valgtKategori === kategori 
-                    ? "bg-gray-300 font-bold" 
-                    : "hover:bg-gray-200"
-                }`}
-                onClick={() => byttKategori(kategori)}
-              >
+    <div className="min-h-screen w-full bg-gray-50">
+      {/* Desktop layout */}
+      <div className="hidden lg:grid lg:grid-cols-[300px_1fr] lg:min-h-screen">
+        <aside className="bg-white p-6 shadow-lg h-full sticky top-0">
+          <h2 className="text-2xl font-bold mb-8">Innstillinger</h2>
+          <ul className="space-y-3">
+            {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
+              <li key={kategori}>
+                <button
+                  className={`w-full text-left p-3 rounded-lg transition-all duration-200 ${
+                    valgtKategori === kategori
+                      ? "bg-blue-100 text-blue-700 font-semibold"
+                      : "hover:bg-gray-100 text-gray-700"
+                  }`}
+                  onClick={() => byttKategori(kategori)}
+                >
+                  {kategori.charAt(0).toUpperCase() + kategori.slice(1)}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </aside>
+
+        <main className="p-8 max-w-3xl mx-auto w-full">
+          <div className="bg-white rounded-xl shadow-md p-8">
+            {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (
+              <>
+                <h1 className="text-3xl font-bold mb-6">Brukerinnstillinger</h1>
+                <div className="space-y-4">
+                  <input
+                    type="text"
+                    value={bruker.bruker || ""}
+                    readOnly
+                    className="w-full p-3 border rounded-lg bg-gray-50"
+                  />
+                  <input
+                    type="email"
+                    value={bruker.epost || ""}
+                    readOnly
+                    className="w-full p-3 border rounded-lg bg-gray-50"
+                  />
+                  <input
+                    type="password"
+                    placeholder="Nytt passord (funker ikke enda)"
+                    className="w-full p-3 border rounded-lg"
+                  />
+                  <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                    Lagre Endringer
+                  </button>
+                </div>
+                <hr className="my-6 border-gray-200" />
+                <button
+                  onClick={() => setVisSlettBoks(true)}
+                  className="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  Slett Bruker
+                </button>
+              </>
+            )}
+
+            {["personvern", "sikkerhet", "min klubb"].includes(valgtKategori) && (
+              <>
+                <h2 className="text-2xl font-bold mb-4">
+                  {valgtKategori.charAt(0).toUpperCase() + valgtKategori.slice(1)}
+                </h2>
+                <p className="text-gray-600">Funksjoner kommer snart</p>
+              </>
+            )}
+
+            {visSlettBoks && (
+              <div className="mt-6">
+                <div className="bg-white p-6 rounded-lg border border-gray-200">
+                  <h3 className="text-xl font-bold mb-4">Bekreft sletting</h3>
+                  <p className="text-red-600 mb-4">Denne handlingen kan ikke angres!</p>
+                  <input
+                    type="text"
+                    placeholder="Skriv inn brukernavn"
+                    value={brukernavnInput}
+                    onChange={(e) => setBrukernavnInput(e.target.value)}
+                    className="w-full p-3 border rounded-lg mb-3"
+                  />
+                  <input
+                    type="password"
+                    placeholder="Bekreft passord"
+                    value={passord}
+                    onChange={(e) => setPassord(e.target.value)}
+                    className="w-full p-3 border rounded-lg"
+                  />
+                  <button
+                    onClick={handleSlettBruker}
+                    className="w-full bg-red-600 text-white py-3 rounded-lg mt-4 hover:bg-red-700"
+                  >
+                    Bekreft sletting
+                  </button>
+                  <button
+                    onClick={() => setVisSlettBoks(false)}
+                    className="w-full bg-gray-200 text-black py-3 rounded-lg mt-2 hover:bg-gray-300"
+                  >
+                    Avbryt
+                  </button>
+                  {melding && <p className="mt-4 text-red-600">{melding}</p>}
+                </div>
+              </div>
+            )}
+          </div>
+        </main>
+      </div>
+
+      {/* Mobil layout */}
+      <div className="lg:hidden p-4">
+        <div className="bg-white rounded-xl shadow-md p-4">
+          <h2 className="text-xl font-bold mb-4">Innstillinger</h2>
+          <select
+            className="w-full p-3 border rounded-lg mb-6"
+            onChange={(e) => byttKategori(e.target.value)}
+            value={valgtKategori}
+          >
+            {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
+              <option key={kategori} value={kategori}>
                 {kategori.charAt(0).toUpperCase() + kategori.slice(1)}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </aside>
+              </option>
+            ))}
+          </select>
 
-      <main className="flex-1 p-6 min-w-0">
-        <div className="bg-white w-full p-8 rounded-lg border border-gray-300 shadow-md max-w-2xl mx-auto">
-          {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (
-            <>
-              <h2 className="title-xl">Brukerinnstillinger</h2>
-              <div className="space-y-4">
-                <input
-                  type="text"
-                  value={bruker.bruker || ""}
-                  readOnly
-                  className="input-text input-text-gray"
-                />
-                <input
-                  type="email"
-                  value={bruker.epost || ""}
-                  readOnly
-                  className="input-text input-text-gray"
-                />
-                <input
-                  type="password"
-                  placeholder="Nytt passord (funker ikke enda)"
-                  className="input-text"
-                />
-                <button className="btn-save">Lagre Endringer</button>
-              </div>
-              <hr className="my-6" />
-              <button onClick={() => setVisSlettBoks(true)} className="btn-delete">
-                Slett Bruker
-              </button>
-            </>
-          )}
-
-          {["personvern","sikkerhet","min klubb"].includes(valgtKategori) && (
-            <>
-              <h2 className="title-xl">
-                {valgtKategori.charAt(0).toUpperCase() + valgtKategori.slice(1)}
-              </h2>
-              <p className="text-gray-600">Funksjoner kommer snart</p>
-            </>
-          )}
-
-          {visSlettBoks && (
-            <div className="flex flex-col justify-center items-center w-full mt-4">
-              <div className="bg-white p-6 rounded-lg border border-gray-300 shadow-md w-full max-w-md">
-                <h3 className="title-xl">Bekreft sletting</h3>
-                <p className="text-gray-600 mb-4">Denne handlingen kan ikke angres!</p>
-                <input
-                  type="text"
-                  placeholder="Skriv inn brukernavn"
-                  value={brukernavnInput}
-                  onChange={(e) => setBrukernavnInput(e.target.value)}
-                  required
-                  className="input-text mb-3"
-                />
-                <input
-                  type="password"
-                  placeholder="Bekreft passord"
-                  value={passord}
-                  onChange={(e) => setPassord(e.target.value)}
-                  required
-                  className="input-text"
-                />
-                <button
-                  type="submit"
-                  onClick={handleSlettBruker}
-                  className="btn-delete mt-2"
-                >
-                  Bekreft Sletting
-                </button>
-                <button
-                  onClick={() => setVisSlettBoks(false)}
-                  className="bg-gray-300 text-black px-4 py-2 rounded w-full mt-2 hover:bg-gray-400"
-                >
-                  Avbryt
-                </button>
-                {melding && <p className="mt-4 text-red-600">{melding}</p>}
-              </div>
-            </div>
-          )}
+          {/* Mobilinnhold */}
+          <div className="bg-white rounded-lg p-4">
+            {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (
+              <>
+                <h2 className="text-xl font-bold mb-4">Brukerinnstillinger</h2>
+                <div className="space-y-3">
+                  <input
+                    type="text"
+                    value={bruker.bruker || ""}
+                    readOnly
+                    className="w-full p-2 border rounded"
+                  />
+                  <input
+                    type="email"
+                    value={bruker.epost || ""}
+                    readOnly
+                    className="w-full p-2 border rounded"
+                  />
+                  <input
+                    type="password"
+                    placeholder="Nytt passord"
+                    className="w-full p-2 border rounded"
+                  />
+                </div>
+              </>
+            )}
+          </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 };

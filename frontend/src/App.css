@@ -42,3 +42,11 @@
 .btn-save {
   @apply bg-black text-white hover:bg-gray-800 transition-colors;
 }
+
+.transition-all {
+  transition-property: all;
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
