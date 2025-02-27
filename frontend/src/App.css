@@ -1,5 +1,7 @@
 /* Author: Bjarne Beruldsen & Laurent Zogaj */
 
+/* Tailwind CSS klasser */
+
 @import "tailwindcss";
 
 .hidden-lg {
@@ -61,5 +63,9 @@
 @media (min-width: 1024px) {
   .content-box {
     @apply w-[900px] min-h-[700px] flex-none; 
+  }
+/* Mobil meny */
+  .mobile-menu {
+    @apply block lg:hidden w-full bg-white p-4 border-b border-gray-200;
   }
 }

@@ -61,7 +61,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
     }
   };
 
-  //Bruker app.css for styling
+  //Bruker app.css for noe styling og egendefinerte klasser
   return (
     <div
       className="outer-wrapper"
@@ -74,7 +74,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
         {/* Mobilmeny */}
         <div className="mobile-menu lg:hidden">
           <h2 className="text-lg font-bold mb-4">Innstillinger</h2>
-          <ul className="space-y-4"> 
+          <ul className="space-y-4">
             {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
               <li key={kategori}>
                 <button
@@ -95,7 +95,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
         {/* PCmeny */}
         <div className="desktop-menu hidden lg:block">
           <h2 className="text-lg font-bold mb-4">Innstillinger</h2>
-          <ul className="space-y-10"> 
+          <ul className="space-y-10">
             {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
               <li key={kategori}>
                 <button
@@ -122,7 +122,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
   
         {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (
           <>
-            <div className="space-y-4 w-full max-w-[400px]">
+            <div className="space-y-4 w-[400px]">
               <input
                 type="text"
                 value={bruker.bruker}
@@ -147,19 +147,21 @@ const Medlemskap = ({ loggetInnBruker }) => {
   
             <button
               onClick={() => setVisSlettBoks(true)}
-              className="bg-red-600 text-white px-4 py-2 rounded w-full max-w-[400px] hover:bg-red-700"
+              className="bg-red-600 text-white px-4 py-2 rounded w-[400px] hover:bg-red-700"
             >
               Slett Bruker
             </button>
           </>
         )}
-  
+
+        {/* Kategorier */}
         {["personvern", "sikkerhet", "min klubb"].includes(valgtKategori) && !visSlettBoks && (
           <div className="text-gray-600 text-center">Funksjoner kommer snart</div>
         )}
-  
+        
+         {/* Sletting av bruker */}
         {visSlettBoks && (
-          <div className="bg-white p-6 rounded-lg border border-gray-300 shadow-md w-full max-w-[400px]">
+          <div className="bg-white p-6 rounded-lg border border-gray-300 shadow-md w-[400px]">
             <h3 className="text-xl font-bold text-black mb-4 text-center">Bekreft sletting</h3>
             <p className="text-gray-600 mb-4 text-center">Denne handlingen kan ikke angres!</p>
             <input
@@ -188,7 +190,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
             >
               Avbryt
             </button>
-            {melding && <p className="mt-4 text-red-600">{melding}</p>}
+            {melding && <p className="mt-4 text-red-600 text-center">{melding}</p>}
           </div>
         )}
       </div>

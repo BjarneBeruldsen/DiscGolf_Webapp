@@ -641,6 +641,9 @@
   .w-85 {
     width: calc(var(--spacing) * 85);
   }
+  .w-\[400px\] {
+    width: 400px;
+  }
   .w-full {
     width: 100%;
   }
@@ -649,9 +652,6 @@
   }
   .max-w-4xl {
     max-width: var(--container-4xl);
-  }
-  .max-w-\[400px\] {
-    max-width: 400px;
   }
   .max-w-lg {
     max-width: var(--container-lg);
@@ -1272,6 +1272,18 @@
     min-height: 700px;
     width: 900px;
     flex: none;
+  }
+  .mobile-menu {
+    display: block;
+    width: 100%;
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 1px;
+    border-color: var(--color-gray-200);
+    background-color: var(--color-white);
+    padding: calc(var(--spacing) * 4);
+    @media (width >= 64rem) {
+      display: none;
+    }
   }
 }
 @keyframes spin {
