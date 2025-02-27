@@ -63,19 +63,19 @@ const Medlemskap = ({ loggetInnBruker }) => {
   
   return (
     <div
-      className="grid grid-cols-[300px_1fr] min-h-screen w-full bg-cover bg-center"
+      className="layout-grid"
       style={{
         backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3')`,
       }}
     >
-      <aside className="bg-white p-6 shadow-md">
-        <h2 className="text-xl font-bold mb-6">Innstillinger</h2>
-        <ul className="space-y-4">
+      <aside className="menu-aside">
+        <h2 className="title-xl">Innstillinger</h2>
+        <ul className="menu-list">
           {["brukerinnstillinger","personvern","sikkerhet","min klubb"].map((kategori) => (
             <li key={kategori}>
               <button
-                className={`w-full text-left p-3 rounded transition duration-200 ${
-                  valgtKategori === kategori ? "bg-gray-300 font-bold" : "hover:bg-gray-200"
+                className={`menu-button ${
+                  valgtKategori === kategori ? "menu-button-active" : ""
                 }`}
                 onClick={() => byttKategori(kategori)}
               >
@@ -87,37 +87,32 @@ const Medlemskap = ({ loggetInnBruker }) => {
       </aside>
 
       <main className="flex justify-center items-start p-6">
-        <div className="bg-white w-full max-w-xl p-6 rounded-lg border border-gray-300 shadow-md">
+        <div className="content-box">
           {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (
             <>
-              <h2 className="text-xl font-bold text-black mb-4">Brukerinnstillinger</h2>
+              <h2 className="title-xl">Brukerinnstillinger</h2>
               <div className="space-y-4">
                 <input
                   type="text"
                   value={bruker.bruker || ""}
                   readOnly
-                  className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
+                  className="input-text input-text-gray"
                 />
                 <input
                   type="email"
                   value={bruker.epost || ""}
                   readOnly
-                  className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
+                  className="input-text input-text-gray"
                 />
                 <input
                   type="password"
                   placeholder="Nytt passord (funker ikke enda)"
-                  className="w-full px-3 py-2 border border-gray-300 rounded"
+                  className="input-text"
                 />
-                <button className="bg-black text-white px-4 py-2 rounded w-full hover:bg-gray-800">
-                  Lagre Endringer
-                </button>
+                <button className="btn-save">Lagre Endringer</button>
               </div>
-              <hr className="my-6 border-gray-300" />
-              <button
-                onClick={() => setVisSlettBoks(true)}
-                className="bg-red-600 text-white px-4 py-2 rounded w-full hover:bg-red-700"
-              >
+              <hr className="my-6" />
+              <button onClick={() => setVisSlettBoks(true)} className="btn-delete">
                 Slett Bruker
               </button>
             </>
@@ -125,7 +120,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
 
           {["personvern","sikkerhet","min klubb"].includes(valgtKategori) && (
             <>
-              <h2 className="text-xl font-bold text-black mb-4">
+              <h2 className="title-xl">
                 {valgtKategori.charAt(0).toUpperCase() + valgtKategori.slice(1)}
               </h2>
               <p className="text-gray-600">Funksjoner kommer snart</p>
@@ -135,7 +130,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
           {visSlettBoks && (
             <div className="flex flex-col justify-center items-center w-full mt-4">
               <div className="bg-white p-6 rounded-lg border border-gray-300 shadow-md w-full max-w-md">
-                <h3 className="text-xl font-bold text-black">Bekreft sletting</h3>
+                <h3 className="title-xl">Bekreft sletting</h3>
                 <p className="text-gray-600 mb-4">Denne handlingen kan ikke angres!</p>
                 <input
                   type="text"
@@ -143,7 +138,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
                   value={brukernavnInput}
                   onChange={(e) => setBrukernavnInput(e.target.value)}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded mb-3"
+                  className="input-text mb-3"
                 />
                 <input
                   type="password"
@@ -151,12 +146,12 @@ const Medlemskap = ({ loggetInnBruker }) => {
                   value={passord}
                   onChange={(e) => setPassord(e.target.value)}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded"
+                  className="input-text"
                 />
                 <button
                   type="submit"
                   onClick={handleSlettBruker}
-                  className="bg-red-600 text-white px-4 py-2 rounded w-full mt-2 hover:bg-red-700"
+                  className="btn-delete mt-2"
                 >
                   Bekreft Sletting
                 </button>
