@@ -68,7 +68,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
         backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3')`,
       }}
     >
-      {/* Meny for mobil (viser på små skjermer, skjules på lg) */}
+
       <div className="block lg:hidden w-full bg-white p-6 shadow-md">
         <h2 className="text-lg font-bold mb-6">Innstillinger</h2>
         <ul className="space-y-4">
@@ -86,9 +86,8 @@ const Medlemskap = ({ loggetInnBruker }) => {
           ))}
         </ul>
       </div>
-  
-      {/* Meny for desktop (skjules på mobil) */}
-      <div className="hidden lg:block w-1/4 bg-white p-6 shadow-md">
+
+      <aside className="hidden lg:block w-1/4 bg-white p-6 shadow-md">
         <h2 className="text-lg font-bold mb-6">Innstillinger</h2>
         <ul className="space-y-4">
           {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
@@ -104,21 +103,10 @@ const Medlemskap = ({ loggetInnBruker }) => {
             </li>
           ))}
         </ul>
-      </div>
-  
-      {/* Hovedinnhold */}
-      {/*
-        - flex-1 for at denne delen skal fylle resten av skjermen.
-        - flex-col for å stable innholdet vertikalt.
-        - items-start, justify-start på mobil -> boksen øverst til venstre.
-        - lg:items-center, lg:justify-center på desktop -> boksen midtstilt vertikalt og horisontalt.
-      */}
-      <div className="flex-1 flex flex-col p-4 lg:p-8 items-start justify-start lg:items-center lg:justify-center">
-        {/*
-          - mt-8 på mobil for å få litt luft fra toppen.
-          - lg:mt-0 for å nullstille top-margen på desktop (der vi vil ha boksen midt på skjermen).
-        */}
-        <div className="mt-8 lg:mt-0 bg-white p-6 lg:p-8 rounded-lg border border-gray-300 shadow-md w-full max-w-md lg:max-w-2xl">
+      </aside>
+
+      <main className="flex-1 flex items-center justify-center p-4 lg:p-8">
+        <div className="bg-white p-6 lg:p-8 rounded-lg border border-gray-300 shadow-md w-full max-w-md lg:max-w-2xl">
           {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (
             <>
               <h2 className="text-xl font-bold text-black mb-4">Brukerinnstillinger</h2>
@@ -199,7 +187,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
             </div>
           )}
         </div>
-      </div>
+      </main>
     </div>
   );
 };
