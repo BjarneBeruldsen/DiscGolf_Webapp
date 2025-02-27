@@ -656,6 +656,9 @@
   .w-\[350px\] {
     width: 350px;
   }
+  .w-\[420px\] {
+    width: 420px;
+  }
   .w-full {
     width: 100%;
   }
@@ -1211,6 +1214,11 @@
   .lg\:p-8 {
     @media (width >= 64rem) {
       padding: calc(var(--spacing) * 8);
+    }
+  }
+  .lg\:p-10 {
+    @media (width >= 64rem) {
+      padding: calc(var(--spacing) * 10);
     }
   }
 }

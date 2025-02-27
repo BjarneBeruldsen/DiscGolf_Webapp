@@ -87,7 +87,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
         </ul>
       </div>
 
-      <aside className="hidden lg:block w-[350px] bg-white p-8 shadow-md rounded-r-lg self-start">
+      <aside className="hidden lg:block w-[420px] bg-white p- shadow-md rounded-r-lg self-start">
         <h2 className="text-xl font-bold mb-6">Innstillinger</h2>
         <ul className="space-y-4">
           {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
@@ -105,8 +105,8 @@ const Medlemskap = ({ loggetInnBruker }) => {
         </ul>
       </aside>
 
-      <main className="flex-1 flex items-center justify-center p-4 lg:p-8">
-        <div className="bg-white p-6 lg:p-8 rounded-lg border border-gray-300 shadow-md w-full max-w-md lg:max-w-2xl">
+      <main className="flex-1 flex items-center justify-center p-4 lg:p-10">
+        <div className="bg-white p-6 lg:p-10 rounded-lg border border-gray-300 shadow-md w-full max-w-md lg:max-w-2xl">
           {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (
             <>
               <h2 className="text-xl font-bold text-black mb-4">Brukerinnstillinger</h2>
