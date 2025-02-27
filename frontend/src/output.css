@@ -608,6 +608,9 @@
   .grid {
     display: grid;
   }
+  .hidden {
+    display: none;
+  }
   .inline-block {
     display: inline-block;
   }
@@ -628,6 +631,9 @@
   }
   .min-h-screen {
     min-height: 100vh;
+  }
+  .w-1\/4 {
+    width: calc(1/4 * 100%);
   }
   .w-6 {
     width: calc(var(--spacing) * 6);
@@ -1169,6 +1175,11 @@
       text-align: left;
     }
   }
+  .lg\:block {
+    @media (width >= 64rem) {
+      display: block;
+    }
+  }
   .lg\:hidden {
     @media (width >= 64rem) {
       display: none;
@@ -1177,11 +1188,6 @@
   .lg\:min-h-screen {
     @media (width >= 64rem) {
       min-height: 100vh;
-    }
-  }
-  .lg\:w-1\/4 {
-    @media (width >= 64rem) {
-      width: calc(1/4 * 100%);
     }
   }
   .lg\:max-w-2xl {
@@ -1270,6 +1276,26 @@
 }
 .shadow-lg {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
+}
+.lg\:flex-row {
+  @media (width >= 64rem) {
+    flex-direction: row;
+  }
+}
+.min-h-screen {
+  min-height: 100vh;
+}
+.bg-cover {
+  background-size: cover;
+}
+.bg-center {
+  background-position: center;
 }
 @keyframes spin {
   to {

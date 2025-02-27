@@ -62,12 +62,14 @@ const Medlemskap = ({ loggetInnBruker }) => {
 
   
   return (
-    <div 
+    <div
       className="flex flex-col lg:flex-row min-h-screen bg-cover bg-center"
-      style={{ backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')` }}
+      style={{
+        backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3')`,
+      }}
     >
-      {/* Desktop Sidebar */}
-      <div className="w-full lg:w-1/4 bg-white p-6 shadow-md lg:min-h-screen">
+      {/* Sidemeny for desktop (venstre) */}
+      <div className="hidden lg:block w-1/4 bg-white p-6 shadow-md lg:min-h-screen">
         <h2 className="text-lg font-bold mb-6">Innstillinger</h2>
         <ul className="space-y-4">
           {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
@@ -86,9 +88,9 @@ const Medlemskap = ({ loggetInnBruker }) => {
           ))}
         </ul>
       </div>
-
-      {/* Mobile Dropdown */}
-      <div className="lg:hidden p-4 bg-white shadow-md">
+  
+      {/* Dropdown for mobil */}
+      <div className="block lg:hidden p-4 bg-white shadow-md">
         <select
           className="w-full p-3 border rounded"
           onChange={(e) => byttKategori(e.target.value)}
@@ -101,7 +103,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
           ))}
         </select>
       </div>
-
+  
       {/* Hovedinnhold */}
       <div className="flex-1 flex justify-center items-start p-4 lg:p-8">
         <div className="bg-white p-6 lg:p-8 rounded-lg border border-gray-300 shadow-md w-full max-w-md lg:max-w-2xl">
@@ -139,7 +141,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
               </button>
             </>
           )}
-
+  
           {["personvern", "sikkerhet", "min klubb"].includes(valgtKategori) && (
             <>
               <h2 className="text-xl font-bold text-black mb-4">
@@ -148,7 +150,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
               <p className="text-gray-600">Funksjoner kommer snart</p>
             </>
           )}
-
+  
           {visSlettBoks && (
             <div className="mt-6">
               <div className="bg-white p-6 rounded-lg border border-gray-300 shadow-md">
