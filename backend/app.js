@@ -124,11 +124,8 @@ passport.deserializeUser(async (id, done) => {
         );
 
         if (!bruker) {
-            console.error("Ingen bruker funnet med ID:", id);
             return done(null, false, { message: "Bruker ikke funnet" });
         }
-
-        console.log("Bruker funnet:", bruker._id);
         done(null, bruker);
     } catch (err) {
         console.error("Feil under deserialisering:", err);
@@ -303,10 +300,9 @@ app.post("/Registrering", registreringValidering, registreringStopp, async (req,
         const funnetBruker = await db.collection("Brukere").findOne({ 
             $or: [{ bruker: bruker.trim().toLowerCase() }, { epost: epost.trim().toLowerCase() }] 
         });
-        console.log("Bruker funnet i databasen:", funnetBruker);
-
+        
         if (funnetBruker) {
-            return res.status(400).json({ error: "Bruker eller e-post allerede registrert" });
+            return res.status(400).json({ error: "Brukernavn eller e-post allerede registrert" });
         }
 
         //Kryptering av passord med bcrypt
