@@ -116,17 +116,19 @@ passport.serializeUser((bruker, done) => {
 });
 
 passport.deserializeUser(async (id, done) => {
-    console.log("Deserializing user ID:", id);
-
     try {
-        const objectId = new ObjectId(id); // Konverter til ObjectId
-        const bruker = await db.collection("Brukere").findOne({ _id: objectId });
+        const objectId = new ObjectId(String(id)); 
+        const bruker = await db.collection("Brukere").findOne(
+            { _id: objectId },
+            { projection: { passord: 0 } } 
+        );
 
         if (!bruker) {
             console.error("Ingen bruker funnet med ID:", id);
             return done(null, false, { message: "Bruker ikke funnet" });
         }
-        console.log("Bruker funnet:", bruker);
+
+        console.log("Bruker funnet:", bruker._id);
         done(null, bruker);
     } catch (err) {
         console.error("Feil under deserialisering:", err);
@@ -301,27 +303,25 @@ app.post("/Registrering", registreringValidering, registreringStopp, async (req,
         const funnetBruker = await db.collection("Brukere").findOne({ 
             $or: [{ bruker: bruker.trim().toLowerCase() }, { epost: epost.trim().toLowerCase() }] 
         });
-        console.log("Bruker funnet i DB-sjekk:", funnetBruker);
+        console.log("Bruker funnet i databasen:", funnetBruker);
 
         if (funnetBruker) {
             return res.status(400).json({ error: "Bruker eller e-post allerede registrert" });
         }
 
+        //Kryptering av passord med bcrypt
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(passord, salt);
 
+        //Lagrer ny bruker i databasen
         const nyBruker = { 
             bruker: bruker.trim().toLowerCase(), 
             passord: hashedPassword, 
             epost: epost.trim().toLowerCase(),
         };
-
-        const resultat = await db.collection("Brukere").insertOne(nyBruker);
-        console.log("Bruker registrert med ID:", resultat.insertedId);
-
+        await db.collection("Brukere").insertOne(nyBruker);
         res.status(201).json({ message: "Bruker registrert" });
     } catch (err) {
-        console.error("Feil ved registrering:", err);
         res.status(500).json({ error: "Feil ved registrering" });
     }
 });
