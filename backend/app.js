@@ -116,14 +116,15 @@ passport.serializeUser((bruker, done) => {
 });
 
 passport.deserializeUser(async (id, done) => {
-    console.log("Deserialisert user ID:", id);
-    if (!ObjectId.isValid(id)) return done(new Error("Ugyldig ObjectId"));
+    console.log("Deserializing user ID:", id);
 
     try {
-        const bruker = await db.collection("Brukere").findOne({ _id: new ObjectId(id) });
+        const objectId = new ObjectId(id); // Konverter til ObjectId
+        const bruker = await db.collection("Brukere").findOne({ _id: objectId });
+
         if (!bruker) {
             console.error("Ingen bruker funnet med ID:", id);
-            return done(new Error("Bruker ikke funnet"));
+            return done(null, false, { message: "Bruker ikke funnet" });
         }
         console.log("Bruker funnet:", bruker);
         done(null, bruker);
@@ -293,17 +294,15 @@ const registreringValidering = [
 //Rute for registrering av bruker
 app.post("/Registrering", registreringValidering, registreringStopp, async (req, res) => {
     console.log("Mottatt registrering:", req.body);
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        console.log("Valideringsfeil:", errors.array());
-        return res.status(400).json({ errors: errors.array() }); 
-    }
-    const { bruker, passord, epost } = req.body;
+
     try {
+        const { bruker, passord, epost } = req.body;
+        
         const funnetBruker = await db.collection("Brukere").findOne({ 
             $or: [{ bruker: bruker.trim().toLowerCase() }, { epost: epost.trim().toLowerCase() }] 
         });
         console.log("Bruker funnet i DB-sjekk:", funnetBruker);
+
         if (funnetBruker) {
             return res.status(400).json({ error: "Bruker eller e-post allerede registrert" });
         }
@@ -319,6 +318,7 @@ app.post("/Registrering", registreringValidering, registreringStopp, async (req,
 
         const resultat = await db.collection("Brukere").insertOne(nyBruker);
         console.log("Bruker registrert med ID:", resultat.insertedId);
+
         res.status(201).json({ message: "Bruker registrert" });
     } catch (err) {
         console.error("Feil ved registrering:", err);
