@@ -1,7 +1,6 @@
 /* Author: Bjarne Beruldsen & Laurent Zogaj */
 
 @import "tailwindcss";
-@tailwind utilities;
 
 .hidden-lg {
     @apply hidden lg:flex;
@@ -31,80 +30,36 @@
     @apply md:w-180;
 }
 
-.input-text-gray {
-  @apply bg-gray-100 border-gray-300;
-}
-.btn-delete {
-  @apply bg-red-600 text-white hover:bg-red-700 transition-colors;
-}
-.btn-save {
-  @apply bg-black text-white hover:bg-gray-800 transition-colors;
-}
-.transition-all {
-  transition-property: all;
-}
-.shadow-lg {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-              0 4px 6px -2px rgba(0, 0, 0, 0.05);
+/* Medlemskap */
+/* Ytre container */
+.outer-wrapper {
+  @apply min-h-screen w-full bg-cover bg-center p-8 flex flex-col gap-8 pt-30;
 }
 
-.flex {
-  @apply flex;
+@media (min-width: 1024px) {
+  .outer-wrapper {
+    @apply flex-row justify-center items-start gap-10;
+  }
 }
-.flex-col {
-  @apply flex-col;
+
+/* Venstre meny */
+.menu-box {
+  @apply bg-white shadow-xl rounded-2xl p-6 w-full;
 }
-.lg\:flex-row {
-  @apply lg:flex-row;
+
+@media (min-width: 1024px) {
+  .menu-box {
+    @apply w-[350px] min-h-[700px] flex-shrink-0;
+  }
 }
-.min-h-screen {
-  @apply min-h-screen;
+
+/* Hovedinnhold/høyre meny */
+.content-box {
+  @apply bg-white shadow-xl rounded-2xl p-6 w-full;
 }
-.bg-cover {
-  @apply bg-cover;
-}
-.bg-center {
-  @apply bg-center;
-}
-.block {
-  @apply block;
-}
-.lg\:hidden {
-  @apply lg:hidden;
-}
-.hidden {
-  @apply hidden;
-}
-.lg\:block {
-  @apply lg:block;
-}
-.p-6 {
-  @apply p-6;
-}
-.shadow-md {
-  @apply shadow-md;
-}
-.w-full {
-  @apply w-full;
-}
-.text-lg {
-  @apply text-lg;
-}
-.font-bold {
-  @apply font-bold;
-}
-.mb-6 {
-  @apply mb-6;
-}
-.space-y-4 {
-  @apply space-y-4;
-}
-.transition {
-  @apply transition;
-}
-.duration-200 {
-  @apply duration-200;
-}
-.hover\:bg-gray-200 {
-  @apply hover:bg-gray-200;
+
+@media (min-width: 1024px) {
+  .content-box {
+    @apply w-[900px] min-h-[700px] flex-none; 
+  }
 }
