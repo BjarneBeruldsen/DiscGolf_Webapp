@@ -650,6 +650,9 @@
   .w-85 {
     width: calc(var(--spacing) * 85);
   }
+  .w-\[250px\] {
+    width: 250px;
+  }
   .w-full {
     width: 100%;
   }
@@ -748,6 +751,10 @@
   }
   .rounded-lg {
     border-radius: var(--radius-lg);
+  }
+  .rounded-r-lg {
+    border-top-right-radius: var(--radius-lg);
+    border-bottom-right-radius: var(--radius-lg);
   }
   .border {
     border-style: var(--tw-border-style);
