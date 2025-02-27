@@ -116,13 +116,19 @@ passport.serializeUser((bruker, done) => {
 });
 
 passport.deserializeUser(async (id, done) => {
+    console.log("Deserialisert user ID:", id);
     if (!ObjectId.isValid(id)) return done(new Error("Ugyldig ObjectId"));
 
     try {
-        const bruker = await db.collection("Brukere").findOne({ _id: new ObjectId(id) });     //Står at den er deprecated, men fungerer og ingenting annet fungerer som alternativ
-        if (!bruker) return done(new Error("Bruker ikke funnet"));
+        const bruker = await db.collection("Brukere").findOne({ _id: new ObjectId(id) });
+        if (!bruker) {
+            console.error("Ingen bruker funnet med ID:", id);
+            return done(new Error("Bruker ikke funnet"));
+        }
+        console.log("Bruker funnet:", bruker);
         done(null, bruker);
     } catch (err) {
+        console.error("Feil under deserialisering:", err);
         done(err);
     }
 });
@@ -286,8 +292,10 @@ const registreringValidering = [
 
 //Rute for registrering av bruker
 app.post("/Registrering", registreringValidering, registreringStopp, async (req, res) => {
+    console.log("Mottatt registrering:", req.body);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+        console.log("Valideringsfeil:", errors.array());
         return res.status(400).json({ errors: errors.array() }); 
     }
     const { bruker, passord, epost } = req.body;
@@ -295,24 +303,25 @@ app.post("/Registrering", registreringValidering, registreringStopp, async (req,
         const funnetBruker = await db.collection("Brukere").findOne({ 
             $or: [{ bruker: bruker.trim().toLowerCase() }, { epost: epost.trim().toLowerCase() }] 
         });
+        console.log("Bruker funnet i DB-sjekk:", funnetBruker);
         if (funnetBruker) {
             return res.status(400).json({ error: "Bruker eller e-post allerede registrert" });
         }
 
-        //Kryptering av passord
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(passord, salt);
 
-        //Lagrer bruker i databasen
         const nyBruker = { 
             bruker: bruker.trim().toLowerCase(), 
             passord: hashedPassword, 
             epost: epost.trim().toLowerCase(),
         };
-        await db.collection("Brukere").insertOne(nyBruker);
 
+        const resultat = await db.collection("Brukere").insertOne(nyBruker);
+        console.log("Bruker registrert med ID:", resultat.insertedId);
         res.status(201).json({ message: "Bruker registrert" });
     } catch (err) {
+        console.error("Feil ved registrering:", err);
         res.status(500).json({ error: "Feil ved registrering" });
     }
 });
