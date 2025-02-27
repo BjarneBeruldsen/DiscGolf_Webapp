@@ -27,3 +27,7 @@
 .md-w-180 {
     @apply md:w-180;
 }
+
+.lg\:grid-cols-\[300px_1fr\] {
+    @apply lg:grid-cols-[300px_1fr];
+  }

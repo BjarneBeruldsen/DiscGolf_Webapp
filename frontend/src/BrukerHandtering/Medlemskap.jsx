@@ -63,7 +63,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
   
   return (
     <div
-      className="grid grid-cols-1 lg:grid-cols-[350px_1fr] min-h-screen bg-cover bg-center"
+      className="grid grid-cols-[300px_1fr] min-h-screen w-full bg-cover bg-center"
       style={{
         backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3')`,
       }}
