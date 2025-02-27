@@ -63,19 +63,21 @@ const Medlemskap = ({ loggetInnBruker }) => {
   
   return (
     <div
-      className="layout-grid"
+      className="grid grid-cols-1 lg:grid-cols-[300px_1fr] min-h-screen w-full bg-cover bg-center"
       style={{
         backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3')`,
       }}
     >
-      <aside className="menu-aside">
-        <h2 className="title-xl">Innstillinger</h2>
-        <ul className="menu-list">
+      <aside className="bg-white p-6 shadow-md h-full">
+        <h2 className="text-xl font-bold mb-6">Innstillinger</h2>
+        <ul className="space-y-4">
           {["brukerinnstillinger","personvern","sikkerhet","min klubb"].map((kategori) => (
             <li key={kategori}>
               <button
-                className={`menu-button ${
-                  valgtKategori === kategori ? "menu-button-active" : ""
+                className={`w-full text-left p-3 rounded transition duration-200 ${
+                  valgtKategori === kategori 
+                    ? "bg-gray-300 font-bold" 
+                    : "hover:bg-gray-200"
                 }`}
                 onClick={() => byttKategori(kategori)}
               >
@@ -86,8 +88,8 @@ const Medlemskap = ({ loggetInnBruker }) => {
         </ul>
       </aside>
 
-      <main className="flex justify-center items-start p-6">
-        <div className="content-box">
+      <main className="flex-1 p-6 min-w-0">
+        <div className="bg-white w-full p-8 rounded-lg border border-gray-300 shadow-md max-w-2xl mx-auto">
           {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (
             <>
               <h2 className="title-xl">Brukerinnstillinger</h2>
