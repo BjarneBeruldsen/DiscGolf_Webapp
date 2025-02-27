@@ -719,6 +719,9 @@
   .gap-6 {
     gap: calc(var(--spacing) * 6);
   }
+  .gap-x-4 {
+    column-gap: calc(var(--spacing) * 4);
+  }
   .space-y-2 {
     :where(& > :not(:last-child)) {
       --tw-space-y-reverse: 0;
