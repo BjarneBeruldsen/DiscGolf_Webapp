@@ -63,7 +63,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
   
   return (
     <div
-      className="flex flex-col lg:flex-row min-h-screen bg-cover bg-center w-full"
+      className="flex flex-col lg:flex-row items-start min-h-screen bg-cover bg-center w-full"
       style={{
         backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3')`,
       }}
@@ -71,7 +71,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
       <div className="block lg:hidden w-full bg-white p-6 shadow-md">
         <h2 className="text-lg font-bold mb-6">Innstillinger</h2>
         <ul className="space-y-4">
-          {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
+          {["brukerinnstillinger","personvern","sikkerhet","min klubb"].map((kategori) => (
             <li key={kategori}>
               <button
                 className={`w-full text-left p-3 rounded transition duration-200 ${
@@ -86,10 +86,10 @@ const Medlemskap = ({ loggetInnBruker }) => {
         </ul>
       </div>
   
-      <aside className="hidden lg:block w-[320px] bg-white p-8 shadow-md">
+      <aside className="hidden lg:block w-[380px] bg-white p-8 shadow-md self-start rounded-r-lg">
         <h2 className="text-xl font-bold mb-6">Innstillinger</h2>
         <ul className="space-y-4">
-          {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
+          {["brukerinnstillinger","personvern","sikkerhet","min klubb"].map((kategori) => (
             <li key={kategori}>
               <button
                 className={`w-full text-left p-3 rounded transition duration-200 ${
@@ -103,8 +103,8 @@ const Medlemskap = ({ loggetInnBruker }) => {
           ))}
         </ul>
       </aside>
-  
-      <main className="flex-1 flex flex-col items-center justify-center p-4 lg:p-10">
+
+      <main className="flex-1 flex items-center justify-center p-4 lg:p-10">
         <div className="bg-white p-6 lg:p-10 rounded-lg border border-gray-300 shadow-md w-full max-w-2xl">
           {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (
             <>
@@ -141,7 +141,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
             </>
           )}
   
-          {["personvern", "sikkerhet", "min klubb"].includes(valgtKategori) && (
+          {["personvern","sikkerhet","min klubb"].includes(valgtKategori) && (
             <>
               <h2 className="text-xl font-bold text-black mb-4">
                 {valgtKategori.charAt(0).toUpperCase() + valgtKategori.slice(1)}
