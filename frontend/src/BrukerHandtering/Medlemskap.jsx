@@ -63,12 +63,12 @@ const Medlemskap = ({ loggetInnBruker }) => {
   
   return (
     <div
-      className="flex flex-col lg:flex-row items-start min-h-screen bg-cover bg-center w-full"
+      className="flex flex-col lg:flex-row min-h-screen bg-cover bg-center w-full"
       style={{
         backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3')`,
       }}
     >
-
+      {/* Mobile meny */}
       <div className="block lg:hidden w-full bg-white p-6 shadow-md">
         <h2 className="text-lg font-bold mb-6">Innstillinger</h2>
         <ul className="space-y-4">
@@ -87,7 +87,8 @@ const Medlemskap = ({ loggetInnBruker }) => {
         </ul>
       </div>
 
-      <aside className="hidden lg:block w-[420px] bg-white p- shadow-md rounded-r-lg self-start">
+      {/* PC meny */}
+      <aside className="hidden lg:block w-80 bg-white p-6 shadow-md rounded-r-lg">
         <h2 className="text-xl font-bold mb-6">Innstillinger</h2>
         <ul className="space-y-4">
           {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
@@ -105,8 +106,9 @@ const Medlemskap = ({ loggetInnBruker }) => {
         </ul>
       </aside>
 
-      <main className="flex-1 flex items-center justify-center p-4 lg:p-10">
-        <div className="bg-white p-6 lg:p-10 rounded-lg border border-gray-300 shadow-md w-full max-w-md lg:max-w-2xl">
+      {/* Hovedinnhold */}
+      <main className="flex-1 flex flex-col items-center p-4 lg:p-10">
+        <div className="bg-white p-6 lg:p-10 rounded-lg border border-gray-300 shadow-md w-full max-w-2xl">
           {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (
             <>
               <h2 className="text-xl font-bold text-black mb-4">Brukerinnstillinger</h2>
@@ -141,7 +143,8 @@ const Medlemskap = ({ loggetInnBruker }) => {
               </button>
             </>
           )}
-  
+
+          {/* Kategorier */}
           {["personvern", "sikkerhet", "min klubb"].includes(valgtKategori) && (
             <>
               <h2 className="text-xl font-bold text-black mb-4">
@@ -150,7 +153,8 @@ const Medlemskap = ({ loggetInnBruker }) => {
               <p className="text-gray-600">Funksjoner kommer snart</p>
             </>
           )}
-  
+
+          {/* Sletting av bruker */}
           {visSlettBoks && (
             <div className="mt-6">
               <div className="bg-white p-6 rounded-lg border border-gray-300 shadow-md">
