@@ -31,7 +31,7 @@ const Footer = () => {
           
           <div className="text-center">
             <p className="font-semibold text-gray-800">Kontakt oss</p>
-            <p className="text-sm text-gray-700">Email: DiscgolfBø@gmail.com</p>
+            <p className="text-sm text-gray-700">Email: BoDiscGolf1@gmail.com</p>
             <p className="text-sm text-gray-700">Bø, Norge</p>
           </div>
         </div>
