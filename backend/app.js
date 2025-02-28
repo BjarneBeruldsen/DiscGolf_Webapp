@@ -52,9 +52,12 @@ app.use(
             "'self'",
             "https://images.unsplash.com",
             "https://zewailcity.edu.eg",
-            "https://zcadminpanel.zewailcity.edu.eg"
+            "https://zcadminpanel.zewailcity.edu.eg",
           ],
-          frameSrc: ["'self'", "https://www.yr.no"],
+          frameSrc: [
+            "'self'",
+            "https://www.yr.no", 
+          ],
           upgradeInsecureRequests: [],
         },
       },
