@@ -1,38 +1,58 @@
 //Author: Laurent Zogaj
-
 import React, { useState, useEffect } from "react";
 import "../App.css";
 
 const Medlemskap = ({ loggetInnBruker }) => {
   const [bruker, setBruker] = useState(null);
-  const [valgtKategori, setValgtKategori] = useState("brukerinnstillinger");
+  const [valgtKategori, setValgtKategori] = useState("Brukerinnstillinger");
+  const [valgtUnderKategori, setValgtUnderKategori] = useState("");
+  const [underKategoriOpen, setUnderKategoriOpen] = useState(true);
   const [visSlettBoks, setVisSlettBoks] = useState(false);
   const [brukernavnInput, setBrukernavnInput] = useState("");
   const [passord, setPassord] = useState("");
   const [melding, setMelding] = useState("");
   const [venter, setVenter] = useState(true);
 
+  const hovedKategorier = [
+    "Brukerinnstillinger",
+    "Personvern",
+    "Sikkerhet",
+    "Min Klubb",
+    "Mitt abonnement"
+  ];
+
+  const underKategorier = {
+    Brukerinnstillinger: ["Min informasjon", "Endre min informasjon", "Slett bruker"],
+    Personvern: ["Informasjonskapsler", "Synlighet", "GDPR"],
+    Sikkerhet: ["To-faktor autentisering", "Gjennoppretting"],
+    "Min Klubb": ["Min klubb", "Søk etter klubb", "Avregistrer"],
+    "Mitt abonnement": ["Mitt abonnement", "Betaling", "Avslutt abonnement"]
+  };
+
   useEffect(() => {
     if (!loggetInnBruker?.epost) {
       const lagretBruker = localStorage.getItem("bruker");
-      if (lagretBruker) {
-        setBruker(JSON.parse(lagretBruker));
-      }
+      if (lagretBruker) setBruker(JSON.parse(lagretBruker));
     } else {
       setBruker(loggetInnBruker);
     }
     setVenter(false);
   }, [loggetInnBruker]);
-  if (venter) {
-    return <p className="text-center text-gray-700 mt-10">Laster inn...</p>;
-  }
+  if (venter) return <p className="text-center text-gray-700 mt-10">Laster inn...</p>;
   if (!bruker) {
     window.location.href = "/Innlogging";
     return null;
   }
-  const byttKategori = (kategori) => {
+
+  const toggleUnderKategori = (kategori) => {
+    if (valgtKategori === kategori) {
+      setUnderKategoriOpen(!underKategoriOpen);
+    } else {
+      setValgtKategori(kategori);
+      setUnderKategoriOpen(true);
+    }
+    setValgtUnderKategori("");
     setVisSlettBoks(false);
-    setValgtKategori(kategori);
   };
   const handleSlettBruker = async (e) => {
     e.preventDefault();
@@ -48,7 +68,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
         credentials: "include",
         body: JSON.stringify({ bruker: bruker.bruker, passord }),
       });
-      const data = await respons.json();  
+      const data = await respons.json();
       if (respons.ok) {
         localStorage.removeItem("bruker");
         window.location.href = "/Hjem";
@@ -71,58 +91,48 @@ const Medlemskap = ({ loggetInnBruker }) => {
     >
       {/* Venstre meny */}
       <div className="menu-box">
-        {/* Mobilmeny */}
-        <div className="mobile-menu lg:hidden">
-          <h2 className="text-lg font-bold mb-4">Innstillinger</h2>
-          <ul className="space-y-4">
-            {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
-              <li key={kategori}>
-                <button
-                  className={`w-full text-left p-2 rounded transition duration-200 ${
-                    valgtKategori === kategori
-                      ? "bg-gray-100 font-semibold text-black"
-                      : "hover:bg-gray-100 text-gray-700"
-                  }`}
-                  onClick={() => byttKategori(kategori)}
-                >
-                  {kategori.charAt(0).toUpperCase() + kategori.slice(1)}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-  
-        {/* PCmeny */}
-        <div className="desktop-menu hidden lg:block">
-          <h2 className="text-lg font-bold mb-4">Innstillinger</h2>
-          <ul className="space-y-10">
-            {["brukerinnstillinger", "personvern", "sikkerhet", "min klubb"].map((kategori) => (
-              <li key={kategori}>
-                <button
-                  className={`w-full text-left p-3 rounded transition duration-200 ${
-                    valgtKategori === kategori
-                      ? "bg-gray-100 font-semibold text-black"
-                      : "hover:bg-gray-100 text-gray-700"
-                  }`}
-                  onClick={() => byttKategori(kategori)}
-                >
-                  {kategori.charAt(0).toUpperCase() + kategori.slice(1)}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <h2 className="text-lg font-bold mb-4">Innstillinger</h2>
+        <ul className="space-y-4">
+          {hovedKategorier.map((kat) => (
+            <li key={kat}>
+              <button
+                className={`w-full text-left p-2 rounded transition duration-200 ${
+                  valgtKategori === kat
+                    ? "bg-gray-100 font-semibold text-black"
+                    : "hover:bg-gray-100 text-gray-700"
+                }`}
+                onClick={() => toggleUnderKategori(kat)}
+              >
+                {kat}
+              </button>
+              {valgtKategori === kat && underKategoriOpen && underKategorier[kat] && (
+                <ul className="ml-4 space-y-2 mt-2">
+                  {underKategorier[kat].map((underkategori) => (
+                    <li key={underkategori}>
+                      <button
+                        className={`w-full text-left p-2 rounded transition duration-200 ${
+                          valgtUnderKategori === underkategori
+                            ? "bg-gray-200 font-semibold text-black"
+                            : "hover:bg-gray-200 text-gray-700"
+                        }`}
+                        onClick={() => setValgtUnderKategori(underkategori)}
+                      >
+                        {underkategori}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
       </div>
-  
+
       {/* Høyre meny som viser hovedinnhold for valgt kategori */}
       <div className="content-box flex flex-col items-center justify-center gap-6">
-        <h2 className="text-xl font-bold text-black mb-4">
-          {valgtKategori.charAt(0).toUpperCase() + valgtKategori.slice(1)}
-        </h2>
-  
-        {valgtKategori === "brukerinnstillinger" && !visSlettBoks && (
-          <>
-            <div className="space-y-4 w-[400px]">
+        {valgtKategori === "Brukerinnstillinger" && !visSlettBoks ? (
+          valgtUnderKategori === "Min informasjon" ? (
+            <div className="space-y-4 w-full md:w-[400px]">
               <input
                 type="text"
                 value={bruker.bruker}
@@ -135,35 +145,45 @@ const Medlemskap = ({ loggetInnBruker }) => {
                 readOnly
                 className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
               />
-              <input
-                type="password"
-                placeholder="Nytt passord (funker ikke enda)"
-                className="w-full px-3 py-2 border border-gray-300 rounded"
-              />
+              <p className="text-gray-600">Her er din registrerte brukerinformasjon</p>
+            </div>
+          ) : valgtUnderKategori === "Endre min informasjon" ? (
+            <div className="space-y-4 w-full md:w-[400px]">
+              <p className="text-gray-600">
+                Endring av brukerinformasjon (ikke implementert ennå).
+              </p>
               <button className="bg-black text-white px-4 py-2 rounded w-full hover:bg-gray-800">
                 Lagre Endringer
               </button>
             </div>
-  
+          ) : valgtUnderKategori === "Slett bruker" ? (
             <button
               onClick={() => setVisSlettBoks(true)}
-              className="bg-red-600 text-white px-4 py-2 rounded w-[400px] hover:bg-red-700"
+              className="bg-red-600 text-white px-4 py-2 rounded w-full md:w-[400px] hover:bg-red-700"
             >
               Slett Bruker
             </button>
-          </>
-        )}
-
-        {/* Kategorier */}
-        {["personvern", "sikkerhet", "min klubb"].includes(valgtKategori) && !visSlettBoks && (
+          ) : (
+            <div className="space-y-4 w-full md:w-[400px]">
+              <p className="text-gray-600 text-center">
+                Velg en underkategori for ditt behov
+              </p>
+            </div>
+          )
+        ) : (["Personvern", "Sikkerhet", "Min Klubb", "Mitt abonnement"].includes(
+            valgtKategori
+          ) && !visSlettBoks) ? (
           <div className="text-gray-600 text-center">Funksjoner kommer snart</div>
-        )}
-        
-         {/* Sletting av bruker */}
+        ) : null}
+
         {visSlettBoks && (
-          <div className="bg-white p-6 rounded-lg border border-gray-300 shadow-md w-[400px]">
-            <h3 className="text-xl font-bold text-black mb-4 text-center">Bekreft sletting</h3>
-            <p className="text-gray-600 mb-4 text-center">Denne handlingen kan ikke angres!</p>
+          <div className="bg-white p-6 rounded-lg border border-gray-300 shadow-md w-full md:w-[400px]">
+            <h3 className="text-xl font-bold text-black mb-4 text-center">
+              Bekreft sletting
+            </h3>
+            <p className="text-gray-600 mb-4 text-center">
+              Denne handlingen kan ikke angres!
+            </p>
             <input
               type="text"
               placeholder="Skriv inn brukernavn"
@@ -190,7 +210,9 @@ const Medlemskap = ({ loggetInnBruker }) => {
             >
               Avbryt
             </button>
-            {melding && <p className="mt-4 text-red-600 text-center">{melding}</p>}
+            {melding && (
+              <p className="mt-4 text-red-600 text-center">{melding}</p>
+            )}
           </div>
         )}
       </div>

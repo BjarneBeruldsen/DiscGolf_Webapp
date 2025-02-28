@@ -38,7 +38,7 @@
   @apply min-h-screen w-full bg-cover bg-center p-8 flex flex-col gap-8 pt-30;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .outer-wrapper {
     @apply flex-row justify-center items-start gap-10;
   }
@@ -49,23 +49,19 @@
   @apply bg-white shadow-xl rounded-2xl p-6 w-full;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .menu-box {
     @apply w-[350px] min-h-[700px] flex-shrink-0;
   }
 }
 
-/* Hovedinnhold/høyre meny */
+/* Hovedinnhold / Høyre meny */
 .content-box {
   @apply bg-white shadow-xl rounded-2xl p-6 w-full;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .content-box {
-    @apply w-[900px] min-h-[700px] flex-none; 
-  }
-/* Mobil meny */
-  .mobile-menu {
-    @apply block lg:hidden w-full bg-white p-4 border-b border-gray-200;
+    @apply w-[900px] min-h-[700px] flex-none;
   }
 }
