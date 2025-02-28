@@ -22,12 +22,8 @@ const Hjem = () => {
 
     return ( 
     
-       //Midlertidig deaktivert grunnet designing av frontend hjem
-       /* <div className="flex justify-center items-center mt-8 h-[40vh]">
-            <button onClick={handleTommeTestdata} className="py-4 px-8 bg-red-500 rounded-lg text-sm text-white">
-                Tøm testdata
-            </button>
-        </div>*/
+       
+       
 <header>
     <div className=" text-grey-200 py-6 text-center bg-gray-40 justify-items-center space-y-2">
             <h1 className="text-2xl font-normal">Over 5,000 Baner</h1>
@@ -91,24 +87,19 @@ const Hjem = () => {
 
         
     <h1 className="text-4xl font-sans mt-20 font-bold">Sjekk værforholdene før du spiller!</h1>
-    <div className="flex justify-center mt-1 w-full">
+    <div className="flex justify-center mt-1 w-full h-[550px">
+    
     <iframe 
         title="YR værmelding"
         src="https://www.yr.no/nb/innhold/1-72837/table.html" 
         className="w-full h-[550px]"
+        
     >
     </iframe>
-    </div>
-    <div className="flex justify-center ">
-
-
+    <div className="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0);"></div>
 
     </div>
-  
-
-
-    
-    
+   
 
         
 
@@ -120,7 +111,11 @@ const Hjem = () => {
 </div>
 
   
-    
+     <div className="mt-8 grid">
+            <button onClick={handleTommeTestdata} className="py-4 px-8 bg-red-500 rounded-lg text-sm text-white justify-self-end">
+                Tøm testdata
+            </button>
+        </div>
 
 
 </header>
