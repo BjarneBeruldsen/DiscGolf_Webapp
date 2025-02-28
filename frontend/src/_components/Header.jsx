@@ -25,7 +25,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
 
   return (
     <div>
-      <header className="flex items-center justify-between p-4 bg-[#8a8358] shadow-[#8a8358] text-white">
+      <header className="flex items-center justify-between p-4 bg-[#ffffff] shadow-[#8a8358] text-white">
         <div className="flex items-center space-x-3">
           <img className="w-10 h-10 rounded-full" src="/DiscgolfLogo.png" alt="DiscGolf logo" />
           <Link to="/Hjem" className="text-xl font-bold">DiscGolf</Link>
@@ -33,12 +33,12 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
 
         <nav className="hidden-lg">
           <ul className="flex space-x-6">
-            <li><Link to="/Hjem" className="text-white font-bold hover:text-gray-600">Hjem</Link></li>
-            <li><Link to="/VelgKlubb" className="text-white font-bold hover:text-gray-600">Rediger klubbside</Link></li>
-            <li><Link to="/Baner" className="text-white font-bold hover:text-gray-600">Baner</Link></li>
-            <li><Link to="/Klubbsider" className="text-white font-bold hover:text-gray-600">Klubbsider</Link></li>
-            <li><Link to="/nyheter" className="text-white font-bold hover:text-gray-600">Nyheter</Link></li>
-            <li><Link to="/ScoreBoard" className="text-white font-bold hover:text-gray-600">ScoreBoard</Link></li>
+            <li><Link to="/Hjem" className="text-black font-bold hover:text-gray-600">Hjem</Link></li>
+            <li><Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600">Rediger klubbside</Link></li>
+            <li><Link to="/Baner" className="text-black font-bold hover:text-gray-600">Baner</Link></li>
+            <li><Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600">Klubbsider</Link></li>
+            <li><Link to="/nyheter" className="text-black font-bold hover:text-gray-600">Nyheter</Link></li>
+            <li><Link to="/ScoreBoard" className="text-black font-bold hover:text-gray-600">ScoreBoard</Link></li>
 
             {loggetInnBruker ? (
               <>
