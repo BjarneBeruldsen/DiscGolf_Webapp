@@ -47,8 +47,15 @@ app.use(
       contentSecurityPolicy: {
         useDefaults: true,
         directives: {
-          imgSrc: ["'self'", "https://images.unsplash.com"], //Tilater kun bilder fra eget domene og unsplash
-          upgradeInsecureRequests: [], 
+          defaultSrc: ["'self'"],
+          imgSrc: [
+            "'self'",
+            "https://images.unsplash.com",
+            "https://zewailcity.edu.eg",
+            "https://zcadminpanel.zewailcity.edu.eg"
+          ],
+          frameSrc: ["'self'", "https://www.yr.no"],
+          upgradeInsecureRequests: [],
         },
       },
     })
