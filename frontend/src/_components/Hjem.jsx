@@ -94,7 +94,7 @@ const Hjem = () => {
     <div className="flex justify-center mt-1 w-full">
     <iframe 
         title="YR værmelding"
-        src="https://www.yr.no/en/widget/forecast/table.html?location=1-72837" 
+        src="https://www.yr.no/nb/innhold/1-72837/table.html" 
         className="w-full h-[550px]"
     >
     </iframe>
