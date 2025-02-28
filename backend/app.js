@@ -118,11 +118,7 @@ passport.serializeUser((bruker, done) => {
 passport.deserializeUser(async (id, done) => {
     try {
         const objectId = new ObjectId(String(id)); 
-        const bruker = await db.collection("Brukere").findOne(
-            { _id: objectId },
-            { projection: { passord: 0 } } 
-        );
-
+        const bruker = await db.collection("Brukere").findOne({ _id: objectId });
         if (!bruker) {
             return done(null, false, { message: "Bruker ikke funnet" });
         }
@@ -430,7 +426,7 @@ app.post("/SletteBruker", [
         if (!ObjectId.isValid(bruker._id)) {
             return res.status(400).json({ error: "Ugyldig bruker-ID" });
         }
-        const objectId = new ObjectId(String(id));
+        const objectId = new ObjectId(String(req.user._id));
         const slettetBruker = await db.collection("Brukere").deleteOne({ _id: objectId });
         if (slettetBruker.deletedCount === 0) {
             return res.status(500).json({ error: "Kunne ikke slette brukeren" });
