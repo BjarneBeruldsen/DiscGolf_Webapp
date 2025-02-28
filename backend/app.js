@@ -430,7 +430,8 @@ app.post("/SletteBruker", [
         if (!ObjectId.isValid(bruker._id)) {
             return res.status(400).json({ error: "Ugyldig bruker-ID" });
         }
-        const slettetBruker = await db.collection("Brukere").deleteOne({ _id: new ObjectId(bruker._id) });
+        const objectId = new ObjectId(String(id));
+        const slettetBruker = await db.collection("Brukere").deleteOne({ _id: objectId });
         if (slettetBruker.deletedCount === 0) {
             return res.status(500).json({ error: "Kunne ikke slette brukeren" });
         }
