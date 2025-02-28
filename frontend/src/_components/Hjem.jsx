@@ -87,12 +87,12 @@ const Hjem = () => {
 
         
     <h1 className="text-4xl font-sans mt-20 font-bold">Sjekk værforholdene før du spiller!</h1>
-    <div className="flex justify-center mt-1 w-full h-[550px">
+    <div className="flex justify-center mt-1 w-full ">
     
     <iframe 
         title="YR værmelding"
         src="https://www.yr.no/nb/innhold/1-72837/table.html" 
-        className="w-full h-[550px]"
+        className="w-full h-[550px] pointer-events-none"
         
     >
     </iframe>
