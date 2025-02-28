@@ -53,8 +53,8 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
               </>
             ) : (
               <>
-                <li><Link to="/Innlogging" className="text-white font-bold hover:text-gray-600">Logg inn</Link></li>
-                <li><Link to="/Registrering" className="text-white font-bold hover:text-gray-600">Bli medlem!</Link></li>
+                <li><Link to="/Innlogging" className="text-black font-bold hover:text-gray-600">Logg inn</Link></li>
+                <li><Link to="/Registrering" className="text-black font-bold hover:text-gray-600">Bli medlem!</Link></li>
               </>
             )}
           </ul>
