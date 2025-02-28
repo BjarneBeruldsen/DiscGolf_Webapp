@@ -19,6 +19,7 @@ require('dotenv').config();
 
 const app = express();
 
+//https://github.com/express-rate-limit/express-rate-limit/wiki/Troubleshooting-Proxy-Issues
 app.set("trust proxy", 1); //Heroku kjører proxy og må settes til trust for at ulike ting skal fungere ordentlig som express-rate-limit (IP) og session
 
 app.disable('x-powered-by'); //Disabled for sikkerhet da man kan se hvilken teknologi som brukes 
