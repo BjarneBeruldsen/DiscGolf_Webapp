@@ -38,7 +38,7 @@
   @apply min-h-screen w-full bg-cover bg-center p-8 flex flex-col gap-8 pt-30;
 }
 
-@media (min-width: 767px) {
+@media (min-width: 760px) {
   .outer-wrapper {
     @apply flex-row justify-center items-start gap-10;
   }
@@ -49,7 +49,7 @@
   @apply bg-white shadow-xl rounded-2xl p-6 w-full;
 }
 
-@media (min-width: 767px) {
+@media (min-width: 760px) {
   .menu-box {
     @apply w-[350px] min-h-[700px] flex-shrink-0;
   }
