@@ -28,7 +28,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
       <header className="flex items-center justify-between p-4 bg-[#ffffff] shadow-[#8a8358] text-white">
         <div className="flex items-center space-x-3">
           <img className="w-10 h-10 rounded-full" src="/DiscgolfLogo.png" alt="DiscGolf logo" />
-          <Link to="/Hjem" className="text-xl font-bold">DiscGolf</Link>
+          <Link to="/Hjem" className="text-l font-bold text-black">DiscGolf</Link>
         </div>
 
         <nav className="hidden-lg">
