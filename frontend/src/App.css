@@ -31,3 +31,36 @@
 .md-w-180 {
     @apply md:w-180;
 }
+/* Medlemskap */
+/* Ytre container */
+.outer-wrapper {
+  @apply min-h-screen w-full bg-cover bg-center p-8 flex flex-col gap-8 pt-30;
+}
+
+@media (min-width: 760px) and (orientation: landscape) {
+  .outer-wrapper {
+    @apply flex-row justify-center items-start gap-10;
+  }
+}
+
+/* Venstre meny */
+.menu-box {
+  @apply bg-white shadow-xl rounded-2xl p-6 w-full;
+}
+
+@media (min-width: 760px) and (orientation: landscape) {
+  .menu-box {
+    @apply w-[350px] min-h-[700px] flex-shrink-0;
+  }
+}
+
+/* Hovedinnhold / Høyre meny */
+.content-box {
+  @apply bg-white shadow-xl rounded-2xl p-6 w-full;
+}
+
+@media (min-width: 767px) and (orientation: landscape) {
+  .content-box {
+    @apply w-[900px] min-h-[700px] flex-none;
+  }
+}

@@ -1,6 +1,6 @@
 //Author: Laurent Zogaj
 import React, { useState, useEffect } from "react";
-//import "../App.css";
+import "../App.css";
 
 const Medlemskap = ({ loggetInnBruker }) => {
   const [bruker, setBruker] = useState(null);
@@ -81,18 +81,19 @@ const Medlemskap = ({ loggetInnBruker }) => {
     }
   };
 
-  //CSS
-  return (
+//CSS
+//Bruker app.css for noe styling og egendefinerte klasser
+   return (
     <div
-      className="min-h-screen w-full bg-cover bg-center p-4 sm:p-6 md:p-8 flex flex-col gap-4 sm:gap-6 md:gap-8 pt-20 md:pt-30 md:flex-row md:justify-center md:items-start md:gap-10"
+      className="outer-wrapper"
       style={{
         backgroundImage: `url('https://images.unsplash.com/photo-1616840388998-a514fe2175b9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3')`,
       }}
     >
       {/* Venstre meny */}
-      <div className="bg-white shadow-md sm:shadow-xl rounded-lg sm:rounded-2xl p-4 sm:p-6 w-full md:w-[350px] min-h-[400px] sm:min-h-[500px] md:min-h-[700px] md:flex-shrink-0">
+      <div className="menu-box">
         <h2 className="text-lg font-bold mb-4">Innstillinger</h2>
-        <ul className="space-y-2 sm:space-y-4">
+        <ul className="space-y-4">
           {hovedKategorier.map((kat) => (
             <li key={kat}>
               <button
@@ -106,7 +107,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
                 {kat}
               </button>
               {valgtKategori === kat && underKategoriOpen && underKategorier[kat] && (
-                <ul className="ml-4 space-y-1 sm:space-y-2 mt-1 sm:mt-2">
+                <ul className="ml-4 space-y-2 mt-2">
                   {underKategorier[kat].map((underkategori) => (
                     <li key={underkategori}>
                       <button
@@ -128,12 +129,11 @@ const Medlemskap = ({ loggetInnBruker }) => {
         </ul>
       </div>
 
-      {/* Høyre meny */}
-      <div className="bg-white shadow-md sm:shadow-xl rounded-lg sm:rounded-2xl p-4 sm:p-6 w-full md:w-[900px] min-h-[400px] sm:min-h-[500px] md:min-h-[700px] flex flex-col items-center justify-center gap-4 sm:gap-6">
-        {/* Innhold for valgt kategori */}
+      {/* Høyre meny som viser hovedinnhold for valgt kategori */}
+      <div className="content-box flex flex-col items-center justify-center gap-6">
         {valgtKategori === "Brukerinnstillinger" && !visSlettBoks ? (
           valgtUnderKategori === "Min informasjon" ? (
-            <div className="space-y-2 sm:space-y-4 w-full sm:w-[90%] md:w-[400px]">
+            <div className="space-y-4 w-full md:w-[400px]">
               <input
                 type="text"
                 value={bruker.bruker}
@@ -146,11 +146,11 @@ const Medlemskap = ({ loggetInnBruker }) => {
                 readOnly
                 className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
               />
-              <p className="text-sm sm:text-base text-gray-600">Her er din registrerte brukerinformasjon</p>
+              <p className="text-gray-600">Her er din registrerte brukerinformasjon</p>
             </div>
           ) : valgtUnderKategori === "Endre min informasjon" ? (
-            <div className="space-y-2 sm:space-y-4 w-full sm:w-[90%] md:w-[400px]">
-              <p className="text-sm sm:text-base text-gray-600">
+            <div className="space-y-4 w-full md:w-[400px]">
+              <p className="text-gray-600">
                 Endring av brukerinformasjon (ikke implementert ennå).
               </p>
               <button className="bg-black text-white px-4 py-2 rounded w-full hover:bg-gray-800">
@@ -160,13 +160,13 @@ const Medlemskap = ({ loggetInnBruker }) => {
           ) : valgtUnderKategori === "Slett bruker" ? (
             <button
               onClick={() => setVisSlettBoks(true)}
-              className="bg-red-600 text-white px-4 py-2 rounded w-full sm:w-[90%] md:w-[400px] hover:bg-red-700"
+              className="bg-red-600 text-white px-4 py-2 rounded w-full md:w-[400px] hover:bg-red-700"
             >
               Slett Bruker
             </button>
           ) : (
-            <div className="space-y-2 sm:space-y-4 w-full sm:w-[90%] md:w-[400px]">
-              <p className="text-sm sm:text-base text-gray-600 text-center">
+            <div className="space-y-4 w-full md:w-[400px]">
+              <p className="text-gray-600 text-center">
                 Velg en underkategori for ditt behov
               </p>
             </div>
@@ -174,16 +174,15 @@ const Medlemskap = ({ loggetInnBruker }) => {
         ) : (["Personvern", "Sikkerhet", "Min Klubb", "Mitt abonnement"].includes(
             valgtKategori
           ) && !visSlettBoks) ? (
-          <div className="text-sm sm:text-base text-gray-600 text-center">Funksjoner kommer snart</div>
+          <div className="text-gray-600 text-center">Funksjoner kommer snart</div>
         ) : null}
 
-        {/* Slett bruker */}
         {visSlettBoks && (
-          <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-300 shadow-md w-full sm:w-[90%] md:w-[400px]">
-            <h3 className="text-lg sm:text-xl font-bold text-black mb-2 sm:mb-4 text-center">
+          <div className="bg-white p-6 rounded-lg border border-gray-300 shadow-md w-full md:w-[400px]">
+            <h3 className="text-xl font-bold text-black mb-4 text-center">
               Bekreft sletting
             </h3>
-            <p className="text-sm sm:text-base text-gray-600 mb-2 sm:mb-4 text-center">
+            <p className="text-gray-600 mb-4 text-center">
               Denne handlingen kan ikke angres!
             </p>
             <input
@@ -191,7 +190,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
               placeholder="Skriv inn brukernavn"
               value={brukernavnInput}
               onChange={(e) => setBrukernavnInput(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded mb-2 sm:mb-3"
+              className="w-full px-3 py-2 border border-gray-300 rounded mb-3"
             />
             <input
               type="password"
@@ -202,7 +201,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
             />
             <button
               onClick={handleSlettBruker}
-              className="bg-red-600 text-white px-4 py-2 rounded w-full mt-2 sm:mt-4 hover:bg-red-700"
+              className="bg-red-600 text-white px-4 py-2 rounded w-full mt-4 hover:bg-red-700"
             >
               Bekreft Sletting
             </button>
@@ -213,7 +212,7 @@ const Medlemskap = ({ loggetInnBruker }) => {
               Avbryt
             </button>
             {melding && (
-              <p className="mt-2 sm:mt-4 text-sm sm:text-base text-red-600 text-center">{melding}</p>
+              <p className="mt-4 text-red-600 text-center">{melding}</p>
             )}
           </div>
         )}
