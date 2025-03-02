@@ -43,6 +43,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
       } else {
         setLoggetInnBruker(data.bruker);
         setMelding("Innlogging vellykket!");
+        console.log("Innlogging vellykket!");
         setTimeout(() => {
           minne.push("/Hjem");
           window.location.reload();

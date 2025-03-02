@@ -48,6 +48,7 @@ const Registrering = () => {
             if (!respons.ok) {
                 setMelding(data.errors ? data.errors.map(err => err.msg).join(", ") : data.error || "Registrering feilet.");
             } else {
+                console.log("Registrering vellykket!");
                 setMelding("Registrering vellykket! Du blir omdirigert til innlogging...");
                 setTimeout(() => {
                     minne.push("/Innlogging");
@@ -55,6 +56,7 @@ const Registrering = () => {
             }
         } catch (error) {
             setMelding("Noe gikk galt. Prøv igjen.");
+            console.error("Registreringsfeil:", error);
         }
     };
 
