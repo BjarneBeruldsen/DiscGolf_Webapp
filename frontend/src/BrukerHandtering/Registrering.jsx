@@ -15,10 +15,10 @@ const Registrering = () => {
         event.preventDefault();
         setMelding("");
 
-        // Frontend validering 
-        const brukernavnRegex = /^[a-zA-Z0-9]{3,15}$/; // 3-15 tegn, kun bokstaver og tall
-        const epostRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // E-post må være gyldig
-        const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,}$/; // Minst 8 tegn, ett spesialtegn
+        //Frontend validering 
+        const brukernavnRegex = /^[a-zA-Z0-9]{3,15}$/; //3-15 tegn, kun bokstaver og tall
+        const epostRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; //E-post validering sjekker @ og .
+        const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,}$/; //Minst 8 tegn, ett spesialtegn
     
         if (!brukernavnRegex.test(bruker)) {
             setMelding("Brukernavn må være 3-15 tegn langt og kun inneholde bokstaver og tall.");

@@ -180,8 +180,6 @@ app.get('/klubber/:id', (req, res) => {
     }
 })
 
-
-
 app.post('/klubber', (req, res) => {
     const klubb = req.body
 
@@ -466,22 +464,17 @@ app.post("/SletteBruker", [
 
 
 
-
 //Sjekk av session
 app.get("/sjekk-session", (req, res) => {
-    console.log("Sjekk session forespørsel mottatt");
     if (req.isAuthenticated()) {
-        console.log("Bruker er autentisert:", req.user);
-        return res.status(200).json({ bruker: req.user });
-    } else {
-        console.log("Ingen aktiv session");
-        return res.status(401).json({ error: "Ingen aktiv session" });
+      return res.status(200).json({
+        bruker: { id: req.user._id, bruker: req.user.bruker, epost: req.user.epost },
+      });
     }
-});
-
+    return res.status(401).json({ error: "Ingen aktiv session" });
+  });
 
 //Andre ruter
-
 //Tilbakestille testdata fra klubb collection 
 app.delete('/tommeTestdata', (req, res) => {
     db.collection('Klubb').deleteMany({})

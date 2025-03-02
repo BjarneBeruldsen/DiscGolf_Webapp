@@ -29,6 +29,7 @@ function App() {
   const [loggetInnBruker, setLoggetInnBruker] = useState(null);
   const [laster, setLaster] = useState(true);
 
+  //Sjekker om bruker er logget inn eller ikke
   const sjekkSession = async () => {
     try {
       const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/sjekk-session`, {
@@ -36,28 +37,25 @@ function App() {
         credentials: "include",
         headers: { "Content-Type": "application/json" },
       });
-  
       if (!respons.ok) {
         if (respons.status === 401) {
-          console.error("Ingen bruker er logget inn");
+          console.log("Ingen bruker er logget inn");
+        } else {
+          console.error(`Feil ved session-sjekk: ${respons.status}`);
         }
         setLoggetInnBruker(null);
-        localStorage.removeItem("bruker");
+        return; 
+      }
+      const data = await respons.json();
+      if (data.bruker) {
+        setLoggetInnBruker(data.bruker);
+        console.log("Bruker er logget inn");
       } else {
-        const data = await respons.json();
-        if (data.bruker) {
-          setLoggetInnBruker(data.bruker);
-          localStorage.setItem("bruker", JSON.stringify(data.bruker));
-          console.log("Bruker er logget inn");
-        } else {
-          setLoggetInnBruker(null);
-          localStorage.removeItem("bruker");
-        }
+        setLoggetInnBruker(null);
       }
     } catch (error) {
       console.error("Feil under session-sjekk:", error);
       setLoggetInnBruker(null);
-      localStorage.removeItem("bruker");
     } finally {
       setLaster(false);
     }

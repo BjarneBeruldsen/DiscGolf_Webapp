@@ -1,5 +1,5 @@
 //Author: Laurent Zogaj
-const loggUtBruker = async () => {
+const loggUtBruker = async (setLoggetInnBruker) => {
     try {
         const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Utlogging`, {
             method: "POST",
@@ -8,12 +8,13 @@ const loggUtBruker = async () => {
         });
 
         if (respons.ok) {
-            localStorage.removeItem("bruker");
+            setLoggetInnBruker(null); 
             window.location.reload();
             window.location.href = "/Hjem"; 
             return true; 
         } else {
-            console.error("Utlogging feilet:", respons.statusText);
+            const data = await respons.json().catch(() => ({}));
+            console.error("Utlogging feilet:", data.error || "Feil fra server");
             return false;
         }
     } catch (error) {

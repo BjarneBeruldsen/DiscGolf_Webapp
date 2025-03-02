@@ -1,4 +1,4 @@
-// Author: Laurent Zogaj
+//Author: Laurent Zogaj
 
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -14,48 +14,45 @@ const Innlogging = ({ setLoggetInnBruker }) => {
     e.preventDefault();
     setMelding("");
 
-    // Frontend validering
-    const brukernavnRegex = /^[a-zA-Z0-9]{3,15}$/; // 3-15 tegn, kun bokstaver og tall
-    const epostRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // E-post-validering
-    const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,}$/; // Minst 8 tegn, ett spesialtegn
+    //Frontend validering
+    const brukernavnRegex = /^[a-zA-Z0-9]{3,15}$/; //3-15 tegn, kun bokstaver og tall
+    const epostRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; //E-post validering sjekker @ og .
+    const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,}$/; //Minst 8 tegn, ett spesialtegn
 
     const erEpost = epostRegex.test(bruker);
     const erBrukernavn = brukernavnRegex.test(bruker);
 
     if (!erEpost && !erBrukernavn) {
-        setMelding("Skriv inn enten brukernavn (3-15 tegn) eller en gyldig e-post.");
-        return;
+      setMelding("Skriv inn enten brukernavn (3-15 tegn) eller en gyldig e-post.");
+      return;
     }
-
     if (!passordRegex.test(passord)) {
-        setMelding("Passord må være minst 8 tegn og ha ett spesialtegn.");
-        return;
+      setMelding("Passord må være minst 8 tegn og ha ett spesialtegn.");
+      return;
     }
     try {
       const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Innlogging`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bruker: bruker.trim().toLowerCase(), passord }), 
+        body: JSON.stringify({ bruker, passord }),
         credentials: "include",
       });
-
       const data = await respons.json();
-
       if (!respons.ok) {
-          setMelding(data.errors ? data.errors.map(err => err.msg).join(", ") : data.error || "Innlogging feilet."); 
+        setMelding(data.errors ? data.errors.map(err => err.msg).join(", ") : data.error || "Innlogging feilet.");
       } else {
-          setLoggetInnBruker(data.bruker);
-          localStorage.setItem("bruker", JSON.stringify(data.bruker));
-          setMelding("Innlogging vellykket!");
-          setTimeout(() => {
-            minne.push("/Hjem");
-            window.location.reload();
-      }, 1000);
+        setLoggetInnBruker(data.bruker);
+        setMelding("Innlogging vellykket!");
+        setTimeout(() => {
+          minne.push("/Hjem");
+          window.location.reload();
+        }, 1000);
+      }
+    } catch (error) {
+      console.error("Innloggingsfeil:", error);
+      setMelding("Feil ved innlogging. Prøv igjen.");
     }
-  } catch {
-    setMelding("Feil ved innlogging");
-  }
-};
+  };
 
   return (
     <header>

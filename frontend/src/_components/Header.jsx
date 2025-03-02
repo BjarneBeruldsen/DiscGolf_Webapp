@@ -8,10 +8,12 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker }) => {
   const [menyÅpen, setMenyÅpen] = useState(false);
 
   const loggUt = async () => {
-    const utloggingVellykket = await loggUtBruker();
+    const utloggingVellykket = await loggUtBruker(setLoggetInnBruker); 
     if (utloggingVellykket) {
       setLoggetInnBruker(null);
       lukkMeny();
+    } else {
+      console.error("Utlogging feilet!"); 
     }
   };
 
