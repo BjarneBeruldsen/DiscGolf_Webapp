@@ -269,7 +269,7 @@ app.post('/klubber/:id/baner', (req, res) => {
 });
 
 //rute for henting av alle nyheter
-app.get('/nyheter', (req, res) => {
+app.get('/nyheterListe', (req, res) => {
     let nyheter = []; 
     db.collection('Klubb')
     .find()
@@ -288,7 +288,7 @@ app.get('/nyheter', (req, res) => {
 
 
 //rute for henting av alle baner 
-app.get('/baner', (req, res) => {
+app.get('/banerListe', (req, res) => {
     let baner = []; 
     db.collection('Klubb')
     .find()
