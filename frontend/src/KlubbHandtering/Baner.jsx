@@ -1,11 +1,16 @@
 // Author: Bjarne Hovd Beruldsen
 import React from "react";
+import BaneListe from "./Baneliste";
+import UseFetch from './UseFetch';
 
 const Baner = () => {
+  const { data: baner, error, isPending } = UseFetch(`${process.env.REACT_APP_API_BASE_URL}/baner`);
   return (
-    <div className="min-h-screen flex flex-col">
-      <h1>Baner</h1>
-      <p>""</p>
+    <div className="min-h-screen flex flex-col bg-gray-200">
+      <h1 className="text-xl font-bold flex justify-center pt-2">Alle Baner:</h1>
+      {error && <div>{error}</div>}
+      {isPending && <div>Laster...</div>}
+      <BaneListe baner={baner} />
     </div>
   );
 };

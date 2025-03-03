@@ -268,6 +268,43 @@ app.post('/klubber/:id/baner', (req, res) => {
     }
 });
 
+//rute for henting av alle nyheter
+app.get('/nyheter', (req, res) => {
+    let nyheter = []; 
+    db.collection('Klubb')
+    .find()
+    .forEach(klubb => {
+        if(klubb.nyheter) {
+            klubb.nyheter.forEach(nyhet => nyheter.push(nyhet));
+        }
+    })
+    .then(() => {
+        res.status(200).json(nyheter);
+    })
+    .catch(() => {
+        res.status(500).json({error: 'Feil ved henting av nyheter'});
+    });
+})
+
+
+//rute for henting av alle baner 
+app.get('/baner', (req, res) => {
+    let baner = []; 
+    db.collection('Klubb')
+    .find()
+    .forEach(klubb => {
+        if(klubb.baner) {
+            klubb.baner.forEach(bane => baner.push(bane));
+        }
+    })
+    .then(() => {
+        res.status(200).json(baner);
+    })
+    .catch(() => {
+        res.status(500).json({error: 'Feil ved henting av baner'});
+    }); 
+})
+
 //Brukerhåndterings ruter
 
 //Registrering av bruker
