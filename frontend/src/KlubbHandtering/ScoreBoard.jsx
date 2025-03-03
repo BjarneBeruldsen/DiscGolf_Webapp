@@ -33,15 +33,15 @@ const ScoreBoard = () => {
                     {spillere.map(spiller => (
                         <div key={spiller.id} className="spiller flex justify-center items-center my-2 border-b">
                             <p className="p-5">{spiller.navn}({spiller.total})</p>
-                            <button onClick={() => oppdaterpoeng(spiller.id, -1)} className="rounded-full bg-yellow-200 hover:bg-yellow-500 shadow px-4 py-2 font-sans">-</button>
+                            <button onClick={() => oppdaterpoeng(spiller.id, -1)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow px-4 py-2 font-sans">-</button>
                             <p className="p-5">{spiller.poeng}</p>
-                            <button onClick={() => oppdaterpoeng(spiller.id, 1)} className="rounded-full bg-yellow-200 hover:bg-yellow-500 shadow px-4 py-2">+</button>
+                            <button onClick={() => oppdaterpoeng(spiller.id, 1)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow px-4 py-2">+</button>
                         </div>
                     ))}
                 </div>
                 <div className="bunn-panel flex justify-between py-2">
-                    <button className="rounded-full bg-yellow-200 hover:bg-yellow-500 shadow mx-2 px-4 py-2">{"<-"}</button>
-                    <button className="rounded-full bg-yellow-200 hover:bg-yellow-500 shadow mx-2 px-4 py-2">{"->"}</button>
+                    <button className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2">{"<-"}</button>
+                    <button className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2">{"->"}</button>
                 </div>
             </div>
         </div>
