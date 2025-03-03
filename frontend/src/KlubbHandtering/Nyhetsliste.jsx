@@ -4,7 +4,8 @@ import React from 'react';
 const Nyhetsliste = ({ nyheter, handleLiker, antLiker }) => {
     return (
         <div>
-            {nyheter.map((nyhet, index) => (
+            {nyheter && nyheter.length > 0 ? (
+                nyheter.map((nyhet, index) => (
                 <div className='flex justify-center' key={index}>
                     <div className="m-4 bg-white rounded-lg shadow-sm p-4 w-full md-w-180">
                         <div className='topp-panel border-b'>
@@ -46,7 +47,12 @@ const Nyhetsliste = ({ nyheter, handleLiker, antLiker }) => {
                         </div>
                     </div>
                 </div>
-            ))}
+            ))
+        ) : (
+            <div className='flex justify-center'>
+                <h1>Ingen nyheter tilgjengelig...</h1>
+            </div>
+        )}
         </div>
     );
 };
