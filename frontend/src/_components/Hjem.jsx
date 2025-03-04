@@ -29,7 +29,7 @@ const Hjem = () => {
             <h1 className="text-2xl font-normal">Over 5,000 Baner</h1>
             <p className="text-lg text-[#656565]">Registrer resultater og forbedre din spillopplevelse</p>
             <div className="flex justify-center">
-            <Link to="/KlubbHandtering/Baner">
+            <Link to="Baner">
                 <h1 className="text-center bg-[#A09884] w-full max-w-sm px-9 py-1 rounded-3xl text-2xl text-white hover:scale-105">
                     Finn Bane
                 </h1>
