@@ -308,29 +308,102 @@ app.get('/banerListe', (req, res) => {
 })
 
 //rute for henting av spesifikk bane 
-app.get('/baner/:id', (req, res) => {
-    let funnet = false; 
-    db.collection('Klubb')
-    .find()
-    .forEach(klubb => {
-        if(klubb.baner) {
-            klubb.baner.forEach(bane => {
-                if(bane._id == req.params.id) {
-                    res.status(200).json(bane);
-                    funnet = true; 
-                }
-            });
+app.get('/baner/:id', async (req, res) => {
+    try {
+        const baneId = new ObjectId(req.params.id);
+        const klubb = await db.collection('Klubb').findOne({ 'baner._id': baneId }, { projection: { 'baner.$': 1 } });
+        
+        if (!klubb) {
+            return res.status(404).json({ error: 'Bane ikke funnet' });
         }
-    })
-    .then(() => {
-        if(!funnet) {
-            res.status(404).json({error: 'Bane ikke funnet'});
-        }
-    })
-    .catch(() => {
-        res.status(500).json({error: 'Feil ved henting av bane'});
-    }); 
+
+        const bane = klubb.baner[0];
+        const response = {
+            ...bane,
+            klubbId: klubb._id 
+        };
+
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(500).json({ error: 'Feil ved henting av bane' });
+    }
+});
+
+//rute for lagring av runde 
+app.post('/klubber/:id/baner/:baneId/runde', (req, res) => {
+    if(ObjectId.isValid(req.params.id) === false || ObjectId.isValid(req.params.baneId) === false) {
+        return res.status(400).json({error: 'Ugyldig dokument-id'});
+    } else {
+        const nyRunde = { ...req.body, _id: new ObjectId() };
+        db.collection('Klubb')
+        .updateOne(
+            { _id: new ObjectId(req.params.id), 'baner._id': new ObjectId(req.params.baneId) },
+            { $push: { 'baner.$.runder': nyRunde } }
+        )
+        .then(result => {
+            res.status(201).json({ rundeId: nyRunde._id });
+        })
+        .catch(err => {
+            res.status(500).json({error: 'Feil ved lagring av runde'});
+        });
+    }
 })
+
+// Rute for å oppdatere en eksplisitt runde med poeng og hullnr
+app.patch('/klubber/:id/baner/:baneId/runde/:rundeId', async (req, res) => {
+    if (ObjectId.isValid(req.params.id) === false || ObjectId.isValid(req.params.baneId) === false || ObjectId.isValid(req.params.rundeId) === false) {
+        return res.status(400).json({ error: 'Ugyldig dokument-id' });
+    } else {
+        try {
+            const { spillerId, poeng, hullNr } = req.body;
+            const result = await db.collection('Klubb').updateOne(
+                { _id: new ObjectId(req.params.id), 'baner._id': new ObjectId(req.params.baneId), 'baner.runder._id': new ObjectId(req.params.rundeId), 'baner.runder.spillere.id': spillerId },
+                { $set: { 'baner.$.runder.$[runde].spillere.$[spiller].poeng': poeng, 'baner.$.runder.$[runde].hullNr': hullNr } },
+                { arrayFilters: [{ 'runde._id': new ObjectId(req.params.rundeId) }, { 'spiller.id': spillerId }] }
+            );
+
+            if (result.modifiedCount === 0) {
+                return res.status(404).json({ error: 'Runde eller spiller ikke funnet eller ingen endringer gjort' });
+            }
+
+            res.status(200).json({ message: 'Runde oppdatert' });
+        } catch (error) {
+            res.status(500).json({ error: 'Feil ved oppdatering av runde', details: error.message });
+        }
+    }
+});
+
+app.get('/klubber/:id/baner/:baneId/runde', async (req, res) => {
+    if(ObjectId.isValid(req.params.id) === false || ObjectId.isValid(req.params.baneId) === false) {
+        return res.status(400).json({error: 'Ugyldig dokument-id'});
+    } else {
+        try {
+            const klubb = await db.collection('Klubb').findOne(
+                { _id: new ObjectId(req.params.id), 'baner._id': new ObjectId(req.params.baneId) },
+                { projection: { 'baner.$': 1 } }
+            );
+
+            if (!klubb) {
+                return res.status(404).json({ error: 'Bane ikke funnet' });
+            }
+
+            const bane = klubb.baner[0];
+            const sisteRunde = bane.runder ? bane.runder[bane.runder.length - 1] : null;
+            const response = {
+                spillere: sisteRunde ? sisteRunde.spillere : [],
+                hullNr: sisteRunde ? sisteRunde.hullNr : 0,
+                rundeId: sisteRunde ? sisteRunde._id : null
+            };
+
+            res.status(200).json(response);
+        } catch (error) {
+            res.status(500).json({ error: 'Feil ved henting av spillere' });
+        }
+    }
+});
+
+
+
 
 //Brukerhåndterings ruter
 
