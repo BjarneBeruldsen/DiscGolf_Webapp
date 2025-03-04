@@ -1,8 +1,16 @@
 // Author: Bjarne Hovd Beruldsen
 import React from "react";
+import { Link, useHistory } from "react-router-dom";
+import { useState } from "react";
 
 const BaneListe = (props) => {
     const baner = props.baner;
+    const minne = useHistory();
+
+    const handleClick = (bane) => {
+        console.log('Spill knapp trykket');
+        minne.push(`/ScoreBoard/${bane._id}`); 
+    }
 
     return ( 
         <div>
@@ -26,7 +34,7 @@ const BaneListe = (props) => {
                                             <p>{bane.beskrivelse}</p>
                                         </div>
                                         <div className="knapp">
-                                            <button type="submit" className="py-2 px-2 bg-gray-500 rounded-lg text-sm text-white mt-2 hover:bg-gray-400">Spill</button>
+                                            <button type="submit" onClick={() => handleClick(bane)} className="py-2 px-2 bg-gray-500 rounded-lg text-sm text-white mt-2 hover:bg-gray-400">Spill</button>
                                         </div>
                                     </div>
                                 </div>

@@ -233,7 +233,7 @@ app.post('/klubber/:id/nyheter', (req, res) => {
     if(ObjectId.isValid(req.params.id) === false) {
         return res.status(400).json({error: 'Ugyldig dokument-id'});
     } else {
-        const nyNyhet = req.body;
+        const nyNyhet = {...req.body, _id: new ObjectId()};
         db.collection('Klubb')
         .updateOne(
             { _id: new ObjectId(req.params.id) },
@@ -253,7 +253,7 @@ app.post('/klubber/:id/baner', (req, res) => {
     if(ObjectId.isValid(req.params.id) === false) {
         return res.status(400).json({error: 'Ugyldig dokument-id'});
     } else {
-        const nyBane = req.body;
+        const nyBane = { ...req.body, _id: new ObjectId() };
         db.collection('Klubb')
         .updateOne(
             { _id: new ObjectId(req.params.id) },
@@ -267,6 +267,8 @@ app.post('/klubber/:id/baner', (req, res) => {
         });
     }
 });
+
+
 
 //rute for henting av alle nyheter
 app.get('/nyheterListe', (req, res) => {
@@ -302,6 +304,31 @@ app.get('/banerListe', (req, res) => {
     })
     .catch(() => {
         res.status(500).json({error: 'Feil ved henting av baner'});
+    }); 
+})
+
+//rute for henting av spesifikk bane 
+app.get('/baner/:id', (req, res) => {
+    let funnet = false; 
+    db.collection('Klubb')
+    .find()
+    .forEach(klubb => {
+        if(klubb.baner) {
+            klubb.baner.forEach(bane => {
+                if(bane._id == req.params.id) {
+                    res.status(200).json(bane);
+                    funnet = true; 
+                }
+            });
+        }
+    })
+    .then(() => {
+        if(!funnet) {
+            res.status(404).json({error: 'Bane ikke funnet'});
+        }
+    })
+    .catch(() => {
+        res.status(500).json({error: 'Feil ved henting av bane'});
     }); 
 })
 

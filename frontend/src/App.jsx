@@ -123,9 +123,13 @@ function App() {
             <Route exact path="/Registrering">
               <Registrering />
             </Route>
-            <Route exact path="/scoreboard">
+            <Route exact path="/ScoreBoard/:id">
               <ScoreBoard />
             </Route>
+            <Route exact path="/ScoreBoard">
+              <ScoreBoard />
+            </Route>
+            
             <Route exact path="/Personvern" component={Personvern} />
             <Route exact path="/Sikkerhet" component={Sikkerhet} />
             <Route exact path="/Informasjonskapsler" component={Informasjonskapsler} />
