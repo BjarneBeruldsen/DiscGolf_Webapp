@@ -75,12 +75,12 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,                       //Lagrer session på hver request selv om ingen endringer er gjort
     saveUninitialized: false,            //Lagrer session selv uten ny data 
-    proxy: process.env.NODE_ENV === 'production', //Må være true for at Heroku skal funke
+    proxy: process.env.NODE_ENV === 'production', //Må være true for at Heroku skal funke eller settes til production
     rolling: false,                      //Fornyer session ved hvert request, ikke vits forholder oss til maxAge
     store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }), //Lagrer session i MongoDB                          
     cookie: {
-        secure: process.env.NODE_ENV === 'production', //Må være true for at cookies skal fungere på nettsiden og false dersom siden skal funke lokalt
-        httpOnly: process.env.NODE_ENV === 'production', //Må være false når man tester lokalt og true ellers
+        secure: process.env.NODE_ENV === 'production', //Må være true for at cookies skal fungere på nettsiden og false dersom siden skal funke lokalt, eller settes til production
+        httpOnly: process.env.NODE_ENV === 'production', //Må være false når man tester lokalt og true ellers. Eller settes til production
         sameSite: process.env.NODE_ENV === 'production' ? "strict" : "lax", //Må være strict for at cookies skal fungere på nettsiden, sett den til "lax" for at siden skal funke lokalt
         maxAge: 1000 * 60 * 60 * 24,    //1 dag
     }
