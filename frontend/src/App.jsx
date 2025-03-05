@@ -24,6 +24,7 @@ import Sikkerhet from './_components/Sikkerhet';
 import Informasjonskapsler from './_components/Informasjonskapsler';
 import KontaktOss from './_components/KontaktOss';
 import OmOss from './_components/OmOss';
+import PoengTavler from './KlubbHandtering/Poengtavler';
 
 function App() {
   const [loggetInnBruker, setLoggetInnBruker] = useState(null);
@@ -128,6 +129,9 @@ function App() {
             </Route>
             <Route exact path="/ScoreBoard">
               <ScoreBoard />
+            </Route>
+            <Route exact path="/MinePoengtavler">
+              <PoengTavler />
             </Route>
             
             <Route exact path="/Personvern" component={Personvern} />

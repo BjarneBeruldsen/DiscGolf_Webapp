@@ -11,13 +11,8 @@ const BaneListe = (props) => {
 
     const handleClick = (bane) => {
         console.log('Spill knapp trykket');
-        if(!bruker) {
-            alert('Logg inn/registrer deg for å spille');
-            minne.push('/innlogging');
-        }
-        else {
-            minne.push(`/ScoreBoard/${bane._id}`); 
-        }
+        minne.push(`/ScoreBoard/${bane._id}`); 
+        
     }
 
     return ( 

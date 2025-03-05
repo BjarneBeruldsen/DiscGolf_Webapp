@@ -1,4 +1,4 @@
-// Author: Bjarne Hovd Beruldsen
+// Author: Laurent Zogaj
 import { useEffect, useState } from "react";
 
 const HentBruker = () => {
@@ -27,7 +27,7 @@ const HentBruker = () => {
         };
 
         sjekkSession();
-    });
+    }, []); 
 
     return { bruker, venter };
 };

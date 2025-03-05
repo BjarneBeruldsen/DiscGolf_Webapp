@@ -327,108 +327,37 @@ app.get('/baner/:id', async (req, res) => {
     }
 });
 
-//rute for lagring av runde 
-app.post('/klubber/:id/baner/:baneId/runde', (req, res) => {
-    if(ObjectId.isValid(req.params.id) === false || ObjectId.isValid(req.params.baneId) === false) {
-        return res.status(400).json({error: 'Ugyldig dokument-id'});
-    } else {
-        const nyRunde = { ...req.body, _id: new ObjectId() };
-        db.collection('Klubb')
-        .updateOne(
-            { _id: new ObjectId(req.params.id), 'baner._id': new ObjectId(req.params.baneId) },
-            { $push: { 'baner.$.runder': nyRunde } }
-        )
-        .then(result => {
-            res.status(201).json({ rundeId: nyRunde._id });
-        })
-        .catch(err => {
-            res.status(500).json({error: 'Feil ved lagring av runde'});
-        });
-    }
-})
-
-// Rute for å oppdatere en eksplisitt runde med poeng og hullnr
-app.patch('/klubber/:id/baner/:baneId/runde/:rundeId', async (req, res) => {
-    if (ObjectId.isValid(req.params.id) === false || ObjectId.isValid(req.params.baneId) === false || ObjectId.isValid(req.params.rundeId) === false) {
-        return res.status(400).json({ error: 'Ugyldig dokument-id' });
-    } else {
-        try {
-            const { spillerId, poeng, hullNr } = req.body;
-            const result = await db.collection('Klubb').updateOne(
-                { _id: new ObjectId(req.params.id), 'baner._id': new ObjectId(req.params.baneId), 'baner.runder._id': new ObjectId(req.params.rundeId), 'baner.runder.spillere.id': spillerId },
-                { $set: { 'baner.$.runder.$[runde].spillere.$[spiller].poeng': poeng, 'baner.$.runder.$[runde].hullNr': hullNr } },
-                { arrayFilters: [{ 'runde._id': new ObjectId(req.params.rundeId) }, { 'spiller.id': spillerId }] }
-            );
-
-            if (result.modifiedCount === 0) {
-                return res.status(404).json({ error: 'Runde eller spiller ikke funnet eller ingen endringer gjort' });
-            }
-
-            res.status(200).json({ message: 'Runde oppdatert' });
-        } catch (error) {
-            res.status(500).json({ error: 'Feil ved oppdatering av runde', details: error.message });
-        }
-    }
-});
-
-// Rute for å oppdatere en eksplisitt runde med poeng og hullnr ved hjelp av indeks
-app.patch('/klubber/:id/baner/:baneId/runde/:rundeIndex', async (req, res) => {
-    if (ObjectId.isValid(req.params.id) === false || ObjectId.isValid(req.params.baneId) === false) {
-        return res.status(400).json({ error: 'Ugyldig dokument-id' });
-    } else {
-        try {
-            const { spillerId, poeng, hullNr } = req.body;
-            const rundeIndex = parseInt(req.params.rundeIndex, 10);
-            const result = await db.collection('Klubb').updateOne(
-                { _id: new ObjectId(req.params.id), 'baner._id': new ObjectId(req.params.baneId) },
-                { $set: { [`baner.$.runder.${rundeIndex}.spillere.$[spiller].poeng`]: poeng, [`baner.$.runder.${rundeIndex}.hullNr`]: hullNr } },
-                { arrayFilters: [{ 'spiller.id': spillerId }] }
-            );
-
-            if (result.modifiedCount === 0) {
-                return res.status(404).json({ error: 'Runde eller spiller ikke funnet eller ingen endringer gjort' });
-            }
-
-            res.status(200).json({ message: 'Runde oppdatert' });
-        } catch (error) {
-            res.status(500).json({ error: 'Feil ved oppdatering av runde', details: error.message });
-        }
-    }
-});
-
-app.get('/klubber/:id/baner/:baneId/runde', async (req, res) => {
-    if(ObjectId.isValid(req.params.id) === false || ObjectId.isValid(req.params.baneId) === false) {
-        return res.status(400).json({error: 'Ugyldig dokument-id'});
-    } else {
-        try {
-            const klubb = await db.collection('Klubb').findOne(
-                { _id: new ObjectId(req.params.id), 'baner._id': new ObjectId(req.params.baneId) },
-                { projection: { 'baner.$': 1 } }
-            );
-
-            if (!klubb) {
-                return res.status(404).json({ error: 'Bane ikke funnet' });
-            }
-
-            const bane = klubb.baner[0];
-            const sisteRunde = bane.runder ? bane.runder[bane.runder.length - 1] : null;
-            const response = {
-                spillere: sisteRunde ? sisteRunde.spillere : [],
-                hullNr: sisteRunde ? sisteRunde.hullNr : 0,
-                rundeId: sisteRunde ? sisteRunde._id : null
-            };
-
-            res.status(200).json(response);
-        } catch (error) {
-            res.status(500).json({ error: 'Feil ved henting av spillere' });
-        }
-    }
-});
 
 
 
+
+
+
+
+ 
 
 //Brukerhåndterings ruter
+
+//Rute for å lagre poengkort for en bruker
+app.post('/brukere/:id/poengkort', async (req, res) => {
+    if(ObjectId.isValid(req.params.id) === false) {
+        return res.status(400).json({error: 'Ugyldig dokument-id'});
+    } else {
+        const poengkort = req.body
+
+        db.collection('Brukere')
+        .updateOne(
+            { _id: new ObjectId(req.params.id) }, 
+            { $push: { poengkort: poengkort } },
+        )
+        .then(result => {
+            res.status(201).json(result)
+        })
+        .catch(err => {
+            res.status(500).json({error: 'Feil ved lagring av poengkort'})
+        })
+    }
+})
 
 //Registrering av bruker
 //Rate limit for å stoppe brute force angrep https://www.npmjs.com/package/express-rate-limit
@@ -625,14 +554,27 @@ app.post("/SletteBruker", [
 
 
 //Sjekk av session
-app.get("/sjekk-session", (req, res) => {
+app.get("/sjekk-session", async (req, res) => {
     if (req.isAuthenticated()) {
-      return res.status(200).json({
-        bruker: { id: req.user._id, bruker: req.user.bruker, epost: req.user.epost },
-      });
+        try {
+            const bruker = await db.collection("Brukere").findOne({ _id: req.user._id });
+            if (!bruker) {
+                return res.status(404).json({ error: "Bruker ikke funnet" });
+            }
+            return res.status(200).json({
+                bruker: {
+                    id: bruker._id,
+                    bruker: bruker.bruker,
+                    epost: bruker.epost,
+                    poengkort: bruker.poengkort // Legg til poengkort her
+                },
+            });
+        } catch (err) {
+            return res.status(500).json({ error: "Feil ved henting av brukerdata" });
+        }
     }
     return res.status(401).json({ error: "Ingen aktiv session" });
-  });
+});
 
 //Andre ruter
 //Tilbakestille testdata fra klubb collection 
