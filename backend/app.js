@@ -64,25 +64,24 @@ app.use(
     })
   );
 
-  app.use(express.json());
+app.use(express.json());
 
 //Deployment under
 //Legger serving fra statiske filer fra REACT applikasjonen
 app.use(express.static(path.join(__dirname, '../frontend/build')));
-
 
 //Konfigurasjon av session      https://www.geeksforgeeks.org/how-to-handle-sessions-in-express/ & https://expressjs.com/en/resources/middleware/session.html  
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,                       //Lagrer session på hver request selv om ingen endringer er gjort
     saveUninitialized: false,            //Lagrer session selv uten ny data 
-    proxy: true,                         //Må være true for at Heroku skal funke
-    rolling: false,                       //Fornyer session ved hvert request, ikke vits forholder oss til maxAge
+    proxy: process.env.NODE_ENV === 'production', //Må være true for at Heroku skal funke
+    rolling: false,                      //Fornyer session ved hvert request, ikke vits forholder oss til maxAge
     store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }), //Lagrer session i MongoDB                          
     cookie: {
-        secure: true,                    //Må være true for at cookies skal fungere på nettsiden og false dersom siden skal funke lokalt
-        httpOnly: true,                  //Må være false når man tester lokalt og true ellers
-        sameSite: "strict",             //Må være strict for at cookies skal fungere på nettsiden, sett den til "lax" for at siden skal funke lokalt
+        secure: process.env.NODE_ENV === 'production', //Må være true for at cookies skal fungere på nettsiden og false dersom siden skal funke lokalt
+        httpOnly: process.env.NODE_ENV === 'production', //Må være false når man tester lokalt og true ellers
+        sameSite: process.env.NODE_ENV === 'production' ? "strict" : "lax", //Må være strict for at cookies skal fungere på nettsiden, sett den til "lax" for at siden skal funke lokalt
         maxAge: 1000 * 60 * 60 * 24,    //1 dag
     }
 }));
@@ -95,7 +94,6 @@ let db
 kobleTilDB((err) => {
     if(!err) {
         db = getDb();
-
 
 //Konfigurasjon av Passport.js
 passport.use(
