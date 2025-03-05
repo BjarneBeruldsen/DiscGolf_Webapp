@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 const Innlogging = ({ setLoggetInnBruker }) => {
-  const [bruker, setBruker] = useState("");
+  const [brukernavn, setBrukernavn] = useState("");
   const [passord, setPassord] = useState("");
   const [melding, setMelding] = useState("");
   const minne = useHistory(); 
@@ -19,8 +19,8 @@ const Innlogging = ({ setLoggetInnBruker }) => {
     const epostRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; //E-post validering sjekker @ og .
     const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,}$/; //Minst 8 tegn, ett spesialtegn
 
-    const erEpost = epostRegex.test(bruker);
-    const erBrukernavn = brukernavnRegex.test(bruker);
+    const erEpost = epostRegex.test(brukernavn);
+    const erBrukernavn = brukernavnRegex.test(brukernavn);
 
     if (!erEpost && !erBrukernavn) {
       setMelding("Skriv inn enten brukernavn (3-15 tegn) eller en gyldig e-post.");
@@ -34,7 +34,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
       const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Innlogging`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bruker, passord }),
+        body: JSON.stringify({ brukernavn, passord }),
         credentials: "include",
       });
       const data = await respons.json();
@@ -68,8 +68,8 @@ const Innlogging = ({ setLoggetInnBruker }) => {
           <input
             type="text"
             placeholder="Brukernavn eller e-post"
-            value={bruker}
-            onChange={(e) => setBruker(e.target.value)}
+            value={brukernavn}
+            onChange={(e) => setBrukernavn(e.target.value)}
             required
             className="px-4 py-3 mb-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
           />

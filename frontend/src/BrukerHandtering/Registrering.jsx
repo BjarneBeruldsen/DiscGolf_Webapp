@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 const Registrering = () => {
-    const [bruker, setBruker] = useState("");
+    const [brukernavn, setBrukernavn] = useState("");
     const [epost, setEpost] = useState(""); 
     const [passord, setPassord] = useState("");
     const [melding, setMelding] = useState("");
@@ -20,7 +20,7 @@ const Registrering = () => {
         const epostRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; //E-post validering sjekker @ og .
         const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,}$/; //Minst 8 tegn, ett spesialtegn
     
-        if (!brukernavnRegex.test(bruker)) {
+        if (!brukernavnRegex.test(brukernavn)) {
             setMelding("Brukernavn må være 3-15 tegn langt og kun inneholde bokstaver og tall.");
             return;
         }
@@ -39,7 +39,7 @@ const Registrering = () => {
             const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Registrering`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ bruker, epost, passord }), 
+                body: JSON.stringify({ brukernavn, epost, passord }),
                 credentials: "include",
             });
 
@@ -83,8 +83,8 @@ const Registrering = () => {
                 <input
                     type="text"
                     placeholder="Brukernavn"
-                    value={bruker}
-                    onChange={(e) => setBruker(e.target.value)}
+                    value={brukernavn}
+                    onChange={(e) => setBrukernavn(e.target.value)}
                     required
                     className="px-4 py-3 mb-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
