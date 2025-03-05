@@ -13,13 +13,14 @@ const HentBruker = () => {
                     headers: { "Content-Type": "application/json" },
                     credentials: "include",
                 });
-
                 if (!response.ok) {
                     throw new Error("Ingen aktiv session");
                 }
                 const data = await response.json();
-                setBruker(data.bruker);
-            } catch {
+                setBruker(data.bruker); 
+                console.log("Bruker er logget inn"); 
+            } catch (error) {
+                console.log("Ingen bruker er logget inn"); 
                 setBruker(null);
             } finally {
                 setVenter(false);
@@ -27,9 +28,9 @@ const HentBruker = () => {
         };
 
         sjekkSession();
-    }, []); 
+    }, []);
 
-    return { bruker, venter };
+    return { bruker, setBruker, venter };
 };
 
 export default HentBruker;

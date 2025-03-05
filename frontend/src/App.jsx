@@ -25,51 +25,20 @@ import Informasjonskapsler from './_components/Informasjonskapsler';
 import KontaktOss from './_components/KontaktOss';
 import OmOss from './_components/OmOss';
 import PoengTavler from './KlubbHandtering/Poengtavler';
+import HentBruker from "./BrukerHandtering/HentBruker";
 
 function App() {
   const [loggetInnBruker, setLoggetInnBruker] = useState(null);
-  const [laster, setLaster] = useState(true);
-
-  //Sjekker om bruker er logget inn eller ikke
-  const sjekkSession = async () => {
-    try {
-      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/sjekk-session`, {
-        method: "GET",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-      });
-      if (!respons.ok) {
-        if (respons.status === 401) {
-          console.log("Ingen bruker er logget inn");
-        } else {
-          console.error(`Feil ved session-sjekk: ${respons.status}`);
-        }
-        setLoggetInnBruker(null);
-        return; 
-      }
-      const data = await respons.json();
-      if (data.bruker) {
-        setLoggetInnBruker(data.bruker);
-        console.log("Bruker er logget inn");
-      } else {
-        setLoggetInnBruker(null);
-      }
-    } catch (error) {
-      console.error("Feil under session-sjekk:", error);
-      setLoggetInnBruker(null);
-    } finally {
-      setLaster(false);
-    }
-  };
+  const { bruker, venter } = HentBruker();
 
   useEffect(() => {
-    sjekkSession();
-  }, []);
+    setLoggetInnBruker(bruker);
+  }, [bruker]); 
 
-  if (laster) {
+  if (venter) {
     return <p className="text-center text-gray-700 mt-10">Laster inn...</p>;
   }
-
+  
   return (
     <Router>
       <div className="App">
@@ -147,4 +116,3 @@ function App() {
 }
 
 export default App;
-

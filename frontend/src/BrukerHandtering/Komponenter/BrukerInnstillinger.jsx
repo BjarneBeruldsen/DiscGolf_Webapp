@@ -1,18 +1,19 @@
 //Author: Laurent Zogaj
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 
 const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
   const [visSlettBoks, setVisSlettBoks] = useState(false);
   const [brukernavnInput, setBrukernavnInput] = useState("");
   const [passord, setPassord] = useState("");
   const [melding, setMelding] = useState("");
- 
+  const minne = useHistory();
+
   //Sletting av registrert bruker
   const handleSlettBruker = async (e) => {
     e.preventDefault();
     setMelding("");
-  
-    if (brukernavnInput.trim().toLowerCase() !== bruker.bruker.toLowerCase()) {
+    if (brukernavnInput.trim().toLowerCase() !== bruker.brukernavn.toLowerCase()) {
       setMelding("Brukernavnet stemmer ikke.");
       return;
     }
@@ -21,26 +22,23 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ bruker: bruker.bruker, passord }),
+        body: JSON.stringify({ brukernavn: bruker.brukernavn, passord }),
       });
-  
       const data = await respons.json();
       if (respons.ok) {
-        setBruker(null); 
-        window.location.href = "/Hjem"; 
-        window.location.reload();
-      } else {
-        setMelding(data.error);
-      }
-    } catch {
-      setMelding("Uventet feil, prøv igjen.");
+        setTimeout(() => {
+          setBruker(null);
+          minne.push("/Hjem");
+          window.location.reload();
+      }, 1000); 
+      return;
+  }
+      setMelding(data.error || "Ukjent feil oppstod.");
+    } catch (error) {
+      setMelding("Uventet feil oppstod");
     }
   };
-
   //Andre funksjoner under her:
-
-
-
 
 
 
@@ -48,13 +46,12 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
   //Styling og design for hver funksjon/komponent
   return (
     <div className="bg-white shadow-xl rounded-lg p-6 w-full max-w-[500px] flex flex-col items-center">
-
-      {/*Min informasjon */}
+      {/* Min informasjon */}
       {valgtUnderKategori === "Min informasjon" && (
         <div className="space-y-4 w-full max-w-[400px]">
           <input
             type="text"
-            value={bruker.bruker}
+            value={bruker.brukernavn}
             readOnly
             className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
           />
@@ -67,8 +64,7 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
           <p className="text-gray-600">Her er din registrerte brukerinformasjon</p>
         </div>
       )}
-      
-      {/*Endre min informasjon */}
+      {/* Endre min informasjon */}
       {valgtUnderKategori === "Endre min informasjon" && (
         <div className="space-y-4 w-full max-w-[400px]">
           <p className="text-gray-600">Endring av brukerinformasjon (ikke implementert ennå).</p>
@@ -78,7 +74,7 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
         </div>
       )}
       
-      {/*Slett bruker */}
+      {/* Slett bruker */}
       {valgtUnderKategori === "Slett bruker" && !visSlettBoks && (
         <button
           onClick={() => setVisSlettBoks(true)}
@@ -121,8 +117,6 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
           {melding && <p className="mt-4 text-red-600 text-center">{melding}</p>}
         </div>
       )}
-      {/*Evt styling for andre funksjoner under her*/}
-
 
       {/* Fallback melding */}
       {!["Min informasjon", "Endre min informasjon", "Slett bruker"].includes(valgtUnderKategori) && (

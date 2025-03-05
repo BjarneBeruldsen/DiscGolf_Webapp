@@ -1,19 +1,18 @@
 //Author: Laurent Zogaj
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../App.css";
 import BrukerInnstillinger from "./Komponenter/BrukerInnstillinger.jsx";
 import Personvern from "./Komponenter/Personvern.jsx";
 import Sikkerhet from "./Komponenter/Sikkerhet.jsx";
 import MinKlubb from "./Komponenter/MinKlubb.jsx";
 import MittAbonnement from "./Komponenter/MittAbonnement.jsx";
+import HentBruker from "./HentBruker.jsx"; 
 
-//Definerer funksjoner 
-const Medlemskap = ({ loggetInnBruker }) => {
-  const [bruker, setBruker] = useState(null);
+const Medlemskap = () => {
+  const { bruker, setBruker, venter } = HentBruker(); //Henter brukerdata fra HentBruker.jsx
   const [valgtKategori, setValgtKategori] = useState("Brukerinnstillinger");
   const [valgtUnderKategori, setValgtUnderKategori] = useState("");
   const [underKategoriOpen, setUnderKategoriOpen] = useState(true);
-  const [venter, setVenter] = useState(true);
 
   //Definerer hovedkategorier
   const hovedKategorier = [
@@ -33,31 +32,6 @@ const Medlemskap = ({ loggetInnBruker }) => {
     "Mitt abonnement": ["Mitt abonnement", "Betaling", "Avslutt abonnement"],
   };
 
-  //Henter brukerinformasjon for å sjekke om bruker er logget inn eller ikke 
-  useEffect(() => {
-    const sjekkSession = async () => {
-      try {
-        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/sjekk-session`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-        });
-
-        if (!response.ok) {
-          throw new Error("Ingen aktiv session");
-        }
-        const data = await response.json();
-        setBruker(data.bruker);
-      } catch {
-        setBruker(null);
-      } finally {
-        setVenter(false);
-      }
-    };
-
-    sjekkSession();
-  }, []);
-
   //Funksjon for å bytte mellom hovedkategorier og underkategorier
   const toggleUnderKategori = (kategori) => {
     if (valgtKategori === kategori) {
@@ -68,6 +42,10 @@ const Medlemskap = ({ loggetInnBruker }) => {
     }
     setValgtUnderKategori("");
   };
+
+  if (venter) {
+    return <p className="text-gray-600 text-center">Laster brukerdata...</p>;
+  }
 
   //Design og Styling for menyer og innhold i Medlemskap 
   return (
