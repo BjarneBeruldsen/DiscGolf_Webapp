@@ -3,10 +3,12 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import UseFetch from './UseFetch';
 import VelgSpillere from "./VelgSpillere";
+import HentBruker from "../BrukerHandtering/HentBruker";
 
 const ScoreBoard = () => {
     const { id: baneId } = useParams();
     const { data: bane, error, isPending } = UseFetch(`${process.env.REACT_APP_API_BASE_URL}/baner/${baneId}`);
+    const { bruker, venter } = HentBruker();
     const [poeng, setPoeng] = useState(0);
     const [hull, setHull] = useState([]);
     const [total, setTotal] = useState(0);
@@ -16,13 +18,14 @@ const ScoreBoard = () => {
     const [visScoreboard, setVisScoreboard] = useState(false);
     const [visVelgSpillere, setVisVelgSpillere] = useState(true);
     const [klubbId, setKlubbId] = useState(null);
-    const [rundeId, setRundeId] = useState(null);
+    const [rundeIndex, setRundeIndex] = useState(null);
     const [visOppsummering, setVisOppsummering] = useState(false);
 
     useEffect(() => {
         if (bane && bane.hull) {
             setHull(bane.hull);
-            setKlubbId(bane.klubbId); // Hent klubbens ID fra bane-dataene
+            setKlubbId(bane.klubbId); // Hent klubbens ID fra bane-dataenes
+            console.log('slår til')
         }
     }, [bane]);
 
@@ -33,9 +36,11 @@ const ScoreBoard = () => {
                 const data = await response.json();
                 setSpillere(data.spillere);
                 setNr(data.hullNr);
-                setRundeId(data.rundeId);
+                setRundeIndex(data.rundeIndex);
                 setVisVelgSpillere(false); // Sett visVelgSpillere til false når rundeData er hentet
                 localStorage.setItem('visVelgSpillere', JSON.stringify(false));
+                setVisScoreboard(true); // Sett visScoreboard til true når rundeData er hentet
+                localStorage.setItem('visScoreboard', JSON.stringify(true));
             } else {
                 console.error('Feil ved henting av runde:', await response.json());
             }
@@ -53,7 +58,7 @@ const ScoreBoard = () => {
 
         try {
             const spiller = oppdatertSpillere.find(spiller => spiller.id === spillerId);
-            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${klubbId}/baner/${baneId}/runde/${rundeId}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${klubbId}/baner/${baneId}/runde/${rundeIndex}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
@@ -95,10 +100,11 @@ const ScoreBoard = () => {
                 const data = await response.json();
                 console.log('Response data:', data);
                 setSpillere(valgteSpillere);
-                setRundeId(data.rundeId); // Sett rundeId fra responsen
+                setRundeIndex(data.rundeIndex); // Sett rundeIndex fra responsen
                 setVisVelgSpillere(false);
                 localStorage.setItem('visVelgSpillere', JSON.stringify(false));
                 setVisScoreboard(true);
+                localStorage.setItem('visScoreboard', JSON.stringify(true));
             } else {
                 const errorData = await response.json();
                 console.error('Feil ved lagring av spillere:', errorData);
@@ -110,6 +116,7 @@ const ScoreBoard = () => {
 
     const handleAvsluttRunde = () => {
         setVisScoreboard(false);
+        setVisVelgSpillere(true);
         setVisOppsummering(true);
     }
 

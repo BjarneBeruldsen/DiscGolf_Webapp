@@ -2,14 +2,22 @@
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useState } from "react";
+import HentBruker from "../BrukerHandtering/HentBruker";
 
 const BaneListe = (props) => {
     const baner = props.baner;
     const minne = useHistory();
+    const { bruker, venter } = HentBruker();
 
     const handleClick = (bane) => {
         console.log('Spill knapp trykket');
-        minne.push(`/ScoreBoard/${bane._id}`); 
+        if(!bruker) {
+            alert('Logg inn/registrer deg for å spille');
+            minne.push('/innlogging');
+        }
+        else {
+            minne.push(`/ScoreBoard/${bane._id}`); 
+        }
     }
 
     return ( 

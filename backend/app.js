@@ -373,6 +373,31 @@ app.patch('/klubber/:id/baner/:baneId/runde/:rundeId', async (req, res) => {
     }
 });
 
+// Rute for å oppdatere en eksplisitt runde med poeng og hullnr ved hjelp av indeks
+app.patch('/klubber/:id/baner/:baneId/runde/:rundeIndex', async (req, res) => {
+    if (ObjectId.isValid(req.params.id) === false || ObjectId.isValid(req.params.baneId) === false) {
+        return res.status(400).json({ error: 'Ugyldig dokument-id' });
+    } else {
+        try {
+            const { spillerId, poeng, hullNr } = req.body;
+            const rundeIndex = parseInt(req.params.rundeIndex, 10);
+            const result = await db.collection('Klubb').updateOne(
+                { _id: new ObjectId(req.params.id), 'baner._id': new ObjectId(req.params.baneId) },
+                { $set: { [`baner.$.runder.${rundeIndex}.spillere.$[spiller].poeng`]: poeng, [`baner.$.runder.${rundeIndex}.hullNr`]: hullNr } },
+                { arrayFilters: [{ 'spiller.id': spillerId }] }
+            );
+
+            if (result.modifiedCount === 0) {
+                return res.status(404).json({ error: 'Runde eller spiller ikke funnet eller ingen endringer gjort' });
+            }
+
+            res.status(200).json({ message: 'Runde oppdatert' });
+        } catch (error) {
+            res.status(500).json({ error: 'Feil ved oppdatering av runde', details: error.message });
+        }
+    }
+});
+
 app.get('/klubber/:id/baner/:baneId/runde', async (req, res) => {
     if(ObjectId.isValid(req.params.id) === false || ObjectId.isValid(req.params.baneId) === false) {
         return res.status(400).json({error: 'Ugyldig dokument-id'});
