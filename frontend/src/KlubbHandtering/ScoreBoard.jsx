@@ -9,116 +9,72 @@ const ScoreBoard = () => {
     const { id: baneId } = useParams();
     const { data: bane, error, isPending } = UseFetch(`${process.env.REACT_APP_API_BASE_URL}/baner/${baneId}`);
     const { bruker, venter } = HentBruker();
-    const [poeng, setPoeng] = useState(0);
     const [hull, setHull] = useState([]);
-    const [total, setTotal] = useState(0);
     const [nr, setNr] = useState(0);
     const [spillere, setSpillere] = useState([]);
-    const [visning, setVisning] = useState('velgspillere');
     const [visScoreboard, setVisScoreboard] = useState(false);
     const [visVelgSpillere, setVisVelgSpillere] = useState(true);
-    const [klubbId, setKlubbId] = useState(null);
-    const [rundeIndex, setRundeIndex] = useState(null);
     const [visOppsummering, setVisOppsummering] = useState(false);
 
     useEffect(() => {
         if (bane && bane.hull) {
             setHull(bane.hull);
-            setKlubbId(bane.klubbId); // Hent klubbens ID fra bane-dataenes
-            console.log('slår til')
         }
     }, [bane]);
 
-    const hentRundeData = async () => {
-        try {
-            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${klubbId}/baner/${baneId}/runde`);
-            if (response.ok) {
-                const data = await response.json();
-                setSpillere(data.spillere);
-                setNr(data.hullNr);
-                setRundeIndex(data.rundeIndex);
-                setVisVelgSpillere(false); // Sett visVelgSpillere til false når rundeData er hentet
-                localStorage.setItem('visVelgSpillere', JSON.stringify(false));
-                setVisScoreboard(true); // Sett visScoreboard til true når rundeData er hentet
-                localStorage.setItem('visScoreboard', JSON.stringify(true));
-            } else {
-                console.error('Feil ved henting av runde:', await response.json());
-            }
-        } catch (error) {
-            console.error('Feil ved henting av runde:', error);
-        }
-    };
-
-    const oppdaterpoeng = async (spillerId, endring) => {
+    const oppdaterpoeng = (spillerId, endring) => {
         const oppdatertSpillere = spillere.map(spiller => 
             spiller.id === spillerId ? { ...spiller, poeng: spiller.poeng + endring, total: spiller.total + endring } : spiller
         );
         setSpillere(oppdatertSpillere);
-        console.log('Oppdaterte spillere:', oppdatertSpillere);
+    };
 
-        try {
-            const spiller = oppdatertSpillere.find(spiller => spiller.id === spillerId);
-            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${klubbId}/baner/${baneId}/runde/${rundeIndex}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ spillerId: spiller.id, poeng: spiller.poeng, hullNr: nr })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Feil ved oppdatering av runde:', errorData);
-            }
-        } catch (error) {
-            console.error('Feil ved oppdatering av runde:', error);
-        }
+    const nullstillPoeng = () => {
+        const nullstiltSpillere = spillere.map(spiller => ({ ...spiller, poeng: 0 }));
+        setSpillere(nullstiltSpillere);
     };
 
     const endreHull = (retning) => {
-        if(bane.hull[nr + 1] && retning) {
+        if (retning && nr < hull.length - 1) {
             setNr(nr + 1);
-        }
-        else if(bane.hull[nr - 1] && !retning) {
+            nullstillPoeng();
+        } else if (!retning && nr > 0) {
             setNr(nr - 1);
-        }
-    }
-
-    const handleBekreftSpillere = async (valgteSpillere) => {
-        console.log('KlubbID:', klubbId);
-        console.log('Valgte spillere:', valgteSpillere);
-        try {
-            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${klubbId}/baner/${bane._id}/runde`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ spillere: valgteSpillere, hullNr: nr })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log('Response data:', data);
-                setSpillere(valgteSpillere);
-                setRundeIndex(data.rundeIndex); // Sett rundeIndex fra responsen
-                setVisVelgSpillere(false);
-                localStorage.setItem('visVelgSpillere', JSON.stringify(false));
-                setVisScoreboard(true);
-                localStorage.setItem('visScoreboard', JSON.stringify(true));
-            } else {
-                const errorData = await response.json();
-                console.error('Feil ved lagring av spillere:', errorData);
-            }
-        } catch (error) {
-            console.error('Feil ved lagring av spillere:', error);
+            nullstillPoeng();
         }
     };
 
+    const handleBekreftSpillere = (valgteSpillere) => {
+        const spillereMedPoeng = valgteSpillere.map(spiller => ({ ...spiller, poeng: 0, total: 0 }));
+        setSpillere(spillereMedPoeng);
+        setVisVelgSpillere(false);
+        setVisScoreboard(true);
+    };
+
     const handleAvsluttRunde = () => {
+        const nyPoengkort = {
+            spillere: spillere,
+            baneNavn: bane.baneNavn,
+            baneId: baneId
+        };
+        
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/brukere/${bruker.id}/poengkort`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nyPoengkort })
+        }).then((response) => {
+            if (!response.ok) {
+                throw new Error('Feil ved lagring av poengkort');
+            }
+            return response.json();
+        }).catch(error => {
+            console.error('Feil ved lagring av poengkort:', error);
+        });
+
         setVisScoreboard(false);
-        setVisVelgSpillere(true);
+        setVisVelgSpillere(false);
         setVisOppsummering(true);
-    }
+    };
 
     return (
         <div className="innhold flex justify-center bg-gray-200">
@@ -138,7 +94,7 @@ const ScoreBoard = () => {
                 <div className="midtpanel font-bold">
                     {spillere.map(spiller => (
                         <div key={spiller.id} className="spiller flex justify-center items-center my-2 border-b">
-                            <p className="p-5">{spiller.navn}({spiller.total})</p>
+                            <p className="p-5">{spiller.navn} ({spiller.poeng - hull[nr].par})</p>
                             <button onClick={() => oppdaterpoeng(spiller.id, -1)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow px-4 py-2 font-sans">-</button>
                             <p className="p-5">{spiller.poeng}</p>
                             <button onClick={() => oppdaterpoeng(spiller.id, 1)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow px-4 py-2">+</button>
@@ -154,7 +110,7 @@ const ScoreBoard = () => {
                 </div>
             </div>
             )}
-            {visVelgSpillere && <VelgSpillere bane={bane} onBekreftSpillere={handleBekreftSpillere}/>}
+            {visVelgSpillere && <VelgSpillere bane={bane} bruker={bruker} onBekreftSpillere={handleBekreftSpillere}/>}
             {visOppsummering && (
                 <div className="oppsummering bg-white shadow rounded-lg m-8 border p-5">
                     <h2 className="text-center font-bold text-xl mb-4">Oppsummering av runden</h2>

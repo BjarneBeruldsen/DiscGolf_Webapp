@@ -716,6 +716,9 @@
   .border-separate {
     border-collapse: separate;
   }
+  .border-separate {
+    border-collapse: separate;
+  }
   .transform {
     transform: var(--tw-rotate-x) var(--tw-rotate-y) var(--tw-rotate-z) var(--tw-skew-x) var(--tw-skew-y);
   }
@@ -831,6 +834,9 @@
   .border-gray-400 {
     border-color: var(--color-gray-400);
   }
+  .border-gray-400 {
+    border-color: var(--color-gray-400);
+  }
   .border-gray-500 {
     border-color: var(--color-gray-500);
   }
@@ -866,9 +872,6 @@
   }
   .bg-gray-600 {
     background-color: var(--color-gray-600);
-  }
-  .bg-green-800 {
-    background-color: var(--color-green-800);
   }
   .bg-red-500 {
     background-color: var(--color-red-500);
