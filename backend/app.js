@@ -33,7 +33,7 @@ app.use("/Innlogging", nocache());
 app.use("/Utlogging", nocache());   
 app.use("/SletteBruker", nocache()); 
 app.use("/Registrering", nocache());
-app.use("/sjekk-session", nocache());
+//app.use("/sjekk-session", nocache()); Gjør medlemskap treigere som gir mening. 
 
 app.use(cors({
     origin: ["https://disk-applikasjon-39f504b7af19.herokuapp.com", "http://localhost:3000"], 
