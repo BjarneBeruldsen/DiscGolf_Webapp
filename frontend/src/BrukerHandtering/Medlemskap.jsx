@@ -9,7 +9,7 @@ import MittAbonnement from "./Komponenter/MittAbonnement.jsx";
 import HentBruker from "./HentBruker.jsx"; 
 
 const Medlemskap = () => {
-  const { bruker, setBruker, venter } = HentBruker(); //Henter brukerdata fra HentBruker.jsx
+  const { bruker, setBruker } = HentBruker(); //Henter brukerdata fra HentBruker.jsx
   const [valgtKategori, setValgtKategori] = useState("Brukerinnstillinger");
   const [valgtUnderKategori, setValgtUnderKategori] = useState("");
   const [underKategoriOpen, setUnderKategoriOpen] = useState(true);
@@ -42,10 +42,6 @@ const Medlemskap = () => {
     }
     setValgtUnderKategori("");
   };
-
-  if (venter) {
-    return <p className="text-gray-600 text-center">Laster brukerdata...</p>;
-  }
 
   //Design og Styling for menyer og innhold i Medlemskap 
   return (

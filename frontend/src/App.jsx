@@ -28,17 +28,21 @@ import PoengTavler from './KlubbHandtering/Poengtavler';
 import HentBruker from "./BrukerHandtering/HentBruker";
 
 function App() {
-  const [loggetInnBruker, setLoggetInnBruker] = useState(null);
   const { bruker, venter } = HentBruker();
+  const [loggetInnBruker, setLoggetInnBruker] = useState(null);
+  const [sessionLastet, setSessionLastet] = useState(false); 
 
-  useEffect(() => {
-    setLoggetInnBruker(bruker);
-  }, [bruker]); 
-
-  if (venter) {
+//Setter loggetInnBruker til bruker og angir sessionLastet til true når brukeren er lastet og venter er false
+useEffect(() => {
+  if (!venter) {
+    setLoggetInnBruker(bruker);  //Her oppdaterer vi loggetInnBruker med bruker
+    setSessionLastet(true);  //Her setter vi sessionLastet til true fordi brukeren er lastet
+  }
+}, [bruker, venter]); //Kjører når bruker eller venter endres
+  if (!sessionLastet) {
     return <p className="text-center text-gray-700 mt-10">Laster inn...</p>;
   }
-  
+  //Hovedkomponent som håndterer routing og visning av forskjellige sider i applikasjonen
   return (
     <Router>
       <div className="App">
@@ -102,7 +106,6 @@ function App() {
             <Route exact path="/MinePoengtavler">
               <PoengTavler />
             </Route>
-            
             <Route exact path="/Personvern" component={Personvern} />
             <Route exact path="/Sikkerhet" component={Sikkerhet} />
             <Route exact path="/Informasjonskapsler" component={Informasjonskapsler} />

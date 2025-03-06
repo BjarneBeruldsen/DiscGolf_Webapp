@@ -1,36 +1,39 @@
-// Author: Laurent Zogaj
+//Author: Laurent Zogaj
 import { useEffect, useState } from "react";
 
 const HentBruker = () => {
-    const [bruker, setBruker] = useState(null);
-    const [venter, setVenter] = useState(true);
+    const [bruker, setBruker] = useState(null); //Holder på brukerinfo
+    const [venter, setVenter] = useState(true); //Holder på lastestatus
 
+    //Sjekker om brukeren er logget inn
     useEffect(() => {
         const sjekkSession = async () => {
             try {
+                //Henter brukerdata fra sjekk-session i backend
                 const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/sjekk-session`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json" },
-                    credentials: "include",
+                    credentials: "include", 
                 });
-                if (!response.ok) {
+                //Hvis forespørselen er ok setter vi brukerdata
+                if (response.ok) {
+                    const data = await response.json();
+                    setBruker(data.bruker);
+                    console.log("Bruker er logget inn"); 
+                } else {
                     throw new Error("Ingen aktiv session");
                 }
-                const data = await response.json();
-                setBruker(data.bruker); 
-                console.log("Bruker er logget inn"); 
             } catch (error) {
                 console.log("Ingen bruker er logget inn"); 
-                setBruker(null);
+                setBruker(null); 
             } finally {
-                setVenter(false);
+                setVenter(false); 
             }
         };
+        sjekkSession(); //Kaller funksjonen for å sjekke brukerens session
+    }, []); //Gjør som at komponenten kun kjøres en gang når den er lastet inn
 
-        sjekkSession();
-    }, []);
-
-    return { bruker, setBruker, venter };
+    return { bruker, setBruker, venter }; //Returnerer brukerdata og lastestatus
 };
 
 export default HentBruker;
