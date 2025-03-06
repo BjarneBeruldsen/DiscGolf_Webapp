@@ -10,9 +10,13 @@ const BaneListe = (props) => {
     const { bruker, venter } = HentBruker();
 
     const handleClick = (bane) => {
-        console.log('Spill knapp trykket');
-        minne.push(`/ScoreBoard/${bane._id}`); 
-        
+        if(bruker === null) {
+            alert('logginn/registrer deg for å spille');
+            minne.push('/Innlogging');
+        }
+        else {
+            minne.push(`/ScoreBoard/${bane._id}`); 
+        }
     }
 
     return ( 

@@ -16,7 +16,8 @@ const PoengTavler = () => {
     return (
         <div className="poengtavler flex justify-center bg-gray-200">
             <div className="grid grid-cols-1 lg-grid-cols-2 gap-6">
-            {poengTavler && poengTavler.length > 0 ? (
+            {venter && <div>Laster...</div>}
+            {poengTavler && poengTavler.length > 0  ? (
                 poengTavler.map((poengTavle, index) => (
                     <div className="oppsummering bg-white shadow rounded-lg m-8 border p-5" key={index}>
                         <h2 className="text-center font-bold text-xl mb-4">Poengkort fra: {poengTavle.nyPoengkort.baneNavn}</h2>
@@ -45,8 +46,8 @@ const PoengTavler = () => {
                     </div>
                 ))
             ) : (
-                <div className='flex justify-center border'>
-                    <h1>Ingen poengtavler tilgjengelig</h1>
+                <div className='flex justify-center'>
+                    <h1>Ingen poengtavler tilgjengelig...</h1>
                 </div>
             )}
             </div>

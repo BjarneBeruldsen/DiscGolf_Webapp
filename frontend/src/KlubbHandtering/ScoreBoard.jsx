@@ -11,7 +11,7 @@ const ScoreBoard = () => {
     const { bruker, venter } = HentBruker();
     const [hull, setHull] = useState([]);
     const [nr, setNr] = useState(0);
-    const [spillere, setSpillere] = useState([]);
+    const [spillere, setSpillere] = useState([])
     const [visScoreboard, setVisScoreboard] = useState(false);
     const [visVelgSpillere, setVisVelgSpillere] = useState(true);
     const [visOppsummering, setVisOppsummering] = useState(false);
@@ -24,28 +24,47 @@ const ScoreBoard = () => {
 
     const oppdaterpoeng = (spillerId, endring) => {
         const oppdatertSpillere = spillere.map(spiller => 
-            spiller.id === spillerId ? { ...spiller, poeng: spiller.poeng + endring, total: spiller.total + endring } : spiller
+            spiller.id === spillerId ? { ...spiller, poeng: spiller.poeng + endring, total: spiller.total+endring } : spiller
         );
         setSpillere(oppdatertSpillere);
     };
 
-    const nullstillPoeng = () => {
-        const nullstiltSpillere = spillere.map(spiller => ({ ...spiller, poeng: 0 }));
-        setSpillere(nullstiltSpillere);
+    const oppdaterTotal = (retning) => {
+        if (retning) {
+            const oppdatertSpillere = spillere.map(spiller => ({
+                ...spiller,
+                poeng: 0,
+                total: Number(spiller.total) - Number(hull[nr + 1] ? hull[nr + 1].par : 0) //Number ble lagt til ved hjelp av Copilot
+            }));
+            setSpillere(oppdatertSpillere);
+        } else {
+            const oppdatertSpillere = spillere.map(spiller => ({
+                ...spiller,
+                poeng: 0,
+                total: Number(spiller.total) + Number(hull[nr] ? hull[nr].par : 0)
+            }));
+            setSpillere(oppdatertSpillere);
+        }
     };
+
 
     const endreHull = (retning) => {
         if (retning && nr < hull.length - 1) {
-            setNr(nr + 1);
-            nullstillPoeng();
+            setNr(nr + 1); 
+            if(nr <= hull.length - 1) {
+                oppdaterTotal(retning);
+            }
+            
         } else if (!retning && nr > 0) {
             setNr(nr - 1);
-            nullstillPoeng();
+            if(nr >= 1) {
+                oppdaterTotal(retning);
+            }
         }
     };
 
     const handleBekreftSpillere = (valgteSpillere) => {
-        const spillereMedPoeng = valgteSpillere.map(spiller => ({ ...spiller, poeng: 0, total: 0 }));
+        const spillereMedPoeng = valgteSpillere.map(spiller => ({ ...spiller, poeng: 0, total: 0-hull[nr].par }));
         setSpillere(spillereMedPoeng);
         setVisVelgSpillere(false);
         setVisScoreboard(true);
@@ -94,7 +113,7 @@ const ScoreBoard = () => {
                 <div className="midtpanel font-bold">
                     {spillere.map(spiller => (
                         <div key={spiller.id} className="spiller flex justify-center items-center my-2 border-b">
-                            <p className="p-5">{spiller.navn} ({spiller.poeng - hull[nr].par})</p>
+                            <p className="p-5">{spiller.navn} ({spiller.total})</p>
                             <button onClick={() => oppdaterpoeng(spiller.id, -1)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow px-4 py-2 font-sans">-</button>
                             <p className="p-5">{spiller.poeng}</p>
                             <button onClick={() => oppdaterpoeng(spiller.id, 1)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow px-4 py-2">+</button>

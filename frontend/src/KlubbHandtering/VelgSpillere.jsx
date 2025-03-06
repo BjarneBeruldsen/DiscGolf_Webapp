@@ -15,7 +15,7 @@ const VelgSpillere = (props) => {
                 // Sjekk om brukeren allerede er lagt til
                 const eksisterendeSpiller = prevSpillere.find(spiller => spiller.id === bruker.id);
                 if (!eksisterendeSpiller) {
-                    return [...prevSpillere, { id: bruker.id, navn: bruker.bruker, poeng: 0, total: 0 }];
+                    return [...prevSpillere, { id: bruker.id, navn: bruker.brukernavn, poeng: 0, total: 0 }];
                 }
                 return prevSpillere;
             });
