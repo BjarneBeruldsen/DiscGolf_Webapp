@@ -1,43 +1,30 @@
 //Author: Laurent Zogaj
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import SletteBruker from "../SletteBruker.jsx";
 
 const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
   const [visSlettBoks, setVisSlettBoks] = useState(false);
-  const [brukernavnInput, setBrukernavnInput] = useState("");
+  const [brukerInput, setBrukerInput] = useState(""); 
   const [passord, setPassord] = useState("");
   const [melding, setMelding] = useState("");
-  const minne = useHistory();
+  const history = useHistory();
 
-  //Sletting av registrert bruker
+  //Sletting av registrert bruker som vi henter fra SletteBruker.jsx
   const handleSlettBruker = async (e) => {
     e.preventDefault();
     setMelding("");
-    if (brukernavnInput.trim().toLowerCase() !== bruker.brukernavn.toLowerCase()) {
-      setMelding("Brukernavnet stemmer ikke.");
+    if (!brukerInput.trim() || !passord.trim()) {
+      setMelding("Fyll inn brukernavn/e-post og passord.");
       return;
     }
-    try {
-      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/SletteBruker`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ brukernavn: bruker.brukernavn, passord }),
-      });
-      const data = await respons.json();
-      if (respons.ok) {
-        setTimeout(() => {
-          setBruker(null);
-          minne.push("/Hjem");
-          window.location.reload();
-      }, 1000); 
-      return;
-  }
-      setMelding(data.error || "Ukjent feil oppstod.");
-    } catch (error) {
-      setMelding("Uventet feil oppstod");
-    }
+    await SletteBruker(brukerInput, passord, setBruker, setMelding, history);
   };
+  //Endring av brukerinformasjon under her:
+
+
+
+
   //Andre funksjoner under her:
 
 
@@ -90,9 +77,9 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
           <p className="text-gray-600 mb-4 text-center">Denne handlingen kan ikke angres!</p>
           <input
             type="text"
-            placeholder="Skriv inn brukernavn"
-            value={brukernavnInput}
-            onChange={(e) => setBrukernavnInput(e.target.value)}
+            placeholder="Skriv inn brukernavn eller epost"
+            value={brukerInput}
+            onChange={(e) => setBrukerInput(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded mb-3"
           />
           <input

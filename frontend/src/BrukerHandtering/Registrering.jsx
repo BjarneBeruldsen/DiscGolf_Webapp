@@ -11,6 +11,7 @@ const Registrering = () => {
     const [melding, setMelding] = useState("");
     const minne = useHistory(); 
 
+    //Skjemafunksjon for registrering
     const handleSubmit = async (event) => {         //https://react-hook-form.com/docs/useform/handlesubmit
         event.preventDefault();
         setMelding("");
@@ -35,6 +36,7 @@ const Registrering = () => {
             return;
         }
 
+        //Kontakter backend for registrering
         try {
             const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Registrering`, {
                 method: "POST",
@@ -42,12 +44,12 @@ const Registrering = () => {
                 body: JSON.stringify({ brukernavn, epost, passord }),
                 credentials: "include",
             });
-
+            //Henter respons fra backend
             const data = await respons.json();
 
             if (!respons.ok) {
                 setMelding(data.errors ? data.errors.map(err => err.msg).join(", ") : data.error || "Registrering feilet.");
-            } else {
+            } else { //Registrering vellykket bruker er registrert
                 console.log("Registrering vellykket!");
                 setMelding("Registrering vellykket! Du blir omdirigert til innlogging...");
                 setTimeout(() => {
@@ -59,7 +61,7 @@ const Registrering = () => {
             console.error("Registreringsfeil:", error);
         }
     };
-
+//Design og Styling for registreringsskjema
     return (
         <header>
         <div 

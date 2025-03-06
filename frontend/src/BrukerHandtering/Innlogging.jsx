@@ -10,6 +10,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
   const [melding, setMelding] = useState("");
   const minne = useHistory(); 
 
+  //Skjemafunksjon for innlogging
   const handleSubmit = async (e) => {                   //https://react-hook-form.com/docs/useform/handlesubmit
     e.preventDefault();
     setMelding("");
@@ -22,6 +23,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
     const erEpost = epostRegex.test(brukernavn);
     const erBrukernavn = brukernavnRegex.test(brukernavn);
 
+    //Sjekker om brukernavn eller epost er gyldig i henhold til validering 
     if (!erEpost && !erBrukernavn) {
       setMelding("Skriv inn enten brukernavn (3-15 tegn) eller en gyldig e-post.");
       return;
@@ -30,6 +32,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
       setMelding("Passord må være minst 8 tegn og ha ett spesialtegn.");
       return;
     }
+    //Kontakter backend for innlogging
     try {
       const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Innlogging`, {
         method: "POST",
@@ -37,11 +40,12 @@ const Innlogging = ({ setLoggetInnBruker }) => {
         body: JSON.stringify({ brukernavn, passord }),
         credentials: "include",
       });
+      //Henter respons fra backend
       const data = await respons.json();
       if (!respons.ok) {
         setMelding(data.errors ? data.errors.map(err => err.msg).join(", ") : data.error || "Innlogging feilet.");
       } else {
-        setLoggetInnBruker(data.bruker);
+        setLoggetInnBruker(data.bruker); //Setter bruker som er logget inn
         setMelding("Innlogging vellykket!");
         console.log("Innlogging vellykket!");
         setTimeout(() => {
@@ -54,7 +58,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
       setMelding("Feil ved innlogging. Prøv igjen.");
     }
   };
-
+//Styling og design for innloggingsskjema
   return (
     <header>
       <div 
