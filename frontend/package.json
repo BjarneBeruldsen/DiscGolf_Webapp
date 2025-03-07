@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mapbox/mapbox-gl-directions": "^4.3.1",
     "@tailwindcss/cli": "^4.0.1",
     "cra-template": "1.2.0",
     "mapbox-gl": "^3.10.0",
