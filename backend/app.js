@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const nocache = require('nocache');
+const compression = require('compression');
 const rateLimit = require("express-rate-limit");
 const { body, validationResult } = require('express-validator');
 const session = require('express-session');
@@ -23,6 +24,11 @@ const app = express();
 app.set("trust proxy", 1); //Heroku kjører proxy og må settes til trust for at ulike ting skal fungere ordentlig som express-rate-limit (IP) og session
 
 app.disable('x-powered-by'); //Disabled for sikkerhet da man kan se hvilken teknologi som brukes 
+
+//https://expressjs.com/en/advanced/best-practice-performance.html
+//https://github.com/expressjs/compression#readme
+//Brukes for gzip komprimering. Fant ut av dette med chrome dev tools og lighthouse, og det ble da anbefalt å bruke dette for å øke ytelsen
+app.use(compression());
 
 //NoCache Sikrer at nettleserer ikke lagrer cache for sensitive data/sider
 //https://github.com/helmetjs/nocache
@@ -341,7 +347,7 @@ app.get('/baner/:id', async (req, res) => {
 //Brukerhåndterings ruter
 
 //Rute for å lagre poengkort for en bruker
-app.post('/brukere/:id/poengkort', async (req, res) => {
+app.post('/brukere/:id/poengkort', beskyttetRute, async (req, res) => {
     if(ObjectId.isValid(req.params.id) === false) {
         return res.status(400).json({error: 'Ugyldig dokument-id'});
     } else {
@@ -486,7 +492,7 @@ app.post("/Innlogging", loggeInnStopp, innloggingValidering, async (req, res, ne
 });
 
 //Utlogging
-app.post("/Utlogging", async (req, res) => {
+app.post("/Utlogging", beskyttetRute, async (req, res) => {
     try {
         //Sjekker om brukeren er logget inn
         if (!req.isAuthenticated()) {
@@ -534,7 +540,7 @@ const sletteValidering = [
         .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.")
 ];
 //Sletting av bruker
-app.post("/SletteBruker", sletteValidering, async (req, res) => {
+app.post("/SletteBruker", beskyttetRute, sletteValidering, async (req, res) => {
     if (!req.isAuthenticated()) {
         return res.status(401).json({ error: "Ingen aktiv session" });
     }
@@ -616,6 +622,14 @@ app.get("/sjekk-session", async (req, res) => {
     return res.status(401).json({ error: "Ingen aktiv session" });
 });
 
+//Sjekk for å beskytte ulike api-ruter
+function beskyttetRute(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next(); //Brukeren er logget inn
+    }
+    res.status(401).json({ error: "Du må være logget inn for å få tilgang." });
+}
+
 //Andre ruter
 //Tilbakestille testdata fra klubb collection 
 app.delete('/tommeTestdata', (req, res) => {
@@ -632,4 +646,3 @@ app.delete('/tommeTestdata', (req, res) => {
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
-
