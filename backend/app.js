@@ -56,19 +56,18 @@ app.use(
           defaultSrc: ["'self'"],
           imgSrc: [
             "'self'",
+            "data:",  
             "https://images.unsplash.com",
             "https://zewailcity.edu.eg",
             "https://zcadminpanel.zewailcity.edu.eg",
           ],
-          frameSrc: [
-            "'self'",
-            "https://www.yr.no", 
-          ],
+          frameSrc: ["'self'", "https://www.yr.no"],
+          workerSrc: ["'self'", "blob:"],
           upgradeInsecureRequests: [],
         },
       },
     })
-  );
+);
 
 app.use(express.json());
 
