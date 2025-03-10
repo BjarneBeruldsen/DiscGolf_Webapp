@@ -56,13 +56,31 @@ app.use(
           defaultSrc: ["'self'"],
           imgSrc: [
             "'self'",
-            "data:",  
             "https://images.unsplash.com",
-            "https://zewailcity.edu.eg",
-            "https://zcadminpanel.zewailcity.edu.eg",
           ],
-          frameSrc: ["'self'", "https://www.yr.no"],
-          workerSrc: ["'self'", "blob:"],
+          frameSrc: [
+            "'self'",
+            "https://www.yr.no",
+          ],
+          workerSrc: [
+            "'self'",
+            "blob:",
+          ],
+          connectSrc: [
+            "'self'",
+            "https://api.mapbox.com",
+            "https://events.mapbox.com",
+          ],
+          styleSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            "https://api.mapbox.com",
+          ],
+          scriptSrc: [
+            "'self'",
+            "https://api.mapbox.com",
+            "'unsafe-eval'",
+          ],
           upgradeInsecureRequests: [],
         },
       },
