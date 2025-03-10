@@ -1,7 +1,10 @@
 // Author: Bjarne Hovd Beruldsen
 import { useState } from 'react';
 import { validering } from './validation';
-
+import React, { useEffect, useRef } from "react";
+import mapboxgl from "mapbox-gl";
+import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions"; // Directions plugin
+import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css"; // Directions plugin CSS
 
 
 const LagBane = ({ klubbId, onBaneLagtTil }) => {
@@ -15,7 +18,8 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
     const [errorMelding, setErrorMelding] = useState('');
     const [hullVisning, setHullVisning] = useState(true);
     const [baneVisning, setBaneVisning] = useState(false);
-  
+    const mapContainerRef = useRef(null);
+    const[posisjon, setPosisjon] = useState({latitude:null, longitude:null});
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -63,8 +67,30 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
     const handleVisning = (seksjon) => {
         setHullVisning(seksjon === 'hull');
         setBaneVisning(seksjon === 'bane');
-    }
-    
+    }    
+        useEffect(() => {
+          
+          mapboxgl.accessToken = "pk.eyJ1IjoidW5rbm93bmdnc3MiLCJhIjoiY203eGhjdXBzMDUwaDJxc2RidXgwbjBqeSJ9.wlnVO6sI2-cY5Tx8uYv_XQ";          
+          const map = new mapboxgl.Map({
+            container: mapContainerRef.current,
+            style: "mapbox://styles/mapbox/satellite-streets-v12",
+            center: [9.059,59.409 ],
+            zoom: 15,
+          })
+          map.on("click", (e) => {
+            
+            setPosisjon({
+              latitude: e.lngLat.lat,  
+              longitude: e.lngLat.lng, 
+            });
+            console.log("posisjon:" , e.lngLat.lat,e.lngLat.lng, );
+          });
+          return () => {
+            map.remove();
+            map.off("click");
+          
+          };
+        }, []);
 
     return (
         <div className="lagbane-form mt-8 sm:mx-auto sm:w-full sm:max-w-md form-container flex justify-center">
@@ -105,8 +131,9 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                         <label className='block font-medium mt-2'>
                             Start og sluttposisjon:
                         </label>
-                       
-
+                        <div>
+                        <div ref={mapContainerRef} className="w-[70vh] h-[60vh]" />
+                        </div>
 
                         <div className='flex items-center justify-between border rounded-lg px-4 py-2 mt-4'>
                             <label className='block font-medium mt-2'>
