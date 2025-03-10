@@ -64,6 +64,8 @@ app.use(
             "https://*.tiles.mapbox.com",
             "https://*.mapbox.com",
             "https://api.mapbox.com/v4/",
+            "https://api.mapbox.com/v4/mapbox.satellite/",
+            "https://api.mapbox.com/v4/mapbox.mapbox-streets-v8/",
           ],
           styleSrc: ["'self'", "'unsafe-inline'", "https://api.mapbox.com"],
           scriptSrc: ["'self'", "https://api.mapbox.com", "'unsafe-eval'"],
