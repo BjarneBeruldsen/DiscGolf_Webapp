@@ -3,8 +3,6 @@ import { useState } from 'react';
 import { validering } from './validation';
 import React, { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
-import MapboxDirections from "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions"; // Directions plugin
-import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css"; // Directions plugin CSS
 
 
 const LagBane = ({ klubbId, onBaneLagtTil }) => {
