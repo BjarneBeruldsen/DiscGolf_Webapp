@@ -54,33 +54,19 @@ app.use(
         useDefaults: true,
         directives: {
           defaultSrc: ["'self'"],
-          imgSrc: [
-            "'self'",
-            "https://images.unsplash.com",
-          ],
-          frameSrc: [
-            "'self'",
-            "https://www.yr.no",
-          ],
-          workerSrc: [
-            "'self'",
-            "blob:",
-          ],
+          imgSrc: ["'self'", "data:", "https://images.unsplash.com"],
+          frameSrc: ["'self'", "https://www.yr.no"],
+          workerSrc: ["'self'", "blob:"],
           connectSrc: [
             "'self'",
             "https://api.mapbox.com",
             "https://events.mapbox.com",
+            "https://*.tiles.mapbox.com",
+            "https://*.mapbox.com",
+            "https://api.mapbox.com/v4/",
           ],
-          styleSrc: [
-            "'self'",
-            "'unsafe-inline'",
-            "https://api.mapbox.com",
-          ],
-          scriptSrc: [
-            "'self'",
-            "https://api.mapbox.com",
-            "'unsafe-eval'",
-          ],
+          styleSrc: ["'self'", "'unsafe-inline'", "https://api.mapbox.com"],
+          scriptSrc: ["'self'", "https://api.mapbox.com", "'unsafe-eval'"],
           upgradeInsecureRequests: [],
         },
       },
