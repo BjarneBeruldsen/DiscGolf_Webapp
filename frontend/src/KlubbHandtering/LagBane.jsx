@@ -4,6 +4,9 @@ import { validering } from './validation';
 import React, { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
+import 'mapbox-gl/dist/mapbox-gl.css';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 
 
 const LagBane = ({ klubbId, onBaneLagtTil }) => {
@@ -84,9 +87,20 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
             });
             console.log("posisjon:" , e.lngLat.lat,e.lngLat.lng, );
           });
+
+
+          map.addControl(
+            new MapboxGeocoder({
+              accessToken: mapboxgl.accessToken,
+              mapboxgl: mapboxgl
+            })
+          );
+
           return () => {
             map.remove();
             map.off("click");
+
+
           
           };
         }, []);
