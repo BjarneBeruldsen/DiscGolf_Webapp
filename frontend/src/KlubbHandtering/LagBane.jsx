@@ -69,41 +69,85 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
     const handleVisning = (seksjon) => {
         setHullVisning(seksjon === 'hull');
         setBaneVisning(seksjon === 'bane');
-    }    
-        useEffect(() => {
-          
-          mapboxgl.accessToken = "pk.eyJ1IjoidW5rbm93bmdnc3MiLCJhIjoiY203eGhjdXBzMDUwaDJxc2RidXgwbjBqeSJ9.wlnVO6sI2-cY5Tx8uYv_XQ";          
-          const map = new mapboxgl.Map({
-            container: mapContainerRef.current,
-            style: "mapbox://styles/mapbox/satellite-streets-v12",
-            center: [9.059,59.409 ],
-            zoom: 15,
-          })
-          map.on("click", (e) => {
+    }  
+    useEffect(() => {
+        if (!mapContainerRef.current) return;
+      
+        mapboxgl.accessToken = "pk.eyJ1IjoidW5rbm93bmdnc3MiLCJhIjoiY203eGhjdXBzMDUwaDJxc2RidXgwbjBqeSJ9.wlnVO6sI2-cY5Tx8uYv_XQ";
+        const map = new mapboxgl.Map({
+         container: mapContainerRef.current,
+         style: "mapbox://styles/mapbox/satellite-streets-v12",
+         center: [9.059,59.409 ],
+         zoom: 15,
+        });
+      
+        let startPunkt = null;
+      
+        map.on("click", (e) => {
+          const clickedPos = [e.lngLat.lng, e.lngLat.lat];
+      
+          if (!startPunkt) {
             
-            setPosisjon({
-              latitude: e.lngLat.lat,  
-              longitude: e.lngLat.lng, 
-            });
-            console.log("posisjon:" , e.lngLat.lat,e.lngLat.lng, );
-          });
+            startPunkt = clickedPos;
+            new mapboxgl.Marker({ color: "gray" })
+            .setLngLat(startPunkt)
+            .addTo(map)
+            
+          } else {
+           
+            const stopPoint = clickedPos;
+            new mapboxgl.Marker({ color: "green" })
+            .setLngLat(stopPoint)
+            .addTo(map);
 
-
-          map.addControl(
-            new MapboxGeocoder({
-              accessToken: mapboxgl.accessToken,
-              mapboxgl: mapboxgl
-            })
-          );
-
-          return () => {
-            map.remove();
-            map.off("click");
-
-
+            if (map.getSource("hole-path")){
+              map.removeLayer("hole-path");
+              map.removeSource("hole-path");
+            }
+      
           
-          };
-        }, []);
+            map.addSource("hole-path",{
+              type: "geojson",
+              data: {
+                type: "Feature",
+                geometry: {
+                  type: "LineString",
+                  coordinates: [startPunkt, stopPoint],
+                },
+              },
+            });
+      
+            map.addLayer({
+              id: "hole-path",
+              type: "line",
+              source: "hole-path",
+              layout: {
+                "line-join": "round",
+                "line-cap": "round",
+              },
+              paint: {
+                "line-color": "#ff7f00",
+                "line-width": 4,
+              },
+            });
+      
+           
+            startPunkt = null;
+          }
+        });
+      
+        map.addControl(
+          new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl
+          })
+        );
+        
+        return () => {
+          map.remove();
+          map.off("click");
+        };
+      }, []);
 
     return (
         <div className="lagbane-form mt-8 sm:mx-auto sm:w-full sm:max-w-md form-container flex justify-center">
