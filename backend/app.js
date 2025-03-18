@@ -654,3 +654,37 @@ app.get('*', (req, res) => {
 });
 
 
+const transporter = nodemailer.createTransport({
+    service: 'gmail', 
+    auth: {
+      user: process.env.EPOST_BRUKER, 
+      pass: process.env.EPOST_PASSORD, 
+    },
+  });
+  
+  // Behandle skjemainnsendinger
+  app.post('/KontaktOss', (req, res) => {
+    const { navn, epost, melding } = req.body;
+  
+    // Validering av input (enkel sjekk)
+    if (!navn || !epost || !melding) {
+      return res.status(400).json({ melding: 'Alle felt må fylles ut' });
+    }
+  
+    const mailOptions = {
+      from: process.env.EPOST_BRUKER, 
+      to: process.env.EPOST_BRUKER, 
+      subject: `Ny melding fra ${navn}`, 
+      text: `Navn: ${navn}\nE-post: ${epost}\nMelding: ${melding}`,
+    };
+  
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Feil ved sending av e-post:', error);
+        res.status(500).json({ melding: 'Feil ved sending av e-post' });
+      } else {
+        console.log('E-post sendt:', info.response);
+        res.status(200).json({ melding: 'E-post sendt vellykket' });
+      }
+    });
+  });
