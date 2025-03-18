@@ -6,12 +6,11 @@ const KontaktOss = () => {
     navn: "",
     epost: "",
     melding: "",
-  });
-
+  });  
+  
   
   const [status, setStatus] = useState("Send");
 
- 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setEpostForm({
@@ -20,30 +19,40 @@ const KontaktOss = () => {
         });
   };
 
-  
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus("Sender...");
-   // console.log(epostForm); 
-    
-    
-    setTimeout(() => {
-      setStatus("Sendt");
-      setEpostForm({
-        navn: '',
-        epost: '',
-        melding: '',
-    });
 
-    setTimeout(() => {
-        setStatus("Send");
-      }, 3000);
-    
-    }, 2000);
-    
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/KontaktOss`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(epostForm),
+      });
 
+      if (response.ok) {
+        setStatus("Sendt");
+        setEpostForm({
+          navn: '',
+          epost: '',
+          melding: '',
+        });
 
-};
+        setTimeout(() => {
+          setStatus("Send");
+        }, 3000);
+      } else {
+        throw new Error('Kunne ikke sende melding');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setStatus("Error");
+    }
+  };
  
 
   return (
