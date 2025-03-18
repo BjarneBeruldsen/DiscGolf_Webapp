@@ -17,6 +17,7 @@ const { ObjectId } = require('mongodb');
 const PORT = process.env.PORT || 8000;
 const path = require('path');
 require('dotenv').config();
+const nodemailer = require('nodemailer');
 
 const app = express();
 
@@ -92,7 +93,7 @@ app.use(session({
     cookie: {
         secure: process.env.NODE_ENV === 'production', //Må være true for at cookies skal fungere på nettsiden og false dersom siden skal funke lokalt, eller settes til production
         httpOnly: process.env.NODE_ENV === 'production', //Må være false når man tester lokalt og true ellers. Eller settes til production
-        sameSite: process.env.NODE_ENV === 'production' ? "strict" : "lax", //Må være strict for at cookies skal fungere på nettsiden, sett den til "lax" for at siden skal funke lokalt
+        sameSite: process.env.NODE_ENV === 'production' ? "lax" : "lax", //Må være strict for at cookies skal fungere på nettsiden, sett den til "lax" for at siden skal funke lokalt
         maxAge: 1000 * 60 * 60 * 24,    //1 dag
     }
 }));
@@ -651,3 +652,40 @@ app.delete('/tommeTestdata', (req, res) => {
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
+
+
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail', 
+    auth: {
+      user: process.env.EPOST_BRUKER, 
+      pass: process.env.EPOST_PASSORD, 
+    },
+  });
+  
+  // Behandle skjemainnsendinger
+  app.post('/KontaktOss', (req, res) => {
+    const { navn, epost, melding } = req.body;
+  
+    // Validering av input (enkel sjekk)
+    if (!navn || !epost || !melding) {
+      return res.status(400).json({ melding: 'Alle felt må fylles ut' });
+    }
+  
+    const mailOptions = {
+      from: process.env.EPOST_BRUKER, 
+      to: process.env.EPOST_BRUKER, 
+      subject: `Ny melding fra ${navn}`, 
+      text: `Navn: ${navn}\nE-post: ${epost}\nMelding: ${melding}`,
+    };
+  
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error('Feil ved sending av e-post:', error);
+        res.status(500).json({ melding: 'Feil ved sending av e-post' });
+      } else {
+        console.log('E-post sendt:', info.response);
+        res.status(200).json({ melding: 'E-post sendt vellykket' });
+      }
+    });
+  });
