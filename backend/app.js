@@ -1,4 +1,4 @@
-//Authors: Bjarne Beruldsen & Laurent Zogaj
+//Authors: Bjarne Beruldsen, Laurent Zogaj & Abdinasir Ali
 
 const express = require('express');
 const cors = require('cors');
@@ -11,13 +11,13 @@ const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require ('bcryptjs');
+const nodemailer = require('nodemailer');
 const MongoStore = require('connect-mongo');
 const { kobleTilDB, getDb } = require('./db'); 
 const { ObjectId } = require('mongodb');    
 const PORT = process.env.PORT || 8000;
 const path = require('path');
 require('dotenv').config();
-const nodemailer = require('nodemailer');
 
 const app = express();
 
@@ -55,7 +55,13 @@ app.use(
         useDefaults: true,
         directives: {
           defaultSrc: ["'self'"],
-          imgSrc: ["'self'", "data:", "https://images.unsplash.com"],
+          imgSrc: [
+            "'self'", 
+            "data:", 
+            "https://images.unsplash.com", 
+            "https://zewailcity.edu.eg",
+            "https://zcadminpanel.zewailcity.edu.eg"
+          ],
           frameSrc: ["'self'", "https://www.yr.no"],
           workerSrc: ["'self'", "blob:"],
           connectSrc: [
@@ -602,6 +608,8 @@ app.post("/SletteBruker", beskyttetRute, sletteValidering, async (req, res) => {
 
 
 
+//Andre ruter
+
 //Sjekk av session
 app.get("/sjekk-session", async (req, res) => {
     //Sjekker om brukeren er logget inn
@@ -636,7 +644,6 @@ function beskyttetRute(req, res, next) {
     res.status(401).json({ error: "Du må være logget inn for å få tilgang." });
 }
 
-//Andre ruter
 //Tilbakestille testdata fra klubb collection 
 app.delete('/tommeTestdata', (req, res) => {
     db.collection('Klubb').deleteMany({})
@@ -648,12 +655,7 @@ app.delete('/tommeTestdata', (req, res) => {
         });
 });
 
-// Håndter alle andre ruter med React Router
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
-});
-
-
+//Kontaktskjema
 const transporter = nodemailer.createTransport({
     service: 'gmail', 
     auth: {
@@ -688,3 +690,8 @@ const transporter = nodemailer.createTransport({
       }
     });
   });
+
+//Håndter alle andre ruter med React Router
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+});
