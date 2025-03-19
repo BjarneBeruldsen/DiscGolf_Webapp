@@ -1,13 +1,19 @@
 // Author: Bjarne Hovd Beruldsen
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import HentBruker from "../BrukerHandtering/HentBruker";
+import mapboxgl from "mapbox-gl";
+import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
+import 'mapbox-gl/dist/mapbox-gl.css';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+
 
 const BaneListe = (props) => {
     const baner = props.baner;
     const minne = useHistory();
     const { bruker, venter } = HentBruker();
+    const mapContainerRef = useRef(null);
 
     const handleClick = (bane) => {
         if(bruker === null) {
@@ -18,6 +24,17 @@ const BaneListe = (props) => {
             minne.push(`/ScoreBoard/${bane._id}`); 
         }
     }
+    useEffect(() => {
+        if (!mapContainerRef.current) return;
+      
+        mapboxgl.accessToken = "pk.eyJ1IjoidW5rbm93bmdnc3MiLCJhIjoiY203eGhjdXBzMDUwaDJxc2RidXgwbjBqeSJ9.wlnVO6sI2-cY5Tx8uYv_XQ";
+        const map = new mapboxgl.Map({
+         container: mapContainerRef.current,
+         style: "mapbox://styles/mapbox/satellite-streets-v12",
+         center: [9.059,59.409 ],
+         zoom: 15,
+    })
+})
 
     return ( 
         <div>
@@ -40,6 +57,10 @@ const BaneListe = (props) => {
                                         <div className="beskrivelse pr-4 wrap">
                                             <p>{bane.beskrivelse}</p>
                                         </div>
+                                        <iframe src="https://www.yr.no/nb/innhold/1-43228/card.html" frameborder="0"
+                                        className="w-full h-[362px] pointer-events-none"
+                                        ></iframe>
+                                        <div ref={mapContainerRef} className="w-[50vh] h-[40vh]" />
                                         <div className="knapp">
                                             <button type="submit" onClick={() => handleClick(bane)} className="py-2 px-2 bg-gray-500 rounded-lg text-sm text-white mt-2 hover:bg-gray-400">Spill</button>
                                         </div>

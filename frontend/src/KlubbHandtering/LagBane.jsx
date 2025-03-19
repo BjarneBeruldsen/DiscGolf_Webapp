@@ -135,14 +135,20 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
             startPunkt = null;
           }
         });
-      
-        map.addControl(
-          new MapboxGeocoder({
+        const geocoder = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
             mapboxgl: mapboxgl
-          })
+          }
         );
+        map.addControl(geocoder);
         
+        let lokasjon = null;
+
+        geocoder.on('result', function (e) {
+            lokasjon = e.result.place_name;
+            console.log("Navn på sted:", lokasjon); 
+        });
+
         return () => {
           map.remove();
           map.off("click");
