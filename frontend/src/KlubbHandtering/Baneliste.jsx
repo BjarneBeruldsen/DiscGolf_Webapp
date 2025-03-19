@@ -57,6 +57,9 @@ const BaneListe = (props) => {
                                         <div className="beskrivelse pr-4 wrap">
                                             <p>{bane.beskrivelse}</p>
                                         </div>
+                                        <iframe src="https://www.yr.no/nb/innhold/1-43228/card.html" frameborder="0"
+                                        className="w-full h-[362px] pointer-events-none"
+                                        ></iframe>
                                         <div ref={mapContainerRef} className="w-[50vh] h-[40vh]" />
                                         <div className="knapp">
                                             <button type="submit" onClick={() => handleClick(bane)} className="py-2 px-2 bg-gray-500 rounded-lg text-sm text-white mt-2 hover:bg-gray-400">Spill</button>
