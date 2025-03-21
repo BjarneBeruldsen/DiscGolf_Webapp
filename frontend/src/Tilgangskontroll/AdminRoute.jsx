@@ -1,7 +1,21 @@
 //Author: Severin Waller Sørensen
 
-// TBC. Basically bare en merge-test
+import React from "react";
+import { Route, Redirect } from "react-router-dom";
 
-// if (!brukerLoggetInn || brukerLoggetInn.rolle !== "admin") {...
+const AdminRoute = ({ component: Component, loggetInnBruker, ...rest }) => {
+    return (
+    <Route
+      {...rest}
+      render={(props) =>
+        loggetInnBruker && loggetInnBruker.rolle === "admin" ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to="/Innlogging" />
+        )
+      }
+    />
+  );
+};
 
-// hvis brukeren er admin ...
+export default AdminRoute;

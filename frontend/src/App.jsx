@@ -1,4 +1,4 @@
-//Authors: Bjarne Beruldsen, Abdinasir Ali & Laurent Zogaj
+//Authors: Bjarne Beruldsen, Abdinasir Ali, Laurent Zogaj & Severin Waller Sørensen
 
 import React, { useState, useEffect } from 'react';
 import LagKlubb from './KlubbHandtering/LagKlubb';
@@ -26,6 +26,8 @@ import KontaktOss from './_components/KontaktOss';
 import OmOss from './_components/OmOss';
 import PoengTavler from './KlubbHandtering/Poengtavler';
 import HentBruker from "./BrukerHandtering/HentBruker";
+import AdminRoute from "./Tilgangskontroll/AdminRoute";
+import AdminDashboard from './Admin/AdminDashboard';
 
 function App() {
   const { bruker, venter } = HentBruker();
@@ -109,7 +111,14 @@ useEffect(() => {
             <Route exact path="/Personvern" component={Personvern} />
             <Route exact path="/Sikkerhet" component={Sikkerhet} />
             <Route exact path="/Informasjonskapsler" component={Informasjonskapsler} />
-            <Route exact path="/KontaktOss" component={KontaktOss} />
+            <Route exact path="/KontaktOss" component={KontaktOss} /> 
+             {/* AdminRoute for AdminDashboard */}
+            <AdminRoute
+              exact
+              path="/AdminDashboard"
+              component={AdminDashboard}
+              loggetInnBruker={loggetInnBruker}
+            />
           </Switch>
           <Footer />
         </div>

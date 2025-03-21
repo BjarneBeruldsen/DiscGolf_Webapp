@@ -489,7 +489,8 @@ app.post("/Innlogging", loggeInnStopp, innloggingValidering, async (req, res, ne
             const brukerUtenPassord = { 
                 id: bruker._id.toString(), 
                 brukernavn: bruker.brukernavn,
-                epost: bruker.epost 
+                epost: bruker.epost,
+                rolle: bruker.rolle 
             };
             //Logging
             console.log(`Bruker logget inn: ${brukerUtenPassord.brukernavn}, e-post: ${brukerUtenPassord.epost}`);
@@ -626,6 +627,7 @@ app.get("/sjekk-session", async (req, res) => {
                     id: bruker._id,
                     brukernavn: bruker.brukernavn,
                     epost: bruker.epost,
+                    rolle: bruker.rolle,
                     poengkort: bruker.poengkort //Legg til poengkort her
                 },
             });
