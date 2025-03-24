@@ -164,7 +164,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                         <h2>Hull: { hullNr }</h2>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="bg-white py-8 px-6 shadow rounded-lg sm:px-10 mt-4">
+                    <form onSubmit={handleSubmit} className="bg-white py-8 px-6 shadow rounded-lg sm:px-10 mt-4 md:w-150 w-100">
                         <label className='block font-medium mt-2'>
                             Avstand:
                         </label>
@@ -195,7 +195,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                             Start og sluttposisjon:
                         </label>
                         <div>
-                        <div ref={mapContainerRef} className="w-[70vh] h-[60vh]" />
+                        <div ref={mapContainerRef} className="w-full h-100" />
                         </div>
 
                         <div className='flex items-center justify-between border rounded-lg px-4 py-2 mt-4'>

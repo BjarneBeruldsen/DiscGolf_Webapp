@@ -632,11 +632,8 @@
   .h-28 {
     height: calc(var(--spacing) * 28);
   }
-  .h-\[40vh\] {
-    height: 40vh;
-  }
-  .h-\[60vh\] {
-    height: 60vh;
+  .h-100 {
+    height: calc(var(--spacing) * 100);
   }
   .h-\[362px\] {
     height: 362px;
@@ -671,11 +668,8 @@
   .w-85 {
     width: calc(var(--spacing) * 85);
   }
-  .w-\[50vh\] {
-    width: 50vh;
-  }
-  .w-\[70vh\] {
-    width: 70vh;
+  .w-100 {
+    width: calc(var(--spacing) * 100);
   }
   .w-\[470px\] {
     width: 470px;
@@ -1216,6 +1210,16 @@
   .sm\:px-10 {
     @media (width >= 40rem) {
       padding-inline: calc(var(--spacing) * 10);
+    }
+  }
+  .md\:w-100 {
+    @media (width >= 48rem) {
+      width: calc(var(--spacing) * 100);
+    }
+  }
+  .md\:w-150 {
+    @media (width >= 48rem) {
+      width: calc(var(--spacing) * 150);
     }
   }
   .md\:flex-row {
