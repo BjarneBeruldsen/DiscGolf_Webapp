@@ -662,6 +662,12 @@
   .min-h-screen {
     min-height: 100vh;
   }
+  .w-4 {
+    width: calc(var(--spacing) * 4);
+  }
+  .w-5 {
+    width: calc(var(--spacing) * 5);
+  }
   .w-6 {
     width: calc(var(--spacing) * 6);
   }
@@ -671,14 +677,8 @@
   .w-10 {
     width: calc(var(--spacing) * 10);
   }
-  .w-12 {
-    width: calc(var(--spacing) * 12);
-  }
-  .w-15 {
-    width: calc(var(--spacing) * 15);
-  }
-  .w-16 {
-    width: calc(var(--spacing) * 16);
+  .w-11 {
+    width: calc(var(--spacing) * 11);
   }
   .w-80 {
     width: calc(var(--spacing) * 80);
@@ -689,8 +689,8 @@
   .w-100 {
     width: calc(var(--spacing) * 100);
   }
-  .w-11 {
-    width: calc(var(--spacing) * 11);
+  .w-12 {
+    width: calc(var(--spacing) * 12);
   }
   .w-\[470px\] {
     width: 470px;
