@@ -26,7 +26,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const nyttHull = { hullNr, avstand, par };
+        const nyttHull = { hullNr, avstand, par, latitude: posisjon.latitude, longitude: posisjon.longitude };
         setHull([...hull, nyttHull]);
         setHullNr(hullNr + 1);
         setAvstand('');
@@ -84,20 +84,23 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
         let startPunkt = null;
       
         map.on("click", (e) => {
-          const clickedPos = [e.lngLat.lng, e.lngLat.lat];
+            const clickedPos = { latitude: e.lngLat.lat, longitude: e.lngLat.lng };
+            setPosisjon(clickedPos);
+
+            //console.log("Saved position:", clickedPos);
       
           if (!startPunkt) {
             
-            startPunkt = clickedPos;
+            startPunkt = [clickedPos.longitude, clickedPos.latitude];
             new mapboxgl.Marker({ color: "gray" })
             .setLngLat(startPunkt)
             .addTo(map)
             
           } else {
            
-            const stopPoint = clickedPos;
+           const stopPunkt = [clickedPos.longitude, clickedPos.latitude];
             new mapboxgl.Marker({ color: "green" })
-            .setLngLat(stopPoint)
+            .setLngLat(stopPunkt)
             .addTo(map);
 
             if (map.getSource("hole-path")){
@@ -112,7 +115,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                 type: "Feature",
                 geometry: {
                   type: "LineString",
-                  coordinates: [startPunkt, stopPoint],
+                  coordinates: [startPunkt, stopPunkt],
                 },
               },
             });
