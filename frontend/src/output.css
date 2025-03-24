@@ -691,12 +691,15 @@
   }
   .w-12 {
     width: calc(var(--spacing) * 12);
+<<<<<<< HEAD
   }
   .w-15 {
     width: calc(var(--spacing) * 15);
   }
   .w-16 {
     width: calc(var(--spacing) * 16);
+=======
+>>>>>>> RedigerHull
   }
   .w-\[470px\] {
     width: 470px;
