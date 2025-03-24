@@ -8,9 +8,7 @@ import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
-
-const BaneListe = (props) => {
-    const baner = props.baner;
+const BaneListe = ({ baner, rediger }) => {
     const minne = useHistory();
     const { bruker, venter } = HentBruker();
     const mapContainerRef = useRef(null);
@@ -20,13 +18,17 @@ const BaneListe = (props) => {
             alert('logginn/registrer deg for å spille');
             minne.push('/Innlogging');
         }
-        else {
+        else if(!rediger) {
             minne.push(`/ScoreBoard/${bane._id}`); 
         }
+        else {
+            minne.push(`/RedigerBane/${bane._id}`); 
+        }
     }
+
     useEffect(() => {
         if (!mapContainerRef.current) return;
-      
+        console.log(rediger)
         mapboxgl.accessToken = "pk.eyJ1IjoidW5rbm93bmdnc3MiLCJhIjoiY203eGhjdXBzMDUwaDJxc2RidXgwbjBqeSJ9.wlnVO6sI2-cY5Tx8uYv_XQ";
         const map = new mapboxgl.Map({
          container: mapContainerRef.current,
@@ -34,7 +36,7 @@ const BaneListe = (props) => {
          center: [9.059,59.409 ],
          zoom: 15,
     })
-})
+    }, [rediger]);
 
     return ( 
         <div>
@@ -64,8 +66,13 @@ const BaneListe = (props) => {
                                         <div className="beskrivelse pr-4 wrap">
                                             <p>{bane.beskrivelse}</p>
                                             <div className="knapp">
-                                            <button type="submit" onClick={() => handleClick(bane)} className="py-2 px-2 bg-gray-500 rounded-lg text-sm text-white mt-2 hover:bg-gray-400">Spill</button>
-                                        </div>
+                                                {!rediger && (
+                                                    <button type="submit" onClick={() => handleClick(bane)} className="py-2 px-2 bg-gray-500 rounded-lg text-sm text-white mt-2 hover:bg-gray-400">Spill</button>
+                                                )}
+                                                {rediger && (
+                                                    <button type="submit" onClick={() => handleClick(bane)} className="py-2 px-2 bg-gray-500 rounded-lg text-sm text-white mt-2 hover:bg-gray-400">Rediger</button>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

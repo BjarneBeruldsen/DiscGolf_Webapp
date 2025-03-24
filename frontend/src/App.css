@@ -31,6 +31,12 @@
 .md-w-180 {
     @apply md:w-180;
 }
+
+/* Nyhet form */
+.nyhet-form {
+    @apply mt-8 sm:mx-auto sm:w-full sm:max-w-md form-container;
+}
+
 /* Medlemskap */
 /* Ytre container */
 .outer-wrapper {
@@ -64,5 +70,3 @@
     @apply w-[900px] min-h-[700px] flex-none;
   }
 }
-
-

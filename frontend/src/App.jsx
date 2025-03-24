@@ -28,6 +28,7 @@ import PoengTavler from './KlubbHandtering/Poengtavler';
 import HentBruker from "./BrukerHandtering/HentBruker";
 import AdminRoute from "./Tilgangskontroll/AdminRoute";
 import AdminDashboard from './Admin/AdminDashboard';
+import RedigerBane from './KlubbHandtering/RedigerBane';
 
 function App() {
   const { bruker, venter } = HentBruker();
@@ -107,6 +108,9 @@ useEffect(() => {
             </Route>
             <Route exact path="/MinePoengtavler">
               <PoengTavler />
+            </Route>
+            <Route exact path="/RedigerBane/:id">
+              <RedigerBane />
             </Route>
             <Route exact path="/Personvern" component={Personvern} />
             <Route exact path="/Sikkerhet" component={Sikkerhet} />

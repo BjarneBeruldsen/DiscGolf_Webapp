@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { sjekkNyhetTittel, sjekkNyhet } from './validation';
 import LagBane from './LagBane';
 import LagTurnering from './LagTurnering';
+import RedigerBane from './RedigerBane';
 
 const LagKlubbside = () => {
     const { id } = useParams();
@@ -16,7 +17,8 @@ const LagKlubbside = () => {
     const [visNyhetForm, setVisNyhetForm] = useState(false);
     const [visBaneForm, setVisBaneForm] = useState(false);
     const [visTurneringForm, setVisTurneringForm] = useState(false);
-    const [errorMelding, setErrorMelding] = useState('');    
+    const [errorMelding, setErrorMelding] = useState('');  
+    const [visRedigerBane, setVisRedigerBane] = useState(false);
 
     useEffect(() => {
         fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}`)
@@ -72,6 +74,7 @@ const LagKlubbside = () => {
         setVisNyhetForm(seksjon === 'nyhet'); 
         setVisBaneForm(seksjon === 'bane');
         setVisTurneringForm(seksjon === 'turnering')
+        setVisRedigerBane(seksjon === 'redigerBane');
     }
 
     const behandleVisningBane = () => {
@@ -107,6 +110,11 @@ const LagKlubbside = () => {
                                 </svg>
                             </button>
                             <button onClick={() => behandleVisning("turnering")} className="justify-center py-2 px-2 m-2 bg-gray-500 rounded-lg text-sm text-white hover:bg-gray-800">Turnering
+                                <svg className="w-6 inline-block" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
+                                </svg>
+                            </button>
+                            <button onClick={() => behandleVisning("redigerBane")} className="justify-center py-2 px-2 m-2 bg-gray-500 rounded-lg text-sm text-white hover:bg-gray-800">Rediger Bane
                                 <svg className="w-6 inline-block" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
                                 </svg>
@@ -157,6 +165,7 @@ const LagKlubbside = () => {
                         )}
                         {visBaneForm && <LagBane klubbId={id} onBaneLagtTil={handleBaneLagtTil} />}
                         {visTurneringForm && <LagTurnering klubbId={id} />}
+                        {visRedigerBane && <RedigerBane klubb={klubb} />}
                     </>
                 ) : (
                     <p>Laster klubbdata...</p>
