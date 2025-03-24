@@ -44,8 +44,8 @@ const BaneListe = (props) => {
                         {baner.map((bane, index) => {
                             const antallHull = bane.hull ? bane.hull.length : 0;
                             return (
-                                <div className="bg-white rounded-lg shadow-sm p-4 m-4" key={index}>
-                                    <div className="topplinje border-b-2 flex justify-between text-xl font-bold">
+                                <div className="bg-white rounded-lg shadow-sm p-4 m-4 md:w-100 w-80" key={index}>
+                                    <div className="topplinje border-b-2 flex justify-between text-xl font-bold ">
                                         <p>{bane.baneNavn}</p>
                                         <p className="pl-20">Rating:5/10</p> {/*Kommer senere..*/}
                                     </div>
@@ -53,16 +53,19 @@ const BaneListe = (props) => {
                                         <p>Hull: {antallHull}</p>
                                         <p className="pl-20">Nivå: {bane.vanskelighet}</p> 
                                     </div>
+                                    <div>
+                                        <iframe src="https://www.yr.no/nb/innhold/1-43228/card.html" frameborder="0"
+                                            className="w-full h-[362px] pointer-events-none"
+                                        ></iframe>
+                                        <div ref={mapContainerRef} className="w-full h-100" />
+                                    
+                                    </div>
                                     <div className="nederstelinje inline-block">
                                         <div className="beskrivelse pr-4 wrap">
                                             <p>{bane.beskrivelse}</p>
-                                        </div>
-                                        <iframe src="https://www.yr.no/nb/innhold/1-43228/card.html" frameborder="0"
-                                        className="w-full h-[362px] pointer-events-none"
-                                        ></iframe>
-                                        <div ref={mapContainerRef} className="w-[50vh] h-[40vh]" />
-                                        <div className="knapp">
+                                            <div className="knapp">
                                             <button type="submit" onClick={() => handleClick(bane)} className="py-2 px-2 bg-gray-500 rounded-lg text-sm text-white mt-2 hover:bg-gray-400">Spill</button>
+                                        </div>
                                         </div>
                                     </div>
                                 </div>
