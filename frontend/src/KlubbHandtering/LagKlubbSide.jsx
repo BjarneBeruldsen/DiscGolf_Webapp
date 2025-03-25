@@ -162,7 +162,7 @@ const LagKlubbside = () => {
                         )}
                         {visBaneForm && <LagBane klubbId={id} onBaneLagtTil={handleBaneLagtTil} />}
                         {visTurneringForm && <LagTurnering klubbId={id} />}
-                        {visRedigerBane && <RedigerBane klubb={klubb} />}
+                        {visRedigerBane && <RedigerBane klubb={klubb} klubbId={id} />}
                     </>
                 ) : (
                     <p>Laster klubbdata...</p>

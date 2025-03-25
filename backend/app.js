@@ -356,6 +356,27 @@ app.get('/baner/:id', async (req, res) => {
     }
 });
 
+app.patch('/klubber/:klubbId/baner/:baneId', (req, res) => {
+    const updates = req.body
+
+    if(ObjectId.isValid(req.params.klubbId) === false || ObjectId.isValid(req.params.baneId) === false) {
+        return res.status(400).json({error: 'Ugyldig dokument-id'})
+    }
+    else {
+        db.collection('Klubb')
+        .updateOne(
+            { _id: new ObjectId(req.params.klubbId), 'baner._id': new ObjectId(req.params.baneId) },
+            { $set: { 'baner.$': updates } }
+        )
+        .then(result => {
+            res.status(200).json(result)
+        })
+        .catch(err => {
+            res.status(500).json({error: 'Feil ved oppdatering av bane'})
+        })
+    }
+})
+
 //Brukerhåndterings ruter
 
 //Rute for å lagre poengkort for en bruker
