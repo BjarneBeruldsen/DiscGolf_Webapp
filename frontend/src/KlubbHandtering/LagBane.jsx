@@ -21,12 +21,20 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
     const [hullVisning, setHullVisning] = useState(true);
     const [baneVisning, setBaneVisning] = useState(false);
     const mapContainerRef = useRef(null);
-    const[posisjon, setPosisjon] = useState({latitude:null, longitude:null});
+    const[startPosisjon, setStartPosisjon] = useState({startLatitude:null, startLongitude:null});
+    const[sluttPosisjon, setSluttPosisjon] =useState({sluttLatitude:null, sluttLongitude:null});
+    
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const nyttHull = { hullNr, avstand, par, latitude: posisjon.latitude, longitude: posisjon.longitude };
+        const nyttHull = { hullNr, avstand, par, 
+            
+            startLatitude: startPosisjon.startLatitude,
+            startLongitude: startPosisjon.startLongitude,
+            sluttLatitude: sluttPosisjon.sluttLatitude,
+            sluttLongitude: sluttPosisjon.sluttLongitude
+        };
         setHull([...hull, nyttHull]);
         setHullNr(hullNr + 1);
         setAvstand('');
@@ -85,21 +93,35 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
       
         map.on("click", (e) => {
             const clickedPos = { latitude: e.lngLat.lat, longitude: e.lngLat.lng };
-            setPosisjon(clickedPos);
+            
+            
 
             //console.log("Saved position:", clickedPos);
       
           if (!startPunkt) {
+
+            setStartPosisjon({
+                startLatitude: clickedPos.latitude,
+                startLongitude: clickedPos.longitude,
+                
+              })
+
             
             startPunkt = [clickedPos.longitude, clickedPos.latitude];
             new mapboxgl.Marker({ color: "gray" })
             .setLngLat(startPunkt)
             .addTo(map)
+          
             
           } else {
+
+            setSluttPosisjon({
+                sluttLatitude: clickedPos.latitude,
+                sluttLongitude: clickedPos.longitude,
+              })
            
            const stopPunkt = [clickedPos.longitude, clickedPos.latitude];
-            new mapboxgl.Marker({ color: "green" })
+            new mapboxgl.Marker({ color: "green" }) 
             .setLngLat(stopPunkt)
             .addTo(map);
 
