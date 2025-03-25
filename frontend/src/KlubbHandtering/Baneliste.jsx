@@ -8,7 +8,7 @@ import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
-const BaneListe = ({ baner, rediger }) => {
+const BaneListe = ({ baner, rediger, klubbId }) => {
     const minne = useHistory();
     const { bruker, venter } = HentBruker();
     const mapContainerRef = useRef(null);
@@ -22,7 +22,7 @@ const BaneListe = ({ baner, rediger }) => {
             minne.push(`/ScoreBoard/${bane._id}`); 
         }
         else {
-            minne.push(`/RedigerBane/${bane._id}`); 
+            minne.push(`/RedigerBane/${klubbId}/${bane._id}`); 
         }
     }
 

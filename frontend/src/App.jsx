@@ -109,7 +109,7 @@ useEffect(() => {
             <Route exact path="/MinePoengtavler">
               <PoengTavler />
             </Route>
-            <Route exact path="/RedigerBane/:id">
+            <Route exact path="/RedigerBane/:klubbId/:baneId">
               <RedigerBane />
             </Route>
             <Route exact path="/Personvern" component={Personvern} />
