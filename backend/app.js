@@ -5,8 +5,9 @@ const cors = require('cors');
 const helmet = require('helmet');
 const nocache = require('nocache');
 const compression = require('compression');
-const rateLimit = require("express-rate-limit");
-const { body, validationResult } = require('express-validator');
+const { validationResult } = require('express-validator');
+const { registreringValidering, innloggingValidering, redigeringValidering, sletteValidering, 
+loggeInnStopp, registreringStopp, endringStopp } = require('./validering');
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
@@ -31,7 +32,7 @@ app.disable('x-powered-by'); //Disabled for sikkerhet da man kan se hvilken tekn
 //Brukes for gzip komprimering. Fant ut av dette med chrome dev tools og lighthouse, og det ble da anbefalt å bruke dette for å øke ytelsen
 app.use(compression());
 
-//NoCache Sikrer at nettleserer ikke lagrer cache for sensitive data/sider
+//NoCache Sikrer at nettleserer ikke lagrer cache for sensitive data/sider etter anbefalning av ZAP
 //https://github.com/helmetjs/nocache
 //https://ivanpiskunov.medium.com/a-little-bit-about-node-js-security-by-hands-17470dddf4d0 
 //https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
@@ -88,7 +89,7 @@ app.use(express.json());
 //Legger serving fra statiske filer fra REACT applikasjonen
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
-//Konfigurasjon av session https://www.geeksforgeeks.org/how-to-handle-sessions-in-express/ & https://expressjs.com/en/resources/middleware/session.html  
+//Konfigurasjon av session https://www.geeksforgeeks.org/how-to-handle-sessions-in-express/, https://expressjs.com/en/resources/middleware/session.html & https://www.passportjs.org/tutorials/password/session/ 
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,                       //Lagrer session på hver request selv om ingen endringer er gjort
@@ -114,29 +115,29 @@ kobleTilDB((err) => {
     if(!err) {
         db = getDb();
 
-//Konfigurasjon av Passport.js https://www.passportjs.org/concepts/authentication/password/
+//Konfigurasjon av Passport.js https://www.passportjs.org/concepts/authentication/
 passport.use(
     new LocalStrategy({ usernameField: "brukernavn", passwordField: "passord" }, 
     async (brukernavn, passord, done) => {  
         try {
             //Sjekker om brukeren finnes i databasen (brukernavn eller e-post)
             const funnetBruker = await db.collection("Brukere").findOne({
-                $or: [
-                    { brukernavn: brukernavn.trim().toLowerCase() },  
-                    { epost: brukernavn.trim().toLowerCase() } 
+            $or: [
+                { brukernavn: brukernavn.trim().toLowerCase() },
+                { epost: brukernavn.trim().toLowerCase() }
                 ]
             });
-            //Hvis brukeren ikke finnes, returneres det en feilmelding
-            if (!funnetBruker) {                                                                                                      
+            if (!funnetBruker) {
                 return done(null, false, { message: "Brukernavn eller e-post ikke funnet" });
             }
-            //Sjekker om passordet er riktig
             const passordSjekk = await bcrypt.compare(passord, funnetBruker.passord);
             if (!passordSjekk) {
-                return done(null, false, { message: "Feil passord eller brukernavn" });
+                return done(null, false, { message: "Feil passord" });
             }
-            //Hvis innloggingen er vellykket, returnerer vi brukeren
-            return done(null, funnetBruker);
+            else {
+                //Hvis innloggingen er vellykket, returnerer vi brukeren
+                return done(null, funnetBruker);
+            }
         } catch (err) {
             //Returnerer en feil hvis noe går galt
             return done(err);
@@ -145,28 +146,31 @@ passport.use(
 );
 //Serialiserer brukeren ved å lagre brukerens ID i session
 passport.serializeUser((bruker, done) => {
+    console.log(`Bruker med ID ${bruker._id} logget inn (serialisering velykket)`);
     done(null, bruker._id);
 });
 //Deserialiserer brukeren ved å hente brukerdata fra databasen basert på ID
 passport.deserializeUser(async (id, done) => {
     try {
-        //Konverterer ID til ObjectId 
-        const objectId = new ObjectId(String(id)); 
+        //Sjekker om id er gyldig
+        if (!ObjectId.isValid(id)) {
+            return done(null, false, { message: "Ugyldig dokument-id" });
+        }
         //Henter brukeren fra databasen
-        const bruker = await db.collection("Brukere").findOne({ _id: objectId });
+        const bruker = await db.collection("Brukere").findOne({ _id: new ObjectId(String(id)) });
         //Hvis brukeren ikke finnes, returnerer vi en feilmelding
         if (!bruker) {
             return done(null, false, { message: "Bruker ikke funnet" });
+        } else {
+        //Hvis brukeren blir funnet returnerer vi den
+            return done(null, bruker);
         }
-        //Returnerer brukeren hvis den finnes
-        done(null, bruker);
     } catch (err) {
-        //Logger og returnerer feil hvis noe går galt
+        //Returnerer en feil hvis noe går galt
         console.error("Feil under deserialisering:", err);
-        done(err);
+        return done(err);
     }
 });
-
 //Start av server
 app.listen(PORT, () => {
     console.log(`Server kjører på port ${PORT}`);
@@ -399,194 +403,130 @@ app.post('/brukere/:id/poengkort', beskyttetRute, async (req, res) => {
         })
     }
 })
-
-//Registrering av bruker
-//Rate limit for å stoppe brute force angrep https://www.npmjs.com/package/express-rate-limit
-const registreringStopp = rateLimit({
-    windowMs: 60 * 60 * 1000, //1 time 
-    max: 10, //Maks 10 registreringsforsøk fra samme IP
-    message: { error: "For mange registreringsforsøk, prøv igjen senere" },
-});
-//Validering av registrering med express-validator: https://express-validator.github.io/docs/
-const registreringValidering = [
-    body('brukernavn')
-        .trim()
-        .isLength({ min: 3, max: 15 }).withMessage("Brukernavnet må være mellom 3 og 15 tegn.")
-        .isAlphanumeric().withMessage("Brukernavnet kan bare inneholde bokstaver og tall."),
-    body('passord')
-        .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.")
-        .matches(/[A-Z]/).withMessage("Passordet må inneholde minst en stor bokstav.")
-        //.matches(/[0-9]/).withMessage("Passordet må inneholde minst ett tall.") //Ikke gyldig med passord for admin/test for prosjektet
-        .matches(/[-.@$!%*?&]/).withMessage("Passordet må inneholde minst ett spesialtegn."),
-    body('epost')
-        .trim()
-        .isEmail().withMessage("E-post må være gyldig.")
-        .normalizeEmail() 
-];
 //Rute for registrering av bruker
 app.post("/Registrering", registreringValidering, registreringStopp, async (req, res) => {
     try {
-        const { brukernavn, passord, epost } = req.body;
+        //Validering av input med express-validator hentet fra validering.js
+        const error = validationResult(req);
+        if (!error.isEmpty()) {
+            return res.status(400).json({ error: error.array() });
+        }
         //Sjekker om brukernavn eller e-post allerede finnes i databasen
+        const {brukernavn, epost, passord} = req.body;
         const funnetBruker = await db.collection("Brukere").findOne({
-            $or: [
-                { brukernavn: brukernavn.trim().toLowerCase() }, 
-                { epost: epost.trim().toLowerCase() }
-            ]
-        });
+                $or: [
+                    {brukernavn: brukernavn.trim().toLowerCase()},
+                    {epost: epost.trim().toLowerCase()}
+                ]
+            });  
         //Returnerer feil hvis brukernavn eller e-post er i bruk
         if (funnetBruker) {
             console.log(`Registrering mislyktes: Brukernavn eller e-post (${brukernavn}, ${epost}) allerede i bruk.`);
             return res.status(400).json({ error: "Brukernavn eller e-post allerede registrert" });
         }
         //Kryptering av passord
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(passord, salt);
+        const salt = await bcrypt.genSalt(12);
+        const hashetPassord = await bcrypt.hash(passord, salt);
         //Lagrer ny bruker i databasen
         const nyBruker = {
             brukernavn: brukernavn.trim().toLowerCase(),
-            passord: hashedPassword,
+            passord: hashetPassord,
             epost: epost.trim().toLowerCase(),
+            //tidspunkt: Date.now(),
         };
-        //Lagrer brukeren i databasen
-        const result = await db.collection("Brukere").insertOne(nyBruker);
+        await db.collection("Brukere").insertOne(nyBruker);
         //Logging
-        console.log(`Bruker registrert: ${brukernavn}, e-post: ${epost}, ID: ${result.insertedId}`);
-        return res.status(201).json({ message: "Bruker registrert" });
+        console.log(`Bruker registrert: ${brukernavn}, e-post: ${epost}`);
+        res.status(201).json({ message: "Bruker registrert" });
     } catch (err) {
         console.log("Feil ved registrering:", err.message);
         res.status(500).json({ error: "Feil ved registrering" });
     }
 });
-//Innlogging av bruker
-//Rate limit for å stoppe brute force angrep https://www.npmjs.com/package/express-rate-limit
-const loggeInnStopp = rateLimit({
-    windowMs: 15 * 60 * 1000, //15 minutter
-    max: 10, //Maks 10 logg inn fra samme IP
-    message: { error: "For mange innloggingsforsøk, prøv igjen senere" },
-});
-//Validering av innlogging med express-validator https://express-validator.github.io/docs/
-const innloggingValidering = [
-    body('brukernavn')
-        .trim()
-        .notEmpty().withMessage("Brukernavn eller e-post må fylles ut.")
-        .custom((value) => {
-            const erBrukernavn = /^[a-zA-Z0-9]{3,15}$/.test(value);
-            const erEpost = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-            if (!erBrukernavn && !erEpost) {
-                throw new Error("Må være brukernavn (3-15 tegn) eller en gyldig e-post.");
-            }
-            return true;
-        }),
-    body('passord')
-        .notEmpty().withMessage("Passord må fylles ut.") 
-        .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.")
-];
 //Rute for innlogging
-app.post("/Innlogging", loggeInnStopp, innloggingValidering, async (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        console.log("Innlogging feilet", errors.array());
-        return res.status(400).json({ errors: errors.array() }); 
+app.post("/Innlogging", innloggingValidering, loggeInnStopp, (req, res, next) => {
+    //Validering av input med express-validator hentet fra validering.js
+    const error = validationResult(req);
+    if (!error.isEmpty()) {
+        return res.status(400).json({ error: error.array() });
     }
-    //Bruker Passport for autentisering
+    //Bruker passport for autentisering
     passport.authenticate("local", (err, bruker, info) => {
         if (err) {
-            console.error("Innloggingsfeil:", err);
+            console.error("Feil under autentisering:", err);  
             return next(err);
         }
-        //Sjekker om brukeren ble funnet
+        //Sjekker om bruker blir funnet
         if (!bruker) {
-            console.warn("Innlogging mislyktes: ", info.message);
-            return res.status(400).json({ error: info.message });
+            return res.status(400).json({ error: "Feil brukernavn eller passord" });
         }
-        //Logger inn brukeren og lagrer session
+        //Logger inn bruker og lagrer session
         req.logIn(bruker, (err) => {
             if (err) {
-                console.error("Feil ved session lagring:", err);
                 return next(err);
             }
-            //Beholder e-post og brukernavn
-            const brukerUtenPassord = { 
-                id: bruker._id.toString(), 
-                brukernavn: bruker.brukernavn,
-                epost: bruker.epost,
-                rolle: bruker.rolle 
-            };
-            //Logging
-            console.log(`Bruker logget inn: ${brukerUtenPassord.brukernavn}, e-post: ${brukerUtenPassord.epost}`);
+            const { brukernavn, epost } = bruker;
+            console.log(`Bruker logget inn: ${brukernavn}, e-post: ${epost}`);
             console.log(`Session aktiv med ID: ${req.sessionID}`);
+            //Returnerer brukerdata
             return res.status(200).json({
-                message: "Innlogging vellykket",
-                sessionID: req.sessionID,
-                bruker: brukerUtenPassord
+                message: "Innlogging vellykket", 
+                bruker: {
+                    id: bruker._id,
+                    brukernavn: bruker.brukernavn,
+                    epost: bruker.epost,
+                    rolle: bruker.rolle,
+                    //tidspunkt: Date.now()
+                }
             });
         });
     })(req, res, next);
 });
-
 //Utlogging
-app.post("/Utlogging", beskyttetRute, async (req, res) => {
+app.post("/Utlogging", beskyttetRute, sjekkBrukerAktiv, async (req, res) => {
     try {
-        //Sjekker om brukeren er logget inn
-        if (!req.isAuthenticated()) {
-            return res.status(401).json({ error: "Ingen aktiv session" });
-        }
-        //Henter brukernavn og e-post for logging 
-        const brukernavn = req.user ? req.user.brukernavn : "Ukjent bruker";
-        const epost = req.user ? req.user.epost : "Ukjent e-post";
+        //Henter brukerdata for logging
+        const { brukernavn, epost } = req.user;
+        const bruker = { brukernavn, epost };
         //Utfører utlogging
         req.logout((err) => {
             if (err) {
                 console.error("Feil ved utlogging:", err);
                 return res.status(500).json({ error: "Feil ved utlogging" });
             }
-            //Sletter brukerens session
+            //Sletter brukerens session og cookie
             req.session.destroy((err) => {
                 if (err) {
                     console.error("Feil ved sletting av session:", err);
                     return res.status(500).json({ error: "Feil ved sletting av session" });
                 }
-                //Fjerner session-cookie fra klienten
                 res.clearCookie("connect.sid", { path: "/" });
-                console.log(`Session er nå slettet, utlogging fullført: ${brukernavn}, e-post: ${epost}`);
-                return res.status(200).json({ message: "Utlogging vellykket, session slettet" });
+                //Logging
+                console.log(`Bruker logget ut: ${bruker.brukernavn}, ${bruker.epost}`);
+                console.log(`Session med ID: ${req.sessionID} er slettet`);
+                return res.status(200).json({ message: "Utlogging vellykket" });
             });
-        }); //Logging
+        });
     } catch (error) {
         console.error("Uventet feil ved utlogging:", error);
-        res.status(500).json({ error: "Serverfeil" });
+        return res.status(500).json({ error: "Noe gikk galt. Prøv igjen senere" });
     }
 });
-//Validering av innlogging med express-validator https://express-validator.github.io/docs/
-const sletteValidering = [
-    body("brukerInput")
-        .trim()
-        .notEmpty().withMessage("Brukernavn eller e-post må fylles ut.")
-        .custom((value) => {
-            if (!/^[a-zA-Z0-9]{3,15}$/.test(value) && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) { //Custom for både brukernavn og epost i en validering
-                throw new Error("Må være brukernavn (3-15 tegn) eller en gyldig e-post.");
-            }
-            return true;
-        }),
-    body("passord")
-        .notEmpty().withMessage("Passord må fylles ut.")
-        .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.")
-];
 //Sletting av bruker
-app.post("/SletteBruker", beskyttetRute, sletteValidering, async (req, res) => {
-    if (!req.isAuthenticated()) {
-        return res.status(401).json({ error: "Ingen aktiv session" });
-    }
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
+app.delete("/SletteBruker", beskyttetRute, sletteValidering, sjekkBrukerAktiv, async (req, res) => {
     try {
-        const { brukerInput, passord } = req.body;
+        //Validering av input med express-validator hentet fra validering.js
+        const error = validationResult(req);
+        if (!error.isEmpty()) {
+            return res.status(400).json({ error: error.array() });
+        }
         //Finner bruker enten via brukernavn eller e-post
+        const { brukerInput, passord } = req.body;
         const bruker = await db.collection("Brukere").findOne({
-            $or: [{ brukernavn: brukerInput.toLowerCase() }, { epost: brukerInput.toLowerCase() }]
+            $or: [
+                { brukernavn: brukerInput.trim().toLowerCase() },
+                { epost: brukerInput.trim().toLowerCase() }
+            ]
         });
         if (!bruker) {
             return res.status(404).json({ error: "Bruker ikke funnet" });
@@ -596,42 +536,55 @@ app.post("/SletteBruker", beskyttetRute, sletteValidering, async (req, res) => {
         if (!passordSjekk) {
             return res.status(401).json({ error: "Feil passord" });
         }
-        //Sletter bruker 
-        const objectId = new ObjectId(String(bruker._id));
-        const slettet = await db.collection("Brukere").deleteOne({ _id: objectId });
-        if (slettet.deletedCount === 0) {
-            return res.status(500).json({ error: "Kunne ikke slette brukeren" });
-        }
-        console.log(`Bruker slettet: ${bruker.brukernavn}, e-post: ${bruker.epost}, ID: ${bruker._id}`);
-        //Logger ut og sletter session/cookie
-        req.logout((err) => {
-            if (err) {
-                return res.status(500).json({ error: "Feil ved utlogging" });
-            }
+        //Sletter bruker
+        const slettet = await db.collection("Brukere").deleteOne({ _id: bruker._id });
+        console.log(`Bruker slettet, brukernavn: ${bruker.brukernavn}, e-post: ${bruker.epost}, ID: ${bruker._id}`); //tidspunkt: ${bruker.tidspunkt}
+        if (slettet.deletedCount === 1) {
+            //Logger ut og sletter session/cookie
             req.session.destroy((err) => {
                 if (err) {
+                    console.error("Feil ved sletting av session:", err);
                     return res.status(500).json({ error: "Feil ved sletting av session" });
                 }
                 res.clearCookie("connect.sid", { path: "/" });
-                console.log("Session og cookies er nå slettet.");
-                return res.status(200).json({ message: "Bruker slettet og logget ut" });
+                return res.status(200).json({ message: "Brukeren er nå slettet" });
             });
-        }); //Logging
-    } catch (error) {
-        console.error("Feil ved sletting av bruker:", error);
-        res.status(500).json({ error: "Serverfeil", details: error.message });
+        } else {
+            return res.status(500).json({ error: "Kunne ikke slette bruker" });
+        }
+    } catch (err) {
+        console.error("Feil ved sletting av bruker:", err);
+        return res.status(500).json({ error: "Noe gikk galt. Prøv igjen senere" });
     }
 });
+//Rute for å redigere brukerinformasjon
 
-//Endring av brukerinfo
 
+//Rute for glemt passord
+
+//Rute for å hente alle brukere for søking etter brukere man kan komme i kontakt med
+app.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (res) => {
+    try {
+        const alleBrukere = [];
+        //Henter alle brukere basert på gitte regler(projections)
+        await db.collection("Brukere")
+            .find({})
+            .project({ brukernavn: 1, epost: 1, rolle: 1 })
+            .forEach(bruker => {
+                alleBrukere.push(bruker);
+            });
+        res.status(200).json(alleBrukere);
+    } catch (err) {
+        console.error("Feil ved henting av brukere:", err);
+        res.status(500).json({ error: "Feil ved henting av brukerliste" });
+    }
+});
 
 
 
 
 
 //Andre ruter
-
 //Sjekk av session
 app.get("/sjekk-session", async (req, res) => {
     //Sjekker om brukeren er logget inn
@@ -658,8 +611,22 @@ app.get("/sjekk-session", async (req, res) => {
     } //Logging
     return res.status(401).json({ error: "Ingen aktiv session" });
 });
-
-//Sjekk for å beskytte ulike api-ruter
+//Rute for å sjekke om bruker er aktiv eller ikke, brukes i ulike ruter for enkel sjekk
+async function sjekkBrukerAktiv(req, res, next) {
+    if (!req.isAuthenticated()) { //Sjekker om brukeren er logget inn
+        return res.status(401).json({ error: "Ingen aktiv session" });
+    }
+    try {
+        const bruker = await db.collection('Brukere').findOne({ _id: req.user._id });
+        if (!bruker) {
+            return res.status(404).json({ error: 'Bruker ikke funnet' });
+        }
+        next(); //Brukeren er logget inn
+    } catch (err) {
+        return res.status(500).json({ error: 'Feil ved henting av brukerdata' });
+    }
+}
+//Sjekk for å beskytte ulike api-ruter som krever en innlogget bruker
 function beskyttetRute(req, res, next) {
     if (req.isAuthenticated()) {
         return next(); //Brukeren er logget inn
