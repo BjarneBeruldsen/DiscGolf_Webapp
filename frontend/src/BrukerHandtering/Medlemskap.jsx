@@ -28,7 +28,7 @@ const Medlemskap = () => {
     Brukerinnstillinger: ["Min informasjon", "Endre min informasjon", "Slett bruker"],
     Personvern: ["Informasjonskapsler", "Synlighet", "GDPR"],
     Sikkerhet: ["To-faktor autentisering", "Gjennoppretting"],
-    "Min Klubb": ["Min klubb", "Søk etter klubb", "Avregistrer"],
+    "Min Klubb": ["Min klubb", "Søk etter klubb", "Søk etter brukere", "Avregistrer"],
     "Mitt abonnement": ["Mitt abonnement", "Betaling", "Avslutt abonnement"],
   };
 

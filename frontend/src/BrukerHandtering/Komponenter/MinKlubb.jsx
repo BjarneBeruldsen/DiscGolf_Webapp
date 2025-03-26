@@ -20,6 +20,7 @@ const MinKlubb = ({ valgtUnderKategori }) => {
 
       {valgtUnderKategori === "Min klubb" && <p>Informasjon om din klubb</p>}
       {valgtUnderKategori === "Søk etter klubb" && <p>Søkefunksjonalitet</p>}
+      {valgtUnderKategori === "Søk etter brukere" && <p>Søk etter brukere</p>}
       {valgtUnderKategori === "Avregistrer" && <p>Avregistrering</p>}
     </div>
   );
