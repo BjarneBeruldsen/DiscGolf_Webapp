@@ -43,7 +43,8 @@ const Innlogging = ({ setLoggetInnBruker }) => {
       //Henter respons fra backend
       const data = await respons.json();
       if (!respons.ok) {
-        setMelding(data.errors ? data.errors.map(err => err.msg).join(", ") : data.error || "Innlogging feilet.");
+        console.error("Innloggingsfeil:", data);
+        setMelding("Feil ved innlogging. Prøv igjen.");
       } else {
         setLoggetInnBruker(data.bruker); //Setter bruker som er logget inn
         setMelding("Innlogging vellykket!");

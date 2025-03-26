@@ -25,17 +25,14 @@ const Registrering = () => {
             setMelding("Brukernavn må være 3-15 tegn langt og kun inneholde bokstaver og tall.");
             return;
         }
-
         if (!epostRegex.test(epost)) {
             setMelding("E-post må være en gyldig adresse.");
             return;
         }
-
         if (!passordRegex.test(passord)) {
             setMelding("Passord må være minst 8 tegn og ha ett spesialtegn.");
             return;
         }
-
         //Kontakter backend for registrering
         try {
             const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Registrering`, {
@@ -44,23 +41,17 @@ const Registrering = () => {
                 body: JSON.stringify({ brukernavn, epost, passord }),
                 credentials: "include",
             });
-            //Henter respons fra backend
-            const data = await respons.json();
-
             if (!respons.ok) {
-                setMelding(data.errors ? data.errors.map(err => err.msg).join(", ") : data.error || "Registrering feilet.");
-            } else { //Registrering vellykket bruker er registrert
-                console.log("Registrering vellykket!");
-                setMelding("Registrering vellykket! Du blir omdirigert til innlogging...");
-                setTimeout(() => {
-                    minne.push("/Innlogging");
-                }, 1000);
-            }
+                setMelding("Registrering feilet. Prøv igjen.");
+                return;
+            } //Registrering vellykket bruker er registrert
+            setMelding("Registrering vellykket! Du blir omdirigert til innlogging...");
+            setTimeout(() => minne.push("/Innlogging"), 1000);
         } catch (error) {
             setMelding("Noe gikk galt. Prøv igjen.");
             console.error("Registreringsfeil:", error);
         }
-    };
+    }; 
 //Design og Styling for registreringsskjema
     return (
         <header>
