@@ -146,8 +146,13 @@ passport.use(
 );
 //Serialiserer brukeren ved å lagre brukerens ID i session
 passport.serializeUser((bruker, done) => {
-    console.log(`Bruker med ID ${bruker._id} logget inn (serialisering velykket)`);
-    done(null, bruker._id);
+    try {
+        done(null, bruker._id);
+        console.log(`Bruker med ID ${bruker._id} logget inn (serialisering velykket)`);
+    } catch (err) { 
+        console.error("Feil under serialisering:", err);
+        done(err);
+    }
 });
 //Deserialiserer brukeren ved å hente brukerdata fra databasen basert på ID
 passport.deserializeUser(async (id, done) => {
@@ -562,6 +567,7 @@ app.delete("/SletteBruker", beskyttetRute, sletteValidering, sjekkBrukerAktiv, a
 
 //Rute for glemt passord
 
+
 //Rute for å hente alle brukere for søking etter brukere man kan komme i kontakt med
 app.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (res) => {
     try {
@@ -579,11 +585,6 @@ app.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (res) => {
         res.status(500).json({ error: "Feil ved henting av brukerliste" });
     }
 });
-
-
-
-
-
 //Andre ruter
 //Sjekk av session
 app.get("/sjekk-session", async (req, res) => {
@@ -630,8 +631,10 @@ async function sjekkBrukerAktiv(req, res, next) {
 function beskyttetRute(req, res, next) {
     if (req.isAuthenticated()) {
         return next(); //Brukeren er logget inn
+    } else {
+        res.status(401).json({ error: "Du må være logget inn for å få tilgang." });
+        redirect = "/Innlogging";
     }
-    res.status(401).json({ error: "Du må være logget inn for å få tilgang." });
 }
 
 //Tilbakestille testdata fra klubb collection 
