@@ -1,4 +1,4 @@
-//Authors: Bjarne Beruldsen, Laurent Zogaj & Abdinasir Ali
+//Authors: Bjarne Beruldsen, Laurent Zogaj, Abdinasir Ali & Severin Waller Sørensen
 
 const express = require('express');
 const cors = require('cors');
@@ -163,6 +163,12 @@ passport.deserializeUser(async (id, done) => {
         }
         //Henter brukeren fra databasen
         const bruker = await db.collection("Brukere").findOne({ _id: new ObjectId(String(id)) });
+
+        //(SKAL FJERNES I PRODUKSJON!!!!)--------------------
+        // Logg brukerobjektet for å sjekke innholdet 
+        console.log("Bruker hentet fra databasen:", bruker);
+        //---------------------------------------------------
+
         //Hvis brukeren ikke finnes, returnerer vi en feilmelding
         if (!bruker) {
             return done(null, false, { message: "Bruker ikke funnet" });
@@ -437,6 +443,7 @@ app.post("/Registrering", registreringValidering, registreringStopp, async (req,
             brukernavn: brukernavn.trim().toLowerCase(),
             passord: hashetPassord,
             epost: epost.trim().toLowerCase(),
+            rolle: "loggetInn",
             //tidspunkt: Date.now(),
         };
         await db.collection("Brukere").insertOne(nyBruker);
@@ -627,6 +634,7 @@ async function sjekkBrukerAktiv(req, res, next) {
         return res.status(500).json({ error: 'Feil ved henting av brukerdata' });
     }
 }
+
 //Sjekk for å beskytte ulike api-ruter som krever en innlogget bruker
 function beskyttetRute(req, res, next) {
     if (req.isAuthenticated()) {
@@ -636,6 +644,37 @@ function beskyttetRute(req, res, next) {
         redirect = "/Innlogging";
     }
 }
+
+// Sjekke brukerens rolle 
+// (parameteren roller = liste over roller som har tilgang til ruten)
+function sjekkRolle(roller) {
+    return (req, res, nect) => {
+        const brukerRolle = req.user?.rolle; // ?.rolle (returner undefined hvis ikke eksisterer)
+        if (!brukerRolle || !roller.includes(brukerRolle)) {
+            return res.status(403).json({ error: "Ingen tilgang" })
+        }
+        next();
+    }
+}
+
+
+// Rute for å hente brukerens rolle
+app.get('/bruker/rolle', beskyttetRute, async (req, res) => {
+    try {
+        console.log("req.user:", req.user); // Legg til logging
+        const bruker = await db.collection('Brukere').findOne({ _id: req.user._id });
+        if (!bruker) {
+            return res.status(404).json({ error: 'Bruker ikke funnet' });
+        }
+        res.status(200).json({
+            rolle: bruker.rolle,
+            superAdmin: bruker.superAdmin || false, // Returner superAdmin-status
+        });
+    } catch (err) {
+        console.error('Feil ved henting av brukerens rolle:', err);
+        res.status(500).json({ error: 'Feil ved henting av brukerens rolle' });
+    }
+});
 
 //Tilbakestille testdata fra klubb collection 
 app.delete('/tommeTestdata', (req, res) => {
@@ -683,6 +722,11 @@ const transporter = nodemailer.createTransport({
       }
     });
   });
+
+//Rute for systeminnstillinger
+app.get("/admin/systeminnstillinger", beskyttetRute, sjekkRolle(["super-admin"]), (req, res) => {
+    res.json({ message: "Velkommen til systeminnstillinger!" });
+});
 
 //Håndter alle andre ruter med React Router
 app.get('*', (req, res) => {

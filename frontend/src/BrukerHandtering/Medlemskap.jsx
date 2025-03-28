@@ -1,4 +1,4 @@
-//Author: Laurent Zogaj
+//Author: Laurent Zogaj & Severin Waller Sørensen
 import React, { useState } from "react";
 import "../App.css";
 import BrukerInnstillinger from "./Komponenter/BrukerInnstillinger.jsx";
@@ -7,6 +7,8 @@ import Sikkerhet from "./Komponenter/Sikkerhet.jsx";
 import MinKlubb from "./Komponenter/MinKlubb.jsx";
 import MittAbonnement from "./Komponenter/MittAbonnement.jsx";
 import HentBruker from "./HentBruker.jsx"; 
+import AdminDashboard from "../Admin/AdminDashboard";
+import Systeminnstillinger from "../Admin/Systeminnstillinger.jsx";
 
 const Medlemskap = () => {
   const { bruker, setBruker } = HentBruker(); //Henter brukerdata fra HentBruker.jsx
@@ -15,16 +17,61 @@ const Medlemskap = () => {
   const [underKategoriOpen, setUnderKategoriOpen] = useState(true);
 
   //Definerer hovedkategorier
-  const hovedKategorier = [
-    "Brukerinnstillinger",
-    "Personvern",
-    "Sikkerhet",
-    "Min Klubb",
-    "Mitt abonnement",
-  ];
+  const hovedKategorier = (() => {
+    if (bruker?.rolle === "super-admin") {
+      return [
+        "Systeminnstillinger",
+        "Administrasjon",
+        "Klubbinnstillinger",
+        "Brukerinnstillinger",
+        "Personvern",
+        "Sikkerhet",
+        "Min Klubb",
+        "Mitt abonnement",
+      ];
+    } else if (bruker?.rolle === "admin") {
+      return [
+        "Administrasjon",
+        "Klubbinnstillinger",
+        "Brukerinnstillinger",
+        "Personvern",
+        "Sikkerhet",
+        "Min Klubb",
+        "Mitt abonnement",
+      ];
+    } else if (bruker?.rolle === "klubbleder") {
+      return [
+        "Klubbinnstillinger",
+        "Brukerinnstillinger",
+        "Personvern",
+        "Sikkerhet",
+        "Min Klubb",
+        "Mitt abonnement",
+      ];
+    } else if (bruker?.rolle === "klubbmedlem") {
+      return [
+        "Brukerinnstillinger",
+        "Personvern",
+        "Sikkerhet",
+        "Min Klubb",
+        "Mitt abonnement",
+      ];
+    } else if (bruker?.rolle === "loggetInn") {
+      return [
+        "Brukerinnstillinger",
+        "Personvern",
+        "Sikkerhet",
+      ];
+    } else {
+      return []; // Ingen tilgang hvis ingen rolle er definert
+    }
+  })();
 
   //Definerer underkategorier
   const underKategorier = {
+    Systeminnstillinger: ["Globale innstillinger", "Hovedadministrasjon av brukere", "Systemlogg"],
+    Administrasjon: ["AdminDashboard", "Administrere klubber", "Administrere brukere"],
+    Klubbinnstillinger: ["Klubbinformasjon", "Endre klubbinfo", "Administrede medlem", "Slett klubb"],
     Brukerinnstillinger: ["Min informasjon", "Endre min informasjon", "Slett bruker"],
     Personvern: ["Informasjonskapsler", "Synlighet", "GDPR"],
     Sikkerhet: ["To-faktor autentisering", "Gjennoppretting"],
@@ -111,6 +158,10 @@ const Medlemskap = () => {
 
         {valgtKategori === "Mitt abonnement" && valgtUnderKategori && (
           <MittAbonnement valgtUnderKategori={valgtUnderKategori} />
+        )}
+
+        {valgtKategori === "Administrasjon" && valgtUnderKategori === "AdminDashboard" && (
+          <AdminDashboard />
         )}
 
         {/* Fallback melding*/}

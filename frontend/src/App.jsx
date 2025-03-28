@@ -28,6 +28,7 @@ import PoengTavler from './KlubbHandtering/Poengtavler';
 import HentBruker from "./BrukerHandtering/HentBruker";
 import AdminRoute from "./Tilgangskontroll/AdminRoute";
 import AdminDashboard from './Admin/AdminDashboard';
+import Systeminnstillinger from './Admin/Systeminnstillinger';
 import RedigerBane from './KlubbHandtering/RedigerBane';
 
 function App() {
@@ -91,6 +92,13 @@ useEffect(() => {
                 <Redirect to="/Innlogging" />
               )}
             </Route>
+            <Route exact path="/systeminnstillinger">
+              {loggetInnBruker?.rolle === "super-admin" ? (
+                <Systeminnstillinger />
+              ) : (
+                <Redirect to="/Innlogging" />
+              )}
+            </Route>
             <Route exact path="/Innlogging">
               <Innlogging
                 setLoggetInnBruker={setLoggetInnBruker}
@@ -116,13 +124,6 @@ useEffect(() => {
             <Route exact path="/Sikkerhet" component={Sikkerhet} />
             <Route exact path="/Informasjonskapsler" component={Informasjonskapsler} />
             <Route exact path="/KontaktOss" component={KontaktOss} /> 
-             {/* AdminRoute for AdminDashboard */}
-            <AdminRoute
-              exact
-              path="/AdminDashboard"
-              component={AdminDashboard}
-              loggetInnBruker={loggetInnBruker}
-            />
           </Switch>
           <Footer />
         </div>
