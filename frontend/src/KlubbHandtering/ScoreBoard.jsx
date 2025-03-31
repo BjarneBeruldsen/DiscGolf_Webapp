@@ -117,28 +117,20 @@ const ScoreBoard = () => {
             baneNavn: bane.baneNavn,
             baneId: baneId
         };
-    
-        console.log("Poengkort som sendes til serveren:", nyPoengkort);
-        console.log("Brukerdata:", bruker);
-    
+        
         fetch(`${process.env.REACT_APP_API_BASE_URL}/brukere/${bruker.id}/poengkort`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(nyPoengkort)
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`Feil ved lagring av poengkort: ${response.statusText}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log("Poengkort lagret:", data);
-            })
-            .catch((error) => {
-                console.error('Feil ved lagring av poengkort:', error.message);
-            });
-    
+            body: JSON.stringify({ nyPoengkort })
+        }).then((response) => {
+            if (!response.ok) {
+                throw new Error('Feil ved lagring av poengkort');
+            }
+            return response.json();
+        }).catch(error => {
+            console.error('Feil ved lagring av poengkort:', error);
+        });
+
         setVisScoreboard(false);
         setVisVelgSpillere(false);
         setVisOppsummering(true);
