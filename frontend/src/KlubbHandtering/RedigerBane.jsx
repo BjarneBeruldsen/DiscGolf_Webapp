@@ -2,8 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import BaneListe from "./Baneliste";
 import UseFetch from "./UseFetch";
 import { useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const RedigerBane = ({ klubb }) => {
+    const minne = useHistory();
     const [rediger, setRediger] = useState(true);
     const { klubbId, baneId } = useParams();
     const { data: bane, error, isPending } = UseFetch(`${process.env.REACT_APP_API_BASE_URL}/baner/${baneId}`);
@@ -30,14 +32,12 @@ const RedigerBane = ({ klubb }) => {
  
 
     const lagreEndrng = async () => { 
-        const _id = bane._id
     
         const oppdaterteData = { 
             baneNavn,
             vanskelighet,
             beskrivelse,
-            hull, 
-            _id
+            hull
         };
     
         try {
@@ -56,13 +56,15 @@ const RedigerBane = ({ klubb }) => {
             const result = await response.json();
             console.log('Oppdatering vellykket:', result);
             alert('Oppdatering vellykket!');
+            minne.push(`/LagKlubbSide/${klubbId}`);
         } catch (error) {
             console.error('Feil:', error);
         }
     };
 
     const angreEndring = () => { 
-        
+        alert('Endringer angret!');
+        minne.push(`/LagKlubbSide/${klubbId}`);
     }
 
     useEffect(() => {
