@@ -7,7 +7,7 @@ const PoengTavler = () => {
     const [poengTavler, setPoengTavler] = useState([]);
     const [visStatistikk, setVisStatistikk] = useState(true);
     const [visPoengtavler, setVisPoengtavler] = useState(false);
-    const [valgtSeksjon, setValgtSeksjon] = useState('poengtavler');
+    const [valgtSeksjon, setValgtSeksjon] = useState('statistikk');
     const [brukernavn, setBrukernavn] = useState('');   
 
     useEffect(() => {
