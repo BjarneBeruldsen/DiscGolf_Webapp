@@ -10,11 +10,35 @@ const ScoreBoard = () => {
     const { data: bane, error, isPending } = UseFetch(`${process.env.REACT_APP_API_BASE_URL}/baner/${baneId}`);
     const { bruker, venter } = HentBruker();
     const [hull, setHull] = useState([]);
-    const [nr, setNr] = useState(0);
-    const [spillere, setSpillere] = useState([])
-    const [visScoreboard, setVisScoreboard] = useState(false);
-    const [visVelgSpillere, setVisVelgSpillere] = useState(true);
-    const [visOppsummering, setVisOppsummering] = useState(false);
+    const [nr, setNr] = useState(() => {
+        const nr = localStorage.getItem('nr');
+        return nr ? JSON.parse(nr) : 0;
+    });
+    const [spillere, setSpillere] = useState(() => {
+        const lagretSpillere = localStorage.getItem('spillere');
+        return lagretSpillere ? JSON.parse(lagretSpillere) : []; 
+    })
+    const [antallKast, setAntallKast] = useState([]);
+    const [visScoreboard, setVisScoreboard] = useState( () => {
+        const lagretVisScoreboard = localStorage.getItem('visScoreboard');
+        return lagretVisScoreboard ? JSON.parse(lagretVisScoreboard) : false;
+    })
+    const [visVelgSpillere, setVisVelgSpillere] = useState(() => {
+        const lagretVisVelgSpillere = localStorage.getItem('visVelgSpillere');
+        return lagretVisVelgSpillere ? JSON.parse(lagretVisVelgSpillere) : true;
+    });
+    const [visOppsummering, setVisOppsummering] = useState(() => {
+        const lagretVisOppsummering = localStorage.getItem('visOppsummering');
+        return lagretVisOppsummering ? JSON.parse(lagretVisOppsummering) : false;
+    });
+
+    useEffect(() => {
+        localStorage.setItem('spillere', JSON.stringify(spillere));
+        localStorage.setItem('nr', JSON.stringify(nr));
+        localStorage.setItem('visVelgSpillere', JSON.stringify(visVelgSpillere));
+        localStorage.setItem('visScoreboard', JSON.stringify(visScoreboard));
+        localStorage.setItem('visOppsummering', JSON.stringify(visOppsummering));
+    }, [spillere, nr, visVelgSpillere, visScoreboard, visOppsummering]); 
 
     useEffect(() => {
         if (bane && bane.hull) {
@@ -23,9 +47,22 @@ const ScoreBoard = () => {
     }, [bane]);
 
     const oppdaterpoeng = (spillerId, endring) => {
-        const oppdatertSpillere = spillere.map(spiller => 
-            spiller.id === spillerId ? { ...spiller, poeng: spiller.poeng + endring, total: spiller.total+endring } : spiller
-        );
+        const oppdatertSpillere = spillere.map(spiller => {
+            if (spiller.id === spillerId) {
+                const oppdatertAntallKast = [...spiller.antallKast];
+                oppdatertAntallKast[nr] = (oppdatertAntallKast[nr] || 0) + endring;
+                if(oppdatertAntallKast[nr] < 0) {
+                    oppdatertAntallKast[nr] = 0; 
+                }
+
+                return {
+                    ...spiller,
+                    antallKast: oppdatertAntallKast,
+                    total: oppdatertAntallKast[nr] < 0 ? spiller.total : spiller.total + endring
+                };
+            }
+            return spiller;
+        });
         setSpillere(oppdatertSpillere);
     };
 
@@ -64,7 +101,11 @@ const ScoreBoard = () => {
     };
 
     const handleBekreftSpillere = (valgteSpillere) => {
-        const spillereMedPoeng = valgteSpillere.map(spiller => ({ ...spiller, poeng: 0, total: 0-hull[nr].par }));
+        const spillereMedPoeng = valgteSpillere.map(spiller => ({
+            ...spiller,
+            antallKast: Array(hull.length).fill(0), 
+            total: 0 - hull[nr].par,
+        }));
         setSpillere(spillereMedPoeng);
         setVisVelgSpillere(false);
         setVisScoreboard(true);
@@ -76,24 +117,40 @@ const ScoreBoard = () => {
             baneNavn: bane.baneNavn,
             baneId: baneId
         };
-        
+    
+        console.log("Poengkort som sendes til serveren:", nyPoengkort);
+        console.log("Brukerdata:", bruker);
+    
         fetch(`${process.env.REACT_APP_API_BASE_URL}/brukere/${bruker.id}/poengkort`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nyPoengkort })
-        }).then((response) => {
-            if (!response.ok) {
-                throw new Error('Feil ved lagring av poengkort');
-            }
-            return response.json();
-        }).catch(error => {
-            console.error('Feil ved lagring av poengkort:', error);
-        });
-
+            body: JSON.stringify(nyPoengkort)
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Feil ved lagring av poengkort: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("Poengkort lagret:", data);
+            })
+            .catch((error) => {
+                console.error('Feil ved lagring av poengkort:', error.message);
+            });
+    
         setVisScoreboard(false);
         setVisVelgSpillere(false);
         setVisOppsummering(true);
     };
+    
+    const handleNyRunde = () => {
+        setVisOppsummering(false);
+        setVisVelgSpillere(true);
+        setSpillere([]);
+        setNr(0);
+        setVisScoreboard(false);
+    }
 
     return (
         <div className="innhold flex justify-center bg-gray-200">
@@ -115,7 +172,7 @@ const ScoreBoard = () => {
                         <div key={spiller.id} className="spiller flex justify-center items-center my-2 border-b">
                             <p className="p-5">{spiller.navn} ({spiller.total})</p>
                             <button onClick={() => oppdaterpoeng(spiller.id, -1)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow px-4 py-2 font-sans">-</button>
-                            <p className="p-5">{spiller.poeng}</p>
+                            <p className="p-5">{spiller.antallKast[nr] || 0}</p>
                             <button onClick={() => oppdaterpoeng(spiller.id, 1)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow px-4 py-2">+</button>
                         </div>
                     ))}
@@ -131,7 +188,7 @@ const ScoreBoard = () => {
             )}
             {visVelgSpillere && <VelgSpillere bane={bane} bruker={bruker} onBekreftSpillere={handleBekreftSpillere}/>}
             {visOppsummering && (
-                <div className="oppsummering bg-white shadow rounded-lg m-8 border p-5">
+                <div className="oppsummering bg-white shadow rounded-lg m-8 border p-5 flex flex-col items-center">
                     <h2 className="text-center font-bold text-xl mb-4">Oppsummering av runden</h2>
                     <table className="min-w-full bg-white">
                         <thead>
@@ -149,6 +206,7 @@ const ScoreBoard = () => {
                             ))}
                         </tbody>
                     </table>
+                    <button onClick={handleNyRunde} className="mt-2 rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2">Ny runde</button>
                 </div>
             )}
         </div>
