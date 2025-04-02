@@ -14,7 +14,7 @@ const setMelding = "";
         if (respons.ok) {
             setLoggetInnBruker(null); //Logger ut bruker
             window.location.reload(); //Tvinger en refresh 
-            window.location.href = "/Hjem"; //Funker ikke med minne.push("/Hjem"); av en eller annen grunn
+            window.location.href = "/Hjem"; 
         }
     } catch (error) {
         setMelding("Feil ved utlogging", error);

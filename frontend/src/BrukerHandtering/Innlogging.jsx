@@ -44,15 +44,14 @@ const Innlogging = ({ setLoggetInnBruker }) => {
       const data = await respons.json();
       if (!respons.ok) {
         console.error("Innloggingsfeil:", data);
-        setMelding("Feil ved innlogging. Prøv igjen.");
+        setMelding("Feil ved innlogging. Sjekk brukernavn og passord, prøv igjen deretter.");
       } else {
-        setLoggetInnBruker(data.bruker); //Setter bruker som er logget inn
         setMelding("Innlogging vellykket!");
-        console.log("Innlogging vellykket!");
         setTimeout(() => {
-          minne.push("/Hjem");
+          setLoggetInnBruker(data.bruker);
+          setTimeout(() => minne.push("/Hjem"), 1000);
           window.location.reload();
-        }, 1000);
+        }, 500);
       }
     } catch (error) {
       console.error("Innloggingsfeil:", error);
