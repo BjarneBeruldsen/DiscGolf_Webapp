@@ -2,8 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import BaneListe from "./Baneliste";
 import UseFetch from "./UseFetch";
 import { useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const RedigerBane = ({ klubb }) => {
+    const minne = useHistory();
     const [rediger, setRediger] = useState(true);
     const { klubbId, baneId } = useParams();
     const { data: bane, error, isPending } = UseFetch(`${process.env.REACT_APP_API_BASE_URL}/baner/${baneId}`);
@@ -21,6 +23,7 @@ const RedigerBane = ({ klubb }) => {
     const [visRedigerHull, setVisRedigerHull] = useState(false);
     const [visRedigerBane, setVisRedigerBane] = useState(true);
     const [hull, setHull] = useState([]);
+    const [oppdaterteHull, setOppdaterteHull] = useState([]);
     const baneNavnRef = useRef(null);
     const vanskelighetRef = useRef(null);
     const beskrivelseRef = useRef(null);
@@ -29,15 +32,15 @@ const RedigerBane = ({ klubb }) => {
     const [nr, setNr] = useState(0);
  
 
-    const lagreEndrng = async () => { 
-        const _id = bane._id
+    const lagreEndrng = async () => {
+        lagreHull(); 
+        setNr(0);
     
         const oppdaterteData = { 
             baneNavn,
             vanskelighet,
             beskrivelse,
-            hull, 
-            _id
+            hull
         };
     
         try {
@@ -56,14 +59,19 @@ const RedigerBane = ({ klubb }) => {
             const result = await response.json();
             console.log('Oppdatering vellykket:', result);
             alert('Oppdatering vellykket!');
+            if(visRedigerBane) {
+                minne.push(`/LagKlubbSide/${klubbId}`);
+            }
         } catch (error) {
             console.error('Feil:', error);
         }
     };
 
     const angreEndring = () => { 
-        
+        alert('Endringer angret!');
+        minne.push(`/LagKlubbSide/${klubbId}`);
     }
+
 
     useEffect(() => {
         if (bane) {
@@ -81,15 +89,26 @@ const RedigerBane = ({ klubb }) => {
         }
     }, [nr, hull]);
 
+
     const endreHull = (retning) => {
         if (retning && nr < hull.length - 1) {
-            setNr(nr + 1); 
-
-            
+            lagreHull();
+            setNr(nr + 1);  
         } else if (!retning && nr > 0) {
             setNr(nr - 1);
         }
     };
+
+    const regHull= () => {
+        lagreEndrng();
+        alert('Endringer på hull er lagret');
+        handleVisning('bane')();
+    }
+
+    const lagreHull = () => {
+        hull[nr] = { ...hull[nr], avstand, par };  
+        console.log('lagre Hull:', hull);
+    }
 
     const handleVisning = (seksjon) => () => {
         setVisRedigerBane(seksjon === 'bane');
@@ -251,7 +270,7 @@ const RedigerBane = ({ klubb }) => {
                         </div>
                         <div className="bunn-panel flex justify-between py-2 font-semibold text-md">
                             <button onClick={handleVisning('bane')} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2">{"Angre"}</button>
-                            <button  className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2">{"Fullfør"}</button>
+                            <button onClick={regHull} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2">{"Fullfør"}</button>
                         </div>
                     </div>
                     )} 

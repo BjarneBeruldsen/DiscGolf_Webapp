@@ -19,8 +19,10 @@ const { ObjectId } = require('mongodb');
 const PORT = process.env.PORT || 8000;
 const path = require('path');
 require('dotenv').config();
+const klubbRouter = require('./ruter/klubbhandtering'); 
 
 const app = express();
+app.use(express.urlencoded({ extended: true })); 
 
 //https://github.com/express-rate-limit/express-rate-limit/wiki/Troubleshooting-Proxy-Issues
 app.set("trust proxy", 1); //Heroku kjører proxy og må settes til trust for at ulike ting skal fungere ordentlig som express-rate-limit (IP) og session
@@ -191,229 +193,10 @@ app.listen(PORT, () => {
     }
 });
 
-//Klubbhåndterings ruter 
-app.get('/klubber', (req, res) => {
-    let klubber = []
-    db.collection('Klubb')
-    .find()
-    .forEach(klubb => klubber.push(klubb))
-    .then(() => {
-        res.status(200).json(klubber)
-    })
-    .catch(() => {
-        res.status(500).json({error: 'Feil ved henting av klubber'})
-    })
-})
-
-app.get('/klubber/:id', (req, res) => {
-
-    if(ObjectId.isValid(req.params.id) === false) {
-        return res.status(400).json({error: 'Ugyldig dokument-id'})
-    }
-    else {
-        db.collection('Klubb')
-        .findOne({_id: new ObjectId(req.params.id)})
-        .then(doc => {
-            res.status(200).json(doc)
-        })
-        .catch(err => {
-            res.status(500).json({error: 'Feil ved henting av klubb'})
-        })
-    }
-})
-
-app.post('/klubber', (req, res) => {
-    const klubb = req.body
-
-    db.collection('Klubb')
-    .insertOne(klubb)
-    .then(result => {
-        res.status(201).json(result)
-    })
-    .catch(err => {
-        res.status(500).json({error: 'Feil ved lagring av klubb'})  
-    })
-})
-
-app.delete('/klubber/:id', (req, res) => {
-
-    if(ObjectId.isValid(req.params.id) === false) {
-        return res.status(400).json({error: 'Ugyldig dokument-id'})
-    }
-    else {
-        db.collection('Klubb')
-        .deleteOne({_id: new ObjectId(req.params.id)})
-        .then(result => {
-            res.status(200).json(result)
-        })
-        .catch(err => {
-            res.status(500).json({error: 'Feil ved sletting av klubb'})
-        })
-    }
-})
-
-app.patch('/klubber/:id', (req, res) => {
-    const oppdatering = req.body
-
-    if(ObjectId.isValid(req.params.id) === false) {
-        return res.status(400).json({error: 'Ugyldig dokument-id'})
-    }
-    else {
-        db.collection('Klubb')
-        .updateOne({_id: new ObjectId(req.params.id)}, {$set: oppdatering})
-        .then(result => {
-            res.status(200).json(result)
-        })
-        .catch(err => {
-            res.status(500).json({error: 'Feil ved sletting av klubb'})
-        })
-    }
-})
-
-//Rute som legger nyheter til klubben sin klubbside
-app.post('/klubber/:id/nyheter', (req, res) => {
-    if(ObjectId.isValid(req.params.id) === false) {
-        return res.status(400).json({error: 'Ugyldig dokument-id'});
-    } else {
-        const nyNyhet = {...req.body, _id: new ObjectId()};
-        db.collection('Klubb')
-        .updateOne(
-            { _id: new ObjectId(req.params.id) },
-            { $push: { nyheter: nyNyhet } }
-        )
-        .then(result => {
-            res.status(201).json(result);
-        })
-        .catch(err => {
-            res.status(500).json({error: 'Feil ved lagring av nyhet'});
-        });
-    }
-});
-
-//rute som legger til bane til git klubb
-app.post('/klubber/:id/baner', (req, res) => {
-    if(ObjectId.isValid(req.params.id) === false) {
-        return res.status(400).json({error: 'Ugyldig dokument-id'});
-    } else {
-        const nyBane = { ...req.body, _id: new ObjectId() };
-        db.collection('Klubb')
-        .updateOne(
-            { _id: new ObjectId(req.params.id) },
-            { $push: { baner: nyBane } }
-        )
-        .then(result => {
-            res.status(201).json(result);
-        })
-        .catch(err => {
-            res.status(500).json({error: 'Feil ved lagring av bane'});
-        });
-    }
-});
-
-
-
-//rute for henting av alle nyheter
-app.get('/nyheterListe', (req, res) => {
-    let nyheter = []; 
-    db.collection('Klubb')
-    .find()
-    .forEach(klubb => {
-        if(klubb.nyheter) {
-            klubb.nyheter.forEach(nyhet => nyheter.push(nyhet));
-        }
-    })
-    .then(() => {
-        res.status(200).json(nyheter);
-    })
-    .catch(() => {
-        res.status(500).json({error: 'Feil ved henting av nyheter'});
-    });
-})
-
-
-//rute for henting av alle baner 
-app.get('/banerListe', (req, res) => {
-    let baner = []; 
-    db.collection('Klubb')
-    .find()
-    .forEach(klubb => {
-        if(klubb.baner) {
-            klubb.baner.forEach(bane => baner.push(bane));
-        }
-    })
-    .then(() => {
-        res.status(200).json(baner);
-    })
-    .catch(() => {
-        res.status(500).json({error: 'Feil ved henting av baner'});
-    }); 
-})
-
-//rute for henting av spesifikk bane 
-app.get('/baner/:id', async (req, res) => {
-    try {
-        const baneId = new ObjectId(req.params.id);
-        const klubb = await db.collection('Klubb').findOne({ 'baner._id': baneId }, { projection: { 'baner.$': 1 } });
-        
-        if (!klubb) {
-            return res.status(404).json({ error: 'Bane ikke funnet' });
-        }
-
-        const bane = klubb.baner[0];
-        const response = {
-            ...bane,
-            klubbId: klubb._id 
-        };
-
-        res.status(200).json(response);
-    } catch (error) {
-        res.status(500).json({ error: 'Feil ved henting av bane' });
-    }
-});
-
-app.patch('/klubber/:klubbId/baner/:baneId', (req, res) => {
-    const updates = req.body
-
-    if(ObjectId.isValid(req.params.klubbId) === false || ObjectId.isValid(req.params.baneId) === false) {
-        return res.status(400).json({error: 'Ugyldig dokument-id'})
-    }
-    else {
-        db.collection('Klubb')
-        .updateOne(
-            { _id: new ObjectId(req.params.klubbId), 'baner._id': new ObjectId(req.params.baneId) },
-            { $set: { 'baner.$': updates } }
-        )
-        .then(result => {
-            res.status(200).json(result)
-        })
-        .catch(err => {
-            res.status(500).json({error: 'Feil ved oppdatering av bane'})
-        })
-    }
-})
+app.use(klubbRouter);
 
 //Brukerhåndterings ruter
 
-//Rute for å lagre poengkort for en bruker
-app.post('/brukere/:id/poengkort', beskyttetRute, async (req, res) => {
-    if(ObjectId.isValid(req.params.id) === false) {
-        return res.status(400).json({error: 'Ugyldig dokument-id'});
-    } else {
-        const poengkort = req.body
-
-        db.collection('Brukere')
-        .updateOne(
-            { _id: new ObjectId(req.params.id) }, 
-            { $push: { poengkort: poengkort } },
-        )
-        .then(result => {
-            res.status(201).json(result)
-        })
-        .catch(err => {
-            res.status(500).json({error: 'Feil ved lagring av poengkort'})
-        })
-    }
-})
 //Rute for registrering av bruker
 app.post("/Registrering", registreringValidering, registreringStopp, async (req, res) => {
     try {
@@ -737,7 +520,7 @@ app.get("/api/brukere", beskyttetRute, sjekkRolle(["super-admin"]), async (req, 
 });
 
 //Tilbakestille testdata fra klubb collection 
-app.delete('/tommeTestdata', (req, res) => {
+app.delete('/tommeTestdata', (res) => {
     db.collection('Klubb').deleteMany({})
         .then(result => {
             res.status(200).json({ message: 'Testdata tømt' });
@@ -784,11 +567,11 @@ const transporter = nodemailer.createTransport({
   });
 
 //Rute for systeminnstillinger
-app.get("/admin/systeminnstillinger", beskyttetRute, sjekkRolle(["super-admin"]), (req, res) => {
+app.get("/admin/systeminnstillinger", beskyttetRute, sjekkRolle(["super-admin"]), (res) => {
     res.json({ message: "Velkommen til systeminnstillinger!" });
 });
 
 //Håndter alle andre ruter med React Router
-app.get('*', (req, res) => {
+app.get('*', (res) => {
     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });

@@ -19,7 +19,7 @@ const Registrering = () => {
         //Frontend validering 
         const brukernavnRegex = /^[a-zA-Z0-9]{3,15}$/; //3-15 tegn, kun bokstaver og tall
         const epostRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; //E-post validering sjekker @ og .
-        const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,}$/; //Minst 8 tegn, ett spesialtegn
+        const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,20}$/; //Minst 8 tegn og maks 20, ett spesialtegn
     
         if (!brukernavnRegex.test(brukernavn)) {
             setMelding("Brukernavn må være 3-15 tegn langt og kun inneholde bokstaver og tall.");
@@ -30,7 +30,7 @@ const Registrering = () => {
             return;
         }
         if (!passordRegex.test(passord)) {
-            setMelding("Passord må være minst 8 tegn og ha ett spesialtegn.");
+            setMelding("Passord må være minst 8 tegn og maks 20 tegn og ha ett spesialtegn.");
             return;
         }
         //Kontakter backend for registrering
@@ -44,9 +44,10 @@ const Registrering = () => {
             if (!respons.ok) {
                 setMelding("Registrering feilet. Prøv igjen.");
                 return;
-            } //Registrering vellykket bruker er registrert
+            } else {//Registrering ble vellykket bruker er registrert
             setMelding("Registrering vellykket! Du blir omdirigert til innlogging...");
             setTimeout(() => minne.push("/Innlogging"), 1000);
+            }
         } catch (error) {
             setMelding("Noe gikk galt. Prøv igjen.");
             console.error("Registreringsfeil:", error);
