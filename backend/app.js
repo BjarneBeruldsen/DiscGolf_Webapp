@@ -20,6 +20,7 @@ const PORT = process.env.PORT || 8000;
 const path = require('path');
 require('dotenv').config();
 
+app.use(express.urlencoded({ extended: true })); 
 const app = express();
 
 //https://github.com/express-rate-limit/express-rate-limit/wiki/Troubleshooting-Proxy-Issues
@@ -648,7 +649,7 @@ function beskyttetRute(req, res, next) {
 // Sjekke brukerens rolle 
 // (parameteren roller = liste over roller som har tilgang til ruten)
 function sjekkRolle(roller) {
-    return (req, res, nect) => {
+    return (req, res, next) => {
         const brukerRolle = req.user?.rolle; // ?.rolle (returner undefined hvis ikke eksisterer)
         if (!brukerRolle || !roller.includes(brukerRolle)) {
             return res.status(403).json({ error: "Ingen tilgang" })
@@ -677,7 +678,7 @@ app.get('/bruker/rolle', beskyttetRute, async (req, res) => {
 });
 
 //Tilbakestille testdata fra klubb collection 
-app.delete('/tommeTestdata', (req, res) => {
+app.delete('/tommeTestdata', (res) => {
     db.collection('Klubb').deleteMany({})
         .then(result => {
             res.status(200).json({ message: 'Testdata tømt' });
@@ -724,11 +725,11 @@ const transporter = nodemailer.createTransport({
   });
 
 //Rute for systeminnstillinger
-app.get("/admin/systeminnstillinger", beskyttetRute, sjekkRolle(["super-admin"]), (req, res) => {
+app.get("/admin/systeminnstillinger", beskyttetRute, sjekkRolle(["super-admin"]), (res) => {
     res.json({ message: "Velkommen til systeminnstillinger!" });
 });
 
 //Håndter alle andre ruter med React Router
-app.get('*', (req, res) => {
+app.get('*', (res) => {
     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });

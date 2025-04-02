@@ -100,13 +100,17 @@ useEffect(() => {
               )}
             </Route>
             <Route exact path="/Innlogging">
-              <Innlogging
-                setLoggetInnBruker={setLoggetInnBruker}
-                setLoggUtBruker={loggUtBruker}
-              />
+              {loggetInnBruker ? (
+                <Redirect to="/Hjem" />
+              ) : (
+                <Innlogging 
+                  setLoggetInnBruker={setLoggetInnBruker}
+                  loggUtBruker={loggUtBruker}
+                />
+              )}
             </Route>
             <Route exact path="/Registrering">
-              <Registrering />
+              {loggetInnBruker ? <Redirect to="/Hjem" /> : <Registrering />}
             </Route>
             <Route exact path="/ScoreBoard/:id">
               <ScoreBoard />
