@@ -5,6 +5,7 @@ import BrukerInnstillinger from "./Komponenter/BrukerInnstillinger.jsx";
 import Personvern from "./Komponenter/Personvern.jsx";
 import Sikkerhet from "./Komponenter/Sikkerhet.jsx";
 import MinKlubb from "./Komponenter/MinKlubb.jsx";
+import KlubbInformasjon from "./Komponenter/KlubbInformasjon.jsx";
 import MittAbonnement from "./Komponenter/MittAbonnement.jsx";
 import HentBruker from "./HentBruker.jsx"; 
 import AdminDashboard from "../Admin/AdminDashboard";
@@ -19,7 +20,7 @@ const Medlemskap = () => {
 
   //Definerer hovedkategorier
   const hovedKategorier = (() => {
-    if (bruker?.rolle === "super-admin") {
+    if (bruker?.rolle === "hoved-admin") {
       return [
         "Systeminnstillinger",
         "Administrasjon",
