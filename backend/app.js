@@ -20,8 +20,8 @@ const PORT = process.env.PORT || 8000;
 const path = require('path');
 require('dotenv').config();
 
-app.use(express.urlencoded({ extended: true })); 
 const app = express();
+app.use(express.urlencoded({ extended: true })); 
 
 //https://github.com/express-rate-limit/express-rate-limit/wiki/Troubleshooting-Proxy-Issues
 app.set("trust proxy", 1); //Heroku kjører proxy og må settes til trust for at ulike ting skal fungere ordentlig som express-rate-limit (IP) og session
