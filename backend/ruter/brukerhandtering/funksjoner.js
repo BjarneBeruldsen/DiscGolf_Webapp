@@ -1,3 +1,5 @@
+//Author: Laurent Zogaj & Severin Waller Sørensen
+
 //Rute for å sjekke om bruker er aktiv eller ikke, brukes i ulike ruter for enkel sjekk
 async function sjekkBrukerAktiv(req, res, next) {
     if (!req.isAuthenticated()) { //Sjekker om brukeren er logget inn

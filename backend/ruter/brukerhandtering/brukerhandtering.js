@@ -1,3 +1,5 @@
+//Author: Laurent Zogaj & Severin Waller Sørensen
+
 const express = require('express');
 const { ObjectId } = require('mongodb');
 const { kobleTilDB, getDb } = require('../../db'); 
@@ -179,15 +181,41 @@ brukerRouter.delete("/SletteBruker", beskyttetRute, sletteValidering, sjekkBruke
         return res.status(500).json({ error: "Noe gikk galt. Prøv igjen senere" });
     }
 });
+//Rute for å redigere brukerinformasjon og legge til mer info som fornavn, etternavn, telefonnummer og bosted
 
-// Rute for systeminnstillinger
-brukerRouter.get("/admin/systeminnstillinger", beskyttetRute, sjekkRolle(["hoved-admin"]), (req, res) => {
-    res.json({ message: "Velkommen til systeminnstillinger!" });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Rute for å hente alle brukere for søking etter brukere man kan komme i kontakt med
+brukerRouter.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (res) => {
+    try {
+        const alleBrukere = [];
+        //Henter alle brukere basert på gitte regler(projections)
+        await db.collection("Brukere")
+            .find({})
+            .project({ brukernavn: 1, epost: 1, rolle: 1 })
+            .forEach(bruker => {
+                alleBrukere.push(bruker);
+            });
+        res.status(200).json(alleBrukere);
+    } catch (err) {
+        console.error("Feil ved henting av brukere:", err);
+        res.status(500).json({ error: "Feil ved henting av brukerliste" });
+    }
 });
-
-//Rute for å redigere brukerinformasjon
 // Rute for å redigere brukerinformasjon
-router.patch("/api/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
+brukerRouter.patch("/api/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
     try {
         const brukerId = req.params.id;
 
@@ -238,29 +266,6 @@ brukerRouter.delete("/api/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"
         res.status(500).json({ error: "Kunne ikke slette bruker" });
     }
 });
-
-
-//Rute for glemt passord
-
-
-//Rute for å hente alle brukere for søking etter brukere man kan komme i kontakt med
-brukerRouter.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (res) => {
-    try {
-        const alleBrukere = [];
-        //Henter alle brukere basert på gitte regler(projections)
-        await db.collection("Brukere")
-            .find({})
-            .project({ brukernavn: 1, epost: 1, rolle: 1 })
-            .forEach(bruker => {
-                alleBrukere.push(bruker);
-            });
-        res.status(200).json(alleBrukere);
-    } catch (err) {
-        console.error("Feil ved henting av brukere:", err);
-        res.status(500).json({ error: "Feil ved henting av brukerliste" });
-    }
-});
-
 // Rute for å hente brukerens rolle
 brukerRouter.get('/bruker/rolle', beskyttetRute, async (req, res) => {
     try {
@@ -288,6 +293,11 @@ brukerRouter.get("/api/brukere", beskyttetRute, sjekkRolle(["hoved-admin"]), asy
         console.error("Feil ved henting av brukere:", err);
         res.status(500).json({ error: "Kunne ikke hente brukere" });
     }
+});
+
+// Rute for systeminnstillinger
+brukerRouter.get("/admin/systeminnstillinger", beskyttetRute, sjekkRolle(["hoved-admin"]), (req, res) => {
+    res.json({ message: "Velkommen til systeminnstillinger!" });
 });
  
 module.exports = brukerRouter;

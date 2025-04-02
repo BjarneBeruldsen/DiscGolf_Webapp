@@ -16,7 +16,6 @@ const { ObjectId } = require('mongodb');
 const PORT = process.env.PORT || 8000;
 const path = require('path');
 require('dotenv').config();
-const { beskyttetRute, sjekkBrukerAktiv } = require('./ruter/brukerhandtering/funksjoner');
 const klubbRouter = require('./ruter/klubbhandtering'); 
 const brukerRouter = require('./ruter/brukerhandtering/brukerhandtering.js'); 
 
@@ -185,6 +184,11 @@ passport.deserializeUser(async (id, done) => {
         return done(err);
     }
 });
+
+app.use(klubbRouter);
+app.use(brukerRouter);
+
+
 //Start av server
 app.listen(PORT, () => {
     console.log(`Server kjører på port ${PORT}`);
@@ -193,9 +197,6 @@ app.listen(PORT, () => {
         console.error("Feil ved oppkobling til databasen", err);
     }
 });
-
-app.use(klubbRouter);
-app.use(brukerRouter);
 
 
 //Andre ruter

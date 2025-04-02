@@ -1,3 +1,5 @@
+//Author: Bjarne Beruldsen
+
 const express = require('express');
 const { ObjectId } = require('mongodb');
 const { kobleTilDB, getDb } = require('../db'); 
