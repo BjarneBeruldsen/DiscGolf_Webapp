@@ -5,6 +5,7 @@ import BrukerInnstillinger from "./Komponenter/BrukerInnstillinger.jsx";
 import Personvern from "./Komponenter/Personvern.jsx";
 import Sikkerhet from "./Komponenter/Sikkerhet.jsx";
 import MinKlubb from "./Komponenter/MinKlubb.jsx";
+import KlubbInformasjon from "./Komponenter/KlubbInformasjon.jsx";
 import MittAbonnement from "./Komponenter/MittAbonnement.jsx";
 import HentBruker from "./HentBruker.jsx"; 
 import AdminDashboard from "../Admin/AdminDashboard";
