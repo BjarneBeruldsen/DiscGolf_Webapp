@@ -570,7 +570,57 @@ app.delete("/SletteBruker", beskyttetRute, sletteValidering, sjekkBrukerAktiv, a
     }
 });
 //Rute for å redigere brukerinformasjon
+app.patch("/api/brukere/:id", beskyttetRute, sjekkRolle(["super-admin"]), async (req, res) => {
+    try {
+        const brukerId = req.params.id;
 
+        // Sjekk om ID-en er gyldig
+        if (!ObjectId.isValid(brukerId)) {
+            return res.status(400).json({ error: "Ugyldig bruker-ID" });
+        }
+
+        const oppdateringer = req.body;
+
+        // Oppdater brukeren i databasen
+        const resultat = await db.collection("Brukere").updateOne(
+            { _id: new ObjectId(brukerId) },
+            { $set: oppdateringer }
+        );
+
+        if (resultat.matchedCount === 0) {
+            return res.status(404).json({ error: "Bruker ikke funnet" });
+        }
+
+        res.status(200).json({ message: "Bruker oppdatert" });
+    } catch (err) {
+        console.error("Feil ved oppdatering av bruker:", err);
+        res.status(500).json({ error: "Kunne ikke oppdatere bruker" });
+    }
+});
+
+// Rute for å slette en bruker
+app.delete("/api/brukere/:id", beskyttetRute, sjekkRolle(["super-admin"]), async (req, res) => {
+    try {
+        const brukerId = req.params.id;
+
+        // Sjekk om ID-en er gyldig
+        if (!ObjectId.isValid(brukerId)) {
+            return res.status(400).json({ error: "Ugyldig bruker-ID" });
+        }
+
+        // Slett brukeren fra databasen
+        const resultat = await db.collection("Brukere").deleteOne({ _id: new ObjectId(brukerId) });
+
+        if (resultat.deletedCount === 0) {
+            return res.status(404).json({ error: "Bruker ikke funnet" });
+        }
+
+        res.status(200).json({ message: "Bruker slettet" });
+    } catch (err) {
+        console.error("Feil ved sletting av bruker:", err);
+        res.status(500).json({ error: "Kunne ikke slette bruker" });
+    }
+});
 
 //Rute for glemt passord
 
@@ -648,7 +698,7 @@ function beskyttetRute(req, res, next) {
 // Sjekke brukerens rolle 
 // (parameteren roller = liste over roller som har tilgang til ruten)
 function sjekkRolle(roller) {
-    return (req, res, nect) => {
+    return (req, res, next) => {
         const brukerRolle = req.user?.rolle; // ?.rolle (returner undefined hvis ikke eksisterer)
         if (!brukerRolle || !roller.includes(brukerRolle)) {
             return res.status(403).json({ error: "Ingen tilgang" })
@@ -673,6 +723,16 @@ app.get('/bruker/rolle', beskyttetRute, async (req, res) => {
     } catch (err) {
         console.error('Feil ved henting av brukerens rolle:', err);
         res.status(500).json({ error: 'Feil ved henting av brukerens rolle' });
+    }
+});
+
+app.get("/api/brukere", beskyttetRute, sjekkRolle(["super-admin"]), async (req, res) => {
+    try {
+        const brukere = await db.collection("Brukere").find({}).toArray();
+        res.status(200).json(brukere); // Returnerer JSON
+    } catch (err) {
+        console.error("Feil ved henting av brukere:", err);
+        res.status(500).json({ error: "Kunne ikke hente brukere" });
     }
 });
 

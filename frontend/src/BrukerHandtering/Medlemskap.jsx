@@ -9,6 +9,7 @@ import MittAbonnement from "./Komponenter/MittAbonnement.jsx";
 import HentBruker from "./HentBruker.jsx"; 
 import AdminDashboard from "../Admin/AdminDashboard";
 import Systeminnstillinger from "../Admin/Systeminnstillinger.jsx";
+import BrukerListe from "../Admin/BrukerListe.jsx";
 
 const Medlemskap = () => {
   const { bruker, setBruker } = HentBruker(); //Henter brukerdata fra HentBruker.jsx
@@ -69,8 +70,8 @@ const Medlemskap = () => {
 
   //Definerer underkategorier
   const underKategorier = {
-    Systeminnstillinger: ["Globale innstillinger", "Hovedadministrasjon av brukere", "Systemlogg"],
-    Administrasjon: ["AdminDashboard", "Administrere klubber", "Administrere brukere"],
+    Systeminnstillinger: ["Globale innstillinger", "Brukeradministrasjon", "Systemlogg"],
+    Administrasjon: ["AdminDashboard", "Administrere klubber"],
     Klubbinnstillinger: ["Klubbinformasjon", "Endre klubbinfo", "Administrede medlem", "Slett klubb"],
     Brukerinnstillinger: ["Min informasjon", "Endre min informasjon", "Slett bruker"],
     Personvern: ["Informasjonskapsler", "Synlighet", "GDPR"],
@@ -140,6 +141,18 @@ const Medlemskap = () => {
       {/*Høyre Meny*/}
       <div className="content-box flex flex-col items-center justify-center gap-6">
 
+        {valgtKategori === "Systeminnstillinger" && valgtUnderKategori === "Brukeradministrasjon" && (
+          <BrukerListe />
+        )}
+
+        {valgtKategori === "Administrasjon" && valgtUnderKategori === "AdminDashboard" && (
+          <AdminDashboard />
+        )}
+
+        {valgtKategori === "Klubbinnstillinger" && valgtUnderKategori === "Klubbinformasjon" && (
+          <KlubbInformasjon />
+        )}
+
         {valgtKategori === "Brukerinnstillinger" && valgtUnderKategori && (
           <BrukerInnstillinger bruker={bruker} valgtUnderKategori={valgtUnderKategori} setBruker={setBruker} />
         )}
@@ -158,10 +171,6 @@ const Medlemskap = () => {
 
         {valgtKategori === "Mitt abonnement" && valgtUnderKategori && (
           <MittAbonnement valgtUnderKategori={valgtUnderKategori} />
-        )}
-
-        {valgtKategori === "Administrasjon" && valgtUnderKategori === "AdminDashboard" && (
-          <AdminDashboard />
         )}
 
         {/* Fallback melding*/}
