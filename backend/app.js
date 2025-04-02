@@ -270,6 +270,6 @@ const transporter = nodemailer.createTransport({
   });
 
 //Håndter alle andre ruter med React Router
-app.get('*', (res) => {
+app.get('*', (req,res) => {
     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });

@@ -192,7 +192,7 @@ brukerRouter.delete("/SletteBruker", beskyttetRute, sletteValidering, sjekkBruke
 
 
 //Rute for å hente alle brukere for søking etter brukere man kan komme i kontakt med
-brukerRouter.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (res) => {
+brukerRouter.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (req, res) => {
     try {
         const db = getDb();
         const alleBrukere = [];
