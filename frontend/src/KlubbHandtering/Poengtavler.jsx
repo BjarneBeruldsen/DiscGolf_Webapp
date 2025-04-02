@@ -37,13 +37,13 @@ const PoengTavler = () => {
             </div>
             {venter && <div>Laster...</div>}
             {visPoengtavler ? ( 
-            <div className="grid grid-cols-1 lg-grid-cols-2 gap-6"><div>
+            <div className="grid md-grid-cols-2 gap-4">
             {poengTavler && poengTavler.length > 0  ? (
                 poengTavler.map((poengTavle, index) => (
-                    <div className="oppsummering bg-white shadow rounded-lg m-8 border p-5" key={index}>
+                    <div className="oppsummering bg-white shadow rounded-lg m-8 border p-5 min-w-80" key={index}>
                         <h2 className="text-center font-bold text-xl mb-4">Poengkort fra: {poengTavle.nyPoengkort.baneNavn}</h2>
-                        <div className="relative flex flex-col w-full bg-white shadow-md rounded-xl">
-                            <table className="w-full text-left table-auto min-w-max">
+                        <div className="bg-white shadow-md rounded-xl">
+                            <table className="w-full text-left table-auto">
                                 <thead>
                                     <tr>
                                         <th className="p-4 border-b bg-gray-200 rounded-tl-xl">Spiller</th>
@@ -76,12 +76,11 @@ const PoengTavler = () => {
                 </div>
             )}
             </div> 
-            </div>
             ) : (
                 <div className="flex justify-center">
                     <div className="statistikk bg-white shadow rounded-xl m-8 p-5 w-full">
                         <p>kommer senere..</p>
-                    <div className="grid md:grid-cols-3 gap-6">
+                    <div className="grid md-grid-cols-3 gap-6">
                             <div className="bg-gray-100 shadow-md rounded-xl p-4">
                                 <p className="text-sm">Antall runder</p>
                                 <p className="text-xl font-bold">100</p>
