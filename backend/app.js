@@ -278,18 +278,6 @@ app.get("/sjekk-session", async (req, res) => {
     return res.status(401).json({ error: "Ingen aktiv session" });
 });
 
-// Sjekke brukerens rolle 
-// (parameteren roller = liste over roller som har tilgang til ruten)
-function sjekkRolle(roller) {
-    return (req, res, next) => {
-        const brukerRolle = req.user?.rolle; // ?.rolle (returner undefined hvis ikke eksisterer)
-        if (!brukerRolle || !roller.includes(brukerRolle)) {
-            return res.status(403).json({ error: "Ingen tilgang" })
-        }
-        next();
-    }
-}
-
 // Rute for å hente brukerens rolle
 app.get('/bruker/rolle', beskyttetRute, async (req, res) => {
     try {

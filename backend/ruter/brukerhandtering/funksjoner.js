@@ -24,4 +24,17 @@ function beskyttetRute(req, res, next) {
     }
 }
 
-module.exports = {sjekkBrukerAktiv, beskyttetRute}
+// Sjekke brukerens rolle 
+// (parameteren roller = liste over roller som har tilgang til ruten)
+function sjekkRolle(roller) {
+    return (req, res, next) => {
+        const brukerRolle = req.user?.rolle; // ?.rolle (returner undefined hvis ikke eksisterer)
+        if (!brukerRolle || !roller.includes(brukerRolle)) {
+            return res.status(403).json({ error: "Ingen tilgang" })
+        }
+        next();
+    }
+}
+
+
+module.exports = {sjekkBrukerAktiv, beskyttetRute, sjekkRolle}
