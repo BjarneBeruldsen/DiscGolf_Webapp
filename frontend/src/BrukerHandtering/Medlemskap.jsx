@@ -20,7 +20,7 @@ const Medlemskap = () => {
 
   //Definerer hovedkategorier
   const hovedKategorier = (() => {
-    if (bruker?.rolle === "super-admin") {
+    if (bruker?.rolle === "hoved-admin") {
       return [
         "Systeminnstillinger",
         "Administrasjon",

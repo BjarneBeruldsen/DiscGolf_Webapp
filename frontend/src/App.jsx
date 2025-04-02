@@ -26,7 +26,7 @@ import KontaktOss from './_components/KontaktOss';
 import OmOss from './_components/OmOss';
 import PoengTavler from './KlubbHandtering/Poengtavler';
 import HentBruker from "./BrukerHandtering/HentBruker";
-import AdminRoute from "./Tilgangskontroll/AdminRoute";
+import AdminRoute from "./Admin/AdminRoute";
 import AdminDashboard from './Admin/AdminDashboard';
 import Systeminnstillinger from './Admin/Systeminnstillinger';
 import RedigerBane from './KlubbHandtering/RedigerBane';
@@ -93,7 +93,7 @@ useEffect(() => {
               )}
             </Route>
             <Route exact path="/systeminnstillinger">
-              {loggetInnBruker?.rolle === "super-admin" ? (
+              {loggetInnBruker?.rolle === "hoved-admin" ? (
                 <Systeminnstillinger />
               ) : (
                 <Redirect to="/Innlogging" />

@@ -8,7 +8,7 @@ const MinKlubb = ({ valgtUnderKategori }) => {
   const underKategorier = ["Min klubb", "Søk etter klubb", "Avregistrer"];
 
   useEffect(() => {
-    // Hent brukerens rolle og super-admin-status fra backend
+    // Hent brukerens rolle og hoved-admin-status fra backend
     const fetchBrukerInfo = async () => {
       try {
         const response = await axios.get("/bruker/rolle", { withCredentials: true });
@@ -46,10 +46,10 @@ const MinKlubb = ({ valgtUnderKategori }) => {
         </div>
       )}
 
-      {/* Super-admin-funksjonalitet */}
+      {/* hoved-admin-funksjonalitet */}
       {superAdmin && (
         <div className="mt-4">
-          <h3 className="text-lg font-bold text-red-600">Super-Admin-funksjoner</h3>
+          <h3 className="text-lg font-bold text-red-600">hoved-Admin-funksjoner</h3>
           <ul>
             <li>Full tilgang til alle data</li>
             <li>Administrer applikasjonsinnstillinger</li>

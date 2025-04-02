@@ -25,7 +25,7 @@ const BrukerListe = () => {
     }, []);
 
     const handleEdit = async (bruker) => {
-        const oppdateringer = { rolle: "super-admin" }; // Eksempel: Oppdater rolle
+        const oppdateringer = { rolle: "hoved-admin" }; // Eksempel: Oppdater rolle
         try {
             const respons = await fetch(`/api/brukere/${bruker._id}`, {
                 method: "PATCH",
@@ -72,7 +72,7 @@ const BrukerListe = () => {
                 <p><strong>E-post:</strong> {bruker.epost}</p>
                 <p><strong>Rolle:</strong> {bruker.rolle}</p>
                 <button 
-                  className="bg-blue-500 text-white px-2 py-1 rounded mr-2 hover:bg-blue-600"
+                  className="bg-green-500 text-white px-2 py-1 rounded mr-2 hover:bg-blue-600"
                   onClick={() => handleEdit(bruker)}
                 >
                   Rediger

@@ -198,7 +198,7 @@ app.use(klubbRouter);
 app.use(brukerRouter);
 
 //Rute for å redigere brukerinformasjon
-app.patch("/api/brukere/:id", beskyttetRute, sjekkRolle(["super-admin"]), async (req, res) => {
+app.patch("/api/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
     try {
         const brukerId = req.params.id;
 
@@ -227,7 +227,7 @@ app.patch("/api/brukere/:id", beskyttetRute, sjekkRolle(["super-admin"]), async 
 });
 
 // Rute for å slette en bruker
-app.delete("/api/brukere/:id", beskyttetRute, sjekkRolle(["super-admin"]), async (req, res) => {
+app.delete("/api/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
     try {
         const brukerId = req.params.id;
 
@@ -308,7 +308,7 @@ app.get('/bruker/rolle', beskyttetRute, async (req, res) => {
     }
 });
 
-app.get("/api/brukere", beskyttetRute, sjekkRolle(["super-admin"]), async (req, res) => {
+app.get("/api/brukere", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
     try {
         const brukere = await db.collection("Brukere").find({}).toArray();
         res.status(200).json(brukere); // Returnerer JSON
@@ -366,7 +366,7 @@ const transporter = nodemailer.createTransport({
   });
 
 //Rute for systeminnstillinger
-app.get("/admin/systeminnstillinger", beskyttetRute, sjekkRolle(["super-admin"]), (res) => {
+app.get("/admin/systeminnstillinger", beskyttetRute, sjekkRolle(["hoved-admin"]), (res) => {
     res.json({ message: "Velkommen til systeminnstillinger!" });
 });
 
