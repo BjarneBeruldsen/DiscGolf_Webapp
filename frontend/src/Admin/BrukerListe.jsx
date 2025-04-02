@@ -72,7 +72,7 @@ const BrukerListe = () => {
                 <p><strong>E-post:</strong> {bruker.epost}</p>
                 <p><strong>Rolle:</strong> {bruker.rolle}</p>
                 <button 
-                  className="bg-green-500 text-white px-2 py-1 rounded mr-2 hover:bg-blue-600"
+                  className="text-black px-2 py-1 rounded mr-2 hover:bg-blue-600"
                   onClick={() => handleEdit(bruker)}
                 >
                   Rediger

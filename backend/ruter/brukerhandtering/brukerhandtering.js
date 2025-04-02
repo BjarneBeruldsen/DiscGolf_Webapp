@@ -8,8 +8,7 @@ const bcrypt = require ('bcryptjs');
 const { MongoClient } = require('mongodb');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const { beskyttetRute, sjekkBrukerAktiv } = require('./funksjoner');
-
+const { beskyttetRute, sjekkBrukerAktiv, sjekkRolle } = require('./funksjoner');
 const brukerRouter = express.Router();
 
 //Oppkobling mot databasen 
@@ -63,6 +62,7 @@ brukerRouter.post("/Registrering", registreringValidering, registreringStopp, as
         res.status(500).json({ error: "Feil ved registrering" });
     }
 });
+
 //Rute for innlogging
 brukerRouter.post("/Innlogging", innloggingValidering, loggeInnStopp, (req, res, next) => {
     //Validering av input med express-validator hentet fra validering.js
@@ -102,6 +102,7 @@ brukerRouter.post("/Innlogging", innloggingValidering, loggeInnStopp, (req, res,
         });
     })(req, res, next);
 });
+
 //Utlogging
 brukerRouter.post("/Utlogging", beskyttetRute, sjekkBrukerAktiv, async (req, res) => {
     try {
@@ -132,6 +133,7 @@ brukerRouter.post("/Utlogging", beskyttetRute, sjekkBrukerAktiv, async (req, res
         return res.status(500).json({ error: "Noe gikk galt. Prøv igjen senere" });
     }
 });
+
 //Sletting av bruker
 brukerRouter.delete("/SletteBruker", beskyttetRute, sletteValidering, sjekkBrukerAktiv, async (req, res) => {
     try {
@@ -177,7 +179,65 @@ brukerRouter.delete("/SletteBruker", beskyttetRute, sletteValidering, sjekkBruke
         return res.status(500).json({ error: "Noe gikk galt. Prøv igjen senere" });
     }
 });
+
+// Rute for systeminnstillinger
+brukerRouter.get("/admin/systeminnstillinger", beskyttetRute, sjekkRolle(["hoved-admin"]), (req, res) => {
+    res.json({ message: "Velkommen til systeminnstillinger!" });
+});
+
 //Rute for å redigere brukerinformasjon
+// Rute for å redigere brukerinformasjon
+router.patch("/api/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
+    try {
+        const brukerId = req.params.id;
+
+        // Sjekk om ID-en er gyldig
+        if (!ObjectId.isValid(brukerId)) {
+            return res.status(400).json({ error: "Ugyldig bruker-ID" });
+        }
+
+        const oppdateringer = req.body;
+
+        // Oppdater brukeren i databasen
+        const resultat = await db.collection("Brukere").updateOne(
+            { _id: new ObjectId(brukerId) },
+            { $set: oppdateringer }
+        );
+
+        if (resultat.matchedCount === 0) {
+            return res.status(404).json({ error: "Bruker ikke funnet" });
+        }
+
+        res.status(200).json({ message: "Bruker oppdatert" });
+    } catch (err) {
+        console.error("Feil ved oppdatering av bruker:", err);
+        res.status(500).json({ error: "Kunne ikke oppdatere bruker" });
+    }
+});
+
+// Rute for å slette en bruker
+brukerRouter.delete("/api/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
+    try {
+        const brukerId = req.params.id;
+
+        // Sjekk om ID-en er gyldig
+        if (!ObjectId.isValid(brukerId)) {
+            return res.status(400).json({ error: "Ugyldig bruker-ID" });
+        }
+
+        // Slett brukeren fra databasen
+        const resultat = await db.collection("Brukere").deleteOne({ _id: new ObjectId(brukerId) });
+
+        if (resultat.deletedCount === 0) {
+            return res.status(404).json({ error: "Bruker ikke funnet" });
+        }
+
+        res.status(200).json({ message: "Bruker slettet" });
+    } catch (err) {
+        console.error("Feil ved sletting av bruker:", err);
+        res.status(500).json({ error: "Kunne ikke slette bruker" });
+    }
+});
 
 
 //Rute for glemt passord
@@ -201,6 +261,33 @@ brukerRouter.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (res) =>
     }
 });
 
+// Rute for å hente brukerens rolle
+brukerRouter.get('/bruker/rolle', beskyttetRute, async (req, res) => {
+    try {
+        console.log("req.user:", req.user); // Legg til logging
+        const bruker = await db.collection('Brukere').findOne({ _id: req.user._id });
+        if (!bruker) {
+            return res.status(404).json({ error: 'Bruker ikke funnet' });
+        }
+        res.status(200).json({
+            rolle: bruker.rolle,
+            superAdmin: bruker.superAdmin || false, // Returner superAdmin-status
+        });
+    } catch (err) {
+        console.error('Feil ved henting av brukerens rolle:', err);
+        res.status(500).json({ error: 'Feil ved henting av brukerens rolle' });
+    }
+});
 
+// Rute for å hente alle brukere
+brukerRouter.get("/api/brukere", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
+    try {
+        const brukere = await db.collection("Brukere").find({}).toArray();
+        res.status(200).json(brukere); // Returnerer JSON
+    } catch (err) {
+        console.error("Feil ved henting av brukere:", err);
+        res.status(500).json({ error: "Kunne ikke hente brukere" });
+    }
+});
  
 module.exports = brukerRouter;

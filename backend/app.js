@@ -197,58 +197,6 @@ app.listen(PORT, () => {
 app.use(klubbRouter);
 app.use(brukerRouter);
 
-//Rute for å redigere brukerinformasjon
-app.patch("/api/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
-    try {
-        const brukerId = req.params.id;
-
-        // Sjekk om ID-en er gyldig
-        if (!ObjectId.isValid(brukerId)) {
-            return res.status(400).json({ error: "Ugyldig bruker-ID" });
-        }
-
-        const oppdateringer = req.body;
-
-        // Oppdater brukeren i databasen
-        const resultat = await db.collection("Brukere").updateOne(
-            { _id: new ObjectId(brukerId) },
-            { $set: oppdateringer }
-        );
-
-        if (resultat.matchedCount === 0) {
-            return res.status(404).json({ error: "Bruker ikke funnet" });
-        }
-
-        res.status(200).json({ message: "Bruker oppdatert" });
-    } catch (err) {
-        console.error("Feil ved oppdatering av bruker:", err);
-        res.status(500).json({ error: "Kunne ikke oppdatere bruker" });
-    }
-});
-
-// Rute for å slette en bruker
-app.delete("/api/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
-    try {
-        const brukerId = req.params.id;
-
-        // Sjekk om ID-en er gyldig
-        if (!ObjectId.isValid(brukerId)) {
-            return res.status(400).json({ error: "Ugyldig bruker-ID" });
-        }
-
-        // Slett brukeren fra databasen
-        const resultat = await db.collection("Brukere").deleteOne({ _id: new ObjectId(brukerId) });
-
-        if (resultat.deletedCount === 0) {
-            return res.status(404).json({ error: "Bruker ikke funnet" });
-        }
-
-        res.status(200).json({ message: "Bruker slettet" });
-    } catch (err) {
-        console.error("Feil ved sletting av bruker:", err);
-        res.status(500).json({ error: "Kunne ikke slette bruker" });
-    }
-});
 
 //Andre ruter
 //Sjekk av session
@@ -276,34 +224,6 @@ app.get("/sjekk-session", async (req, res) => {
         }
     } //Logging
     return res.status(401).json({ error: "Ingen aktiv session" });
-});
-
-// Rute for å hente brukerens rolle
-app.get('/bruker/rolle', beskyttetRute, async (req, res) => {
-    try {
-        console.log("req.user:", req.user); // Legg til logging
-        const bruker = await db.collection('Brukere').findOne({ _id: req.user._id });
-        if (!bruker) {
-            return res.status(404).json({ error: 'Bruker ikke funnet' });
-        }
-        res.status(200).json({
-            rolle: bruker.rolle,
-            superAdmin: bruker.superAdmin || false, // Returner superAdmin-status
-        });
-    } catch (err) {
-        console.error('Feil ved henting av brukerens rolle:', err);
-        res.status(500).json({ error: 'Feil ved henting av brukerens rolle' });
-    }
-});
-
-app.get("/api/brukere", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
-    try {
-        const brukere = await db.collection("Brukere").find({}).toArray();
-        res.status(200).json(brukere); // Returnerer JSON
-    } catch (err) {
-        console.error("Feil ved henting av brukere:", err);
-        res.status(500).json({ error: "Kunne ikke hente brukere" });
-    }
 });
 
 //Tilbakestille testdata fra klubb collection 
@@ -352,11 +272,6 @@ const transporter = nodemailer.createTransport({
       }
     });
   });
-
-//Rute for systeminnstillinger
-app.get("/admin/systeminnstillinger", beskyttetRute, sjekkRolle(["hoved-admin"]), (res) => {
-    res.json({ message: "Velkommen til systeminnstillinger!" });
-});
 
 //Håndter alle andre ruter med React Router
 app.get('*', (res) => {
