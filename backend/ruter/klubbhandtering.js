@@ -1,6 +1,7 @@
 const express = require('express');
 const { ObjectId } = require('mongodb');
 const { kobleTilDB, getDb } = require('../db'); 
+const { beskyttetRute } = require('./brukerhandtering/funksjoner');
 
 const { MongoClient } = require('mongodb');
 const klubbRouter = express.Router();
@@ -14,17 +15,6 @@ kobleTilDB((err) => {
         console.error("Feil ved oppkobling til databasen", err);
     }
 });
-
-//Sjekk for å beskytte ulike api-ruter som krever en innlogget bruker
-function beskyttetRute(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next(); //Brukeren er logget inn
-    } else {
-        res.status(401).json({ error: "Du må være logget inn for å få tilgang." });
-        redirect = "/Innlogging";
-    }
-}
-
 
 //Klubbhåndterings ruter 
 klubbRouter.get('/klubber', (req, res) => {

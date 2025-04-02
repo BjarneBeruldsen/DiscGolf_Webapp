@@ -24,6 +24,11 @@ const endringStopp = rateLimit({
     message: { error: "For mange registreringsforsøk, prøv igjen senere" },
 });
 
+const nyttPassordStopp = rateLimit({
+    windowMs: 60 * 60 * 1000, //1 time
+    max: 10, //Maks 10 endringer av passord fra samme IP
+    message: { error: "For mange registreringsforsøk, prøv igjen senere" },
+});
 
 //Validering av registering 
 const registreringValidering = [
@@ -32,9 +37,8 @@ const registreringValidering = [
         .isLength({ min: 3, max: 15 }).withMessage("Brukernavnet må være mellom 3 og 15 tegn.")
         .isAlphanumeric().withMessage("Brukernavnet kan bare inneholde bokstaver og tall."),
     body('passord')
-        .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.")
+        .isLength({ min: 8, max: 20 }).withMessage("Passordet må være minst 8 tegn, maks 20 tegn.")
         .matches(/[A-Z]/).withMessage("Passordet må inneholde minst en stor bokstav.")
-        //.matches(/[0-9]/).withMessage("Passordet må inneholde minst ett tall.") //Ikke gyldig med passord for admin/test for prosjektet
         .matches(/[-.@$!%*?&]/).withMessage("Passordet må inneholde minst ett spesialtegn."),
     body('epost')
         .trim()
@@ -52,12 +56,12 @@ const innloggingValidering = [
             const erEpost = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
             if (!erBrukernavn && !erEpost) {
                 throw new Error("Må være brukernavn (3-15 tegn) eller en gyldig e-post.");
-            }
+            } else {
             return true;
-        }),
+        }}),
     body('passord')
         .notEmpty().withMessage("Passord må fylles ut.")
-        .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.")
+        .isLength({ min: 8, max: 20 }).withMessage("Passordet må være minst 8 tegn, maks 20 tegn.")
 ];
 
 //Validering av redigering
@@ -74,19 +78,20 @@ const redigeringValidering = [
         .normalizeEmail(),
     body('nyttPassord')
         .optional()
-        .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.")
+        .isLength({ min: 8, max: 20 }).withMessage("Passordet må være minst 8 tegn, maks 20 tegn.")
         .matches(/[A-Z]/).withMessage("Passordet må inneholde minst én stor bokstav.")
         .matches(/[-.@$!%*?&]/).withMessage("Passordet må inneholde minst ett spesialtegn."),
     body('gammelPassord')
         .optional()
         .notEmpty().withMessage("Du må oppgi ditt gamle passord hvis du vil endre passord.")
-        .custom((value, { req }) => {
-            if (req.body.nyttPassord && !value) {
-                throw new Error("Gamle passord må oppgis for å endre passord.");
-            }
+        .custom ((value, { req }) => {
+            if (value === req.body.nyttPassord) {
+                if (req.body.nyttPassord === "") {
+                    throw new Error("Du må oppgi ditt gamle passord hvis du vil endre passord.");
+                } throw new Error("Det gamle passordet kan ikke være likt det nye passordet.");
+            } else {
             return true;
-        })
-];
+}}),];
 
 //Validering av sletting
 const sletteValidering = [
@@ -98,12 +103,34 @@ const sletteValidering = [
             const erEpost = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
             if (!erBrukernavn && !erEpost) {
                 throw new Error("Må være brukernavn (3-15 tegn) eller en gyldig e-post.");
-            }
-            return true;
-        }),
+            } else {
+                return true;   
+        }}),
     body("passord")
         .notEmpty().withMessage("Passord må fylles ut.")
-        .isLength({ min: 8 }).withMessage("Passordet må være minst 8 tegn.")
+        .isLength({ min: 8, max: 20 }).withMessage("Passordet må være minst 8 tegn, maks 20.")
+];
+//Validering av nytt passord(glemt passord)
+const nyttPassordValidering = [
+body("nyttPassord")
+    .trim()
+    .notEmpty().withMessage("Nytt passord må fylles ut.")
+    .isLength({ min: 8, max: 20 }).withMessage("Passordet må være minst 8 tegn, maks 20.")
+    .matches(/[A-Z]/).withMessage("Passordet må inneholde minst en stor bokstav.")
+    .matches(/[-.@$!%*?&]/).withMessage("Passordet må inneholde minst ett spesialtegn."),
+body("bekreftPassord")
+    .trim()
+    .notEmpty().withMessage("Bekreft passord må fylles ut.")
+    .isLength({ min: 8, max: 20 }).withMessage("Passordet må være minst 8 tegn, maks 20.")
+    .matches(/[A-Z]/).withMessage("Passordet må inneholde minst en stor bokstav.")
+    .matches(/[-.@$!%*?&]/).withMessage("Passordet må inneholde minst ett spesialtegn.")
+        .custom((value, { req }) => {
+    if (value !== req.body.nyttPassord) {
+        throw new Error("Passordene må være like.");
+    } else {
+        return true;
+    }
+}),
 ];
 //Andre valideringer her
 
@@ -120,5 +147,7 @@ module.exports = {
     sletteValidering,
     loggeInnStopp,
     registreringStopp,
-    endringStopp
+    endringStopp,
+    nyttPassordValidering,
+    nyttPassordStopp
 };
