@@ -37,13 +37,13 @@ const PoengTavler = () => {
             </div>
             {venter && <div>Laster...</div>}
             {visPoengtavler ? ( 
-            <div className="grid md-grid-cols-2 gap-4">
+            <div className="grid lg-grid-cols-2 gap-4">
             {poengTavler && poengTavler.length > 0  ? (
                 poengTavler.map((poengTavle, index) => (
                     <div className="oppsummering bg-white shadow rounded-lg m-8 border p-5 min-w-80" key={index}>
                         <h2 className="text-center font-bold text-xl mb-4">Poengkort fra: {poengTavle.nyPoengkort.baneNavn}</h2>
                         <div className="bg-white shadow-md rounded-xl">
-                            <table className="w-full text-left table-auto">
+                            <table className="w-full">
                                 <thead>
                                     <tr>
                                         <th className="p-4 border-b bg-gray-200 rounded-tl-xl">Spiller</th>
