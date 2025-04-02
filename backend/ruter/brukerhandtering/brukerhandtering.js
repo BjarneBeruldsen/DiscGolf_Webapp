@@ -13,19 +13,10 @@ const LocalStrategy = require('passport-local').Strategy;
 const { beskyttetRute, sjekkBrukerAktiv, sjekkRolle } = require('./funksjoner');
 const brukerRouter = express.Router();
 
-//Oppkobling mot databasen 
-let db
-kobleTilDB((err) => {
-    if(!err) {
-        db = getDb();
-    } else {
-        console.error("Feil ved oppkobling til databasen", err);
-    }
-});
-
 //Rute for registrering av bruker
 brukerRouter.post("/Registrering", registreringValidering, registreringStopp, async (req, res) => {
     try {
+        const db = getDb();
         //Validering av input med express-validator hentet fra validering.js
         const error = validationResult(req);
         if (!error.isEmpty()) {
@@ -67,6 +58,7 @@ brukerRouter.post("/Registrering", registreringValidering, registreringStopp, as
 
 //Rute for innlogging
 brukerRouter.post("/Innlogging", innloggingValidering, loggeInnStopp, (req, res, next) => {
+    const db = getDb();
     //Validering av input med express-validator hentet fra validering.js
     const error = validationResult(req);
     if (!error.isEmpty()) {
@@ -107,6 +99,7 @@ brukerRouter.post("/Innlogging", innloggingValidering, loggeInnStopp, (req, res,
 
 //Utlogging
 brukerRouter.post("/Utlogging", beskyttetRute, sjekkBrukerAktiv, async (req, res) => {
+    const db = getDb();
     try {
         //Henter brukerdata for logging
         const { brukernavn, epost } = req.user;
@@ -139,6 +132,7 @@ brukerRouter.post("/Utlogging", beskyttetRute, sjekkBrukerAktiv, async (req, res
 //Sletting av bruker
 brukerRouter.delete("/SletteBruker", beskyttetRute, sletteValidering, sjekkBrukerAktiv, async (req, res) => {
     try {
+        const db = getDb();
         //Validering av input med express-validator hentet fra validering.js
         const error = validationResult(req);
         if (!error.isEmpty()) {
@@ -200,6 +194,7 @@ brukerRouter.delete("/SletteBruker", beskyttetRute, sletteValidering, sjekkBruke
 //Rute for å hente alle brukere for søking etter brukere man kan komme i kontakt med
 brukerRouter.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (res) => {
     try {
+        const db = getDb();
         const alleBrukere = [];
         //Henter alle brukere basert på gitte regler(projections)
         await db.collection("Brukere")
@@ -217,8 +212,8 @@ brukerRouter.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (res) =>
 // Rute for å redigere brukerinformasjon
 brukerRouter.patch("/api/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
     try {
+        const db = getDb();
         const brukerId = req.params.id;
-
         // Sjekk om ID-en er gyldig
         if (!ObjectId.isValid(brukerId)) {
             return res.status(400).json({ error: "Ugyldig bruker-ID" });
@@ -246,8 +241,8 @@ brukerRouter.patch("/api/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]
 // Rute for å slette en bruker
 brukerRouter.delete("/api/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
     try {
+        const db = getDb();
         const brukerId = req.params.id;
-
         // Sjekk om ID-en er gyldig
         if (!ObjectId.isValid(brukerId)) {
             return res.status(400).json({ error: "Ugyldig bruker-ID" });
@@ -287,6 +282,7 @@ brukerRouter.get('/bruker/rolle', beskyttetRute, async (req, res) => {
 // Rute for å hente alle brukere
 brukerRouter.get("/api/brukere", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
     try {
+        const db = getDb();
         const brukere = await db.collection("Brukere").find({}).toArray();
         res.status(200).json(brukere); // Returnerer JSON
     } catch (err) {

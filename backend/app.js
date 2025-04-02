@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 8000;
 const path = require('path');
 require('dotenv').config();
 const klubbRouter = require('./ruter/klubbhandtering'); 
-const brukerRouter = require('./ruter/brukerhandtering/brukerhandtering.js'); 
+const brukerRouter = require('./ruter/brukerhandtering/brukerhandtering'); 
 
 
 const app = express();
@@ -165,11 +165,6 @@ passport.deserializeUser(async (id, done) => {
         }
         //Henter brukeren fra databasen
         const bruker = await db.collection("Brukere").findOne({ _id: new ObjectId(String(id)) });
-
-        //(SKAL FJERNES I PRODUKSJON!!!!)--------------------
-        // Logg brukerobjektet for å sjekke innholdet 
-        console.log("Bruker hentet fra databasen:", bruker);
-        //---------------------------------------------------
 
         //Hvis brukeren ikke finnes, returnerer vi en feilmelding
         if (!bruker) {

@@ -34,14 +34,21 @@ const nyttPassordStopp = rateLimit({
 const registreringValidering = [
     body('brukernavn')
         .trim()
+        .escape()
+        .notEmpty().withMessage("Brukernavn må fylles ut.")
         .isLength({ min: 3, max: 15 }).withMessage("Brukernavnet må være mellom 3 og 15 tegn.")
         .isAlphanumeric().withMessage("Brukernavnet kan bare inneholde bokstaver og tall."),
     body('passord')
+        .trim()
+        .escape()
+        .notEmpty().withMessage("Passord må fylles ut.")
         .isLength({ min: 8, max: 20 }).withMessage("Passordet må være minst 8 tegn, maks 20 tegn.")
         .matches(/[A-Z]/).withMessage("Passordet må inneholde minst en stor bokstav.")
         .matches(/[-.@$!%*?&]/).withMessage("Passordet må inneholde minst ett spesialtegn."),
     body('epost')
         .trim()
+        .escape()
+        .notEmpty().withMessage("E-post må fylles ut.")
         .isEmail().withMessage("E-post må være gyldig.")
         .normalizeEmail() 
 ];
@@ -50,6 +57,7 @@ const registreringValidering = [
 const innloggingValidering = [
     body('brukernavn')
         .trim()
+        .escape()
         .notEmpty().withMessage("Brukernavn eller e-post må fylles ut.")
         .custom((value) => {
             const erBrukernavn = /^[a-zA-Z0-9]{3,15}$/.test(value);
@@ -60,6 +68,8 @@ const innloggingValidering = [
             return true;
         }}),
     body('passord')
+        .trim()
+        .escape()
         .notEmpty().withMessage("Passord må fylles ut.")
         .isLength({ min: 8, max: 20 }).withMessage("Passordet må være minst 8 tegn, maks 20 tegn.")
 ];
@@ -69,19 +79,25 @@ const redigeringValidering = [
     body('brukernavn')
         .optional()
         .trim()
+        .escape()
         .isLength({ min: 3, max: 15 }).withMessage("Brukernavnet må være mellom 3 og 15 tegn.")
         .isAlphanumeric().withMessage("Brukernavnet kan bare inneholde bokstaver og tall."),
     body('epost')
         .optional()
         .trim()
+        .escape()
         .isEmail().withMessage("E-post må være gyldig.")
         .normalizeEmail(),
     body('nyttPassord')
         .optional()
+        .trim()
+        .escape()
         .isLength({ min: 8, max: 20 }).withMessage("Passordet må være minst 8 tegn, maks 20 tegn.")
         .matches(/[A-Z]/).withMessage("Passordet må inneholde minst én stor bokstav.")
         .matches(/[-.@$!%*?&]/).withMessage("Passordet må inneholde minst ett spesialtegn."),
     body('gammelPassord')
+        .trim()
+        .escape()
         .optional()
         .notEmpty().withMessage("Du må oppgi ditt gamle passord hvis du vil endre passord.")
         .custom ((value, { req }) => {
@@ -97,6 +113,7 @@ const redigeringValidering = [
 const sletteValidering = [
     body("brukerInput")
         .trim()
+        .escape()
         .notEmpty().withMessage("Brukernavn eller e-post må fylles ut.")
         .custom((value) => {
             const erBrukernavn = /^[a-zA-Z0-9]{3,15}$/.test(value);
@@ -107,6 +124,8 @@ const sletteValidering = [
                 return true;   
         }}),
     body("passord")
+        .trim()
+        .escape()
         .notEmpty().withMessage("Passord må fylles ut.")
         .isLength({ min: 8, max: 20 }).withMessage("Passordet må være minst 8 tegn, maks 20.")
 ];
@@ -114,12 +133,14 @@ const sletteValidering = [
 const nyttPassordValidering = [
 body("nyttPassord")
     .trim()
+    .escape()
     .notEmpty().withMessage("Nytt passord må fylles ut.")
     .isLength({ min: 8, max: 20 }).withMessage("Passordet må være minst 8 tegn, maks 20.")
     .matches(/[A-Z]/).withMessage("Passordet må inneholde minst en stor bokstav.")
     .matches(/[-.@$!%*?&]/).withMessage("Passordet må inneholde minst ett spesialtegn."),
 body("bekreftPassord")
     .trim()
+    .escape()
     .notEmpty().withMessage("Bekreft passord må fylles ut.")
     .isLength({ min: 8, max: 20 }).withMessage("Passordet må være minst 8 tegn, maks 20.")
     .matches(/[A-Z]/).withMessage("Passordet må inneholde minst en stor bokstav.")

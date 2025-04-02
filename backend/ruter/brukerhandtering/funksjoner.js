@@ -1,4 +1,6 @@
 //Author: Laurent Zogaj & Severin Waller Sørensen
+const { kobleTilDB, getDb } = require('../../db'); 
+
 
 //Rute for å sjekke om bruker er aktiv eller ikke, brukes i ulike ruter for enkel sjekk
 async function sjekkBrukerAktiv(req, res, next) {
@@ -6,6 +8,7 @@ async function sjekkBrukerAktiv(req, res, next) {
         return res.status(401).json({ error: "Ingen aktiv session" });
     }
     try {
+        const db = getDb();
         const bruker = await db.collection('Brukere').findOne({ _id: req.user._id });
         if (!bruker) {
             return res.status(404).json({ error: 'Bruker ikke funnet' });
@@ -22,7 +25,7 @@ function beskyttetRute(req, res, next) {
         return next(); //Brukeren er logget inn
     } else {
         res.status(401).json({ error: "Du må være logget inn for å få tilgang." });
-        redirect = "/Innlogging";
+        res.redirect("/Innlogging"); 
     }
 }
 
