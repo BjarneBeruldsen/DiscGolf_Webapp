@@ -10,11 +10,13 @@ const setMelding = "";
             credentials: "include",
             headers: {"Content-Type": "application/json"},
         });
-
+        const data = await respons.json();
         if (respons.ok) {
             setLoggetInnBruker(null); //Logger ut bruker
             window.location.reload(); //Tvinger en refresh 
             window.location.href = "/Hjem"; 
+        } else {
+            setMelding(data.error || "Utlogging feilet. Prøv igjen.");
         }
     } catch (error) {
         setMelding("Feil ved utlogging", error);

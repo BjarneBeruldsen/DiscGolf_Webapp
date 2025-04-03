@@ -15,7 +15,7 @@ setMelding("");
     const data = await respons.json();
     if (!respons.ok) {
       console.error("Sletting av bruker feilet:", data);
-      setMelding("Feil ved sletting av bruker. Sjekk brukernavn eller passord og prøv igjen.");
+      setMelding(data.error || "Feil ved sletting av bruker. Sjekk brukernavn eller passord og prøv igjen.");
     } else { 
       setMelding("Bruker er nå slettet, du blir nå sendt til hjemmesiden");
       setTimeout(() => {

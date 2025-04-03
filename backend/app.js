@@ -6,16 +6,14 @@ const helmet = require('helmet');
 const nocache = require('nocache');
 const compression = require('compression');
 const session = require('express-session');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const bcrypt = require ('bcryptjs');
 const nodemailer = require('nodemailer');
 const MongoStore = require('connect-mongo');
-const { kobleTilDB, getDb } = require('./db'); 
-const { ObjectId } = require('mongodb');    
+const { kobleTilDB, getDb } = require('./db');  
 const PORT = process.env.PORT || 8000;
 const path = require('path');
 require('dotenv').config();
+const passport = require('passport');
+require('./ruter/brukerhandtering/passport')(passport);
 const klubbRouter = require('./ruter/klubbhandtering'); 
 const brukerRouter = require('./ruter/brukerhandtering/brukerhandtering'); 
 
@@ -107,7 +105,7 @@ app.use(session({
     }
 }));
 
-//Initialisering av Passport.js og session
+//Initialisering av Passport.js
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -117,71 +115,8 @@ kobleTilDB((err) => {
     if(!err) {
         db = getDb();
 
-//Konfigurasjon av Passport.js https://www.passportjs.org/concepts/authentication/
-passport.use(
-    new LocalStrategy({ usernameField: "brukernavn", passwordField: "passord" }, 
-    async (brukernavn, passord, done) => {  
-        try {
-            //Sjekker om brukeren finnes i databasen (brukernavn eller e-post)
-            const funnetBruker = await db.collection("Brukere").findOne({
-            $or: [
-                { brukernavn: brukernavn.trim().toLowerCase() },
-                { epost: brukernavn.trim().toLowerCase() }
-                ]
-            });
-            if (!funnetBruker) {
-                return done(null, false, { message: "Brukernavn eller e-post ikke funnet" });
-            }
-            const passordSjekk = await bcrypt.compare(passord, funnetBruker.passord);
-            if (!passordSjekk) {
-                return done(null, false, { message: "Feil passord" });
-            }
-            else {
-                //Hvis innloggingen er vellykket, returnerer vi brukeren
-                return done(null, funnetBruker);
-            }
-        } catch (err) {
-            //Returnerer en feil hvis noe går galt
-            return done(err);
-        }
-    })
-);
-//Serialiserer brukeren ved å lagre brukerens ID i session
-passport.serializeUser((bruker, done) => {
-    try {
-        done(null, bruker._id);
-        console.log(`Bruker med ID ${bruker._id} logget inn (serialisering velykket)`);
-    } catch (err) { 
-        console.error("Feil under serialisering:", err);
-        done(err);
-    }
-});
-//Deserialiserer brukeren ved å hente brukerdata fra databasen basert på ID
-passport.deserializeUser(async (id, done) => {
-    try {
-        //Sjekker om id er gyldig
-        if (!ObjectId.isValid(id)) {
-            return done(null, false, { message: "Ugyldig dokument-id" });
-        }
-        //Henter brukeren fra databasen
-        const bruker = await db.collection("Brukere").findOne({ _id: new ObjectId(String(id)) });
-
-        //Hvis brukeren ikke finnes, returnerer vi en feilmelding
-        if (!bruker) {
-            return done(null, false, { message: "Bruker ikke funnet" });
-        } else {
-        //Hvis brukeren blir funnet returnerer vi den
-            return done(null, bruker);
-        }
-    } catch (err) {
-        //Returnerer en feil hvis noe går galt
-        console.error("Feil under deserialisering:", err);
-        return done(err);
-    }
-});
-
+app.use(klubbRouter);
 app.use(brukerRouter);
-
 
 //Start av server
 app.listen(PORT, () => {
@@ -192,9 +127,6 @@ app.listen(PORT, () => {
     }
 });
 
-
-//Importerer klubbruter her 
-app.use(klubbRouter);
 
 //Sjekk av session
 app.get("/sjekk-session", async (req, res) => {

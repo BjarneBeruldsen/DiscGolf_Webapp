@@ -41,8 +41,9 @@ const Registrering = () => {
                 body: JSON.stringify({ brukernavn, epost, passord }),
                 credentials: "include",
             });
+            const data = await respons.json();
             if (!respons.ok) {
-                setMelding("Registrering feilet. Prøv igjen.");
+                setMelding(data.error || "Registrering feilet. Prøv igjen.");
                 return;
             } else {//Registrering ble vellykket bruker er registrert
             setMelding("Registrering vellykket! Du blir omdirigert til innlogging...");

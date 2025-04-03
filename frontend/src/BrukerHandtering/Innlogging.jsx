@@ -44,7 +44,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
       const data = await respons.json();
       if (!respons.ok) {
         console.error("Innloggingsfeil:", data);
-        setMelding("Feil ved innlogging. Sjekk brukernavn og passord, prøv igjen deretter.");
+        setMelding(data.error || "Feil ved innlogging. Sjekk brukernavn og passord, prøv igjen deretter.");
       } else {
         setMelding("Innlogging vellykket!");
         setTimeout(() => {

@@ -9,6 +9,7 @@ async function sjekkBrukerAktiv(req, res, next) {
     }
     try {
         const db = getDb();
+        if (!db) return done(new Error("Ingen database tilkobling"));
         const bruker = await db.collection('Brukere').findOne({ _id: req.user._id });
         if (!bruker) {
             return res.status(404).json({ error: 'Bruker ikke funnet' });
