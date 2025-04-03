@@ -4,22 +4,13 @@ const express = require('express');
 const { ObjectId } = require('mongodb');
 const { kobleTilDB, getDb } = require('../db'); 
 const { beskyttetRute } = require('./brukerhandtering/funksjoner');
-
 const { MongoClient } = require('mongodb');
 const klubbRouter = express.Router();
 
-//Oppkobling mot databasen 
-let db
-kobleTilDB((err) => {
-    if(!err) {
-        db = getDb();
-    } else {
-        console.error("Feil ved oppkobling til databasen", err);
-    }
-});
-
 //Klubbhåndterings ruter 
 klubbRouter.get('/klubber', (req, res) => {
+    const db = getDb();
+    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
     let klubber = []
     db.collection('Klubb')
     .find()
@@ -33,7 +24,8 @@ klubbRouter.get('/klubber', (req, res) => {
 })
 
 klubbRouter.get('/klubber/:id', (req, res) => {
-
+    const db = getDb();
+    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
     if(ObjectId.isValid(req.params.id) === false) {
         return res.status(400).json({error: 'Ugyldig dokument-id'})
     }
@@ -50,8 +42,9 @@ klubbRouter.get('/klubber/:id', (req, res) => {
 })
 
 klubbRouter.post('/klubber', (req, res) => {
+    const db = getDb();
+    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
     const klubb = req.body
-
     db.collection('Klubb')
     .insertOne(klubb)
     .then(result => {
@@ -63,7 +56,8 @@ klubbRouter.post('/klubber', (req, res) => {
 })
 
 klubbRouter.delete('/klubber/:id', (req, res) => {
-
+    const db = getDb();
+    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
     if(ObjectId.isValid(req.params.id) === false) {
         return res.status(400).json({error: 'Ugyldig dokument-id'})
     }
@@ -80,8 +74,9 @@ klubbRouter.delete('/klubber/:id', (req, res) => {
 })
 
 klubbRouter.patch('/klubber/:id', (req, res) => {
+    const db = getDb();
+    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
     const oppdatering = req.body
-
     if(ObjectId.isValid(req.params.id) === false) {
         return res.status(400).json({error: 'Ugyldig dokument-id'})
     }
@@ -99,6 +94,8 @@ klubbRouter.patch('/klubber/:id', (req, res) => {
 
 //Rute som legger nyheter til klubben sin klubbside
 klubbRouter.post('/klubber/:id/nyheter', (req, res) => {
+    const db = getDb();
+    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
     if(ObjectId.isValid(req.params.id) === false) {
         return res.status(400).json({error: 'Ugyldig dokument-id'});
     } else {
@@ -119,6 +116,8 @@ klubbRouter.post('/klubber/:id/nyheter', (req, res) => {
 
 //rute som legger til bane til git klubb
 klubbRouter.post('/klubber/:id/baner', (req, res) => {
+    const db = getDb();
+    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
     if(ObjectId.isValid(req.params.id) === false) {
         return res.status(400).json({error: 'Ugyldig dokument-id'});
     } else {
@@ -141,6 +140,8 @@ klubbRouter.post('/klubber/:id/baner', (req, res) => {
 
 //rute for henting av alle nyheter
 klubbRouter.get('/nyheterListe', (req, res) => {
+    const db = getDb();
+    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
     let nyheter = []; 
     db.collection('Klubb')
     .find()
@@ -160,6 +161,8 @@ klubbRouter.get('/nyheterListe', (req, res) => {
 
 //rute for henting av alle baner 
 klubbRouter.get('/banerListe', (req, res) => {
+    const db = getDb();
+    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
     let baner = []; 
     db.collection('Klubb')
     .find()
@@ -179,6 +182,8 @@ klubbRouter.get('/banerListe', (req, res) => {
 //rute for henting av spesifikk bane 
 klubbRouter.get('/baner/:id', async (req, res) => {
     try {
+        const db = getDb();
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
         const baneId = new ObjectId(req.params.id);
         const klubb = await db.collection('Klubb').findOne({ 'baner._id': baneId }, { projection: { 'baner.$': 1 } });
         
@@ -199,8 +204,9 @@ klubbRouter.get('/baner/:id', async (req, res) => {
 });
 
 klubbRouter.patch('/klubber/:klubbId/baner/:baneId', (req, res) => {
+    const db = getDb();
+    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
     const updates = { ...req.body, _id: new ObjectId(req.params.baneId) };
-
     if(ObjectId.isValid(req.params.klubbId) === false || ObjectId.isValid(req.params.baneId) === false) {
         return res.status(400).json({error: 'Ugyldig dokument-id'})
     }
@@ -221,6 +227,8 @@ klubbRouter.patch('/klubber/:klubbId/baner/:baneId', (req, res) => {
 
 //Rute for å lagre poengkort for en bruker
 klubbRouter.post('/brukere/:id/poengkort', beskyttetRute, async (req, res) => {
+    const db = getDb();
+    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
     if(ObjectId.isValid(req.params.id) === false) {
         return res.status(400).json({error: 'Ugyldig dokument-id'});
     } else {

@@ -17,7 +17,7 @@ const brukerRouter = express.Router();
 brukerRouter.post("/Registrering", registreringValidering, registreringStopp, async (req, res) => {
     try {
         const db = getDb();
-        if (!db) return done(new Error("Ingen database tilkobling"));
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
         //Validering av input med express-validator hentet fra validering.js
         const error = validationResult(req);
         if (!error.isEmpty()) {
@@ -60,7 +60,7 @@ brukerRouter.post("/Registrering", registreringValidering, registreringStopp, as
 //Rute for innlogging
 brukerRouter.post("/Innlogging", innloggingValidering, loggeInnStopp, (req, res, next) => {
     const db = getDb();
-    if (!db) return done(new Error("Ingen database tilkobling"));
+    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
     //Validering av input med express-validator hentet fra validering.js
     const error = validationResult(req);
     if (!error.isEmpty()) {
@@ -102,7 +102,7 @@ brukerRouter.post("/Innlogging", innloggingValidering, loggeInnStopp, (req, res,
 //Utlogging
 brukerRouter.post("/Utlogging", beskyttetRute, sjekkBrukerAktiv, async (req, res) => {
     const db = getDb();
-    if (!db) return done(new Error("Ingen database tilkobling"));
+    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
     try {
         //Henter brukerdata for logging
         const { brukernavn, epost } = req.user;
@@ -136,7 +136,7 @@ brukerRouter.post("/Utlogging", beskyttetRute, sjekkBrukerAktiv, async (req, res
 brukerRouter.delete("/SletteBruker", beskyttetRute, sletteValidering, sjekkBrukerAktiv, async (req, res) => {
     try {
         const db = getDb();
-        if (!db) return done(new Error("Ingen database tilkobling"));
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
         //Validering av input med express-validator hentet fra validering.js
         const error = validationResult(req);
         if (!error.isEmpty()) {
@@ -199,7 +199,7 @@ brukerRouter.delete("/SletteBruker", beskyttetRute, sletteValidering, sjekkBruke
 brukerRouter.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (req, res) => {
     try {
         const db = getDb();
-        if (!db) return done(new Error("Ingen database tilkobling"));
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
         const alleBrukere = [];
         //Henter alle brukere basert på gitte regler(projections)
         await db.collection("Brukere")
@@ -218,7 +218,7 @@ brukerRouter.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (req, re
 brukerRouter.patch("/api/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
     try {
         const db = getDb();
-        if (!db) return done(new Error("Ingen database tilkobling"));
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
         const brukerId = req.params.id;
         // Sjekk om ID-en er gyldig
         if (!ObjectId.isValid(brukerId)) {
@@ -248,7 +248,7 @@ brukerRouter.patch("/api/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]
 brukerRouter.delete("/api/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
     try {
         const db = getDb();
-        if (!db) return done(new Error("Ingen database tilkobling"));
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
         const brukerId = req.params.id;
         // Sjekk om ID-en er gyldig
         if (!ObjectId.isValid(brukerId)) {
@@ -272,7 +272,7 @@ brukerRouter.delete("/api/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"
 brukerRouter.get('/bruker/rolle', beskyttetRute, async (req, res) => {
     try {
         const db = getDb();
-        if (!db) return done(new Error("Ingen database tilkobling"));
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
         console.log("req.user:", req.user); // Legg til logging
         const bruker = await db.collection('Brukere').findOne({ _id: req.user._id });
         if (!bruker) {
@@ -292,7 +292,7 @@ brukerRouter.get('/bruker/rolle', beskyttetRute, async (req, res) => {
 brukerRouter.get("/api/brukere", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
     try {
         const db = getDb();
-        if (!db) return done(new Error("Ingen database tilkobling"));
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
         const brukere = await db.collection("Brukere").find({}).toArray();
         res.status(200).json(brukere); // Returnerer JSON
     } catch (err) {

@@ -109,13 +109,16 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+//Henter klubbhåndterings ruter
+app.use(klubbRouter);
+
 //Oppkobling mot databasen 
 let db
 kobleTilDB((err) => {
     if(!err) {
         db = getDb();
 
-app.use(klubbRouter);
+//Henter brukerhåndterings ruter
 app.use(brukerRouter);
 
 //Start av server
@@ -126,7 +129,6 @@ app.listen(PORT, () => {
         console.error("Feil ved oppkobling til databasen", err);
     }
 });
-
 
 //Sjekk av session
 app.get("/sjekk-session", async (req, res) => {
