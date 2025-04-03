@@ -16,6 +16,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
     const [baneNavn, setBaneNavn] = useState('');
     const [vanskelighet, setVanskelighet] = useState('');
     const [beskrivelse, setBeskrivelse] = useState('');
+    const [plassering, setPlassering] = useState('');
     const [hull, setHull] = useState([]);
     const [errorMelding, setErrorMelding] = useState('');
     const [hullVisning, setHullVisning] = useState(true);
@@ -51,7 +52,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
             return;
         }
 
-        const nyBane = { baneNavn, hull, vanskelighet, beskrivelse };
+        const nyBane = { baneNavn, hull, vanskelighet, beskrivelse, plassering };
 
         fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${klubbId}/baner`, {
             method: 'POST',
@@ -263,6 +264,17 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                             required
                             value={beskrivelse}
                             onChange={(e) => setBeskrivelse(e.target.value)}
+                            className="w-full border border-gray-600 rounded-lg shadow-sm
+                                    px-4 py-2 focus:outline-none focus:border-blue-500 font-serif"
+                        />
+                         <label>
+                            Plassering:
+                        </label>
+                        <input 
+                            type="text"
+                            required
+                            value={plassering}
+                            onChange={(e) => setPlassering(e.target.value)}
                             className="w-full border border-gray-600 rounded-lg shadow-sm
                                     px-4 py-2 focus:outline-none focus:border-blue-500 font-serif"
                         />
