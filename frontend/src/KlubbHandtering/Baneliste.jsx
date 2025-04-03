@@ -11,7 +11,6 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 const BaneListe = ({ baner, rediger, klubbId }) => {
     const minne = useHistory();
     const { bruker, venter } = HentBruker();
-    const mapContainerRef = useRef(null);
 
     const handleClick = (bane) => {
         if(bruker === null) {
@@ -27,16 +26,36 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
     }
 
     useEffect(() => {
-        if (!mapContainerRef.current) return;
+        if (!baner) return;
         console.log(rediger)
         mapboxgl.accessToken = "pk.eyJ1IjoidW5rbm93bmdnc3MiLCJhIjoiY203eGhjdXBzMDUwaDJxc2RidXgwbjBqeSJ9.wlnVO6sI2-cY5Tx8uYv_XQ";
+        baner.forEach((bane, index) => {
+        const mapContainer = document.getElementById(`map-${index}`);
+        if (!mapContainer) return;
+        
+    
         const map = new mapboxgl.Map({
-         container: mapContainerRef.current,
-         style: "mapbox://styles/mapbox/satellite-streets-v12",
-         center: [9.059,59.409 ],
-         zoom: 15,
-    })
-    }, [rediger]);
+        container: mapContainer,
+        style: "mapbox://styles/mapbox/satellite-streets-v12",
+        center: [bane.hull?.[0]?.startLongitude || 9.059, bane.hull?.[0]?.startLatitude || 59.409],
+        zoom: 14,
+        })
+    
+        bane.hull?.forEach(({ startLatitude, startLongitude, sluttLatitude, sluttLongitude }) => {
+            if (startLatitude && startLongitude) {
+                new mapboxgl.Marker({ color: "gray" })
+                   .setLngLat([startLongitude, startLatitude])
+                   .addTo(map);
+                        
+               }
+            if (sluttLatitude && sluttLongitude) {
+                new mapboxgl.Marker({ color: "green" })
+                   .setLngLat([sluttLongitude, sluttLatitude])
+                   .addTo(map);         
+            }
+        });
+    });
+    }, [baner, rediger]);
 
     return ( 
         <div>
@@ -57,9 +76,9 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
                                     </div>
                                     <div>
                                         <iframe src="https://www.yr.no/nb/innhold/1-43228/card.html" frameborder="0"
-                                            className="w-full h-[362px] pointer-events-none"
+                                            className="w-full h-[365px] pointer-events-none"
                                         ></iframe>
-                                        <div ref={mapContainerRef} className="w-full h-100" />
+                                        <div id={`map-${index}`} className="w-full h-100" />
                                     
                                     </div>
                                     <div className="nederstelinje inline-block">
