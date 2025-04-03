@@ -180,7 +180,6 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
-app.use(klubbRouter);
 app.use(brukerRouter);
 
 
@@ -194,7 +193,9 @@ app.listen(PORT, () => {
 });
 
 
-//Andre ruter
+//Importerer klubbruter her 
+app.use(klubbRouter);
+
 //Sjekk av session
 app.get("/sjekk-session", async (req, res) => {
     //Sjekker om brukeren er logget inn
