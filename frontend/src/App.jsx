@@ -29,6 +29,7 @@ import HentBruker from "./BrukerHandtering/HentBruker";
 import AdminRoute from "./Admin/AdminRoute";
 import AdminDashboard from './Admin/AdminDashboard';
 import Systeminnstillinger from './Admin/Systeminnstillinger';
+import BrukerListe from "./Admin/BrukerListe";
 import RedigerBane from './KlubbHandtering/RedigerBane';
 
 function App() {
@@ -95,6 +96,13 @@ useEffect(() => {
             <Route exact path="/systeminnstillinger">
               {loggetInnBruker?.rolle === "hoved-admin" ? (
                 <Systeminnstillinger />
+              ) : (
+                <Redirect to="/Innlogging" />
+              )}
+            </Route>
+            <Route exact path="/brukeradministrasjon">
+              {loggetInnBruker?.rolle === "hoved-admin" ? (
+                <BrukerListe />
               ) : (
                 <Redirect to="/Innlogging" />
               )}
