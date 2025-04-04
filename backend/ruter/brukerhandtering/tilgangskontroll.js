@@ -88,7 +88,7 @@ tilgangRouter.get('/bruker/rolle', beskyttetRute, async (req, res) => {
 });
 
 // Rute for å hente alle brukere
-tilgangRouter.get("/api/brukere", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
+tilgangRouter.get("/brukere", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
     try {
         const db = getDb();
         if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -100,6 +100,7 @@ tilgangRouter.get("/api/brukere", beskyttetRute, sjekkRolle(["hoved-admin"]), as
     }
 });
 
+/* Skaper konflikt foreløpig
 tilgangRouter.get("/brukere", async (req, res) => {
     try {
         const db = getDb();
@@ -110,7 +111,7 @@ tilgangRouter.get("/brukere", async (req, res) => {
         res.status(500).json({ error: "Kunne ikke hente brukere" });
     }
 });
-
+*/
 tilgangRouter.get("/api/brukere/:id", (req, res) => {
     res.json({ message: `GET-forespørsel mottatt for bruker-ID: ${req.params.id}` });
 });

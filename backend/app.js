@@ -211,6 +211,6 @@ const transporter = nodemailer.createTransport({
   });
 
 //Håndter alle andre ruter med React Router
-app.get(/^(?!\/api).+/, (req, res) => {  //Tilgangsruter funker ikke med wildcard 
+app.get(/^(?!\/api).+/, (req, res) => { //Tilgangskontroll ruter funker ikke med wildcard
   res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });

@@ -8,9 +8,12 @@ const BrukerListe = () => {
 
   const hentBrukere = async () => {
     try {
-      const respons = await fetch("http://localhost:8000/api/brukere", {
+      const respons = await fetch("/api/brukere", {
         method: "GET",
         credentials: "include", // Sender cookies for autentisering
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       if (!respons.ok) {
         throw new Error("Kunne ikke hente brukere");
@@ -34,7 +37,7 @@ const BrukerListe = () => {
     try {
         console.log("Oppdaterer bruker:", redigerBruker); // Logg dataene som sendes til backend
 
-        const respons = await fetch(`http://localhost:8000/api/brukere/${redigerBruker._id}`, {
+        const respons = await fetch(`http://localhost:8000/api/brukere/${redigerBruker._id}`, { //Må endre url etterhvert
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ rolle: redigerBruker.rolle }), // Oppdater rolle
