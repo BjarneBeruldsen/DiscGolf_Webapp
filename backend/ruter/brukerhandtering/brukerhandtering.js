@@ -203,38 +203,28 @@ brukerRouter.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (req, re
 // Rute for å redigere brukerinformasjon
 brukerRouter.patch("/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
     try {
-        const db = getDb();
-        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
-        const brukerId = req.params.id;
+        console.log("Mottatt data for oppdatering:", req.body); // Logg dataene fra frontend
+        console.log("Bruker-ID:", req.params.id);
 
-        // Sjekk om ID-en er gyldig
+        const db = getDb();
+        if (!db) return res.status(500).json({ error: "Ingen database tilkobling" });
+
+        const brukerId = req.params.id;
         if (!ObjectId.isValid(brukerId)) {
-            console.error(`Ugyldig bruker-ID: ${brukerId}`);
             return res.status(400).json({ error: "Ugyldig bruker-ID" });
         }
 
         const oppdateringer = req.body;
-
-        console.log("Oppdateringsdata mottatt i backend:", oppdateringer);
-        console.log("Bruker-ID:", brukerId);
-
-        // Oppdater brukeren i databasen
         const resultat = await db.collection("Brukere").updateOne(
             { _id: new ObjectId(brukerId) },
             { $set: oppdateringer }
         );
 
-        console.log("Oppdateringsresultat:", resultat);
-
         if (resultat.matchedCount === 0) {
-            console.warn(`Ingen bruker funnet med ID: ${brukerId}`);
             return res.status(404).json({ error: "Bruker ikke funnet" });
         }
 
-        // Hent den oppdaterte brukeren
-        const oppdatertBruker = await db.collection("Brukere").findOne({ _id: new ObjectId(brukerId) });
-
-        res.status(200).json({ message: "Bruker oppdatert", bruker: oppdatertBruker });
+        res.status(200).json({ message: "Bruker oppdatert" });
     } catch (err) {
         console.error("Feil ved oppdatering av bruker:", err);
         res.status(500).json({ error: "Kunne ikke oppdatere bruker" });

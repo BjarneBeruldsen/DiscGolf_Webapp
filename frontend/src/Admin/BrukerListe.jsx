@@ -32,15 +32,21 @@ const BrukerListe = () => {
 
   const handleSave = async () => {
     try {
-        const respons = await fetch(`http://localhost:8000/api/brukere/${redigerBruker._id}`, { // Sørg for at base-URL er riktig
+        console.log("Oppdaterer bruker:", redigerBruker); // Logg dataene som sendes til backend
+
+        const respons = await fetch(`http://localhost:8000/api/brukere/${redigerBruker._id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ rolle: redigerBruker.rolle }), // Oppdater rolle
             credentials: "include",
         });
+
         if (!respons.ok) {
+            const errorData = await respons.json();
+            console.error("Feil fra backend:", errorData); // Logg feilmeldingen fra backend
             throw new Error("Kunne ikke oppdatere bruker");
         }
+
         alert("Bruker oppdatert!");
         setRedigerBruker(null); // Lukk redigeringsskjemaet
         hentBrukere(); // Oppdater listen over brukere

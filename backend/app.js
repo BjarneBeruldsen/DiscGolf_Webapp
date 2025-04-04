@@ -119,7 +119,7 @@ kobleTilDB((err) => {
         db = getDb();
 
 //Henter brukerhåndterings ruter
-app.use(brukerRouter);
+app.use('/api', brukerRouter);
 
 //Start av server
 app.listen(PORT, () => {
