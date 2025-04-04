@@ -68,6 +68,8 @@ app.use(
           workerSrc: ["'self'", "blob:"],
           connectSrc: [
             "'self'",
+            "http://localhost:8000",
+            "http://localhost:3000",
             "https://api.mapbox.com",
             "https://events.mapbox.com",
             "https://*.tiles.mapbox.com",
