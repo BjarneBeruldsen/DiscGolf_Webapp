@@ -49,7 +49,7 @@ brukerRouter.post("/Registrering", registreringValidering, registreringStopp, as
         };
         await db.collection("Brukere").insertOne(nyBruker);
         //Logging
-        console.log(`Bruker registrert: ${brukernavn}, e-post: ${epost}`);
+        console.log(`Bruker registrert: ${brukernavn}, e-post: ${epost}, rolle: ${nyBruker.rolle}`);
         res.status(201).json({ message: "Bruker registrert" });
     } catch (err) {
         console.log("Feil ved registrering:", err.message);

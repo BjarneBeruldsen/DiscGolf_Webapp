@@ -14,6 +14,7 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
   const [gammeltPassord, setGammeltPassord] = useState("");
   const [nyttPassord, setNyttPassord] = useState("");
   const minne = useHistory();
+  const erAdmin = bruker.rolle === "admin" || bruker.rolle === "hoved-admin";
 
   //Setter brukerinformasjonen i feltene som viser brukeren informasjonen
   useEffect(() => {
@@ -71,14 +72,11 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
           />
           <p className="text-gray-600">Her er din registrerte brukerinformasjon</p>
           {/* Viser om bruker er admin eller ikke under brukerinformasjon */}
-          {bruker.rolle === "admin" ? (
-            <p className="text-black text-center">
-              Du er admin, og har tilgang til flere funksjoner
-            </p>
-          ) : (
-            <p className="text-red-600 text-center">
-              Du er ikke admin, og har ikke tilgang til flere funksjoner
-            </p>
+          {erAdmin && (
+            <p className="text-blue-600">Du er registrert som: {bruker.rolle} og har tilgang til flere funksjoner.</p>
+          )}
+          {!erAdmin && (
+            <p className="text-red-600">Du er registrert som: Bruker og har kun tilgang til enkle funksjoner.</p>
           )}
         </div>
       )}
