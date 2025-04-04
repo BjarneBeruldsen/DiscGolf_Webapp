@@ -177,20 +177,6 @@ brukerRouter.delete("/SletteBruker", beskyttetRute, sletteValidering, sjekkBruke
 });
 //Rute for å redigere brukerinformasjon og legge til mer info som fornavn, etternavn, telefonnummer og bosted
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //Rute for å hente alle brukere for søking etter brukere man kan komme i kontakt med
 brukerRouter.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (req, res) => {
     try {
@@ -210,16 +196,21 @@ brukerRouter.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (req, re
     }
 });
 // Rute for å redigere brukerinformasjon
-brukerRouter.patch("/api/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
+brukerRouter.patch("/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
     try {
         const db = getDb();
         const brukerId = req.params.id;
+
         // Sjekk om ID-en er gyldig
         if (!ObjectId.isValid(brukerId)) {
+            console.error(`Ugyldig bruker-ID: ${brukerId}`);
             return res.status(400).json({ error: "Ugyldig bruker-ID" });
         }
 
         const oppdateringer = req.body;
+
+        console.log("Oppdateringsdata mottatt i backend:", oppdateringer);
+        console.log("Bruker-ID:", brukerId);
 
         // Oppdater brukeren i databasen
         const resultat = await db.collection("Brukere").updateOne(
@@ -227,11 +218,17 @@ brukerRouter.patch("/api/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]
             { $set: oppdateringer }
         );
 
+        console.log("Oppdateringsresultat:", resultat);
+
         if (resultat.matchedCount === 0) {
+            console.warn(`Ingen bruker funnet med ID: ${brukerId}`);
             return res.status(404).json({ error: "Bruker ikke funnet" });
         }
 
-        res.status(200).json({ message: "Bruker oppdatert" });
+        // Hent den oppdaterte brukeren
+        const oppdatertBruker = await db.collection("Brukere").findOne({ _id: new ObjectId(brukerId) });
+
+        res.status(200).json({ message: "Bruker oppdatert", bruker: oppdatertBruker });
     } catch (err) {
         console.error("Feil ved oppdatering av bruker:", err);
         res.status(500).json({ error: "Kunne ikke oppdatere bruker" });
@@ -291,9 +288,29 @@ brukerRouter.get("/api/brukere", beskyttetRute, sjekkRolle(["hoved-admin"]), asy
     }
 });
 
-// Rute for systeminnstillinger
+brukerRouter.get("/brukere", async (req, res) => {
+    try {
+        const db = getDb();
+        const brukere = await db.collection("Brukere").find({}).toArray(); // Henter alle brukere
+        res.status(200).json(brukere); // Returnerer brukerne som JSON
+    } catch (err) {
+        console.error("Feil ved henting av brukere:", err);
+        res.status(500).json({ error: "Kunne ikke hente brukere" });
+    }
+});
+
+brukerRouter.get("/api/brukere/:id", (req, res) => {
+    res.json({ message: `GET-forespørsel mottatt for bruker-ID: ${req.params.id}` });
+});
+
+/* Rute for systeminnstillinger
 brukerRouter.get("/admin/systeminnstillinger", beskyttetRute, sjekkRolle(["hoved-admin"]), (req, res) => {
     res.json({ message: "Velkommen til systeminnstillinger!" });
 });
- 
+*/ 
+
+brukerRouter.get("/test", (req, res) => {
+    res.json({ message: "Hei fra backend!" });
+});
+
 module.exports = brukerRouter;

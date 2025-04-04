@@ -85,6 +85,7 @@ app.use(
     })
 );
 
+// Middleware for å parse JSON
 app.use(express.json());
 
 //Deployment under
@@ -180,8 +181,12 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
-app.use(brukerRouter);
+app.use('/api', brukerRouter);
 
+// teste at bsckend fungerer
+brukerRouter.get("/test", (req, res) => {
+    res.json({ message: "Hei fra backend!" });
+});
 
 //Start av server
 app.listen(PORT, () => {
@@ -271,6 +276,8 @@ const transporter = nodemailer.createTransport({
   });
 
 //Håndter alle andre ruter med React Router
+/*
 app.get('*', (req,res) => {
     res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
+*/

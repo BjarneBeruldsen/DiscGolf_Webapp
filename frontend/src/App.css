@@ -100,3 +100,17 @@
     @apply w-[900px] min-h-[700px] flex-none;
   }
 }
+
+/* Klasser for brukeradministrasjon (probably midlertidig) */
+.custom-blue {
+  background-color: #3b82f6; /* Blå bakgrunn */
+  color: white; /* Hvit tekst */
+  padding: 0.25rem 0.5rem; /* px-2 py-1 tilsvarer 0.25rem topp/bunn og 0.5rem venstre/høyre */
+  border-radius: 0.25rem; /* rounded */
+  font-size: 1rem; /* Standard fontstørrelse */
+  cursor: pointer; /* Håndpeker ved hover */
+}
+
+.custom-blue:hover {
+  background-color: #2563eb; /* Mørkere blå ved hover */
+}
