@@ -16,6 +16,7 @@ const passport = require('passport');
 require('./ruter/brukerhandtering/passport')(passport);
 const klubbRouter = require('./ruter/klubbhandtering'); 
 const brukerRouter = require('./ruter/brukerhandtering/brukerhandtering'); 
+const tilgangRouter = require('./ruter/brukerhandtering/tilgangskontroll');
 
 
 const app = express();
@@ -119,7 +120,10 @@ kobleTilDB((err) => {
         db = getDb();
 
 //Henter brukerhåndterings ruter
-app.use('/api', brukerRouter);
+app.use(brukerRouter);
+
+//Henter tilgangskontroll ruter
+app.use('/api', tilgangRouter);
 
 //Start av server
 app.listen(PORT, () => {
@@ -205,8 +209,6 @@ const transporter = nodemailer.createTransport({
   });
 
 //Håndter alle andre ruter med React Router
-/*
-app.get('*', (req,res) => {
-    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+app.get(/^(?!\/api).+/, (req, res) => {  //Tilgangsruter funker ikke med wildcard 
+  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
-*/
