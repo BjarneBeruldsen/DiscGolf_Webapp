@@ -1,3 +1,5 @@
+//Author: Severin Waller Sørensen
+
 import React, { useEffect, useState } from "react";
 import "../App.css"; // Importer CSS-fil for styling
 
@@ -8,7 +10,7 @@ const BrukerListe = () => {
 
   const hentBrukere = async () => {
     try {
-      const respons = await fetch("/api/brukere", {
+      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/brukere`, {
         method: "GET",
         credentials: "include", // Sender cookies for autentisering
         headers: {
@@ -37,8 +39,8 @@ const BrukerListe = () => {
     try {
         console.log("Oppdaterer bruker:", redigerBruker); // Logg dataene som sendes til backend
 
-        const respons = await fetch(`http://localhost:8000/api/brukere/${redigerBruker._id}`, { //Må endre url etterhvert
-            method: "PATCH",
+        const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/brukere/${redigerBruker._id}`, {
+          method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ rolle: redigerBruker.rolle }), // Oppdater rolle
             credentials: "include",

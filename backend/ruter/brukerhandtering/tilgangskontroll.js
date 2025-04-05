@@ -44,7 +44,7 @@ tilgangRouter.patch("/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), 
 });
 
 // Rute for å slette en bruker
-tilgangRouter.delete("/api/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
+tilgangRouter.delete("/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
     try {
         const db = getDb();
         if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -112,7 +112,7 @@ tilgangRouter.get("/brukere", async (req, res) => {
     }
 });
 */
-tilgangRouter.get("/api/brukere/:id", (req, res) => {
+tilgangRouter.get("/brukere/:id", (req, res) => {
     res.json({ message: `GET-forespørsel mottatt for bruker-ID: ${req.params.id}` });
 });
 

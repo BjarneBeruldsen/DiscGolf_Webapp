@@ -1,4 +1,4 @@
-//Author: Laurent Zogaj & Severin Waller Sørensen
+//Author: Laurent Zogaj
 
 const express = require('express');
 const { ObjectId } = require('mongodb');
