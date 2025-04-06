@@ -17,7 +17,6 @@ require('./ruter/brukerhandtering/passport')(passport);
 const klubbRouter = require('./ruter/klubbhandtering'); 
 const brukerRouter = require('./ruter/brukerhandtering/brukerhandtering'); 
 const tilgangRouter = require('./ruter/brukerhandtering/tilgangskontroll');
-const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const turneringRouter = require("./ruter/turneringer");
 
