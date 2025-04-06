@@ -17,7 +17,9 @@ require('./ruter/brukerhandtering/passport')(passport);
 const klubbRouter = require('./ruter/klubbhandtering'); 
 const brukerRouter = require('./ruter/brukerhandtering/brukerhandtering'); 
 const tilgangRouter = require('./ruter/brukerhandtering/tilgangskontroll');
-
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const turneringRouter = require("./ruter/turneringer");
 
 const app = express();
 app.use(express.urlencoded({ extended: true })); 
@@ -123,6 +125,9 @@ kobleTilDB((err) => {
 
 //Henter brukerhåndterings ruter
 app.use(brukerRouter);
+
+//Henter turneringshåndterings ruter
+app.use(turneringRouter);
 
 //Henter tilgangskontroll ruter
 app.use('/api', tilgangRouter);

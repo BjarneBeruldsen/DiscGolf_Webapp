@@ -11,6 +11,7 @@ import HentBruker from "./HentBruker.jsx";
 import AdminDashboard from "../Admin/AdminDashboard";
 import Systeminnstillinger from "../Admin/Systeminnstillinger.jsx";
 import BrukerListe from "../Admin/BrukerListe.jsx";
+import TurneringsAdministrasjon from "../Admin/TurneringsAdministrasjon.jsx";
 
 const Medlemskap = () => {
   const { bruker, setBruker } = HentBruker(); //Henter brukerdata fra HentBruker.jsx
@@ -73,7 +74,7 @@ const Medlemskap = () => {
   const underKategorier = {
     Systeminnstillinger: ["Globale innstillinger", "Brukeradministrasjon", "Systemlogg"],
     Administrasjon: ["AdminDashboard", "Administrere klubber"],
-    Klubbinnstillinger: ["Klubbinformasjon", "Endre klubbinfo", "Administrede medlem", "Slett klubb"],
+    Klubbinnstillinger: ["Klubbinformasjon", "Administrere turneringer", "Administrede medlem"],
     Brukerinnstillinger: ["Min informasjon", "Endre min informasjon", "Slett bruker"],
     Personvern: ["Informasjonskapsler", "Synlighet", "GDPR"],
     Sikkerhet: ["To-faktor autentisering", "Gjennoppretting"],
@@ -152,6 +153,10 @@ const Medlemskap = () => {
 
         {valgtKategori === "Klubbinnstillinger" && valgtUnderKategori === "Klubbinformasjon" && (
           <KlubbInformasjon />
+        )}
+
+        {valgtKategori === "Klubbinnstillinger" && valgtUnderKategori === "Administrere turneringer" && (
+          <TurneringsAdministrasjon />
         )}
 
         {valgtKategori === "Brukerinnstillinger" && valgtUnderKategori && (

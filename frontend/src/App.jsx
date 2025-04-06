@@ -28,6 +28,7 @@ import PoengTavler from './KlubbHandtering/Poengtavler';
 import HentBruker from "./BrukerHandtering/HentBruker";
 import AdminRoute from "./Admin/AdminRoute";
 import AdminDashboard from './Admin/AdminDashboard';
+import TurneringsAdministrasjon from './Admin/TurneringsAdministrasjon';
 import Systeminnstillinger from './Admin/Systeminnstillinger';
 import BrukerListe from "./Admin/BrukerListe";
 import RedigerBane from './KlubbHandtering/RedigerBane';
@@ -106,6 +107,13 @@ useEffect(() => {
               ) : (
                 <Redirect to="/Innlogging" />
               )}
+            </Route>
+            <Route exact path="/turneringsadministrasjon">
+              {loggetInnBruker?.rolle === "klubbleder" ? (
+                <TurneringsAdministrasjon />
+            ) : (
+                <Redirect to="/Innlogging" />
+             )}
             </Route>
             <Route exact path="/Innlogging">
               {loggetInnBruker ? (
