@@ -19,7 +19,7 @@ const brukerRouter = require('./ruter/brukerhandtering/brukerhandtering');
 const tilgangRouter = require('./ruter/brukerhandtering/tilgangskontroll');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const turneringRouter = require("./ruter/turneringer");
+const turneringRouter = require("./ruter/Turneringer");
 
 const app = express();
 app.use(express.urlencoded({ extended: true })); 
