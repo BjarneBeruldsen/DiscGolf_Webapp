@@ -17,7 +17,6 @@ require('./ruter/brukerhandtering/passport')(passport);
 const klubbRouter = require('./ruter/klubbhandtering'); 
 const brukerRouter = require('./ruter/brukerhandtering/brukerhandtering'); 
 const tilgangRouter = require('./ruter/brukerhandtering/tilgangskontroll');
-const bodyParser = require('body-parser');
 const turneringRouter = require("./ruter/Turneringer");
 
 const app = express();
@@ -93,14 +92,19 @@ app.use(express.json());
 //Legger serving fra statiske filer fra REACT applikasjonen
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
-//Konfigurasjon av session https://www.geeksforgeeks.org/how-to-handle-sessions-in-express/, https://expressjs.com/en/resources/middleware/session.html & https://www.passportjs.org/tutorials/password/session/ 
+//Konfigurasjon av session https://www.geeksforgeeks.org/how-to-handle-sessions-in-express/, https://expressjs.com/en/resources/middleware/session.html & https://www.passportjs.org/tutorials/password/session/  
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,                       //Lagrer session på hver request selv om ingen endringer er gjort
     saveUninitialized: false,            //Lagrer session selv uten ny data 
     proxy: process.env.NODE_ENV === 'production', //Må være true for at Heroku skal funke eller settes til production
     rolling: false,                      //Fornyer session ved hvert request, ikke vits forholder oss til maxAge
-    store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }), //Lagrer session i MongoDB                          
+    store: MongoStore.create({           //https://github.com/jdesboeufs/connect-mongo?tab=readme-ov-file
+      mongoUrl: process.env.MONGODB_URI, //URL til databasen 
+      ttl : 14 * 24 * 60 * 60, //Lagrer session i 14 dager
+      autoRemove: 'native', //Fjerner session automatisk etter 14 dager
+      touchAfter: 24 * 3600 //Oppdaterer session hver 24 time istedenfor etter hver refresh av siden 
+    }),                       
     cookie: {
         secure: process.env.NODE_ENV === 'production', //Må være true for at cookies skal fungere på nettsiden og false dersom siden skal funke lokalt, eller settes til production
         httpOnly: process.env.NODE_ENV === 'production', //Må være false når man tester lokalt og true ellers. Eller settes til production

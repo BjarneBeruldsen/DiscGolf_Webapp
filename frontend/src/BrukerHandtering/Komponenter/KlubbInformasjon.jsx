@@ -1,3 +1,4 @@
+//Author: Severin Waller Sørensen
 import React from "react";
 
 const KlubbInformasjon = () => {

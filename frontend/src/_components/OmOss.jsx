@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const OmOss = () => {
   return (
@@ -10,7 +11,7 @@ const OmOss = () => {
           <section>
             <h2 className="text-2xl font-semibold mb-4">Hvem er vi?</h2>
             <p className="text-gray-700">
-              Vi er Discgolf Bø, en gruppe entusiastiske Studenter fra Bø som har som mål å gjøre discgolf enda mer engasjerende og tilgjengelig for alle.
+              Vi er Discgolf Bø, en gruppe entusiastiske studenter fra Bø som har som mål å gjøre discgolf enda mer engasjerende og tilgjengelig for alle.
                Vår lidenskap for sporten og ønsket om å skape en bedre opplevelse for spillere har ført til utviklingen av vår webapplikasjon.
             </p>
           </section>
@@ -24,7 +25,6 @@ const OmOss = () => {
             </p>
           </section>
 
-         
           <section>
             <h2 className="text-2xl font-semibold mb-4">Hva tilbyr vi?</h2>
             <ul className="list-disc pl-6 space-y-2 text-gray-700">
@@ -61,12 +61,15 @@ const OmOss = () => {
           <section>
             <h2 className="text-2xl font-semibold mb-4">Kontakt oss</h2>
             <p className="text-gray-700">
-              Har du spørsmål, tilbakemeldinger eller ønsker å samarbeide med oss? Ta gjerne kontakt på{' '}
-              <a href="mailto:DiscgolfBø@gmail.no" className="text-blue-500 hover:underline">
-                DiscgolfBø@gmail.no
-              </a>
-              . 
-            </p>
+              Har du spørsmål, tilbakemeldinger eller ønsker å samarbeide med oss? Ta gjerne kontakt oss via: 
+              </p>
+              <ul className="list-disc ml-5 mt-2 text-gray-700">
+                <li>
+                  <Link to="/KontaktOss" className="text-blue-600 underline hover:text-gray-800">
+                    Kontaktskjema
+                  </Link>
+                </li>
+                </ul>
           </section>
         </div>
       </div>
