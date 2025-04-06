@@ -1,6 +1,5 @@
-//Author: Laurent Zogaj
+//Author: Severin Waller Sørensen
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 
 const MinKlubb = ({ valgtUnderKategori }) => {
   const [rolle, setRolle] = useState(null);
@@ -11,10 +10,12 @@ const MinKlubb = ({ valgtUnderKategori }) => {
     // Hent brukerens rolle og hoved-admin-status fra backend
     const fetchBrukerInfo = async () => {
       try {
-        const response = await axios.get("/bruker/rolle", { withCredentials: true });
-        console.log("API-respons:", response.data); // Legg til logging
-        setRolle(response.data.rolle);
-        setSuperAdmin(response.data.superAdmin);
+        const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/brukere/rolle`, {
+          withCredentials: true, // Sender cookies for autentisering
+        });
+        console.log("API-respons:", respons.data); // Legg til logging
+        setRolle(respons.data.rolle);
+        setSuperAdmin(respons.data.superAdmin);
       } catch (error) {
         console.error("Feil ved henting av brukerens rolle:", error);
       }

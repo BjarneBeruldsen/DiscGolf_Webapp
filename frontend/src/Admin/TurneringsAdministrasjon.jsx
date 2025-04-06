@@ -21,7 +21,7 @@ const TurneringsAdministrasjon = () => {
   const opprettTurnering = async () => {
     setIsLoading(true); // Sett isLoading til true før oppretting
     try {
-      const respons = await fetch("http://localhost:8000/api/turneringer", {
+      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/turneringer`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nyTurnering),
@@ -44,7 +44,7 @@ const TurneringsAdministrasjon = () => {
   const hentTurneringer = async () => {
     setIsLoading(true); // Sett isLoading til true før henting
     try {
-      const respons = await fetch("http://localhost:8000/api/turneringer", {
+      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/turneringer`, {
         method: "GET",
         credentials: "include",
       });
