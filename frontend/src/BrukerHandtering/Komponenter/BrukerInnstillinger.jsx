@@ -9,20 +9,32 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
   const [brukerInput, setBrukerInput] = useState(""); 
   const [passord, setPassord] = useState("");
   const [melding, setMelding] = useState("");
-  const [brukernavn, setBrukernavn] = useState("");
-  const [epost, setEpost] = useState("");
-  const [gammeltPassord, setGammeltPassord] = useState("");
+  //Brukerinformasjon
+  const [nyttBrukernavn, setNyttBrukernavn] = useState("");
+  const [nyEpost, setNyEpost] = useState("");
   const [nyttPassord, setNyttPassord] = useState("");
+  //Personlig informasjon
+  const [fornavn, setFornavn] = useState("");
+  const [etternavn, setEtternavn] = useState("");
+  const [telefonnummer, setTelefonnummer] = useState("");
+  const [bosted, setBosted] = useState("");
+  
   const minne = useHistory();
-  const erAdmin = bruker.rolle === "admin" || bruker.rolle === "hoved-admin";
+  const erAdmin = bruker?.rolle === "admin" || bruker?.rolle === "hoved-admin";
 
   //Setter brukerinformasjonen i feltene som viser brukeren informasjonen
   useEffect(() => {
     if (bruker) {
-      setBrukernavn(bruker.brukernavn || "");
-      setEpost(bruker.epost || "");
+      setNyttBrukernavn(bruker.brukernavn);
+      setNyEpost(bruker.epost);
+      setFornavn(bruker.fornavn);
+      setEtternavn(bruker.etternavn);
+      setTelefonnummer(bruker.telefonnummer);
+      setBosted(bruker.bosted);
     }
   }, [bruker]);
+
+  //Foreløpig så kommer ikke oppdatert info opp i UIet, jeg vet ish hvorfor og er på saken har bare ikke tid til å fikse det nå. Men bruker blir i hvert fall oppdatert i databasen. 
 
   //Sletting av registrert bruker som vi henter fra SletteBruker.jsx
   const handleSlettBruker = async (e) => {
@@ -41,11 +53,22 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
   //Endring av brukerinformasjon under her:  IKKE KLAR
   const handleEndringAvBruker = async () => {
     setMelding(""); 
-    if (!gammeltPassord || !brukernavn || !epost) {
-      setMelding("Alle feltene må fylles ut.");
+    if (nyttPassord && !passord) {
+      setMelding("Du må oppgi ditt nåværende passord for å endre til nytt passord.");
       return;
     }
-    await endreBruker(brukernavn, epost, nyttPassord, gammeltPassord, setMelding, minne);
+    await endreBruker(
+      nyttBrukernavn, 
+      nyEpost, 
+      nyttPassord, 
+      passord,
+      fornavn, 
+      etternavn, 
+      telefonnummer, 
+      bosted, 
+      minne, 
+      setMelding
+    );
   };
   //Andre funksjoner for brukerinstillinger under her:
 
@@ -80,30 +103,65 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
           )}
         </div>
       )}
-      {/* !!!!!! Ikke klart enda bare gjort det klart, mangler rute i backend er på saken !!!!!!*/}
       {/* Endre min informasjon */}
       {valgtUnderKategori === "Endre min informasjon" && (
         <div className="space-y-4 w-full max-w-[400px]">
+          <h3 className="text-lg font-bold text-black mb-3">Endre brukerinformasjon</h3>
+          <h2 className="text-gray-600 mb-2">Brukerdata kommer ikke opp i UI'et enda, jobber med dette.</h2>
+          {/* Brukerkonto informasjon */}
+          <p className="text-sm font-medium text-gray-700">Brukerkonto:</p>
           <input
             type="text"
-            value={brukernavn}
-            onChange={(e) => setBrukernavn(e.target.value)}
+            value={nyttBrukernavn}
+            onChange={(e) => setNyttBrukernavn(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded"
-            placeholder="Endre brukernavn"
+            placeholder="Brukernavn"
           />
           <input
             type="email"
-            value={epost}
-            onChange={(e) => setEpost(e.target.value)}
+            value={nyEpost}
+            onChange={(e) => setNyEpost(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded"
-            placeholder="Endre e-post"
+            placeholder="E-post"
+          />
+          {/* Personlig informasjon */}
+          <p className="text-sm font-medium text-gray-700 mt-2">Personlig informasjon:</p>
+          <input
+            type="text"
+            value={fornavn}
+            onChange={(e) => setFornavn(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded"
+            placeholder="Fornavn"
           />
           <input
-            type="password"
-            value={gammeltPassord}
-            onChange={(e) => setGammeltPassord(e.target.value)}
+            type="text"
+            value={etternavn}
+            onChange={(e) => setEtternavn(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded"
-            placeholder="Gammelt passord"
+            placeholder="Etternavn"
+          />
+          <input
+            type="text"
+            value={telefonnummer}
+            onChange={(e) => setTelefonnummer(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded"
+            placeholder="Telefonnummer"
+          />
+          <input
+            type="text"
+            value={bosted}
+            onChange={(e) => setBosted(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded"
+            placeholder="Bosted"
+          />
+          {/* Passord */}
+          <p className="text-sm font-medium text-gray-700 mt-2">Endre passord:</p>
+          <input
+            type="password"
+            value={passord}
+            onChange={(e) => setPassord(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded"
+            placeholder="Nåværende passord (oppgis ved endring av passord)"
           />
           <input
             type="password"

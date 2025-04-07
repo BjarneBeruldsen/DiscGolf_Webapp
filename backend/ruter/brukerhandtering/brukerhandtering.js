@@ -24,7 +24,7 @@ brukerRouter.post("/Registrering", registreringValidering, registreringStopp, as
             return res.status(400).json({ error: error.array() });
         }
         //Sjekker om brukernavn eller e-post allerede finnes i databasen
-        const {brukernavn, epost, passord} = req.body;
+        const {brukernavn, epost, passord, bekreftPassord} = req.body;
         const funnetBruker = await db.collection("Brukere").findOne({
                 $or: [
                     {brukernavn: brukernavn.trim().toLowerCase()},
@@ -180,21 +180,143 @@ brukerRouter.delete("/SletteBruker", beskyttetRute, sletteValidering, sjekkBruke
     }
 });
 //Rute for å redigere brukerinformasjon og legge til mer info som fornavn, etternavn, telefonnummer og bosted
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+brukerRouter.patch("/RedigerBruker", beskyttetRute, sjekkBrukerAktiv, redigeringValidering, endringStopp, async (req, res) => {
+    try {
+        //Oppretter variabler/konstanter for redigering av bruker
+        const oppdatering = {};
+        const { nyttBrukernavn, nyEpost, nyttPassord, passord, fornavn, etternavn, telefonnummer, bosted } = req.body;
+        //Henter nåværende brukerdata
+        const bruker = req.user;
+        const brukernavn = bruker.brukernavn; 
+        const epost = bruker.epost;
+        const brukerId = bruker._id; 
+        //Sjekker db kobling 
+        const db = getDb(); 
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+        //Validering av input med express-validator hentet fra validering.js
+        const error = validationResult(req);    
+        if (!error.isEmpty()) {
+            return res.status(400).json({ error: error.array() });
+        }
+        //Boolean for å sjekke om noe er endret
+        let sjekkeEndringer = false;
+        //Sjekker om nytt brukernavn allerede finnes hvis bruker vil endre det 
+        if (nyttBrukernavn && nyttBrukernavn !== brukernavn) {
+            const funnetBruker = await db.collection("Brukere").findOne({
+                brukernavn: nyttBrukernavn.trim().toLowerCase()
+            });
+            if (funnetBruker) {
+                return res.status(400).json({ error: "Brukernavn er allerede tatt" });
+            } else {
+                console.log(`Nytt brukernavn registrert for bruker: ${bruker.brukernavn}, nytt brukernavn: ${nyttBrukernavn}, med epost: ${epost}`);
+                oppdatering.brukernavn = nyttBrukernavn.trim().toLowerCase();
+                sjekkeEndringer = true;
+            }
+        }
+        //Sjekker om ny epost allerede finnes hvis bruker vil endre det
+        if (nyEpost && nyEpost !== epost) {
+            const funnetBruker = await db.collection("Brukere").findOne({
+                epost: nyEpost.trim().toLowerCase()
+            });
+            if (funnetBruker) {
+                return res.status(400).json({ error: "E-post er allerede tatt" });
+            } else {
+                console.log(`Ny epost registrert for bruker: ${bruker.brukernavn}, gammel epost: ${epost}, ny epost: ${nyEpost}`);
+                oppdatering.epost = nyEpost.trim().toLowerCase();
+                sjekkeEndringer = true;
+            }
+        }
+        //Sjekker om bruker har oppgitt nytt passord med validering
+        if (nyttPassord) {
+            if (!passord) {
+                return res.status(400).json({ error: "Nåværende passord må oppgis" });
+            }
+            //Sjekk om brukerens gamle passord stemmer
+            const passordSjekk = await bcrypt.compare(passord, bruker.passord);
+            if (!passordSjekk) {
+                return res.status(401).json({ error: "Feil passord" });
+            } else {
+            //Krypterer nytt passord
+            const salt = await bcrypt.genSalt(12);
+            const hashetPassord = await bcrypt.hash(nyttPassord, salt);
+            //Legger til nytt passord 
+            oppdatering.passord = hashetPassord;
+            sjekkeEndringer = true;
+            console.log(`Passord endret for bruker: ${bruker.brukernavn}, med epost: ${epost}`);
+            }
+        }
+        //Under her oppdaterer vi ulike felt dersom bruker har lyst til å legge dem til. Sjekker også om verdiene er tomme eller ugyldige
+        if (fornavn !== undefined && fornavn !== null && fornavn !== "") {
+            oppdatering.fornavn = fornavn.trim();
+            sjekkeEndringer = true;
+        }
+        if (etternavn !== undefined && etternavn !== null && etternavn !== "") {
+            oppdatering.etternavn = etternavn.trim();
+            sjekkeEndringer = true;
+        }
+        if (telefonnummer !== undefined && telefonnummer !== null && telefonnummer !== "") {
+            oppdatering.telefonnummer = telefonnummer.trim();
+            sjekkeEndringer = true;
+        }
+        if (bosted !== undefined && bosted !== null && bosted !== "") {
+            oppdatering.bosted = bosted.trim();
+            sjekkeEndringer = true;
+        }
+        //Returner feilmelding hvis ingen endringer er gjort
+        if (!sjekkeEndringer) {
+            return res.status(400).json({ error: "Ingen endringer gjort" });
+        }
+        //Utfører oppdatering til databasen av brukeren med autentisert bruker-ID
+        const resultat = await db.collection("Brukere").updateOne(
+            { _id: brukerId }, 
+            { $set: oppdatering }
+        );
+        if (resultat.modifiedCount > 0) {
+            console.log(`Brukeroppdatering fullført for: ${brukernavn}, med epost: ${epost}`); //Skal legge til oppdaterte felt også må bare finne ut hvordan funker ikke som jeg trodde det skulle gjøre
+            return res.status(200).json({ melding: "Brukerinformasjon oppdatert" });
+        } else {
+            return res.status(404).json({ error: "Brukeren ble ikke funnet" });
+        }
+    } catch (error) {
+        console.error("Feil ved oppdatering av bruker:", error);
+        return res.status(500).json({ error: "Noe gikk galt. Prøv igjen senere" });
+    }
+});
+//Hente brukerdata fra en spesifikk bruker
+/*
+brukerRouter.get("/bruker", beskyttetRute, sjekkBrukerAktiv, async (req, res) => {
+    try {
+        const db = getDb();
+        if (!db) return res.status(500).json({ error: 'Ingen database tilkobling' });
+        const bruker = await db.collection('Brukere').findOne({ 
+            _id: new ObjectId(String(req.user._id))
+        });
+        if (!bruker) {
+            return res.status(404).json({ error: 'Bruker ikke funnet' });
+        }
+        res.status(200).json({
+            fornavn: bruker.fornavn,
+            etternavn: bruker.etternavn,
+            telefonnummer: bruker.telefonnummer,
+            bosted: bruker.bosted,
+        });
+    } catch (err) {
+        console.error("Feil ved henting av brukerdata:", err);
+        res.status(500).json({ error: "Kunne ikke hente brukerdata" });
+    }
+});
+*/
 //Rute for glemt passord
+//Her kommer det en rute for glemt passord som sender en e-post med en lenke for tilbakestilling av passord via nodemailer mulig jeg implementerer det for brukernavn/epost også hvis jeg får tid
+
+
+
+
+
+
+
+
+
 
 
 
@@ -208,6 +330,7 @@ brukerRouter.delete("/SletteBruker", beskyttetRute, sletteValidering, sjekkBruke
 
 
 //Rute for å hente alle brukere for søking etter brukere man kan komme i kontakt med
+/*
 brukerRouter.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (req, res) => {
     try {
         const db = getDb();
@@ -226,6 +349,7 @@ brukerRouter.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (req, re
         res.status(500).json({ error: "Feil ved henting av brukerliste" });
     }
 });
+*/
 
 
 module.exports = brukerRouter;
