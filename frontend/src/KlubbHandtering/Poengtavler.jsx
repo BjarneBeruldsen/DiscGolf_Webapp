@@ -75,7 +75,7 @@ const PoengTavler = () => {
         <div className="statistikk bg-gray-200">
             <div className='topp-panel bg-white p-4 shadow w-full'>
                 <div className='overskrift border-b'>
-                    <h2 className="text-3xl font-bold">{ brukernavn }sin statistikk</h2>
+                    <h2 className="text-3xl font-bold">{ brukernavn } sin statistikk</h2>
                 </div>
                 <div className='navbar p-2'>
                     <button onClick={() => handleVis('statistikk')} className={`justify-center py-2 px-2 m-2 text-sm ${valgtSeksjon === 'statistikk' ? 'border-b-2 border-black-500' : 'rounded-lg bg-white text-gray hover:bg-gray-200'}`}>Statistikk</button>
