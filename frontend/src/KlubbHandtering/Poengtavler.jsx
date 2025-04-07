@@ -27,20 +27,26 @@ const PoengTavler = () => {
     }, [bruker]);
 
     useEffect(() => {
-        poengTavler.map((poengTavle, index) => {
+        let totalScore = 0;
+        let totalKast = 0;
+        let bestScore = 0;
+        let holeInOneCount = 0;
+
+        poengTavler.map((poengTavle) => {
             console.log("slår til")
             if (poengTavle.nyPoengkort && poengTavle.nyPoengkort.spillere) {
                 const spillere = poengTavle.nyPoengkort.spillere;
                 setAntRunder(poengTavler.length);
-                let totalScore = 0;
-                let totalKast = 0;
-                let bestScore = 0;
-                let holeInOneCount = 0;
+        
 
                 const spiller = spillere[0]
                 totalScore += spiller.total || 0;
                 totalKast += sumKast(spiller) || 0; 
-                bestScore = Math.min(bestScore, spiller.total);
+                console.log("total: ", spiller.total) 
+                if(spiller.total < bestScore) {
+                    bestScore = spiller.total;
+                    console.log("total: ", spiller.total) 
+                }
                 console.log("Best score: ", bestScore); //Logging av beste score
                 
                 //finner antall hole in one
@@ -51,8 +57,8 @@ const PoengTavler = () => {
                 }
 
                 setAntallKastTotalt(totalKast);
-                setGjennomsnittligScore(totalScore / poengTavler.length);
-                setGjennomsnittligKast(totalKast / poengTavler.length);
+                setGjennomsnittligScore(Math.round(totalScore / poengTavler.length));
+                setGjennomsnittligKast(Math.round(totalKast / poengTavler.length));
                 setBesteScore(bestScore);
                 setAntHoleInOne(holeInOneCount);
             }

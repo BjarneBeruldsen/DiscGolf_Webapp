@@ -32,6 +32,8 @@ const ScoreBoard = () => {
         return lagretVisOppsummering ? JSON.parse(lagretVisOppsummering) : false;
     });
 
+    const [errorMelding, setErrorMelding] = useState(null);
+
     useEffect(() => {
         localStorage.setItem('spillere', JSON.stringify(spillere));
         localStorage.setItem('nr', JSON.stringify(nr));
@@ -52,6 +54,7 @@ const ScoreBoard = () => {
                 const oppdatertAntallKast = [...spiller.antallKast];
                 oppdatertAntallKast[nr] = (oppdatertAntallKast[nr] || 0) + endring;
                 const oppdatertTotal = oppdatertAntallKast[nr] === -1 ? spiller.total : spiller.total + endring;
+                setErrorMelding(null);
                 if(oppdatertAntallKast[nr] < 0) {
                     oppdatertAntallKast[nr] = 0; 
                 }
@@ -87,7 +90,10 @@ const ScoreBoard = () => {
 
 
     const endreHull = (retning) => {
-        if (retning && nr < hull.length - 1) {
+        setErrorMelding(null);
+        let erNull = sjekkErNullKast(nr); 
+        
+        if (retning && nr < hull.length - 1 && !erNull) {
             setNr(nr + 1); 
             if(nr <= hull.length - 1) {
                 oppdaterTotal(retning);
@@ -98,6 +104,9 @@ const ScoreBoard = () => {
             if(nr >= 1) {
                 oppdaterTotal(retning);
             }
+        }
+        else {
+            setErrorMelding("Alle spillere må kaste")
         }
     };
 
@@ -113,28 +122,33 @@ const ScoreBoard = () => {
     };
 
     const handleAvsluttRunde = () => {
-        const nyPoengkort = {
-            spillere: spillere,
-            baneNavn: bane.baneNavn,
-            baneId: baneId
-        };
-        
-        fetch(`${process.env.REACT_APP_API_BASE_URL}/brukere/${bruker.id}/poengkort`, {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nyPoengkort })
-        }).then((response) => {
-            if (!response.ok) {
-                throw new Error('Feil ved lagring av poengkort');
-            }
-            return response.json();
-        }).catch(error => {
-            console.error('Feil ved lagring av poengkort:', error);
-        });
+        if(!sjekkErNullKast(nr)) {
+            const nyPoengkort = {
+                spillere: spillere,
+                baneNavn: bane.baneNavn,
+                baneId: baneId
+            };
+            
+            fetch(`${process.env.REACT_APP_API_BASE_URL}/brukere/${bruker.id}/poengkort`, {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nyPoengkort })
+            }).then((response) => {
+                if (!response.ok) {
+                    throw new Error('Feil ved lagring av poengkort');
+                }
+                return response.json();
+            }).catch(error => {
+                console.error('Feil ved lagring av poengkort:', error);
+            });
 
-        setVisScoreboard(false);
-        setVisVelgSpillere(false);
-        setVisOppsummering(true);
+            setVisScoreboard(false);
+            setVisVelgSpillere(false);
+            setVisOppsummering(true);
+        }
+        else {
+            setErrorMelding("Alle spillere må kaste")
+        }
     };
     
     const handleNyRunde = () => {
@@ -143,6 +157,16 @@ const ScoreBoard = () => {
         setSpillere([]);
         setNr(0);
         setVisScoreboard(false);
+    }
+
+    const sjekkErNullKast = (nr) => {
+        let erNull = false;
+        for(let i=0;i<spillere.length;i++) {
+            if(spillere[i].antallKast[nr] === 0) {
+                erNull = true; 
+            }
+        }
+        return erNull;
     }
 
     return (
@@ -169,6 +193,9 @@ const ScoreBoard = () => {
                             <button onClick={() => oppdaterpoeng(spiller.id, 1)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow px-4 py-2">+</button>
                         </div>
                     ))}
+                    <div className="flex justify-center items-center my-2">
+                        <p className="text-red-500">{errorMelding}</p>
+                    </div>
                 </div>
                 <div className="bunn-panel flex justify-between py-2">
                     <button onClick={() => endreHull(false)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2">{"<-"}</button>
