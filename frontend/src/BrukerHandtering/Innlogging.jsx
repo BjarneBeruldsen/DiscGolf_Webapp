@@ -63,9 +63,9 @@ const Innlogging = ({ setLoggetInnBruker }) => {
         setMelding("Innlogging vellykket!");
         setTimeout(() => {
           setLoggetInnBruker(data.bruker);
-          setTimeout(() => minne.push("/Hjem"), 1000);
+          minne.push("/Hjem");
           window.location.reload();
-        }, 100);
+        }, 2000);
       }
     } catch (error) {
       console.error("Innloggingsfeil:", error);
@@ -105,7 +105,7 @@ const tallRiktig = tallInput !== "" && parseInt(tallInput) === tall;
             className="px-5 py-3 m-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
           <label className="text-gray-700 mt-4">
-            Skriv inn tallet for å logge inn: {tall} 
+            Skriv inn tallet for å logge inn: <span className="text-red-500">{tall}</span>
           </label>
           <input 
             type="number"
