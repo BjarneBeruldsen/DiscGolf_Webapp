@@ -218,6 +218,29 @@ const transporter = nodemailer.createTransport({
     });
   });
 
+app.get('/byer', async (req, res) => {
+    try {
+      const db = getDb(); 
+      if (!db) throw new Error('Database not connected');
+      
+      const byer = await db.collection('by').find().toArray(); 
+      
+      if (!byer || byer.length === 0) {
+        return res.status(200).json([]);
+      }
+  
+      res.status(200).json(byer);
+      
+    } catch (err) {
+        console.error('Feil under databehandling:', err);
+      
+        res.status(500).json({
+          error: 'Noe gikk galt'
+        });
+      }
+      
+  });
+  
 //Håndter alle andre ruter med React Router
 app.get(/^(?!\/api).+/, (req, res) => { //Tilgangskontroll ruter funker ikke med wildcard
   res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));

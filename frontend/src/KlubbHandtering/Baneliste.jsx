@@ -11,6 +11,32 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 const BaneListe = ({ baner, rediger, klubbId }) => {
     const minne = useHistory();
     const { bruker, venter } = HentBruker();
+    const [yrId, setYrId] = useState({});
+
+   
+    useEffect(() => {
+        const hentYrIdForBaner = async () => {
+            try {
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/byer`);
+                const byer = await response.json();
+                
+                if (baner && byer) {
+                    const yr_Id = {};
+                    baner.forEach(bane => {
+                        const matchetBy = byer.find(by => by.navn === bane.plassering);
+                        if (matchetBy) {
+                            yr_Id[bane._id] = matchetBy.yr_id;
+                        }
+                    });
+                    setYrId(yr_Id);
+                }
+            } catch (error) {
+                console.error('Feil ved henting av byer:', error);
+            }
+        };
+
+        hentYrIdForBaner();
+    }, [baner]);
 
     const handleClick = (bane) => {
         if(bruker === null) {
@@ -32,29 +58,29 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
         baner.forEach((bane, index) => {
         const mapContainer = document.getElementById(`map-${index}`);
         if (!mapContainer) return;
-        
-    
-        const map = new mapboxgl.Map({
-        container: mapContainer,
-        style: "mapbox://styles/mapbox/satellite-streets-v12",
-        center: [bane.hull?.[0]?.startLongitude || 9.059, bane.hull?.[0]?.startLatitude || 59.409],
-        zoom: 14,
-        })
-    
-        bane.hull?.forEach(({ startLatitude, startLongitude, sluttLatitude, sluttLongitude }) => {
-            if (startLatitude && startLongitude) {
-                new mapboxgl.Marker({ color: "gray" })
-                   .setLngLat([startLongitude, startLatitude])
-                   .addTo(map);
-                        
-               }
-            if (sluttLatitude && sluttLongitude) {
-                new mapboxgl.Marker({ color: "green" })
-                   .setLngLat([sluttLongitude, sluttLatitude])
-                   .addTo(map);         
-            }
+
+            
+            const map = new mapboxgl.Map({
+                container: mapContainer,
+                style: "mapbox://styles/mapbox/satellite-streets-v12",
+                center: [bane.hull?.[0]?.startLongitude || 9.059, bane.hull?.[0]?.startLatitude || 59.409],
+                zoom: 14,
+            })
+
+            bane.hull?.forEach(({ startLatitude, startLongitude, sluttLatitude, sluttLongitude }) => {
+                if (startLatitude && startLongitude) {
+                    new mapboxgl.Marker({ color: "gray" })
+                        .setLngLat([startLongitude, startLatitude])
+                        .addTo(map);
+
+                }
+                if (sluttLatitude && sluttLongitude) {
+                    new mapboxgl.Marker({ color: "green" })
+                        .setLngLat([sluttLongitude, sluttLatitude])
+                        .addTo(map);         
+                }
+            });
         });
-    });
     }, [baner, rediger]);
 
     return ( 
@@ -64,6 +90,7 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
                     <div className="grid grid-cols-1 lg-grid-cols-2 gap-6">
                         {baner.map((bane, index) => {
                             const antallHull = bane.hull ? bane.hull.length : 0;
+                            const baneYrId = yrId[bane._id] || '1-43228';  
                             return (
                                 <div className="bg-white rounded-lg shadow-sm p-4 m-4 md:w-100 w-80" key={index}>
                                     <div className="topplinje border-b-2 flex justify-between text-xl font-bold ">
@@ -75,11 +102,14 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
                                         <p className="pl-20">Nivå: {bane.vanskelighet}</p> 
                                     </div>
                                     <div>
-                                        <iframe src="https://www.yr.no/nb/innhold/1-43228/card.html" frameborder="0"
+                                        <iframe 
+                                            src={`https://www.yr.no/nb/innhold/${baneYrId}/card.html`}
+                                            frameborder="0"
                                             className="w-full h-[365px] pointer-events-none"
+                                            title={`Værvarsel for ${bane.baneNavn}`}
                                         ></iframe>
                                         <div id={`map-${index}`} className="w-full h-100" />
-                                    
+
                                     </div>
                                     <div className="nederstelinje inline-block">
                                         <div className="beskrivelse pr-4 wrap">
