@@ -8,52 +8,88 @@ const Registrering = () => {
     const [brukernavn, setBrukernavn] = useState("");
     const [epost, setEpost] = useState(""); 
     const [passord, setPassord] = useState("");
+    const [bekreftPassord, setbekreftPassord] = useState("");
     const [melding, setMelding] = useState("");
     const minne = useHistory(); 
+    const [tall, setTall] = useState(Math.floor(Math.random() * 99) + 1);
+    const [tallInput, setTallInput] = useState("");
 
     //Skjemafunksjon for registrering
-    const handleSubmit = async (event) => {         //https://react-hook-form.com/docs/useform/handlesubmit
+    const handleSubmit = async (event) => {        //https://legacy.reactjs.org/docs/forms.html
         event.preventDefault();
         setMelding("");
 
-        //Frontend validering 
+        //Frontend validering med regex
         const brukernavnRegex = /^[a-zA-Z0-9]{3,15}$/; //3-15 tegn, kun bokstaver og tall
         const epostRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; //E-post validering sjekker @ og .
         const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,20}$/; //Minst 8 tegn og maks 20, ett spesialtegn
-    
-        if (!brukernavnRegex.test(brukernavn)) {
+        const tallRegex = /^[0-9]+$/; //Sjekker at input er tall
+
+        const erEpost = epostRegex.test(epost);
+        const erBrukernavn = brukernavnRegex.test(brukernavn);
+        const erPassord = passordRegex.test(passord);
+        const erBekreftPassord = passordRegex.test(bekreftPassord);
+        const erTall = tallRegex.test(tallInput);
+        
+        //Sjekker om brukernavn, epost og passord er gyldig i henhold til regex
+        if (!erBrukernavn) {
             setMelding("Brukernavn må være 3-15 tegn langt og kun inneholde bokstaver og tall.");
             return;
         }
-        if (!epostRegex.test(epost)) {
-            setMelding("E-post må være en gyldig adresse.");
+        if (!erEpost) {
+            setMelding("E-post må være gyldig");
             return;
         }
-        if (!passordRegex.test(passord)) {
-            setMelding("Passord må være minst 8 tegn og maks 20 tegn og ha ett spesialtegn.");
+        if (!erPassord) {
+            setMelding("Passord må være gyldig, (minst 8 tegn og maks 20 tegn og ha ett spesialtegn).");
             return;
+        }
+        if (!erBekreftPassord) {
+            setMelding("Passord må være gyldig, (minst 8 tegn og maks 20 tegn og ha ett spesialtegn).");
+            return;
+        }
+        //Sjekker om passordene er like 
+        if (passord !== bekreftPassord) {
+            setMelding("Passordene stemmer ikke overens.");
+            return;
+        }
+        //Sjekker om tallinput fra captchaen er gyldig 
+        if (!erTall || tallInput.length > 2) {
+            setMelding("Tallet må være et gyldig tall.");
+            return;
+        }
+        //Enkel captcha hvis feil tall kan ikke brukeren registrere seg
+        if (parseInt(tallInput) !== tall) {
+        return;
         }
         //Kontakter backend for registrering
         try {
             const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Registrering`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ brukernavn, epost, passord }),
+                body: JSON.stringify({ brukernavn, epost, passord, bekreftPassord }),
                 credentials: "include",
             });
             const data = await respons.json();
             if (!respons.ok) {
                 setMelding(data.error || "Registrering feilet. Prøv igjen.");
+                setTall(Math.floor(Math.random() * 99) + 1);
+                setTallInput("");
                 return;
-            } else {//Registrering ble vellykket bruker er registrert
-            setMelding("Registrering vellykket! Du blir omdirigert til innlogging...");
-            setTimeout(() => minne.push("/Innlogging"), 1000);
+            } else {
+                setMelding("Registrering vellykket! Du blir omdirigert til innlogging...");
+                setTimeout(() => minne.push("/Innlogging"), 1000);
             }
         } catch (error) {
             setMelding("Noe gikk galt. Prøv igjen.");
             console.error("Registreringsfeil:", error);
+            setTall(Math.floor(Math.random() * 99) + 1);
+            setTallInput("");
         }
     }; 
+    
+//Sjekker om det er gyldig og gir deretter beskjed i UI via brukergrensesnittet nedenfor
+const tallRiktig = tallInput !== "" && parseInt(tallInput) === tall; 
 //Design og Styling for registreringsskjema
     return (
         <header>
@@ -91,7 +127,31 @@ const Registrering = () => {
                     required
                     className="px-4 py-3 mb-3 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
-
+                <input
+                    type="password"
+                    placeholder="Bekreft passord"
+                    value={bekreftPassord}
+                    onChange={(e) => setbekreftPassord(e.target.value)}
+                    required
+                    className="px-4 py-3 mb-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+                <label className="text-gray-700 mt-4">
+                    Skriv inn tallet for å logge inn: {tall}
+                </label>
+                <input 
+                    type="number"
+                    id="input"
+                    placeholder="Skriv inn tallet"
+                    value={tallInput}
+                    onChange={(e) => setTallInput(e.target.value)}
+                    required
+                    className="px-5 py-3 m-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+                {tallInput !== "" && (
+                    tallRiktig ? 
+                    <p className="text-green-500 mt-2">Tallet er riktig</p> :
+                    <p className="text-red-500 mt-2">Tallet er feil</p>
+                )}
                 <button
                     type="submit"
                     className="bg-gray-600 text-white px-4 py-2 mt-4 rounded-lg w-full border border-gray-500"

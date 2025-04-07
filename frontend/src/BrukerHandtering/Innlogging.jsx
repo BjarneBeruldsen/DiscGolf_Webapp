@@ -9,27 +9,39 @@ const Innlogging = ({ setLoggetInnBruker }) => {
   const [passord, setPassord] = useState("");
   const [melding, setMelding] = useState("");
   const minne = useHistory(); 
+  const [tall, setTall] = useState(Math.floor(Math.random() * 99) + 1);
+  const [tallInput, setTallInput] = useState("");
 
   //Skjemafunksjon for innlogging
-  const handleSubmit = async (e) => {                   //https://react-hook-form.com/docs/useform/handlesubmit
-    e.preventDefault();
+  const handleSubmit = async (event) => {              //https://legacy.reactjs.org/docs/forms.html
+    event.preventDefault();
     setMelding("");
 
-    //Frontend validering
+    //Frontend validering med regex
     const brukernavnRegex = /^[a-zA-Z0-9]{3,15}$/; //3-15 tegn, kun bokstaver og tall
     const epostRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; //E-post validering sjekker @ og .
     const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,20}$/; //Minst 8 tegn og maks 20, ett spesialtegn
+    const tallRegex = /^[0-9]+$/; //Sjekker at input er tall
 
     const erEpost = epostRegex.test(brukernavn);
     const erBrukernavn = brukernavnRegex.test(brukernavn);
+    const erTall = tallRegex.test(tallInput);
 
-    //Sjekker om brukernavn eller epost er gyldig i henhold til validering 
+    //Sjekker om brukernavn, epost og passord er gyldig i henhold til regex
     if (!erEpost && !erBrukernavn) {
       setMelding("Skriv inn enten brukernavn (3-15 tegn) eller en gyldig e-post.");
       return;
     }
     if (!passordRegex.test(passord)) {
       setMelding("Passord må være minst 8 tegn og maks 20 tegn og ha ett spesialtegn.");
+      return;
+    }
+    if (!erTall || tallInput.length > 2) {
+      setMelding("Tallet må være et gyldig tall.");
+      return;
+    }
+    //Enkel captcha hvis feil tall kan ikke brukeren logge inn
+    if (parseInt(tallInput) !== tall) {
       return;
     }
     //Kontakter backend for innlogging
@@ -44,6 +56,8 @@ const Innlogging = ({ setLoggetInnBruker }) => {
       const data = await respons.json();
       if (!respons.ok) {
         console.error("Innloggingsfeil:", data);
+        setTall(Math.floor(Math.random() * 99) + 1);
+        setTallInput("");
         setMelding(data.error || "Feil ved innlogging. Sjekk brukernavn og passord, prøv igjen deretter.");
       } else {
         setMelding("Innlogging vellykket!");
@@ -51,13 +65,18 @@ const Innlogging = ({ setLoggetInnBruker }) => {
           setLoggetInnBruker(data.bruker);
           setTimeout(() => minne.push("/Hjem"), 1000);
           window.location.reload();
-        }, 500);
+        }, 100);
       }
     } catch (error) {
       console.error("Innloggingsfeil:", error);
+      setTall(Math.floor(Math.random() * 99) + 1);
+      setTallInput("");
       setMelding("Feil ved innlogging. Prøv igjen.");
     }
   };
+
+//Sjekker om det er gyldig og gir deretter beskjed i UI via brukergrensesnittet nedenfor
+const tallRiktig = tallInput !== "" && parseInt(tallInput) === tall; 
 //Styling og design for innloggingsskjema
   return (
     <header>
@@ -85,6 +104,23 @@ const Innlogging = ({ setLoggetInnBruker }) => {
             required
             className="px-5 py-3 m-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
+          <label className="text-gray-700 mt-4">
+            Skriv inn tallet for å logge inn: {tall} 
+          </label>
+          <input 
+            type="number"
+            id="input"
+            placeholder="Skriv inn tallet"
+            value={tallInput}
+            onChange={(e) => setTallInput(e.target.value)}
+            required
+            className="px-5 py-3 m-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          {tallInput !== "" && (
+            tallRiktig ? 
+            <p className="text-green-500 mt-2">Tallet er riktig</p> :
+            <p className="text-red-500 mt-2">Tallet er feil</p>
+          )}
           <button
             type="submit"
             className="bg-gray-600 text-white px-4 py-2 mt-4 rounded-lg w-full border border-gray-500"
@@ -93,6 +129,9 @@ const Innlogging = ({ setLoggetInnBruker }) => {
           </button>
           <p className="text-blue-500 mt-4">
             <Link to="./registrering">Har du ikke konto? Opprett bruker her</Link>
+          </p>
+          <p className="text-blue-500 mt-4">
+            <Link to="">Glemt passord?</Link>
           </p>
           {melding && (
             <p className="mt-4 text-red-500 text-center">
