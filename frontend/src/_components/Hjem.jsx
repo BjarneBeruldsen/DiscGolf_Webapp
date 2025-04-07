@@ -91,7 +91,7 @@ const Hjem = () => {
     
     <iframe 
         title="YR værmelding"
-        src="https://www.yr.no/nb/innhold/1-72837/table.html" 
+        src="https://www.yr.no/nn/innhald/1-72837/table.html" 
         className="w-full h-[550px] pointer-events-none"
         
     >
