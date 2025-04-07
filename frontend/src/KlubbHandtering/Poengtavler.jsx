@@ -9,13 +9,50 @@ const PoengTavler = () => {
     const [visPoengtavler, setVisPoengtavler] = useState(false);
     const [valgtSeksjon, setValgtSeksjon] = useState('statistikk');
     const [brukernavn, setBrukernavn] = useState('');   
+    //statistikk variabler
+    const [antRunder, setAntRunder] = useState(0);
+    const [gjennomsnittligScore, setGjennomsnittligScore] = useState(0);
+    const [antallKastTotalt, setAntallKastTotalt] = useState(0);
+    const [gjennomsnittligKast, setGjennomsnittligKast] = useState(0);
+    const [besteScore, setBesteScore] = useState(0);
+    const [antHoleInOne, setAntHoleInOne] = useState(0);
+
 
     useEffect(() => {
-        if (bruker && bruker.poengkort) {
+        if (bruker && bruker.poengkort && bruker.poengkort.length > 0) {
             setPoengTavler(bruker.poengkort);
             setBrukernavn(bruker.brukernavn);
             console.log(bruker); 
         }
+        poengTavler.map((poengTavle, index) => {
+            if (poengTavle.nyPoengkort && poengTavle.nyPoengkort.spillere) {
+                const spillere = poengTavle.nyPoengkort.spillere;
+                setAntRunder(poengTavler.length);
+                let totalScore = 0;
+                let totalKast = 0;
+                let bestScore = 0;
+                let holeInOneCount = 0;
+
+                const spiller = spillere[0]
+                totalScore += spiller.total || 0;
+                totalKast += sumKast(spiller) || 0; 
+                bestScore = Math.min(bestScore, spiller.total || 0);
+                
+                //finner antall hole in one
+                for (let i = 0; i < spiller.antallKast.length; i++) {
+                    if (spiller.antallKast[i] === 1) {
+                        holeInOneCount++;
+                    }
+                }
+
+                setAntallKastTotalt(totalKast);
+                setGjennomsnittligScore(totalScore / poengTavler.length);
+                setGjennomsnittligKast(totalKast / poengTavler.length);
+                setBesteScore(bestScore);
+                setAntHoleInOne(holeInOneCount);
+            }
+        })
+
     }, [bruker]);
 
     const handleVis = (seksjon) => {
@@ -89,31 +126,30 @@ const PoengTavler = () => {
             ) : (
                 <div className="flex justify-center">
                     <div className="statistikk bg-white shadow rounded-xl m-8 p-5 w-full">
-                        <p>kommer senere..</p>
                     <div className="grid md-grid-cols-3 gap-6">
                             <div className="bg-gray-100 shadow-md rounded-xl p-4">
                                 <p className="text-sm">Antall runder</p>
-                                <p className="text-xl font-bold">100</p>
+                                <p className="text-xl font-bold">{antRunder}</p>
                             </div>
                             <div className="bg-gray-100 shadow-md rounded-xl p-4">
                                 <p className="text-sm">Gjennomsnitlig score</p>
-                                <p className="text-xl font-bold">100</p>
+                                <p className="text-xl font-bold">{gjennomsnittligScore}</p>
                             </div>
                             <div className="bg-gray-100 shadow-md rounded-xl p-4">
                                 <p className="text-sm">Antall kast totalt</p>
-                                <p className="text-xl font-bold">100</p>
+                                <p className="text-xl font-bold">{antallKastTotalt}</p>
                             </div>
                             <div className="bg-gray-100 shadow-md rounded-xl p-4">
                                 <p className="text-sm">Gjennomsnitlig kast pr.runde</p>
-                                <p className="text-xl font-bold">100</p>
+                                <p className="text-xl font-bold">{gjennomsnittligKast}</p>
                             </div>
                             <div className="bg-gray-100 shadow-md rounded-xl p-4">
                             <p className="text-sm">Beste score</p>
-                            <p className="text-xl font-bold">100</p>
+                            <p className="text-xl font-bold">{besteScore}</p>
                             </div>
                             <div className="bg-gray-100 shadow-md rounded-xl p-4">
                             <p className="text-sm">Antall hole in one</p>
-                            <p className="text-xl font-bold">100</p>
+                            <p className="text-xl font-bold">{antHoleInOne}</p>
                             </div>
                         </div>
                     </div>
