@@ -51,6 +51,7 @@ const ScoreBoard = () => {
             if (spiller.id === spillerId) {
                 const oppdatertAntallKast = [...spiller.antallKast];
                 oppdatertAntallKast[nr] = (oppdatertAntallKast[nr] || 0) + endring;
+                const oppdatertTotal = oppdatertAntallKast[nr] === -1 ? spiller.total : spiller.total + endring;
                 if(oppdatertAntallKast[nr] < 0) {
                     oppdatertAntallKast[nr] = 0; 
                 }
@@ -58,7 +59,7 @@ const ScoreBoard = () => {
                 return {
                     ...spiller,
                     antallKast: oppdatertAntallKast,
-                    total: oppdatertAntallKast[nr] < 0 ? spiller.total : spiller.total + endring
+                    total: oppdatertTotal
                 };
             }
             return spiller;
