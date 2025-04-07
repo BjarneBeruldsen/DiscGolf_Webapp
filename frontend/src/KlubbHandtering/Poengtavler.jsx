@@ -24,6 +24,9 @@ const PoengTavler = () => {
             setBrukernavn(bruker.brukernavn);
             console.log(bruker); 
         }
+    }, [bruker]);
+
+    useEffect(() => {
         poengTavler.map((poengTavle, index) => {
             console.log("slår til")
             if (poengTavle.nyPoengkort && poengTavle.nyPoengkort.spillere) {
@@ -54,8 +57,7 @@ const PoengTavler = () => {
                 setAntHoleInOne(holeInOneCount);
             }
         })
-
-    }, [bruker]);
+    }, [poengTavler]);
 
     const handleVis = (seksjon) => {
         setValgtSeksjon(seksjon);
