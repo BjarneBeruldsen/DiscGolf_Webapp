@@ -36,7 +36,8 @@ const PoengTavler = () => {
                 const spiller = spillere[0]
                 totalScore += spiller.total || 0;
                 totalKast += sumKast(spiller) || 0; 
-                bestScore = Math.min(bestScore, spiller.total || 0);
+                bestScore = Math.min(bestScore, spiller.total);
+                console.log("Best score: ", bestScore); //Logging av beste score
                 
                 //finner antall hole in one
                 for (let i = 0; i < spiller.antallKast.length; i++) {
