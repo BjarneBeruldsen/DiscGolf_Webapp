@@ -25,6 +25,7 @@ const PoengTavler = () => {
             console.log(bruker); 
         }
         poengTavler.map((poengTavle, index) => {
+            console.log("slår til")
             if (poengTavle.nyPoengkort && poengTavle.nyPoengkort.spillere) {
                 const spillere = poengTavle.nyPoengkort.spillere;
                 setAntRunder(poengTavler.length);
