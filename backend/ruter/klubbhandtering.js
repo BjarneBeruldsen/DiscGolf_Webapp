@@ -226,7 +226,7 @@ klubbRouter.patch('/klubber/:klubbId/baner/:baneId', (req, res) => {
 })
 
 //Rute for å lagre poengkort for en bruker
-klubbRouter.post('/brukere/:id/poengkort', beskyttetRute, async (req, res) => {
+klubbRouter.post('/brukere/:id/poengkort', async (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
     if(ObjectId.isValid(req.params.id) === false) {

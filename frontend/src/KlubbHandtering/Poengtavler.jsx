@@ -23,6 +23,16 @@ const PoengTavler = () => {
         setVisPoengtavler(seksjon === 'poengtavler');
         setVisStatistikk(seksjon === 'statistikk');
     };
+
+    const sumKast = (spiller) => {
+        let sum = 0;
+        if (spiller.antallKast) {
+            for (let i = 0; i < spiller.antallKast.length; i++) {
+                sum += spiller.antallKast[i] || 0; 
+            }
+        }
+        return sum;
+    }
    
     return (
         <div className="statistikk bg-gray-200">
@@ -56,7 +66,7 @@ const PoengTavler = () => {
                                         poengTavle.nyPoengkort.spillere.map(spiller => (
                                             <tr className="even:bg-gray-100" key={spiller.id}>
                                                 <td className="p-4">{spiller.navn}</td>
-                                                <td className="p-4">{spiller.total}</td>
+                                                <td className="p-4">{sumKast(spiller)}</td>
                                                 <td className="p-4">{spiller.total}</td>
                                             </tr>
                                         ))
