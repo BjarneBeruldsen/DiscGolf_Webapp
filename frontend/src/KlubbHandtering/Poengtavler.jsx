@@ -22,7 +22,6 @@ const PoengTavler = () => {
         if (bruker && bruker.poengkort && bruker.poengkort.length > 0) {
             setPoengTavler(bruker.poengkort);
             setBrukernavn(bruker.brukernavn);
-            console.log(bruker); 
         }
     }, [bruker]);
 
@@ -33,7 +32,6 @@ const PoengTavler = () => {
         let holeInOneCount = 0;
 
         poengTavler.map((poengTavle) => {
-            console.log("slår til")
             if (poengTavle.nyPoengkort && poengTavle.nyPoengkort.spillere) {
                 const spillere = poengTavle.nyPoengkort.spillere;
                 setAntRunder(poengTavler.length);
@@ -42,12 +40,10 @@ const PoengTavler = () => {
                 const spiller = spillere[0]
                 totalScore += spiller.total || 0;
                 totalKast += sumKast(spiller) || 0; 
-                console.log("total: ", spiller.total) 
                 if(spiller.total < bestScore) {
                     bestScore = spiller.total;
-                    console.log("total: ", spiller.total) 
                 }
-                console.log("Best score: ", bestScore); //Logging av beste score
+        
                 
                 //finner antall hole in one
                 for (let i = 0; i < spiller.antallKast.length; i++) {

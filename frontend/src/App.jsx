@@ -32,11 +32,13 @@ import TurneringsAdministrasjon from './Admin/TurneringsAdministrasjon';
 import Systeminnstillinger from './Admin/Systeminnstillinger';
 import BrukerListe from "./Admin/BrukerListe";
 import RedigerBane from './KlubbHandtering/RedigerBane';
+import Varsling from './_components/Varsling';
 
 function App() {
   const { bruker, venter } = HentBruker();
   const [loggetInnBruker, setLoggetInnBruker] = useState(null);
   const [sessionLastet, setSessionLastet] = useState(false); 
+  const [visVarsling, setVisVarsling] = useState(false); 
 
 //Setter loggetInnBruker til bruker og angir sessionLastet til true når brukeren er lastet og venter er false
 useEffect(() => {
@@ -48,11 +50,30 @@ useEffect(() => {
   if (!sessionLastet) {
     return <p className="text-center text-gray-700 mt-10">Laster inn...</p>;
   }
+
+
+  const toggleVarsling = () => {
+    setVisVarsling(!visVarsling); 
+  }
+
+
+
   //Hovedkomponent som håndterer routing og visning av forskjellige sider i applikasjonen
   return (
     <Router>
       <div className="App">
-        <Header loggetInnBruker={loggetInnBruker} setLoggetInnBruker={setLoggetInnBruker} />
+        <Header 
+          loggetInnBruker={loggetInnBruker} 
+          setLoggetInnBruker={setLoggetInnBruker} 
+          toggleVarsling={toggleVarsling}
+        />
+        {visVarsling && (
+          <div>
+            <Varsling 
+              toggleVarsling={toggleVarsling}
+            />
+          </div>
+        )}
         <div className="innhold">
           <Switch>
             <Route exact path="/">
