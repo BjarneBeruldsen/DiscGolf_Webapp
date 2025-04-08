@@ -136,7 +136,7 @@ const tallRiktig = tallInput !== "" && parseInt(tallInput) === tall;
                     className="px-4 py-3 mb-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
                 <label className="text-gray-700 mt-4">
-                    Skriv inn tallet for å logge inn: {tall}
+                Skriv inn tallet for å logge inn: <span className="text-red-500">{tall}</span>
                 </label>
                 <input 
                     type="number"
