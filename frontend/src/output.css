@@ -372,6 +372,9 @@
   .h-5 {
     height: calc(var(--spacing) * 5);
   }
+  .h-8 {
+    height: calc(var(--spacing) * 8);
+  }
   .h-10 {
     height: calc(var(--spacing) * 10);
   }
@@ -946,6 +949,13 @@
       }
     }
   }
+  .hover\:bg-gray-300 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-gray-300);
+      }
+    }
+  }
   .hover\:bg-gray-400 {
     &:hover {
       @media (hover: hover) {
@@ -1049,6 +1059,11 @@
   .focus\:ring-blue-500 {
     &:focus {
       --tw-ring-color: var(--color-blue-500);
+    }
+  }
+  .focus\:ring-gray-400 {
+    &:focus {
+      --tw-ring-color: var(--color-gray-400);
     }
   }
   .focus\:outline-none {
