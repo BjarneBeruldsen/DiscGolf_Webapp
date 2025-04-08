@@ -8,28 +8,28 @@ import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
-const BaneListe = ({ baner, rediger, klubbId }) => {
+    const BaneListe = ({ baner, rediger, klubbId }) => {
     const minne = useHistory();
     const { bruker, venter } = HentBruker();
     const [yrId, setYrId] = useState({});
+    const [aktivBaneIndex, setAktivBaneIndex] = useState(0);
+    const [aktivBane, setAktivBane] = useState(baner || []);
 
-   
+
     useEffect(() => {
         const hentYrIdForBaner = async () => {
             try {
                 const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/byer`);
                 const byer = await response.json();
-                
-                if (baner && byer) {
-                    const yr_Id = {};
-                    baner.forEach(bane => {
-                        const matchetBy = byer.find(by => by.navn === bane.plassering);
-                        if (matchetBy) {
-                            yr_Id[bane._id] = matchetBy.yr_id;
-                        }
-                    });
-                    setYrId(yr_Id);
-                }
+
+                const yr_Id = {};
+                baner.forEach((bane) => {
+                    const matchetBy = byer.find((by) => by.navn === bane.plassering);
+                    if (matchetBy) {
+                        yr_Id[bane._id] = matchetBy.yr_id;
+                    }
+                });
+                setYrId(yr_Id);
             } catch (error) {
                 console.error('Feil ved henting av byer:', error);
             }
@@ -50,66 +50,127 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
             minne.push(`/RedigerBane/${klubbId}/${bane._id}`); 
         }
     }
-
     useEffect(() => {
         if (!baner) return;
-        console.log(rediger)
+        setAktivBane(baner);
+    
+        if (baner.length <= aktivBaneIndex) {
+            setAktivBaneIndex(0);
+        }
+    }, [baner]); 
+    
+
+    useEffect(() => {
+        if (!baner || baner.length === 0) return;
+
         mapboxgl.accessToken = "pk.eyJ1IjoidW5rbm93bmdnc3MiLCJhIjoiY203eGhjdXBzMDUwaDJxc2RidXgwbjBqeSJ9.wlnVO6sI2-cY5Tx8uYv_XQ";
-        baner.forEach((bane, index) => {
-        const mapContainer = document.getElementById(`map-${index}`);
-        if (!mapContainer) return;
 
-            
-            const map = new mapboxgl.Map({
-                container: mapContainer,
-                style: "mapbox://styles/mapbox/satellite-streets-v12",
-                center: [bane.hull?.[0]?.startLongitude || 9.059, bane.hull?.[0]?.startLatitude || 59.409],
-                zoom: 14,
-            })
+        const map = new mapboxgl.Map({
+            container: 'mapContainer',
+            style: "mapbox://styles/mapbox/satellite-streets-v12",
+            center: [
+                baner[aktivBaneIndex]?.hull?.[0]?.startLongitude || 9.059,
+                baner[aktivBaneIndex]?.hull?.[0]?.startLatitude || 59.409
+            ],
+            zoom: 14,
+        })
 
-            bane.hull?.forEach(({ startLatitude, startLongitude, sluttLatitude, sluttLongitude }) => {
-                if (startLatitude && startLongitude) {
-                    new mapboxgl.Marker({ color: "gray" })
-                        .setLngLat([startLongitude, startLatitude])
-                        .addTo(map);
+        const hull = baner[aktivBaneIndex]?.hull || [];
+        const coordinates = [];
 
-                }
-                if (sluttLatitude && sluttLongitude) {
-                    new mapboxgl.Marker({ color: "green" })
-                        .setLngLat([sluttLongitude, sluttLatitude])
-                        .addTo(map);         
-                }
-            });
+        hull.forEach(({ startLatitude, startLongitude, sluttLatitude, sluttLongitude }, i) => {
+            if (startLatitude && startLongitude) {
+                const startEl = document.createElement('div');
+                startEl.className = 'marker';
+                startEl.style.backgroundImage = `url(https://cdn.discordapp.com/attachments/934547779773153340/1359127691684483072/2826998-removebg-preview.png?ex=67f659cd&is=67f5084d&hm=a9c531dd925933c9ee9cb2b2ddf0a1d95966270f0ee316d41d97d72bd98a6cbd&)`;
+                startEl.style.width = `50px`;
+                startEl.style.height = `50px`;
+                startEl.style.backgroundSize = '100%';
+                startEl.style.borderRadius = '50%';
+                startEl.style.cursor = 'pointer';
+
+                new mapboxgl.Marker(startEl)
+                    .setLngLat([startLongitude, startLatitude])
+                    .addTo(map);
+
+                coordinates.push([startLongitude, startLatitude]);
+            }
+
+            if (sluttLatitude && sluttLongitude) {
+                const endEl = document.createElement('div');
+                endEl.className = 'marker';
+                endEl.style.backgroundImage = `url(https://cdn.discordapp.com/attachments/934547779773153340/1359125685070987284/BJYGBgwH78PGmlpaWn7tcLkfuqkXm3bt3menpaWlmZiazvLz8mZjdbv94r0SSpFQqJdfX10uNjY2yzeTp6am5ObmZmnfvn3J2dnZxfn5cSFCxdEcOEDAQQsKEDQsGDTKRkBBBBAAAG9BAgaekmzHwQQQAABBCwoQNCwYNMpGQEEEEAAAb0ECBp6SbMfBBBAAAEELChA0LBg0ykZAQQQQAABvQQIGnpJsx8EEEAAAQQsKEDQsGDTKRkBBBBAAAG9BAgaekmzHwQQQAABBCwoQNCwYNMpGQEEEEAAAb0ECBp6SbMfBBBAAAEELChA0LBg0ykZAQQQQAABvQQIGnpJsx8EEEAAAQQsKEDQsGDTKRkBBBBAAAG9BAgaekmzHwQQQAABBCwoQNCwYNMpGQEEEEAAAb0ECBp6SbMfBBBAAAEELChA0LBg0ykZAQQQQAABvQTB2rEekv1VHZjAAAAAElFTkSuQmCC.png?ex=67f657ee&is=67f5066e&hm=af5d21c82f779b5feacacd22fc21391642dfc3321f81d4ed22d4450c4ad5c6fa&)`;
+                endEl.style.width = `50px`;
+                endEl.style.height = `50px`;
+                endEl.style.backgroundSize = '100%';
+                endEl.style.borderRadius = '50%';
+                endEl.style.cursor = 'pointer';
+
+                new mapboxgl.Marker(endEl)
+                    .setLngLat([sluttLongitude, sluttLatitude])
+                    .addTo(map);
+
+                coordinates.push([sluttLongitude, sluttLatitude]);
+            }
         });
-    }, [baner, rediger]);
 
-    return ( 
-        <div>
-            {baner && baner.length > 0 ? (
-                <div className="flex justify-center">
-                    <div className="grid grid-cols-1 lg-grid-cols-2 gap-6">
-                        {baner.map((bane, index) => {
-                            const antallHull = bane.hull ? bane.hull.length : 0;
-                            const baneYrId = yrId[bane._id] || '1-43228';  
-                            return (
-                                <div className="bg-white rounded-lg shadow-sm p-4 m-4 md:w-100 w-80" key={index}>
+        if (coordinates.length > 1) {
+            map.on('load', () => {
+                map.addSource('line', {
+                    type: 'geojson',
+                    data: {
+                        type: 'Feature',
+                        geometry: {
+                            type: 'LineString',
+                            coordinates: coordinates,
+                        },
+                    },
+                });
+
+                map.addLayer({
+                    id: 'line-layer',
+                    type: 'line',
+                    source: 'line',
+                    layout: {
+                        'line-cap': 'round',
+                        'line-join': 'round',
+                    },
+                    paint: {
+                        'line-color': 'BLUE',
+                        'line-width': 4,
+                    },
+                });
+            });
+        }
+
+        return () => map.remove();
+    }, [baner,rediger, aktivBaneIndex]);
+
+    const baneYrId = yrId[aktivBane[aktivBaneIndex]?._id] || "1-72837";
+
+    return (
+        <div className="p-4">
+            <div className="flex flex-col lg:flex-row gap-6">
+                <div className="lg:w-1/2">
+                {baner && baner.length > 0 ? (
+                        <div className="space-y-4">
+                            {baner.map((bane, index) => {
+                                const antallHull = bane.hull ? bane.hull.length : 0;
+                                return (
+                                <div
+                                    key={bane._id || index}
+                                    className={`border rounded-lg p-4 cursor-pointer ${aktivBaneIndex === index ? "bg-gray-50" : ""}`}
+                                    onClick={() => setAktivBaneIndex(index)}
+                                >
+                                
                                     <div className="topplinje border-b-2 flex justify-between text-xl font-bold ">
                                         <p>{bane.baneNavn}</p>
                                         <p className="pl-20">Rating:5/10</p> {/*Kommer senere..*/}
                                     </div>
                                     <div className="hullVanskelighet border-b flex justify-between text-m my-4">
-                                        <p>Hull: {antallHull}</p>
+                                        <p>Antall hull: {antallHull}</p>
+                                        <p>Tilstand: <p className="text-green-400"> God</p></p>
                                         <p className="pl-20">Nivå: {bane.vanskelighet}</p> 
-                                    </div>
-                                    <div>
-                                        <iframe 
-                                            src={`https://www.yr.no/nb/innhold/${baneYrId}/card.html`}
-                                            frameborder="0"
-                                            className="w-full h-[365px] pointer-events-none"
-                                            title={`Værvarsel for ${bane.baneNavn}`}
-                                        ></iframe>
-                                        <div id={`map-${index}`} className="w-full h-100" />
-
                                     </div>
                                     <div className="nederstelinje inline-block">
                                         <div className="beskrivelse pr-4 wrap">
@@ -125,17 +186,38 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
                                         </div>
                                     </div>
                                 </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            ) : (
-                <div className='flex justify-center'>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <div className='flex justify-center'>
                     <h1>Ingen baner tilgjengelig...</h1>
                 </div>
-            )}
-        </div> 
+                    )}
+                </div>
+
+                <div className="lg:w-1/2 space-y-4">
+                    <div className="sticky top-6 space-y-4">
+                        <div className="border rounded-lg p-4 bg-white">
+                            <h3 className="text-lg font-semibold mb-2">
+                            Værvarsel for {aktivBane[aktivBaneIndex]?.baneNavn || "valgt bane"}
+                            </h3>
+                            <iframe
+                                src={`https://www.yr.no/nb/innhold/${baneYrId}/card.html`}
+                                frameBorder="0"
+                                className="w-full h-[290px]"
+                                title="Værmelding"
+                            />
+                        </div>
+
+                        <div className="h-[500px] rounded-lg border mt-6">
+                            <div id="mapContainer" className="w-full h-full"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 };
- 
+
 export default BaneListe;
