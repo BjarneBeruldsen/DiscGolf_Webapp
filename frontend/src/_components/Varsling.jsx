@@ -1,3 +1,5 @@
+//Author: Bjarne Hovd Beruldsen
+
 import UseFetch from "../KlubbHandtering/UseFetch";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
