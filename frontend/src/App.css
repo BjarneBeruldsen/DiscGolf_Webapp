@@ -146,7 +146,7 @@
   }
 
  
-  .bane-right {
+  /*.bane-right {
     order: -1;
     position: sticky;
     top: 0; 
@@ -157,5 +157,5 @@
   .bane-right {
     height: auto;
     max-height: 80vh; 
-  }
+  }*/
 }
