@@ -161,7 +161,8 @@ app.get("/sjekk-session", async (req, res) => {
                     brukernavn: bruker.brukernavn,
                     epost: bruker.epost,
                     rolle: bruker.rolle,
-                    poengkort: bruker.poengkort //Legg til poengkort her
+                    poengkort: bruker.poengkort, 
+                    invitasjoner: bruker.invitasjoner
                 },
             });
         } catch (err) { //Logging
