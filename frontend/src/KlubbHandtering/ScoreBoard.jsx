@@ -7,9 +7,11 @@ import HentBruker from "../BrukerHandtering/HentBruker";
 
 const ScoreBoard = () => {
     const { id: baneId } = useParams();
+    const { id: rundeId } = useParams();
     const { data: bane, error, isPending } = UseFetch(`${process.env.REACT_APP_API_BASE_URL}/baner/${baneId}`);
     const { bruker, venter } = HentBruker();
     const [hull, setHull] = useState([]);
+    const [invitasjon, setInvitasjon] = useState({});
     const [nr, setNr] = useState(() => {
         const nr = localStorage.getItem('nr');
         return nr ? JSON.parse(nr) : 0;
@@ -111,14 +113,42 @@ const ScoreBoard = () => {
     };
 
     const handleBekreftSpillere = (valgteSpillere) => {
+        console.log(bruker); 
         const spillereMedPoeng = valgteSpillere.map(spiller => ({
             ...spiller,
             antallKast: Array(hull.length).fill(0), 
             total: 0 - hull[nr].par,
         }));
+        setInvitasjon({avsender: bruker.brukernavn, baneId: baneId, rundeId: rundeId, tid : (new Date().getTime() / 1000)});
+        console.log('invitasjon:', invitasjon);
         setSpillere(spillereMedPoeng);
+        for(const spiller of spillereMedPoeng) {
+            if(bruker.id !== spiller.id && invitasjon !== null) {
+                sendInvitasjon(spiller, invitasjon);
+            }
+        }
         setVisVelgSpillere(false);
         setVisScoreboard(true);
+    };
+
+    const sendInvitasjon = (spiller, invitasjon) => {
+        const brukerId = spiller.id;
+
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/brukere/${brukerId}/invitasjoner`, {
+            method: 'POST', 
+            headers: { "Content-Type": "application/json" },
+            body : JSON.stringify({ invitasjon })
+        }).then((response) => {
+            if (!response.ok) {
+                throw new Error('Feil ved sending av invitasjon');
+            }
+            return response.json();
+        }).then((data) => {
+            console.log('Invitasjon sendt:', data);
+            console.log('Invitasjon:', invitasjon, 'Spiller:', spiller);
+        }).catch((error) => {
+            console.error('Feil ved sending av invitasjon:', error);
+        }); 
     };
 
     const handleAvsluttRunde = () => {

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { validering } from './validation';
 import UseFetch from "./UseFetch";
 import HentBruker from "../BrukerHandtering/HentBruker";
+import { useHistory } from "react-router-dom";
 
 const VelgSpillere = (props) => {
     const { bane, onBekreftSpillere, bruker } = props;
@@ -12,6 +13,8 @@ const VelgSpillere = (props) => {
     const [brukere, setBrukere] = useState([]);
     const [sok, setSok] = useState('');
     const [filtrerteBrukere, setFiltrerteBrukere] = useState([]);
+    const [invitasjon, setInvitasjon] = useState({});
+    const minne = useHistory();
 
     const hentBrukere = async () => {
         try {
@@ -54,10 +57,12 @@ const VelgSpillere = (props) => {
     }, [sok, brukere]);
 
     const handleLeggTilBruker = (bruker) => {
+        console.log('legg til bruker: ', bruker);
         const eksisterendeSpiller = spillere.find(spiller => spiller.id === bruker.id);
         if (!eksisterendeSpiller) {
-            setSpillere([...spillere, { id: bruker.id, navn: bruker.brukernavn, poeng: 0, total: 0 }]);
+            setSpillere([...spillere, { id: bruker._id, navn: bruker.brukernavn, poeng: 0, total: 0 }]);
         }
+        console.log('spillere', spillere);
         setSok('');
     };
 
@@ -68,7 +73,9 @@ const VelgSpillere = (props) => {
             return;
         }
         onBekreftSpillere(spillere);
+        console.log('spillere bekreftet:', spillere);
     };
+
 
     return (
         <div className="bg-gray-200">

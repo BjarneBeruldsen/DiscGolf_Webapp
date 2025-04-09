@@ -149,10 +149,7 @@ useEffect(() => {
             <Route exact path="/Registrering">
               {loggetInnBruker ? <Redirect to="/Hjem" /> : <Registrering />}
             </Route>
-            <Route exact path="/ScoreBoard/:id">
-              <ScoreBoard />
-            </Route>
-            <Route exact path="/ScoreBoard">
+            <Route exact path="/ScoreBoard/:id/:rundeId">
               <ScoreBoard />
             </Route>
             <Route exact path="/MinePoengtavler">

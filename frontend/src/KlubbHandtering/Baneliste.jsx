@@ -4,6 +4,7 @@ import { Link, useHistory } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import HentBruker from "../BrukerHandtering/HentBruker";
 import mapboxgl from "mapbox-gl";
+import { v4 as uuidv4 } from 'uuid';
 import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
@@ -39,12 +40,14 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
     }, [baner]);
 
     const handleClick = (bane) => {
+        const rundeId = uuidv4(); // Generer et unikt rundeId for hver bane
+
         if(bruker === null) {
             alert('logginn/registrer deg for å spille');
             minne.push('/Innlogging');
         }
         else if(!rediger) {
-            minne.push(`/ScoreBoard/${bane._id}`); 
+            minne.push(`/ScoreBoard/${bane._id}/${rundeId}`); 
         }
         else {
             minne.push(`/RedigerBane/${klubbId}/${bane._id}`); 

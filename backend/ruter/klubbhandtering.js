@@ -248,4 +248,52 @@ klubbRouter.post('/brukere/:id/poengkort', async (req, res) => {
     }
 })
 
+//Rute for å lagre invitasjoner for en bruker 
+klubbRouter.post('/brukere/:id/invitasjoner', async (req, res) => {
+    const db = getDb(); 
+    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+    if(ObjectId.isValid(req.params.id) === false) {
+        return res.status(400).json({error: 'Ugyldig dokument-id'});
+    } else {
+        const invitasjon = req.body
+
+        db.collection('Brukere')
+        .updateOne(
+            { _id: new ObjectId(req.params.id) }, 
+            { $push: { invitasjoner: invitasjon } },
+        )
+        .then(result => {
+            res.status(201).json(result)
+        })
+        .catch(err => {
+            res.status(500).json({error: 'Feil ved lagring av invitasjon'})
+        })
+    }
+})
+
+//patch for å oppdatere antall varslinger 
+klubbRouter.patch('/brukere/:id/varslinger', async (req, res) => {
+    const db = getDb(); 
+    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+    if(ObjectId.isValid(req.params.id) === false) {
+        return res.status(400).json({error: 'Ugyldig dokument-id'});
+    } else {
+        const oppdatering = req.body
+
+        db.collection('Brukere')
+        .updateOne(
+            { _id: new ObjectId(req.params.id) }, 
+            { $set: { varslinger: oppdatering } },
+        )
+        .then(result => {
+            res.status(200).json(result)
+        })
+        .catch(err => {
+            res.status(500).json({error: 'Feil ved oppdatering av varslinger'})
+        })
+    }
+})
+
+
+
 module.exports = klubbRouter;

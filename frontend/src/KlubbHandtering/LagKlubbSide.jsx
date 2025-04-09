@@ -46,7 +46,7 @@ const LagKlubbside = () => {
             return;
         }
 
-        const nyNyhet = { nyhetTittel, nyhet };
+        const nyNyhet = { nyhetTittel, nyhet, tid : (new Date().getTime() / 1000) };
 
         fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}/nyheter`, {
             method: 'POST',
