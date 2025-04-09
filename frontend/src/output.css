@@ -1247,6 +1247,16 @@
   .bane-left, .bane-right {
     width: 100%;
   }
+  .bane-right {
+    order: -1;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .bane-right {
+    height: auto;
+    max-height: 80vh;
+  }
 }
 @property --tw-space-y-reverse {
   syntax: "*";
