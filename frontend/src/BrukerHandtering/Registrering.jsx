@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
+import i18n from "../i18n";
+import { useTranslation } from 'react-i18next'; 
 
 const Registrering = () => {
     const [brukernavn, setBrukernavn] = useState("");
@@ -13,6 +15,7 @@ const Registrering = () => {
     const minne = useHistory(); 
     const [tall, setTall] = useState(Math.floor(Math.random() * 99) + 1);
     const [tallInput, setTallInput] = useState("");
+    const { t } = useTranslation(); 
 
     //Skjemafunksjon for registrering
     const handleSubmit = async (event) => {        //https://legacy.reactjs.org/docs/forms.html
@@ -33,29 +36,29 @@ const Registrering = () => {
         
         //Sjekker om brukernavn, epost og passord er gyldig i henhold til regex
         if (!erBrukernavn) {
-            setMelding("Brukernavn må være 3-15 tegn langt og kun inneholde bokstaver og tall.");
+            setMelding(i18n.t("Brukernavn må være 3-15 tegn langt og kun inneholde bokstaver og tall."));
             return;
         }
         if (!erEpost) {
-            setMelding("E-post må være gyldig");
+            setMelding(i18n.t("E-post må være gyldig"));
             return;
         }
         if (!erPassord) {
-            setMelding("Passord må være gyldig, (minst 8 tegn og maks 20 tegn og ha ett spesialtegn).");
+            setMelding(i18n.t("Passord må være gyldig, (minst 8 tegn og maks 20 tegn og ha ett spesialtegn)."));
             return;
         }
         if (!erBekreftPassord) {
-            setMelding("Passord må være gyldig, (minst 8 tegn og maks 20 tegn og ha ett spesialtegn).");
+            setMelding(i18n.t("Passord må være gyldig, (minst 8 tegn og maks 20 tegn og ha ett spesialtegn)."));
             return;
         }
         //Sjekker om passordene er like 
         if (passord !== bekreftPassord) {
-            setMelding("Passordene stemmer ikke overens.");
+            setMelding(i18n.t("Passordene stemmer ikke overens."));
             return;
         }
         //Sjekker om tallinput fra captchaen er gyldig 
         if (!erTall || tallInput.length > 2) {
-            setMelding("Tallet må være et gyldig tall.");
+            setMelding(i18n.t("Tallet må være et gyldig tall."));
             return;
         }
         //Enkel captcha hvis feil tall kan ikke brukeren registrere seg
@@ -72,17 +75,17 @@ const Registrering = () => {
             });
             const data = await respons.json();
             if (!respons.ok) {
-                setMelding(data.error || "Registrering feilet. Prøv igjen.");
+                setMelding(i18n.t(data.error || "Registrering feilet. Prøv igjen."));
                 setTall(Math.floor(Math.random() * 99) + 1);
                 setTallInput("");
                 return;
             } else {
-                setMelding("Registrering vellykket! Du blir omdirigert til innlogging...");
+                setMelding(i18n.t)("Registrering vellykket! Du blir omdirigert til innlogging...");
                 setTimeout(() => minne.push("/Innlogging"), 1000);
             }
         } catch (error) {
-            setMelding("Noe gikk galt. Prøv igjen.");
-            console.error("Registreringsfeil:", error);
+            setMelding(i18n.t)("Noe gikk galt. Prøv igjen.");
+            console.error(i18n.t)("Registreringsfeil:", error);
             setTall(Math.floor(Math.random() * 99) + 1);
             setTallInput("");
         }
@@ -101,8 +104,7 @@ const tallRiktig = tallInput !== "" && parseInt(tallInput) === tall;
                 onSubmit={handleSubmit} 
                 className="flex flex-col items-center bg-white p-8 rounded-lg shadow-md w-80"
             >
-                <h2 className="text-xl font-bold mb-4">Registrer deg som bruker!</h2>
-
+                <h2 className="text-xl font-bold mb-4">{t("Registrer deg som bruker!")}</h2>
                 <input
                     type="email" 
                     placeholder="E-post"
@@ -136,7 +138,7 @@ const tallRiktig = tallInput !== "" && parseInt(tallInput) === tall;
                     className="px-4 py-3 mb-4 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
                 <label className="text-gray-700 mt-4">
-                Skriv inn tallet for å logge inn: <span className="text-red-500">{tall}</span>
+                {t("Skriv inn tallet for å registere deg: ")} <span className="text-red-500">{tall}</span>
                 </label>
                 <input 
                     type="number"
@@ -149,18 +151,18 @@ const tallRiktig = tallInput !== "" && parseInt(tallInput) === tall;
                 />
                 {tallInput !== "" && (
                     tallRiktig ? 
-                    <p className="text-green-500 mt-2">Tallet er riktig</p> :
-                    <p className="text-red-500 mt-2">Tallet er feil</p>
+                    <p className="text-green-500 mt-2">{t("Tallet er riktig")}</p> :
+                    <p className="text-red-500 mt-2">{t("Tallet er feil")}</p>
                 )}
                 <button
                     type="submit"
                     className="bg-gray-600 text-white px-4 py-2 mt-4 rounded-lg w-full border border-gray-500"
                 >
-                    Registrer deg
+                    {t("Registrer deg")}
                 </button>
 
                 <p className="text-blue-500 mt-4">
-                    <Link to="./Innlogging">Har du allerede konto?</Link>
+                    <Link to="./Innlogging">{t("Har du allerede konto?")}</Link>
                 </p>
 
                 {melding && (

@@ -1,5 +1,7 @@
 //Author: Laurent Zogaj
 
+import i18n from '../i18n';
+
 //Funksjon for å slette bruker
 const SletteBruker = async (brukerInput, passord, setBruker, setMelding, minne) => {
 setMelding("");
@@ -15,9 +17,9 @@ setMelding("");
     const data = await respons.json();
     if (!respons.ok) {
       console.error("Sletting av bruker feilet:", data);
-      setMelding(data.error || "Feil ved sletting av bruker. Sjekk brukernavn eller passord og prøv igjen.");
+      setMelding(i18n.t(data.error || "Feil ved sletting av bruker. Sjekk brukernavn eller passord og prøv igjen."));
     } else { 
-      setMelding("Bruker er nå slettet, du blir nå sendt til hjemmesiden");
+      setMelding(i18n.t("Bruker er nå slettet, du blir nå sendt til hjemmesiden"));
       setTimeout(() => {
         setBruker(null);
         minne.push("/Hjem");  
@@ -25,7 +27,7 @@ setMelding("");
       }, 2000);
     }
   } catch (error) {
-    setMelding("Feil ved sletting av bruker", error);
+    setMelding(i18n.t("Feil ved sletting av bruker", error));
   }
 };
 

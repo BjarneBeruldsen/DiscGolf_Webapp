@@ -1,9 +1,12 @@
 //Author: Laurent Zogaj
 
+import i18n from '../i18n';
+
 //Funksjon for å logge ut bruker
 const loggUtBruker = async (setLoggetInnBruker) => {
 const setMelding = "";
-    //Kontakter backend for å logge ut bruker
+
+//Kontakter backend for å logge ut bruker
     try {
         const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Utlogging`, {
             method: "POST",
@@ -16,10 +19,10 @@ const setMelding = "";
             window.location.reload(); //Tvinger en refresh 
             window.location.href = "/Hjem"; 
         } else {
-            setMelding(data.error || "Utlogging feilet. Prøv igjen.");
+            setMelding(i18n.t(data.error || "Utlogging feilet. Prøv igjen."));
         }
     } catch (error) {
-        setMelding("Feil ved utlogging", error);
+        setMelding(i18n.t("Feil ved utlogging", error));
     }
 };
 

@@ -1,11 +1,13 @@
 //Authors: Bjarne Beruldsen, Abdinasir Ali & Laurent Zogaj
 
 import React, { useState, useEffect } from "react";
+import { useTranslation } from 'react-i18next'; 
 import { Link } from "react-router-dom";
 import loggUtBruker from "../BrukerHandtering/Utlogging";
 import UseFetch from "../KlubbHandtering/UseFetch";
 
 const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling }) => {
+  const { t } = useTranslation();
   const [menyÅpen, setMenyÅpen] = useState(false);
   const [antallVarslinger, setAntallVarslinger] = useState(0);
   const [nyheter, setNyheter] = useState([]);
@@ -77,28 +79,28 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling }) => {
           <ul className="flex space-x-6">
             <li>
               <Link to="/Hjem" className="text-black font-bold hover:text-gray-600">
-                Hjem
+                {t("Hjem")}
               </Link>
             </li>
             <li>
               <Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600">
-                Rediger klubbside
+                {t("Rediger klubbside")}
               </Link>
             </li>
             <li>
               <Link to="/Baner" className="text-black font-bold hover:text-gray-600">
-                Baner
+              {t("Baner")}
               </Link>
             </li>
             <li>
               <Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600">
-                Klubbsider
+                {t("Klubbsider")}
               </Link>
             </li>
             {loggetInnBruker && (
               <li>
                 <Link to="/MinePoengtavler" className="text-black font-bold hover:text-gray-600">
-                  Min statistikk
+                  {t("Min statistikk")}
                 </Link>
               </li>
             )}
@@ -107,7 +109,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling }) => {
               <>
                 <li className="text-black font-bold hover:text-gray-600">
                   <Link to="/Medlemskap" onClick={lukkMeny}>
-                    Mitt Medlemskap
+                    {t("Mitt Medlemskap")}
                   </Link>
                 </li>
                 <li className="relative">
@@ -151,7 +153,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling }) => {
                     onClick={loggUt}
                     className="text-black font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg"
                   >
-                    Logg ut
+                    {t("Logg ut")}
                   </button>
                 </li>
               </>
@@ -159,12 +161,12 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling }) => {
               <>
                 <li>
                   <Link to="/Innlogging" className="text-black font-bold hover:text-gray-600">
-                    Logg inn
+                    {t("Logg inn")}
                   </Link>
                 </li>
                 <li>
                   <Link to="/Registrering" className="text-black font-bold hover:text-gray-600">
-                    Bli medlem!
+                    {t("Bli medlem!")}
                   </Link>
                 </li>
               </>
@@ -212,7 +214,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling }) => {
             onClick={toggleMeny}
             className="text-black font-bold hover:bg-gray-200 border rounded-lg shadow p-2 ml-2"
           >
-            Meny
+            {t("Meny")}
           </button>
         </div>
       </header>
@@ -222,28 +224,28 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling }) => {
           <ul className="flex flex-col space-y-4 p-4">
             <li>
               <Link to="/Hjem" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>
-                Hjem
+              {t("Hjem")}
               </Link>
             </li>
             <li>
               <Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>
-                Rediger klubbside
+                {t("Velg Klubb")}
               </Link>
             </li>
             <li>
               <Link to="/Baner" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>
-                Baner
+                {t("Baner")}
               </Link>
             </li>
             <li>
               <Link to="/Klubbsider" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>
-                Klubbsider
+                {t("Klubbsider")}
               </Link>
             </li>
             {loggetInnBruker && (
               <li>
                 <Link to="/MinePoengtavler" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>
-                  Min statistikk
+                  {t("Min statistikk")}
                 </Link>
               </li>
             )}
@@ -252,7 +254,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling }) => {
               <>
                 <li className="text-black font-bold hover:text-gray-600">
                   <Link to="/Medlemskap" onClick={lukkMeny}>
-                    Mitt Medlemskap
+                    {t("Mitt Medlemskap")}
                   </Link>
                 </li>
                 <li className="flex items-center">
@@ -260,7 +262,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling }) => {
                     onClick={loggUt}
                     className="text-black font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg"
                   >
-                    Logg ut
+                    (t{"Logg ut"})
                   </button>
                 </li>
               </>
@@ -268,12 +270,12 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling }) => {
               <>
                 <li>
                   <Link to="/Innlogging" onClick={lukkMeny} className="text-black font-bold hover:text-gray-600">
-                    Logg inn
+                    {t("Logg inn")}
                   </Link>
                 </li>
                 <li>
                   <Link to="/Registrering" onClick={lukkMeny} className="text-black font-bold hover:text-gray-600">
-                    Bli medlem!
+                  {t("Bli medlem!")}
                   </Link>
                 </li>
               </>

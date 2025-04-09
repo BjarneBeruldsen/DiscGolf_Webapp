@@ -1,6 +1,7 @@
 //Authors: Bjarne Beruldsen, Abdinasir Ali, Laurent Zogaj & Severin Waller Sørensen
 
 import React, { useState, useEffect } from 'react';
+import './i18n';
 import LagKlubb from './KlubbHandtering/LagKlubb';
 import VelgKlubb from './KlubbHandtering/VelgKlubb';
 import LagKlubbSide from './KlubbHandtering/LagKlubbSide';
@@ -18,6 +19,8 @@ import Medlemskap from './BrukerHandtering/Medlemskap';
 import Nyheter from './KlubbHandtering/Nyheter';
 import Baner from './KlubbHandtering/Baner';
 import loggUtBruker from "./BrukerHandtering/Utlogging";
+import GlemtPassord from "./BrukerHandtering/GlemtPassord";
+import TilbakestillPassord from './BrukerHandtering/TilbakestillPassord';
 import ScoreBoard from './KlubbHandtering/ScoreBoard';
 import Personvern from './_components/Personvern';
 import Sikkerhet from './_components/Sikkerhet';
@@ -154,6 +157,12 @@ useEffect(() => {
             </Route>
             <Route exact path="/MinePoengtavler">
               <PoengTavler />
+            </Route>
+            <Route exact path="/TilbakestillPassord/:token">
+              <TilbakestillPassord />
+            </Route>
+            <Route exact path="/GlemtPassord">
+              <GlemtPassord />
             </Route>
             <Route exact path="/RedigerBane/:klubbId/:baneId">
               <RedigerBane />

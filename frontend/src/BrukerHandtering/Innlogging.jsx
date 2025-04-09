@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
+import i18n from "../i18n";
+import { useTranslation } from 'react-i18next'; 
 
 const Innlogging = ({ setLoggetInnBruker }) => {
   const [brukernavn, setBrukernavn] = useState("");
@@ -11,6 +13,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
   const minne = useHistory(); 
   const [tall, setTall] = useState(Math.floor(Math.random() * 99) + 1);
   const [tallInput, setTallInput] = useState("");
+  const { t } = useTranslation();
 
   //Skjemafunksjon for innlogging
   const handleSubmit = async (event) => {              //https://legacy.reactjs.org/docs/forms.html
@@ -29,15 +32,15 @@ const Innlogging = ({ setLoggetInnBruker }) => {
 
     //Sjekker om brukernavn, epost og passord er gyldig i henhold til regex
     if (!erEpost && !erBrukernavn) {
-      setMelding("Skriv inn enten brukernavn (3-15 tegn) eller en gyldig e-post.");
+      setMelding(i18n.t("Skriv inn enten brukernavn (3-15 tegn) eller en gyldig e-post."));
       return;
     }
     if (!passordRegex.test(passord)) {
-      setMelding("Passord må være minst 8 tegn og maks 20 tegn og ha ett spesialtegn.");
+      setMelding(i18n.t("Passord må være minst 8 tegn og maks 20 tegn og ha ett spesialtegn."));
       return;
     }
     if (!erTall || tallInput.length > 2) {
-      setMelding("Tallet må være et gyldig tall.");
+      setMelding(i18n.t("Tallet må være et gyldig tall."));
       return;
     }
     //Enkel captcha hvis feil tall kan ikke brukeren logge inn
@@ -58,20 +61,20 @@ const Innlogging = ({ setLoggetInnBruker }) => {
         console.error("Innloggingsfeil:", data);
         setTall(Math.floor(Math.random() * 99) + 1);
         setTallInput("");
-        setMelding(data.error || "Feil ved innlogging. Sjekk brukernavn og passord, prøv igjen deretter.");
+        setMelding(i18n.t(data.error || "Feil ved innlogging. Sjekk brukernavn og passord, prøv igjen deretter."));
       } else {
         setMelding("Innlogging vellykket!");
         setTimeout(() => {
           setLoggetInnBruker(data.bruker);
           minne.push("/Hjem");
           window.location.reload();
-        }, 2000);
+        }, 1000);
       }
     } catch (error) {
       console.error("Innloggingsfeil:", error);
       setTall(Math.floor(Math.random() * 99) + 1);
       setTallInput("");
-      setMelding("Feil ved innlogging. Prøv igjen.");
+      setMelding(i18n.t("Feil ved innlogging. Prøv igjen."));
     }
   };
 
@@ -105,7 +108,7 @@ const tallRiktig = tallInput !== "" && parseInt(tallInput) === tall;
             className="px-5 py-3 m-2 border border-gray-300 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
           <label className="text-gray-700 mt-4">
-            Skriv inn tallet for å logge inn: <span className="text-red-500">{tall}</span>
+          {t("Skriv inn tallet for å logge inn: ")} <span className="text-red-500">{tall}</span>         
           </label>
           <input 
             type="number"
@@ -118,20 +121,20 @@ const tallRiktig = tallInput !== "" && parseInt(tallInput) === tall;
           />
           {tallInput !== "" && (
             tallRiktig ? 
-            <p className="text-green-500 mt-2">Tallet er riktig</p> :
-            <p className="text-red-500 mt-2">Tallet er feil</p>
+            <p className="text-green-500 mt-2">{t("Tallet er riktig")}</p> :
+            <p className="text-red-500 mt-2">{t("Tallet er feil")}</p>
           )}
           <button
             type="submit"
             className="bg-gray-600 text-white px-4 py-2 mt-4 rounded-lg w-full border border-gray-500"
           >
-            Logg inn
+            {t("Logg inn")}
           </button>
           <p className="text-blue-500 mt-4">
-            <Link to="./registrering">Har du ikke konto? Opprett bruker her</Link>
+            <Link to="./registrering">{t("Har du ikke konto? Opprett bruker her")}</Link>
           </p>
           <p className="text-blue-500 mt-4">
-            <Link to="">Glemt passord?</Link>
+            <Link to="/GlemtPassord">{t("Glemt passord?")}</Link>
           </p>
           {melding && (
             <p className="mt-4 text-red-500 text-center">

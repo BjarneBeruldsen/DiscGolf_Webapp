@@ -7,6 +7,8 @@ const { registreringValidering, innloggingValidering, redigeringValidering, slet
 loggeInnStopp, registreringStopp, endringStopp } = require('./validering');
 const { validationResult } = require('express-validator');
 const bcrypt = require ('bcryptjs');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 const { MongoClient } = require('mongodb');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
@@ -282,8 +284,8 @@ brukerRouter.patch("/RedigerBruker", beskyttetRute, sjekkBrukerAktiv, redigering
         return res.status(500).json({ error: "Noe gikk galt. Prøv igjen senere" });
     }
 });
-//Hente brukerdata fra en spesifikk bruker
 /*
+//Hente brukerdata fra en spesifikk bruker, bruker sjekk-session istedenfor foreløpig da det funker bedre. 
 brukerRouter.get("/bruker", beskyttetRute, sjekkBrukerAktiv, async (req, res) => {
     try {
         const db = getDb();
@@ -295,10 +297,10 @@ brukerRouter.get("/bruker", beskyttetRute, sjekkBrukerAktiv, async (req, res) =>
             return res.status(404).json({ error: 'Bruker ikke funnet' });
         }
         res.status(200).json({
-            fornavn: bruker.fornavn,
-            etternavn: bruker.etternavn,
-            telefonnummer: bruker.telefonnummer,
-            bosted: bruker.bosted,
+            fornavn: bruker.fornavn || "",
+            etternavn: bruker.etternavn || "",
+            telefonnummer: bruker.telefonnummer || "",
+            bosted: bruker.bosted || "",
         });
     } catch (err) {
         console.error("Feil ved henting av brukerdata:", err);
@@ -306,31 +308,7 @@ brukerRouter.get("/bruker", beskyttetRute, sjekkBrukerAktiv, async (req, res) =>
     }
 });
 */
-//Rute for glemt passord
-//Her kommer det en rute for glemt passord som sender en e-post med en lenke for tilbakestilling av passord via nodemailer mulig jeg implementerer det for brukernavn/epost også hvis jeg får tid
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //Rute for å hente alle brukere for søking etter brukere man kan komme i kontakt med
-/*
 brukerRouter.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (req, res) => {
     try {
         const db = getDb();
@@ -349,7 +327,5 @@ brukerRouter.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (req, re
         res.status(500).json({ error: "Feil ved henting av brukerliste" });
     }
 });
-*/
-
 
 module.exports = brukerRouter;
