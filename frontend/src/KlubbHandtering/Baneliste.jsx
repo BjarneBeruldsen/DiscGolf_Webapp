@@ -10,6 +10,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import '../App.css';
 
+
     const BaneListe = ({ baner, rediger, klubbId }) => {
     const minne = useHistory();
     const { bruker, venter } = HentBruker();
@@ -86,7 +87,7 @@ import '../App.css';
             if (startLatitude && startLongitude) {
                 const startEl = document.createElement('div');
                 startEl.className = 'marker';
-                startEl.style.backgroundImage = `url(https://cdn.discordapp.com/attachments/934547779773153340/1359127691684483072/2826998-removebg-preview.png?ex=67f659cd&is=67f5084d&hm=a9c531dd925933c9ee9cb2b2ddf0a1d95966270f0ee316d41d97d72bd98a6cbd&)`;
+                startEl.style.backgroundImage = 'url("/disc.png")';
                 startEl.style.width = `50px`;
                 startEl.style.height = `50px`;
                 startEl.style.backgroundSize = '100%';
@@ -103,7 +104,7 @@ import '../App.css';
             if (sluttLatitude && sluttLongitude) {
                 const endEl = document.createElement('div');
                 endEl.className = 'marker';
-                endEl.style.backgroundImage = `url(https://cdn.discordapp.com/attachments/934547779773153340/1359125685070987284/BJYGBgwH78PGmlpaWn7tcLkfuqkXm3bt3menpaWlmZiazvLz8mZjdbv94r0SSpFQqJdfX10uNjY2yzeTp6am5ObmZmnfvn3J2dnZxfn5cSFCxdEcOEDAQQsKEDQsGDTKRkBBBBAAAG9BAgaekmzHwQQQAABBCwoQNCwYNMpGQEEEEAAAb0ECBp6SbMfBBBAAAEELChA0LBg0ykZAQQQQAABvQQIGnpJsx8EEEAAAQQsKEDQsGDTKRkBBBBAAAG9BAgaekmzHwQQQAABBCwoQNCwYNMpGQEEEEAAAb0ECBp6SbMfBBBAAAEELChA0LBg0ykZAQQQQAABvQQIGnpJsx8EEEAAAQQsKEDQsGDTKRkBBBBAAAG9BAgaekmzHwQQQAABBCwoQNCwYNMpGQEEEEAAAb0ECBp6SbMfBBBAAAEELChA0LBg0ykZAQQQQAABvQTB2rEekv1VHZjAAAAAElFTkSuQmCC.png?ex=67f657ee&is=67f5066e&hm=af5d21c82f779b5feacacd22fc21391642dfc3321f81d4ed22d4450c4ad5c6fa&)`;
+                endEl.style.backgroundImage = 'url("/kurv.png")';
                 endEl.style.width = `50px`;
                 endEl.style.height = `50px`;
                 endEl.style.backgroundSize = '100%';
