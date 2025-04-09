@@ -4,7 +4,6 @@ import UseFetch from "../KlubbHandtering/UseFetch";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import HentBruker from "../BrukerHandtering/HentBruker";
-import { io } from "socket.io-client";
 
 const Varsling = ({ toggleVarsling }) => {
     const { data: klubber, error, isPending } = UseFetch(`${process.env.REACT_APP_API_BASE_URL}/klubber`);
