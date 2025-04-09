@@ -49,7 +49,7 @@
     "Passord må være minst 8 tegn og maks 20 tegn og ha ett spesialtegn" : "Password must be at least 8 characters and a maximum of 20 characters and have one special character",
     "Tallet er riktig"  : "The number is correct",
     "Tallet er feil"  : "The number is incorrect",
-    "Registrer deg som bruker" : "Register as a user",
+    "Registrer deg som bruker" : "Register as a user!",
     "Glemt passord" : "Forgot password",
     "Har du ikke konto? Opprett bruker her" : "Don't have an account? Create a user here",
     "Feil ved innlogging. Prøv igjen." : "Login error. Please try again.",
@@ -84,5 +84,7 @@
     "Nytt passord må fylles ut." : "New password must be filled out.",
     "Passordet må inneholde minst en stor bokstav." : "Password must contain at least one uppercase letter.",
     "Skriv inn tallet for å registere deg: " : "Enter the number to register:",
-    "Skriv inn tallet for å logge inn: ": "Enter the number to log in:"
+    "Skriv inn tallet for å logge inn: ": "Enter the number to log in:",
+    "Logg deg inn!" : "Log in!"
+
   } 

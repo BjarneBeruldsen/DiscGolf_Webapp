@@ -3,7 +3,6 @@
 /* Tailwind CSS klasser */
 
 @import "tailwindcss";
-@custom-variant dark (&:where(.dark, .dark *));
 
 .hidden-lg {
     @apply hidden lg:flex;

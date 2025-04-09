@@ -91,6 +91,7 @@ const tallRiktig = tallInput !== "" && parseInt(tallInput) === tall;
           onSubmit={handleSubmit}
           className="flex flex-col items-center bg-white p-8 rounded-lg shadow-md w-80"
         >
+          <h2 className="text-xl font-bold mb-4">{t("Logg deg inn!")}</h2>
           <input
             type="text"
             placeholder="Brukernavn eller e-post"
