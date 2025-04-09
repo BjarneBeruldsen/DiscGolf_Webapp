@@ -114,3 +114,35 @@
 .custom-blue:hover {
   background-color: #2563eb; /* Mørkere blå ved hover */
 }
+
+@media (min-width: 1024px) {
+  .bane-layout {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem; /* tilsvarer Tailwind's gap-6 */
+  }
+
+  .bane-left,
+  .bane-right {
+    width: 50%;
+  }
+
+  .bane-right .sticky {
+    position: sticky;
+    top: 1.5rem; 
+  }
+}
+
+@media (max-width: 1023px) {
+  .bane-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .bane-left,
+  .bane-right {
+    width: 100%;
+  }
+}
+

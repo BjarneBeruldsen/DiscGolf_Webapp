@@ -4,10 +4,10 @@ import { Link, useHistory } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import HentBruker from "../BrukerHandtering/HentBruker";
 import mapboxgl from "mapbox-gl";
-import { v4 as uuidv4 } from 'uuid';
 import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import '../App.css';
 
     const BaneListe = ({ baner, rediger, klubbId }) => {
     const minne = useHistory();
@@ -40,14 +40,12 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
     }, [baner]);
 
     const handleClick = (bane) => {
-        const rundeId = uuidv4(); // Generer et unikt rundeId for hver bane
-
         if(bruker === null) {
             alert('logginn/registrer deg for å spille');
             minne.push('/Innlogging');
         }
         else if(!rediger) {
-            minne.push(`/ScoreBoard/${bane._id}/${rundeId}`); 
+            minne.push(`/ScoreBoard/${bane._id}`); 
         }
         else {
             minne.push(`/RedigerBane/${klubbId}/${bane._id}`); 
@@ -153,27 +151,27 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
     return (
         <div className="p-4">
-            <div className="flex flex-col lg:flex-row gap-6">
-                <div className="lg:w-1/2">
+            <div className="bane-layout">
+                <div className="bane-left">
                 {baner && baner.length > 0 ? (
-                        <div className="space-y-4">
-                            {baner.map((bane, index) => {
-                                const antallHull = bane.hull ? bane.hull.length : 0;
-                                return (
+                    <div className="space-y-4">
+                        {baner.map((bane, index) => {
+                            const antallHull = bane.hull ? bane.hull.length : 0;
+                            return (
                                 <div
                                     key={bane._id || index}
                                     className={`border rounded-lg p-4 cursor-pointer ${aktivBaneIndex === index ? "bg-gray-50" : ""}`}
                                     onClick={() => setAktivBaneIndex(index)}
                                 >
-                                
+
                                     <div className="topplinje border-b-2 flex justify-between text-xl font-bold ">
                                         <p>{bane.baneNavn}</p>
                                         <p className="pl-20">Rating:5/10</p> {/*Kommer senere..*/}
                                     </div>
                                     <div className="hullVanskelighet border-b flex justify-between text-m my-4">
                                         <p>Antall hull: {antallHull}</p>
-                                        <p>Tilstand: <p className="text-green-400"> God</p></p>
-                                        <p className="pl-20">Nivå: {bane.vanskelighet}</p> 
+                                        <p>Tilstand: <span className="text-green-400">God</span></p>
+                                        <p className="pl-20">Nivå: {bane.vanskelighet}</p>
                                     </div>
                                     <div className="nederstelinje inline-block">
                                         <div className="beskrivelse pr-4 wrap">
@@ -198,9 +196,8 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
                 </div>
                     )}
                 </div>
-
-                <div className="lg:w-1/2 space-y-4">
-                    <div className="sticky top-6 space-y-4">
+                <div className="bane-right">
+                    <div className="sticky space-y-4">
                         <div className="border rounded-lg p-4 bg-white">
                             <h3 className="text-lg font-semibold mb-2">
                             Værvarsel for {aktivBane[aktivBaneIndex]?.baneNavn || "valgt bane"}
@@ -212,7 +209,7 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
                                 title="Værmelding"
                             />
                         </div>
-
+    
                         <div className="h-[500px] rounded-lg border mt-6">
                             <div id="mapContainer" className="w-full h-full"></div>
                         </div>
