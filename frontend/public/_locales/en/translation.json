@@ -42,7 +42,6 @@
     "Har du allerede konto?": "Already have an account?",
     "Registrer deg": "Register here",
     "Har du allerede en konto?" : "Already have an account?",
-    "Skriv inn tallet for å logge inn:" : "Enter the number to log in:",
     "Registrer deg som bruker!" : "Register as a user!",
     "Noe gikk galt. Prøv igjen.": "Something went wrong. Please try again.",
     "Registreringsfeil": "Registration error",
@@ -83,7 +82,7 @@
     "Passordet må være minst 8 tegn, maks 20." : "Password must be at least 8 characters, maximum 20.",
     "Nytt passord må fylles ut." : "New password must be filled out.",
     "Passordet må inneholde minst en stor bokstav." : "Password must contain at least one uppercase letter.",
-    "Skriv inn tallet for å registere deg: " : "Enter the number to register:",
+    "Skriv inn tallet for å registrere deg:" : "Enter the number to register:",
     "Skriv inn tallet for å logge inn: ": "Enter the number to log in:",
     "Logg deg inn!" : "Log in!"
 
