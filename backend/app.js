@@ -101,15 +101,14 @@ app.use(session({
     rolling: false,                      //Fornyer session ved hvert request, ikke vits forholder oss til maxAge
     store: MongoStore.create({           //https://github.com/jdesboeufs/connect-mongo?tab=readme-ov-file
       mongoUrl: process.env.MONGODB_URI, //URL til databasen 
-      ttl : 14 * 24 * 60 * 60, //Lagrer session i 14 dager
-      autoRemove: 'native', //Fjerner session automatisk etter 14 dager
-      touchAfter: 24 * 3600 //Oppdaterer session hver 24 time istedenfor etter hver refresh av siden 
+      ttl: 5 * 24 * 60 * 60, //5 dager
+      autoRemove: 'native', //Fjerner session automatisk
     }),                       
     cookie: {
         secure: process.env.NODE_ENV === 'production', //Må være true for at cookies skal fungere på nettsiden og false dersom siden skal funke lokalt, eller settes til production
         httpOnly: process.env.NODE_ENV === 'production', //Må være false når man tester lokalt og true ellers. Eller settes til production
         sameSite: process.env.NODE_ENV === 'production' ? "strict" : "lax", //Må være strict for at cookies skal fungere på nettsiden, sett den til "lax" for at siden skal funke lokalt
-        maxAge: 1000 * 60 * 60 * 24,    //1 dag
+        maxAge: 1000 * 60 * 60 * 24 * 5,    //5 dager
     }
 }));
 
@@ -160,6 +159,10 @@ app.get("/sjekk-session", async (req, res) => {
                     id: bruker._id,
                     brukernavn: bruker.brukernavn,
                     epost: bruker.epost,
+                    fornavn: bruker.fornavn,
+                    etternavn: bruker.etternavn,
+                    telefonnummer: bruker.telefonnummer,
+                    bosted: bruker.bosted,
                     rolle: bruker.rolle,
                     poengkort: bruker.poengkort, 
                     invitasjoner: bruker.invitasjoner

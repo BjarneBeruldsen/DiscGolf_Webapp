@@ -107,7 +107,6 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
       {valgtUnderKategori === "Endre min informasjon" && (
         <div className="space-y-4 w-full max-w-[400px]">
           <h3 className="text-lg font-bold text-black mb-3">Endre brukerinformasjon</h3>
-          <h2 className="text-gray-600 mb-2">Brukerdata kommer ikke opp i UI'et enda, jobber med dette.</h2>
           {/* Brukerkonto informasjon */}
           <p className="text-sm font-medium text-gray-700">Brukerkonto:</p>
           <input
