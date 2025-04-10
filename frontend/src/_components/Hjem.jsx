@@ -1,7 +1,32 @@
 import React from 'react';
 import { Link } from "react-router-dom";
+import socket from '../socket';
+import { useEffect, useState } from 'react';
 
 const Hjem = () => {
+    const [melding, setMelding] = useState('');
+
+    useEffect(() => {
+        // Lytt til meldinger fra serveren
+        socket.on('chat melding', (data) => {
+            console.log('Melding fra server:', data);
+        });
+
+        // Rydde opp ved avmontering av komponenten
+        return () => {
+            socket.off('chat melding'); // Fjern lytteren når komponenten avmonteres
+        };
+    })
+
+    const sendMelding = () => {
+        if (melding.trim() !== '') {
+            socket.emit('chat melding', melding); // Send meldingen til serveren
+            setMelding(''); // Tøm inputfeltet etter sending
+        } else {
+            console.error('Meldingen er tom!');
+        }
+    };
+
     const handleTommeTestdata = () => {
         if (window.confirm('Er du sikker på at du vil tømme all testdata?')) {
             fetch(`${process.env.REACT_APP_API_BASE_URL}/tommeTestdata`, {
@@ -17,13 +42,7 @@ const Hjem = () => {
         }
     };
   
-   
-  
-
     return ( 
-    
-       
-       
 <header>
     <div className=" text-grey-200 py-6 text-center bg-gray-40 justify-items-center space-y-2">
             <h1 className="text-2xl font-normal">Over 5,000 Baner</h1>
@@ -109,7 +128,22 @@ const Hjem = () => {
     
 
 </div>
-
+    <form onSubmit={(e) => e.preventDefault()}>
+        <input 
+        type="text" 
+        className='border rounded-lg p-2 m-4 w-full max-w-sm'
+        placeholder='Send melding til server'
+        onChange={(e) => setMelding(e.target.value)}
+        value={melding}
+        />
+        <button 
+            type="button" 
+            onClick={sendMelding} 
+            className='border rounded-lg'
+        >
+            Send
+        </button>
+    </form>
   
      <div className="m-8 flex justify-center">
             <button onClick={handleTommeTestdata} className="py-4 px-8 bg-red-500 rounded-lg text-sm text-white justify-self-end">

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from "react-router-dom";
 import loggUtBruker from "../BrukerHandtering/Utlogging";
 import UseFetch from "../KlubbHandtering/UseFetch";
+import socket from '../socket';
 
 const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling }) => {
   const { t } = useTranslation();
@@ -13,9 +14,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling }) => {
   const [nyheter, setNyheter] = useState([]);
 
   useEffect(() => {
-    let intervalId; 
 
-    
     const hentNyheter = async () => {
       try {
         const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber`);
@@ -37,15 +36,35 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling }) => {
         console.error("Feil ved henting av nyheter:", error);
       }
     };
-    hentNyheter();
-
-    intervalId = setInterval(hentNyheter, 1000); // hvert sekund
-
-    return () => clearInterval(intervalId); // resetter interval 
+    hentNyheter(); 
 
   }, []);
 
-  
+  useEffect(() => {
+    // Lytt til meldinger fra serveren
+    socket.on('nyhetOppdatert', (data) => {
+        console.log('Nyhet lagt til fra socket:', data);
+        setAntallVarslinger(antallVarslinger + 1); // Oppdater antall varslinger
+    });
+
+    socket.on('invitasjonOppdatert', (data) => {
+        console.log('Invitasjon lagt til fra socket:', data);
+        console.log('mottakerid:', data.data.invitasjon.mottakerId)
+        console.log('loggetinnbrukerid:', loggetInnBruker.id)
+        if(data.data.invitasjon.mottakerId === loggetInnBruker.id) {
+          setAntallVarslinger(antallVarslinger + 1); // Oppdater antall varslinger
+          alert('Du har mottat en varsling!')
+        }
+    }); 
+
+    // Oppdater antall varslinger når en nyhet eller invitasjon legges til
+
+    // Rydde opp ved avmontering av komponenten
+    return () => {
+        socket.off('nyhetOppdatert'); // Fjern lytteren når komponenten avmonteres
+        socket.off('invitasjonOppdatert')
+    };
+}, )
 
   const loggUt = async () => {
     const utloggingVellykket = await loggUtBruker(setLoggetInnBruker);
