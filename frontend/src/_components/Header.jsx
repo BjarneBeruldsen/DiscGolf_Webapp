@@ -262,7 +262,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling }) => {
                     onClick={loggUt}
                     className="text-black font-bold hover:text-gray-600 px-4 py-2 border border-gray-300 rounded-lg"
                   >
-                    (t{"Logg ut"})
+                    {t("Logg ut")}
                   </button>
                 </li>
               </>
