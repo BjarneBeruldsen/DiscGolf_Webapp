@@ -80,12 +80,12 @@ const Registrering = () => {
                 setTallInput("");
                 return;
             } else {
-                setMelding(i18n.t)("Registrering vellykket! Du blir omdirigert til innlogging...");
+                setMelding(i18n.t("Registrering vellykket! Du blir omdirigert til innlogging..."));
                 setTimeout(() => minne.push("/Innlogging"), 1000);
             }
         } catch (error) {
-            setMelding(i18n.t)("Noe gikk galt. Prøv igjen.");
-            console.error(i18n.t)("Registreringsfeil:", error);
+            setMelding(i18n.t("Noe gikk galt. Prøv igjen."));
+            console.error(i18n.t("Registreringsfeil:", error));
             setTall(Math.floor(Math.random() * 99) + 1);
             setTallInput("");
         }

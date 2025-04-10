@@ -71,6 +71,7 @@ app.use(
           workerSrc: ["'self'", "blob:"],
           connectSrc: [
             "'self'",
+            process.env.REACT_APP_API_BASE_URL,
             "http://localhost:8000",
             "http://localhost:3000",
             "https://api.mapbox.com",
