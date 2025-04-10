@@ -34,8 +34,6 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
     }
   }, [bruker]);
 
-  //Foreløpig så kommer ikke oppdatert info opp i UIet, jeg vet ish hvorfor og er på saken har bare ikke tid til å fikse det nå. Men bruker blir i hvert fall oppdatert i databasen. 
-
   //Sletting av registrert bruker som vi henter fra SletteBruker.jsx
   const handleSlettBruker = async (e) => {
     e.preventDefault();
@@ -50,22 +48,35 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
       setMelding("Feil ved sletting av bruker, sjekk brukernavn/epost og passord, prøv igjen deretter.");
     }
   };
-  //Endring av brukerinformasjon under her:  IKKE KLAR
+  //Endring av brukerinformasjon under her: 
   const handleEndringAvBruker = async () => {
-    setMelding(""); 
+    setMelding("");
+    //Validerer inputfeltene, vi tilatter ikke at brukeren sender inn tomme felt 
+    if (!nyttBrukernavn || nyttBrukernavn.trim() === "" || !nyEpost || nyEpost.trim() === "") {
+      setMelding("Brukernavn og e-post kan ikke være tomme.");
+      return;
+    }
+    //Bekreftelse av passord for å endre det
     if (nyttPassord && !passord) {
       setMelding("Du må oppgi ditt nåværende passord for å endre til nytt passord.");
       return;
     }
+    //Her konverterer vi tomme strenger til null, slik at fjerning i backend kan fjerne unødvendige felter som er tomme 
+    const fornavnTilBackend = fornavn === "" ? null : fornavn;
+    const etternavnTilBackend = etternavn === "" ? null : etternavn;
+    const telefonnummerTilBackend = telefonnummer === "" ? null : telefonnummer;
+    const bostedTilBackend = bosted === "" ? null : bosted;
+    
+    //Kaller på endreBruker funksjonen som henter fra backend og oppdaterer informasjonen
     await endreBruker(
       nyttBrukernavn, 
       nyEpost, 
       nyttPassord, 
       passord,
-      fornavn, 
-      etternavn, 
-      telefonnummer, 
-      bosted, 
+      fornavnTilBackend,  
+      etternavnTilBackend,  
+      telefonnummerTilBackend,  
+      bostedTilBackend,  
       minne, 
       setMelding
     );
