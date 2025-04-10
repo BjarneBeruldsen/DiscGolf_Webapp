@@ -14,10 +14,12 @@ const path = require('path');
 require('dotenv').config();
 const passport = require('passport');
 require('./ruter/brukerhandtering/passport')(passport);
-const klubbRouter = require('./ruter/klubbhandtering'); 
+const { klubbRouter, setSocketIO } = require('./ruter/klubbhandtering'); 
 const brukerRouter = require('./ruter/brukerhandtering/brukerhandtering'); 
 const tilgangRouter = require('./ruter/brukerhandtering/tilgangskontroll');
 const turneringRouter = require("./ruter/Turneringer");
+const http = require('http');
+const { Server } = require('socket.io');
 
 const app = express();
 app.use(express.urlencoded({ extended: true })); 
@@ -46,7 +48,7 @@ app.use("/sjekk-session", nocache());
 app.use("/redigerBruker", nocache());
 
 app.use(cors({
-    origin: ["https://disk-applikasjon-39f504b7af19.herokuapp.com", "http://localhost:3000", "http://localhost:8000"], 
+    origin: [process.env.REACT_APP_API_BASE_URL, "http://localhost:3000", "http://localhost:8000"], 
     credentials: true,
 }));
 
@@ -120,6 +122,34 @@ app.use(passport.session());
 //Henter klubbhåndterings ruter
 app.use(klubbRouter);
 
+// Opprett en HTTP-server for å bruke med socket.io
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: ["http://localhost:3000", process.env.REACT_APP_API_BASE_URL], // Tillat frontend-URL
+        methods: ["GET", "POST"],
+        credentials: true,
+    },
+});
+
+// Håndter socket.io-tilkoblinger
+io.on('connection', (socket) => {
+    console.log('En bruker koblet til:', socket.id);
+
+    // Eksempel: Lytt til en melding fra klienten
+    socket.on('chat melding', (data) => {
+        console.log('Melding mottatt:', data);
+        io.emit('chat melding', data); // Send meldingen til alle tilkoblede klienter
+    });
+
+    socket.on('disconnect', () => {
+        console.log('En bruker koblet fra:', socket.id);
+    });
+});
+
+// Send socket.io-instansen til klubbhandtering.js
+setSocketIO(io);
+
 //Oppkobling mot databasen 
 let db
 kobleTilDB((err) => {
@@ -135,8 +165,8 @@ app.use(turneringRouter);
 //Henter tilgangskontroll ruter
 app.use('/api', tilgangRouter);
 
-//Start av server
-app.listen(PORT, () => {
+// Endre serverstart til å bruke HTTP-serveren
+server.listen(PORT, () => {
     console.log(`Server kjører på port ${PORT}`);
 });
     } else {

@@ -6,6 +6,11 @@ const { kobleTilDB, getDb } = require('../db');
 const { beskyttetRute } = require('./brukerhandtering/funksjoner');
 const { MongoClient } = require('mongodb');
 const klubbRouter = express.Router();
+let io;
+
+function setSocketIO(socketIOInstance) {
+    io = socketIOInstance;
+}
 
 //Klubbhåndterings ruter 
 klubbRouter.get('/klubber', (req, res) => {
@@ -44,32 +49,34 @@ klubbRouter.get('/klubber/:id', (req, res) => {
 klubbRouter.post('/klubber', (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
-    const klubb = req.body
+    const klubb = req.body;
     db.collection('Klubb')
     .insertOne(klubb)
     .then(result => {
-        res.status(201).json(result)
+        if (io) io.emit('klubbOppdatert', { type: 'ny', data: klubb });
+        res.status(201).json(result);
     })
     .catch(err => {
-        res.status(500).json({error: 'Feil ved lagring av klubb'})  
-    })
+        res.status(500).json({error: 'Feil ved lagring av klubb'});
+    });
 })
 
 klubbRouter.delete('/klubber/:id', (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
     if(ObjectId.isValid(req.params.id) === false) {
-        return res.status(400).json({error: 'Ugyldig dokument-id'})
+        return res.status(400).json({error: 'Ugyldig dokument-id'});
     }
     else {
         db.collection('Klubb')
         .deleteOne({_id: new ObjectId(req.params.id)})
         .then(result => {
-            res.status(200).json(result)
+            if (io) io.emit('klubbOppdatert', { type: 'slettet', id: req.params.id });
+            res.status(200).json(result);
         })
         .catch(err => {
-            res.status(500).json({error: 'Feil ved sletting av klubb'})
-        })
+            res.status(500).json({error: 'Feil ved sletting av klubb'});
+        });
     }
 })
 
@@ -106,6 +113,7 @@ klubbRouter.post('/klubber/:id/nyheter', (req, res) => {
             { $push: { nyheter: nyNyhet } }
         )
         .then(result => {
+            if (io) io.emit('nyhetOppdatert', { type: 'ny', data: nyNyhet });
             res.status(201).json(result);
         })
         .catch(err => {
@@ -263,6 +271,7 @@ klubbRouter.post('/brukere/:id/invitasjoner', async (req, res) => {
             { $push: { invitasjoner: invitasjon } },
         )
         .then(result => {
+            if (io) io.emit('invitasjonOppdatert', { type: 'ny', data: invitasjon });
             res.status(201).json(result)
         })
         .catch(err => {
@@ -271,29 +280,6 @@ klubbRouter.post('/brukere/:id/invitasjoner', async (req, res) => {
     }
 })
 
-//patch for å oppdatere antall varslinger 
-klubbRouter.patch('/brukere/:id/varslinger', async (req, res) => {
-    const db = getDb(); 
-    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
-    if(ObjectId.isValid(req.params.id) === false) {
-        return res.status(400).json({error: 'Ugyldig dokument-id'});
-    } else {
-        const oppdatering = req.body
-
-        db.collection('Brukere')
-        .updateOne(
-            { _id: new ObjectId(req.params.id) }, 
-            { $set: { varslinger: oppdatering } },
-        )
-        .then(result => {
-            res.status(200).json(result)
-        })
-        .catch(err => {
-            res.status(500).json({error: 'Feil ved oppdatering av varslinger'})
-        })
-    }
-})
 
 
-
-module.exports = klubbRouter;
+module.exports = { klubbRouter, setSocketIO };

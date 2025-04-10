@@ -6,8 +6,7 @@ import VelgSpillere from "./VelgSpillere";
 import HentBruker from "../BrukerHandtering/HentBruker";
 
 const ScoreBoard = () => {
-    const { id: baneId } = useParams();
-    const { id: rundeId } = useParams();
+    const { baneId, rundeId } = useParams();
     const { data: bane, error, isPending } = UseFetch(`${process.env.REACT_APP_API_BASE_URL}/baner/${baneId}`);
     const { bruker, venter } = HentBruker();
     const [hull, setHull] = useState([]);
@@ -134,10 +133,16 @@ const ScoreBoard = () => {
     const sendInvitasjon = (spiller, invitasjon) => {
         const brukerId = spiller.id;
 
+        // Legg til mottakerId i invitasjonen
+        const invitasjonMedMottaker = {
+            ...invitasjon,
+            mottakerId: brukerId  // eller "mottaker": { id: brukerId } hvis det forventes
+        };
+
         fetch(`${process.env.REACT_APP_API_BASE_URL}/brukere/${brukerId}/invitasjoner`, {
             method: 'POST', 
             headers: { "Content-Type": "application/json" },
-            body : JSON.stringify({ invitasjon })
+            body : JSON.stringify({ invitasjon: invitasjonMedMottaker })
         }).then((response) => {
             if (!response.ok) {
                 throw new Error('Feil ved sending av invitasjon');

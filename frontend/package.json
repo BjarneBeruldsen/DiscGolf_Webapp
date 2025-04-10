@@ -20,6 +20,7 @@
     "react-i18next": "^12.1.0",
     "react-router-dom": "^5.3.4",
     "react-scripts": "^5.0.1",
+    "socket.io-client": "^4.8.1",
     "tailwindcss": "^4.0.9",
     "uuid": "^11.1.0"
   },

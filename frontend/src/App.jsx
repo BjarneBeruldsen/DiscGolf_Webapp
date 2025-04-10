@@ -36,6 +36,7 @@ import Systeminnstillinger from './Admin/Systeminnstillinger';
 import BrukerListe from "./Admin/BrukerListe";
 import RedigerBane from './KlubbHandtering/RedigerBane';
 import Varsling from './_components/Varsling';
+import socket from './socket';
 
 function App() {
   const { bruker, venter } = HentBruker();
@@ -43,23 +44,38 @@ function App() {
   const [sessionLastet, setSessionLastet] = useState(false); 
   const [visVarsling, setVisVarsling] = useState(false); 
 
-//Setter loggetInnBruker til bruker og angir sessionLastet til true når brukeren er lastet og venter er false
-useEffect(() => {
-  if (!venter) {
-    setLoggetInnBruker(bruker);  //Her oppdaterer vi loggetInnBruker med bruker
-    setSessionLastet(true);  //Her setter vi sessionLastet til true fordi brukeren er lastet
-  }
-}, [bruker, venter]); //Kjører når bruker eller venter endres
+  // Setter loggetInnBruker til bruker og angir sessionLastet til true når brukeren er lastet og venter er false
+  useEffect(() => {
+    if (!venter) {
+      setLoggetInnBruker(bruker);  // Oppdaterer loggetInnBruker med bruker
+      setSessionLastet(true);  // Setter sessionLastet til true fordi brukeren er lastet
+    }
+  }, [bruker, venter]); // Kjører når bruker eller venter endres
+
+  // Flytt useEffect utenfor betingelsen
+  useEffect(() => {
+    // Lytt til meldinger fra serveren
+    socket.on('receiveMessage', (data) => {
+      console.log('Melding fra server:', data);
+    });
+
+    // Rydd opp når komponenten demonteres
+    return () => {
+      socket.off('receiveMessage');
+    };
+  }, []);
+
   if (!sessionLastet) {
     return <p className="text-center text-gray-700 mt-10">Laster inn...</p>;
   }
 
+  const sendMessage = (melding) => {
+    socket.emit('sendMessage', { text: 'Hei fra frontend!' });
+  };
 
   const toggleVarsling = () => {
     setVisVarsling(!visVarsling); 
-  }
-
-
+  };
 
   //Hovedkomponent som håndterer routing og visning av forskjellige sider i applikasjonen
   return (
@@ -152,14 +168,14 @@ useEffect(() => {
             <Route exact path="/Registrering">
               {loggetInnBruker ? <Redirect to="/Hjem" /> : <Registrering />}
             </Route>
-            <Route exact path="/ScoreBoard/:id/:rundeId">
+            <Route exact path="/ScoreBoard/:baneId/:rundeId">
               <ScoreBoard />
             </Route>
             <Route exact path="/MinePoengtavler">
               <PoengTavler />
             </Route>
               
-            {/*
+            {/* 
             <Route exact path="/TilbakestillPassord/:token">
               <TilbakestillPassord />
             </Route>
