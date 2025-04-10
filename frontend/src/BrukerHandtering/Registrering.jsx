@@ -162,7 +162,7 @@ const tallRiktig = tallInput !== "" && parseInt(tallInput) === tall;
                 </button>
 
                 <p className="text-blue-500 mt-4">
-                    <Link to="./Innlogging">{t("Har du allerede konto?")}</Link>
+                    <Link to="./Innlogging">{t("Har du allerede en konto?")}</Link>
                 </p>
 
                 {melding && (
