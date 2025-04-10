@@ -1,9 +1,13 @@
 // Author: Bjarne Hovd Beruldsen
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import UseFetch from './UseFetch';
 import VelgSpillere from "./VelgSpillere";
 import HentBruker from "../BrukerHandtering/HentBruker";
+import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
+import 'mapbox-gl/dist/mapbox-gl.css';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import mapboxgl from "mapbox-gl";
 
 const ScoreBoard = () => {
     const { baneId, rundeId } = useParams();
@@ -11,6 +15,7 @@ const ScoreBoard = () => {
     const { bruker, venter } = HentBruker();
     const [hull, setHull] = useState([]);
     const [invitasjon, setInvitasjon] = useState({});
+    const mapContainerRef = useRef(null);
     const [nr, setNr] = useState(() => {
         const nr = localStorage.getItem('nr');
         return nr ? JSON.parse(nr) : 0;
@@ -213,6 +218,91 @@ const ScoreBoard = () => {
         }
         return erNull;
     }
+    useEffect(() => {
+        if (!mapContainerRef.current || !hull || hull.length === 0 || !hull[nr]) return;
+    
+        mapboxgl.accessToken = "pk.eyJ1IjoidW5rbm93bmdnc3MiLCJhIjoiY203eGhjdXBzMDUwaDJxc2RidXgwbjBqeSJ9.wlnVO6sI2-cY5Tx8uYv_XQ";
+    
+        const map = new mapboxgl.Map({
+            container: mapContainerRef.current,
+            style: "mapbox://styles/mapbox/satellite-streets-v12",
+            center: [
+                hull[nr].startLongitude || 9.059,
+                hull[nr].startLatitude || 59.409
+            ],
+            zoom: 16,
+        });
+        const coordinates = [];
+
+        hull.forEach(({ startLatitude, startLongitude, sluttLatitude, sluttLongitude }, i) => {
+            if (startLatitude && startLongitude) {
+                const startEl = document.createElement('div');
+                startEl.className = 'marker';
+                startEl.style.backgroundImage = 'url("/disc.png")';
+                startEl.style.width = `50px`;
+                startEl.style.height = `50px`;
+                startEl.style.backgroundSize = '100%';
+                startEl.style.borderRadius = '50%';
+                startEl.style.cursor = 'pointer';
+
+                new mapboxgl.Marker(startEl)
+                    .setLngLat([startLongitude, startLatitude])
+                    .addTo(map);
+
+                coordinates.push([startLongitude, startLatitude]);
+            }
+
+            if (sluttLatitude && sluttLongitude) {
+                const endEl = document.createElement('div');
+                endEl.className = 'marker';
+                endEl.style.backgroundImage = 'url("/kurv.png")';
+                endEl.style.width = `50px`;
+                endEl.style.height = `50px`;
+                endEl.style.backgroundSize = '100%';
+                endEl.style.borderRadius = '50%';
+                endEl.style.cursor = 'pointer';
+
+                new mapboxgl.Marker(endEl)
+                    .setLngLat([sluttLongitude, sluttLatitude])
+                    .addTo(map);
+
+                coordinates.push([sluttLongitude, sluttLatitude]);
+            }
+        });
+
+        if (coordinates.length > 1) {
+            map.on('load', () => {
+                map.addSource('line', {
+                    type: 'geojson',
+                    data: {
+                        type: 'Feature',
+                        geometry: {
+                            type: 'LineString',
+                            coordinates: coordinates,
+                        },
+                    },
+                });
+
+                map.addLayer({
+                    id: 'line-layer',
+                    type: 'line',
+                    source: 'line',
+                    layout: {
+                        'line-cap': 'round',
+                        'line-join': 'round',
+                    },
+                    paint: {
+                        'line-color': 'BLUE',
+                        'line-width': 4,
+                    },
+                });
+            });
+        }
+
+    
+        return () => map.remove();
+    }, [hull, nr]);
+    
 
     return (
         <div className="innhold flex justify-center bg-gray-200">
@@ -242,6 +332,7 @@ const ScoreBoard = () => {
                         <p className="text-red-500">{errorMelding}</p>
                     </div>
                 </div>
+                <div ref={mapContainerRef} className="w-full h-[300px]" />
                 <div className="bunn-panel flex justify-between py-2">
                     <button onClick={() => endreHull(false)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2">{"<-"}</button>
                     {nr === hull.length - 1 && (
