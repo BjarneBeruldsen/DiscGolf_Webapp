@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client';
 
 // Opprett socket-tilkobling
-const socket = io('http://localhost:8000', {
+const socket = io(process.env.REACT_APP_API_BASE_URL, {
     withCredentials: true,
 });
 
