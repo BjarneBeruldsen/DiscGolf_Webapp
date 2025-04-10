@@ -22,7 +22,7 @@ const Footer = () => {
           <div className="text-center">
             <ul className="flex flex-wrap justify-center space-x-4 space-y-2 md:space-x-6 md:space-y-0 text-lg font-medium">
               <li><Link to="/Hjem" className="hover:text-gray-800">{t("Hjem")}</Link></li>
-              <li><Link to="/OmOss" className="hover:text-gray-800">{("Om oss")}</Link></li>
+              <li><Link to="/OmOss" className="hover:text-gray-800">{t("Om oss")}</Link></li>
               <li><Link to="/Personvern" className="hover:text-gray-800">{t("Personvern")}</Link></li>
               <li><Link to="/Sikkerhet" className="hover:text-gray-800">{t("Sikkerhet")}</Link></li>
               <li><Link to="/Informasjonskapsler" className="hover:text-gray-800">{t("Informasjonskapsler")}</Link></li>

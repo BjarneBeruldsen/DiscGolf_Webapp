@@ -92,13 +92,13 @@ const innloggingValidering = [
 //Validering av redigering
 const redigeringValidering = [
     body('nyttBrukernavn')
-        .optional({ checkFalsy: true })
+        //.optional({ checkFalsy: true })
         .trim()
         .escape()
         .isLength({ min: 3, max: 15 }).withMessage("Nytt brukernavn må være mellom 3 og 15 tegn.")
         .isAlphanumeric().withMessage("Nytt brukernavn kan bare inneholde bokstaver og tall."),
     body('nyEpost')
-        .optional({ checkFalsy: true })
+        //.optional({ checkFalsy: true })
         .trim()
         .escape()
         .isEmail().withMessage("E-post må være gyldig.")
@@ -123,20 +123,17 @@ const redigeringValidering = [
         }),
     //Ekstra felt
     body(['fornavn', 'etternavn'])
-        .optional({ checkFalsy: true })
-        .optional({ nullable: true })
+    .optional({ checkFalsy: true, nullable: true })
         .trim()
         .escape()
         .isLength({ min: 1, max: 50 }).withMessage("Navn må være mellom 1 og 50 tegn."),
     body('telefonnummer')
-        .optional({ checkFalsy: true })
-        .optional({ nullable: true })
+    .optional({ checkFalsy: true, nullable: true })
         .trim()
         .escape()
         .matches(/^[0-9+\s-]{8,15}$/).withMessage("Telefonnummer må være et gyldig format."),
     body('bosted')
-        .optional({ checkFalsy: true })
-        .optional({ nullable: true })
+    .optional({ checkFalsy: true, nullable: true })
         .trim()
         .escape()
         .isLength({ min: 1, max: 20 }).withMessage("Bosted må være mellom 1 og 100 tegn.")

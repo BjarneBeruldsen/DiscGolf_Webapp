@@ -158,7 +158,7 @@ brukerRouter.delete("/SletteBruker", beskyttetRute, sletteValidering, sjekkBruke
         //Sjekker passord
         const passordSjekk = await bcrypt.compare(passord, bruker.passord);
         if (!passordSjekk) {
-            return res.status(401).json({ error: "Feil passord" });
+            return res.status(401).json({ error: "Feil passord eller brukernavn" });
         }
         //Sletter bruker
         const slettet = await db.collection("Brukere").deleteOne({ _id: bruker._id });
@@ -184,7 +184,8 @@ brukerRouter.delete("/SletteBruker", beskyttetRute, sletteValidering, sjekkBruke
 //Rute for å redigere brukerinformasjon og legge til mer info som fornavn, etternavn, telefonnummer og bosted
 brukerRouter.patch("/RedigerBruker", beskyttetRute, sjekkBrukerAktiv, redigeringValidering, endringStopp, async (req, res) => {
     try {
-        //Oppretter variabler/konstanter for redigering av bruker
+        //Oppretter variabler/konstanter for redigering av bruker og objekt for å samle på endringer/oppdateringer
+        const fjerning = {};
         const oppdatering = {};
         const { nyttBrukernavn, nyEpost, nyttPassord, passord, fornavn, etternavn, telefonnummer, bosted } = req.body;
         //Henter nåværende brukerdata
@@ -198,7 +199,7 @@ brukerRouter.patch("/RedigerBruker", beskyttetRute, sjekkBrukerAktiv, redigering
         //Validering av input med express-validator hentet fra validering.js
         const error = validationResult(req);    
         if (!error.isEmpty()) {
-            return res.status(400).json({ error: error.array() });
+            return res.status(400).json({ error: error.array()[0].msg }); 
         }
         //Boolean for å sjekke om noe er endret
         let sjekkeEndringer = false;
@@ -236,7 +237,7 @@ brukerRouter.patch("/RedigerBruker", beskyttetRute, sjekkBrukerAktiv, redigering
             //Sjekk om brukerens gamle passord stemmer
             const passordSjekk = await bcrypt.compare(passord, bruker.passord);
             if (!passordSjekk) {
-                return res.status(401).json({ error: "Feil passord" });
+                return res.status(401).json({ error: "Feil passord eller brukernavn" });
             } else {
             //Krypterer nytt passord
             const salt = await bcrypt.genSalt(12);
@@ -247,21 +248,36 @@ brukerRouter.patch("/RedigerBruker", beskyttetRute, sjekkBrukerAktiv, redigering
             console.log(`Passord endret for bruker: ${bruker.brukernavn}, med epost: ${epost}`);
             }
         }
-        //Under her oppdaterer vi ulike felt dersom bruker har lyst til å legge dem til. Sjekker også om verdiene er tomme eller ugyldige
+        if (!nyttBrukernavn && !nyEpost ) {
+            return res.status(400).json({ error: "Brukernavn og Epost kan ikke være tomt" });
+        }
+        //Under her oppdaterer vi ulike felt dersom bruker har lyst til å legge dem til. Sjekker også om verdiene er tomme eller ugyldige. Når det gjelder verdi 1 så har den egt ingen effekt da unset fjerner field uansett, ment mer som konvensjon.
         if (fornavn !== undefined && fornavn !== null && fornavn !== "") {
             oppdatering.fornavn = fornavn.trim();
+            sjekkeEndringer = true;
+        } else if (fornavn !== undefined) {
+            fjerning.fornavn = 1;
             sjekkeEndringer = true;
         }
         if (etternavn !== undefined && etternavn !== null && etternavn !== "") {
             oppdatering.etternavn = etternavn.trim();
             sjekkeEndringer = true;
+        } else if (etternavn !== undefined) {
+            fjerning.etternavn = 1;
+            sjekkeEndringer = true;
         }
         if (telefonnummer !== undefined && telefonnummer !== null && telefonnummer !== "") {
             oppdatering.telefonnummer = telefonnummer.trim();
             sjekkeEndringer = true;
+        } else if (telefonnummer !== undefined) {
+            fjerning.telefonnummer = 1;
+            sjekkeEndringer = true;
         }
         if (bosted !== undefined && bosted !== null && bosted !== "") {
             oppdatering.bosted = bosted.trim();
+            sjekkeEndringer = true;
+        } else if (bosted !== undefined) {
+            fjerning.bosted = 1;
             sjekkeEndringer = true;
         }
         //Returner feilmelding hvis ingen endringer er gjort
@@ -273,11 +289,20 @@ brukerRouter.patch("/RedigerBruker", beskyttetRute, sjekkBrukerAktiv, redigering
             { _id: brukerId }, 
             { $set: oppdatering }
         );
-        if (resultat.modifiedCount > 0) {
-            console.log(`Brukeroppdatering fullført for: ${brukernavn}, med epost: ${epost}`); //Skal legge til oppdaterte felt også må bare finne ut hvordan funker ikke som jeg trodde det skulle gjøre
-            return res.status(200).json({ melding: "Brukerinformasjon oppdatert" });
-        } else {
-            return res.status(404).json({ error: "Brukeren ble ikke funnet" });
+        //Fjerner unødvendig fields hvis tomme
+        const fjerne = await db.collection("Brukere").updateOne(
+            { _id: brukerId },
+            { $unset:  fjerning  }
+        );
+        //Sjekking og logging
+        if (resultat.modifiedCount > 0 || fjerne.modifiedCount > 0) {
+            if(fjerne.modifiedCount > 0) {
+                console.log(`Fjernet unødvendige felt for bruker: ${bruker.brukernavn}, med epost: ${epost}`);
+             }
+                console.log(`Brukeroppdatering fullført for: ${brukernavn}, med epost: ${epost}`);
+                    return res.status(200).json({ melding: "Brukerinformasjon oppdatert" });
+            } else {
+                return res.status(404).json({ error: "Brukeren ble ikke funnet" });
         }
     } catch (error) {
         console.error("Feil ved oppdatering av bruker:", error);

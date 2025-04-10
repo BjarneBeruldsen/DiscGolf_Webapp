@@ -25,7 +25,7 @@ passport.use(
             }
             const passordSjekk = await bcrypt.compare(passord, funnetBruker.passord);
             if (!passordSjekk) {
-                return done(null, false, { message: "Feil passord" });
+                return done(null, false, { message: "Feil passord eller brukernavn" });
             }
             else {
                 //Hvis innloggingen er vellykket, returnerer vi brukeren
