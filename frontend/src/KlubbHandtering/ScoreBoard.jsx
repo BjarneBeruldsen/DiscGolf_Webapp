@@ -111,19 +111,29 @@ const ScoreBoard = () => {
         }
     };
 
-    const handleBekreftSpillere = (valgteSpillere) => {
-        console.log(bruker); 
+    const handleBekreftSpillere = async (valgteSpillere) => {
+        console.log(bruker);
         const spillereMedPoeng = valgteSpillere.map(spiller => ({
             ...spiller,
-            antallKast: Array(hull.length).fill(0), 
+            antallKast: Array(hull.length).fill(0),
             total: 0 - hull[nr].par,
         }));
-        setInvitasjon({avsender: bruker.brukernavn, baneId: baneId, rundeId: rundeId, tid : (new Date().getTime() / 1000)});
-        console.log('invitasjon:', invitasjon);
+        const oppdatertInvitasjon = {
+            avsender: bruker.brukernavn,
+            baneId: baneId,
+            rundeId: rundeId,
+            tid: new Date().getTime() / 1000,
+        };
+        setInvitasjon(oppdatertInvitasjon);
+
+        // Vent til invitasjon er oppdatert før du sender den
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        console.log('invitasjon:', oppdatertInvitasjon);
         setSpillere(spillereMedPoeng);
-        for(const spiller of spillereMedPoeng) {
-            if(bruker.id !== spiller.id && invitasjon !== null) {
-                sendInvitasjon(spiller, invitasjon);
+        for (const spiller of spillereMedPoeng) {
+            if (bruker.id !== spiller.id && oppdatertInvitasjon) {
+                sendInvitasjon(spiller, oppdatertInvitasjon);
             }
         }
         setVisVelgSpillere(false);
