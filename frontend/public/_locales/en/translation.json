@@ -76,6 +76,30 @@
     "Passordet må inneholde minst en stor bokstav." : "Password must contain at least one uppercase letter.",
     "Skriv inn tallet for å registrere deg:" : "Enter the number to register:",
     "Skriv inn tallet for å logge inn: ": "Enter the number to log in:",
-    "Logg deg inn!" : "Log in!"
+    "Logg deg inn!" : "Log in!",
+    "Over 5,000 Baner": "Over 5,000 Courses",
+    "Registrer resultater og forbedre din spillopplevelse": "Record scores and enhance your gaming experience",
+    "Finn Bane": "Find Course",
+    "Øk diskgolf opplevelsen din 🥏": "Enhance your disc golf experience 🥏",
+    "Utforsk baner med venner": "Explore courses with friends",
+    "Finn nye disc golf-baner, planlegg turer med venner, og opplev spennende utfordringer sammen!": "Discover new disc golf courses, plan trips with friends, and experience exciting challenges together!",
+    "Delta i en klubb": "Join a club",
+    "Bli med i en disc golf-klubb og bli en del av et engasjert fellesskap!": "Join a disc golf club and become part of an engaged community!",
+    "Turneringer": "Tournaments",
+    "Delta i spennende turneringer og utfordr deg selv sammen med andre disc golf-spillere!": "Participate in exciting tournaments and challenge yourself with other disc golf players!",
+    "Sjekk værforholdene før du spiller!": "Check the weather conditions before you play!",
+    "Slett testdata": "Delete test data",
+    "logginn/registrer deg for å spille": "Log in/register to play",
+    "Ingen baner tilgjengelig...": "No courses available...",
+    "Antall hull": "Number of holes",
+    "Tilstand": "Condition",
+    "God": "Good",
+    "Nivå": "Level",
+    "Spill": "Play",
+    "Rediger": "Edit",
+    "Værvarsel for": "Weather forecast for",
+    "valgt bane": "selected course",
+    "Rating": "Rating"
+    
 
   } 
