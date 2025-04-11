@@ -33,8 +33,8 @@ const VelgKlubb = () => {
     };
 
     return (
-        <div className="velg bg-gray-200 p-4  flex justify-center">
-            <div className="innhold bg-gray-200 p-4">
+        <div className="velg bg-gray-200 p-4  flex justify-center min-h-[100vh] ">
+            <div className="innhold bg-gray-200 p-4 mt-50">
                 <h2 className="text-3xl font-bold mb-4">Velg en klubb</h2>
                 <p className="mb-4">Ikke registrert klubb?</p>
                 <Link to="/LagKlubb" className="text-blue-500 underline mb-4 block">Opprett ny klubb her</Link>
