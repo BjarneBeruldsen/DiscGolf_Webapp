@@ -78,8 +78,8 @@ const PoengTavler = () => {
     }
    
     return (
-        <div className="statistikk bg-gray-200">
-            <div className='topp-panel bg-white p-4 shadow w-full'>
+        <div className="statistikk bg-gray-200 min-h-[100vh]">
+            <div className='topp-panel bg-white p-4 shadow w-full mb-25'>
                 <div className='overskrift border-b'>
                     <h2 className="text-3xl font-bold">{ brukernavn } sin statistikk</h2>
                 </div>
