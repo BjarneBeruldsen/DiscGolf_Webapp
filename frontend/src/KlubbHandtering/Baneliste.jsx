@@ -17,6 +17,9 @@ import '../App.css';
     const [yrId, setYrId] = useState({});
     const [aktivBaneIndex, setAktivBaneIndex] = useState(0);
     const [aktivBane, setAktivBane] = useState(baner || []);
+    const [filteredBaner, setFilteredBaner] = useState(baner || []);
+    const [locationFilter, setLocationFilter] = useState('');
+    const [hullFilter, setHullFilter] = useState('');
 
 
     useEffect(() => {
@@ -40,6 +43,27 @@ import '../App.css';
 
         hentYrIdForBaner();
     }, [baner]);
+    
+    useEffect(() => {
+        if (!baner) return;
+        
+        const filtered = baner.filter(bane => 
+            (!locationFilter || bane.plassering === locationFilter) && 
+            (!hullFilter || 
+                (hullFilter === "6+" ? 
+                    (bane.hull?.length >= 6) : 
+                    (bane.hull?.length === parseInt(hullFilter))
+                )
+            )
+        );
+        
+        setFilteredBaner(filtered);
+        setAktivBane(filtered);
+        
+        if (filtered.length === 0 || aktivBaneIndex >= filtered.length) {
+            setAktivBaneIndex(0);
+        }
+    }, [baner, locationFilter, hullFilter, aktivBaneIndex]);
 
     const handleClick = (bane) => {
         const rundeId = uuidv4(); // Generer et unikt rundeId for hver bane
@@ -155,11 +179,42 @@ import '../App.css';
 
     return (
         <div className="p-4">
+            <div className="filter-controls flex gap-4 mb-4">
+                <div className="location-filter w-1/2">
+                    <select
+                        value={locationFilter}
+                        onChange={(e) => setLocationFilter(e.target.value)}
+                        className="w-full border rounded p-2"
+                    >
+                        <option value="">Alle baner</option>
+                        {baner && [...new Set(baner.map(bane => bane.plassering))].filter(Boolean).map(location => (
+                            <option key={location} value={location}>{location}</option>
+                        ))}
+                    </select>
+                </div>
+                
+                <div className="hull-filter w-1/2">
+                    <select
+                        value={hullFilter}
+                        onChange={(e) => setHullFilter(e.target.value)}
+                        className="w-full border rounded p-2"
+                    >
+                        <option value="">Alle hull</option>
+                        <option value="1">1 hull</option>
+                        <option value="2">2 hull</option>
+                        <option value="3">3 hull</option>
+                        <option value="4">4 hull</option>
+                        <option value="5">5 hull</option>
+                        <option value="6+">6+ hull</option>
+                    </select>
+                </div>
+            </div>
+            
             <div className="bane-layout">
                 <div className="bane-left">
-                {baner && baner.length > 0 ? (
+                {(filteredBaner && filteredBaner.length > 0) ? (
                     <div className="space-y-4">
-                        {baner.map((bane, index) => {
+                        {filteredBaner.map((bane, index) => {
                             const antallHull = bane.hull ? bane.hull.length : 0;
                             return (
                                 <div
