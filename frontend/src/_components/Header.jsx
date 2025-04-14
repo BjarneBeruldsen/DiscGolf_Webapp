@@ -20,7 +20,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling, refreshVa
   useEffect(() => {
     if(bruker) {
       console.log("Bruker:", bruker);
-      setAntInvitasjoner(bruker.invitasjoner.length || 0);
+      setAntInvitasjoner((bruker.invitasjoner && bruker.invitasjoner.length) || 0);
     
 
     const hentNyheter = async () => {
