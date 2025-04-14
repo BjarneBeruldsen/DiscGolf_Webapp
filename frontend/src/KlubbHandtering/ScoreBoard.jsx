@@ -16,6 +16,8 @@ const ScoreBoard = () => {
     const [hull, setHull] = useState([]);
     const [invitasjon, setInvitasjon] = useState({});
     const mapContainerRef = useRef(null);
+    const [antInviterte, setAntInviterte] = useState(0);
+    const [spillereSomVises, setSpillereSomVises] = useState([]);
     const [nr, setNr] = useState(() => {
         const nr = localStorage.getItem('nr');
         return nr ? JSON.parse(nr) : 0;
@@ -54,16 +56,35 @@ const ScoreBoard = () => {
         }
     }, [bane]);
 
+    useEffect(() => {
+        if (bane && bane.hull && nr === 0) { // Only apply logic when on hole number 1
+            const oppdatertSpillere = spillere.map(spiller => {
+                if (spiller.total === 0) {
+                    return {
+                        ...spiller,
+                        total: 0 - hull[nr]?.par || 0
+                    };
+                }
+                return spiller;
+            });
+            setSpillere(prevSpillere => {
+                // Avoid unnecessary updates if no changes are made
+                const isSame = JSON.stringify(prevSpillere) === JSON.stringify(oppdatertSpillere);
+                return isSame ? prevSpillere : oppdatertSpillere;
+            });
+        }
+    }, [bane, hull, nr]); // Removed `spillere` from dependencies to avoid infinite loop
+
     const oppdaterpoeng = (spillerId, endring) => {
         const oppdatertSpillere = spillere.map(spiller => {
             if (spiller.id === spillerId) {
                 const oppdatertAntallKast = [...spiller.antallKast];
                 oppdatertAntallKast[nr] = (oppdatertAntallKast[nr] || 0) + endring;
-                const oppdatertTotal = oppdatertAntallKast[nr] === -1 ? spiller.total : spiller.total + endring;
-                setErrorMelding(null);
-                if(oppdatertAntallKast[nr] < 0) {
-                    oppdatertAntallKast[nr] = 0; 
+                if (oppdatertAntallKast[nr] < 0) {
+                    oppdatertAntallKast[nr] = 0; // Prevent negative throws
                 }
+                const oppdatertTotal = spiller.total + endring;
+                setErrorMelding(null);
 
                 return {
                     ...spiller,
@@ -75,6 +96,12 @@ const ScoreBoard = () => {
         });
         setSpillere(oppdatertSpillere);
     };
+
+    useEffect(() => {
+        if (spillereSomVises.length > 0) {
+            setSpillere(spillereSomVises);
+        }
+    }, [spillereSomVises]);
 
     const oppdaterTotal = (retning) => {
         if (retning) {
@@ -136,13 +163,48 @@ const ScoreBoard = () => {
 
         console.log('invitasjon:', oppdatertInvitasjon);
         setSpillere(spillereMedPoeng);
+        console.log('spillere med poeng:', spillereMedPoeng);
         for (const spiller of spillereMedPoeng) {
-            if (bruker.id !== spiller.id && oppdatertInvitasjon) {
+            if (bruker.id !== spiller.id && !spiller.id.startsWith("guest") && oppdatertInvitasjon) {
                 sendInvitasjon(spiller, oppdatertInvitasjon);
+                setAntInviterte(prevAntInviterte => prevAntInviterte + 1);
+                console.log('antall inviterte:', antInviterte); 
+            }
+            else {
+                setSpillereSomVises(prevSpillereSomVises => [...prevSpillereSomVises, spiller]);
+                console.log('spillere som skal vises', spillereSomVises);
             }
         }
+        console.log('spillere: ', spillere); 
         setVisVelgSpillere(false);
         setVisScoreboard(true);
+        setSpillere(spillereSomVises)
+    };
+
+    const lagreRunde = async () => {
+        console.log('antall inviterte i lagrerunde: ', antInviterte)
+        if (antInviterte === 0) {
+            console.error('Ingen spillere å lagre runde for');
+            return;
+        }
+        const runde = {
+            antInviterte: antInviterte,
+            rundeId: rundeId
+        };
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/runder`, {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(runde)
+            });
+            if (!response.ok) {
+                throw new Error('Feil ved lagring av runde');
+            }
+            const data = await response.json();
+            console.log('Runde lagret:', data);
+        } catch (error) {
+            console.error('Feil ved lagring av runde:', error);
+        }
     };
 
     const sendInvitasjon = (spiller, invitasjon) => {
@@ -169,6 +231,8 @@ const ScoreBoard = () => {
         }).catch((error) => {
             console.error('Feil ved sending av invitasjon:', error);
         }); 
+
+        lagreRunde(); 
     };
 
     const handleAvsluttRunde = () => {
@@ -205,6 +269,7 @@ const ScoreBoard = () => {
         setVisOppsummering(false);
         setVisVelgSpillere(true);
         setSpillere([]);
+        setSpillereSomVises([]); 
         setNr(0);
         setVisScoreboard(false);
     }

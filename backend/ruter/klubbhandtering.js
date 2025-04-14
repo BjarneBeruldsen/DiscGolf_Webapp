@@ -280,6 +280,23 @@ klubbRouter.post('/brukere/:id/invitasjoner', async (req, res) => {
     }
 })
 
+//rute for å lagre runde 
+klubbRouter.post('/runder', async (req, res) => {
+    const db = getDb(); 
+    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+    const runde = req.body
+
+    db.collection('Runder')
+    .insertOne(runde)
+    .then(result => {
+        res.status(201).json(result)
+    })
+    .catch(err => {
+        res.status(500).json({error: 'Feil ved lagring av runde'})
+    })
+})
+
+
 
 
 module.exports = { klubbRouter, setSocketIO };

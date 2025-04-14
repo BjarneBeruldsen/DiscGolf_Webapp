@@ -85,8 +85,8 @@ const VelgSpillere = (props) => {
                         <h2 className="text-xl font-bold">Bane: {bane.baneNavn}</h2>
                     </div>
                     <div className="midtpanel py-2 border-b">
-                        <h3 className="text-md font-bold">Hvem skal spille?</h3>
-                        <form>
+                        <h3 className="text-md font-bold">Legg til annen bruker:</h3>
+                        <form className="border-b py-2">
                             <input
                                 className="border rounded-lg px-2 py-1 mt-2"
                                 type="text"
@@ -94,7 +94,7 @@ const VelgSpillere = (props) => {
                                 value={sok}
                                 onChange={(e) => setSok(e.target.value)}
                             />
-                        </form>
+                        
                         {filtrerteBrukere.length > 0 && sok.trim() !== '' && (
                             <ul className="border rounded-lg mt-2 bg-white">
                                 {filtrerteBrukere.map(bruker => (
@@ -108,7 +108,11 @@ const VelgSpillere = (props) => {
                                 ))}
                             </ul>
                         )}
-                        <button onClick={() => setLeggTilVisning(true)} className="text-md border mt-4 rounded-lg px-2 py-1 text-white bg-gray-600 hover:bg-gray-500">+ Gjestespiller</button>
+                        </form>
+                        <div className="py-2">
+                            <h3 className="text-md font-bold">Legg til gjestespiller:</h3>
+                            <button onClick={() => setLeggTilVisning(true)} className="text-md border mt-4 rounded-lg px-2 py-1 text-white bg-gray-600 hover:bg-gray-500">+ Gjestespiller</button>
+                        </div>
                     </div>
                     <div className="spillerliste">
                         <h3 className="text-md font-bold">Spillere:</h3>
@@ -130,7 +134,20 @@ const VelgSpillere = (props) => {
                     <p className="font-bold">Spillernavn:</p>
                     <form onSubmit={(e) => {
                         e.preventDefault();
+                        if (nySpiller.trim() === '') {
+                            setErrorMelding('Navn kan ikke være tomt');
+                            return;
+                        }
+                        const nyGjestespiller = {
+                            id: `guest-${Date.now()}`, // Unik ID for gjestespiller
+                            navn: nySpiller,
+                            poeng: 0,
+                            total: 0
+                        };
+                        setSpillere([...spillere, nyGjestespiller]);
+                        setNySpiller('');
                         setLeggTilVisning(false);
+                        setErrorMelding('');
                     }}>
                         <input
                             className="border rounded-lg px-2 py-1 mt-2 text-md"
