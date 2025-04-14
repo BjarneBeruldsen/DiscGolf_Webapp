@@ -6,14 +6,22 @@ import { Link } from "react-router-dom";
 import loggUtBruker from "../BrukerHandtering/Utlogging";
 import UseFetch from "../KlubbHandtering/UseFetch";
 import socket from '../socket';
+import HentBruker from "../BrukerHandtering/HentBruker";
 
-const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling }) => {
+const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling, refreshVarsling }) => {
   const { t } = useTranslation();
   const [menyÅpen, setMenyÅpen] = useState(false);
   const [antallVarslinger, setAntallVarslinger] = useState(0);
   const [nyheter, setNyheter] = useState([]);
+  const { bruker, venter } = HentBruker();
+  const [antInvitasjoner, setAntInvitasjoner] = useState(0); 
+
 
   useEffect(() => {
+    if(bruker) {
+      console.log("Bruker:", bruker);
+      setAntInvitasjoner(bruker.invitasjoner.length || 0);
+    
 
     const hentNyheter = async () => {
       try {
@@ -31,20 +39,23 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling }) => {
           );
     
         setNyheter(nyheterMedKlubb);
-        setAntallVarslinger(nyheterMedKlubb.length);
+        setAntallVarslinger(nyheterMedKlubb.length + antInvitasjoner);
       } catch (error) {
         console.error("Feil ved henting av nyheter:", error);
       }
     };
     hentNyheter(); 
+    }
 
-  }, []);
+
+  }, [bruker]);
 
   useEffect(() => {
     // Lytt til meldinger fra serveren
     socket.on('nyhetOppdatert', (data) => {
         console.log('Nyhet lagt til fra socket:', data);
         setAntallVarslinger(antallVarslinger + 1); // Oppdater antall varslinger
+        refreshVarsling(); 
     });
 
     socket.on('invitasjonOppdatert', (data) => {
@@ -54,6 +65,7 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling }) => {
         if(data.data.invitasjon.mottakerId === loggetInnBruker.id) {
           setAntallVarslinger(antallVarslinger + 1); // Oppdater antall varslinger
           alert('Du har mottat en varsling!')
+          refreshVarsling(); 
         }
     }); 
 

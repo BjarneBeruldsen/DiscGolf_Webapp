@@ -77,6 +77,13 @@ function App() {
     setVisVarsling(!visVarsling); 
   };
 
+  const refreshVarsling = () => {
+    setVisVarsling(false); 
+    setTimeout(() => {
+      setVisVarsling(true); 
+    }, 100); 
+  }
+
   //Hovedkomponent som håndterer routing og visning av forskjellige sider i applikasjonen
   return (
     <Router>
@@ -85,6 +92,7 @@ function App() {
           loggetInnBruker={loggetInnBruker} 
           setLoggetInnBruker={setLoggetInnBruker} 
           toggleVarsling={toggleVarsling}
+          refreshVarsling={refreshVarsling}
         />
         {visVarsling && (
           <div>

@@ -4,6 +4,7 @@ import UseFetch from "../KlubbHandtering/UseFetch";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import HentBruker from "../BrukerHandtering/HentBruker";
+import { useHistory } from "react-router-dom";
 
 const Varsling = ({ toggleVarsling }) => {
     const { data: klubber, error, isPending } = UseFetch(`${process.env.REACT_APP_API_BASE_URL}/klubber`);
@@ -13,6 +14,8 @@ const Varsling = ({ toggleVarsling }) => {
     const [laster, setLaster] = useState(true); 
     const [varslinger, setVarslinger] = useState([]);
     const { bruker, venter } = HentBruker();
+    const [spillere, setSpillere] = useState([]);
+    const minne = useHistory();
     const itemsPerPage = 4; 
 
     useEffect(() => {
@@ -43,10 +46,33 @@ const Varsling = ({ toggleVarsling }) => {
             alleVarslinger.sort((a, b) => b.tid - a.tid);
 
             setVarslinger(alleVarslinger);
-            console.log("Sorterte varslinger:", alleVarslinger);
             setLaster(false);
         }
     }, [klubber, bruker]);
+
+    const endreVisning = () => {
+        console.log('brukerid:', bruker._id);
+        if(bruker && bruker.id) {
+            localStorage.setItem('spillere', JSON.stringify([{ id: bruker.id, navn: bruker.brukernavn, poeng: 0, total: 0, antallKast:[0] }]));
+            localStorage.setItem('nr', JSON.stringify(0));
+            localStorage.setItem('visVelgSpillere', JSON.stringify(false));
+            localStorage.setItem('visScoreboard', JSON.stringify(true));
+            localStorage.setItem('visOppsummering', JSON.stringify(false));
+        }
+    }
+    
+
+    const handleClick = (godkjenn, invitasjon) => () => {
+       if(godkjenn) {
+        endreVisning();
+        console.log("Godkjenn invitasjon:", invitasjon);
+        minne.push(`/ScoreBoard/${invitasjon.baneId}/${invitasjon.rundeId}`);
+        toggleVarsling(); 
+       } 
+       else {
+          console.log("Avslå invitasjon:", invitasjon);
+       }
+    }
 
 
     const startIndex = currentPage * itemsPerPage;
@@ -91,17 +117,16 @@ const Varsling = ({ toggleVarsling }) => {
                     </Link>
                 </>
             ) : varsling.invitasjon ? (
-                console.log("Invitasjon:", varsling.invitasjon),
                 // Hvis det er en invitasjon
                 <>
                     <h2 className="text-md font-bold">Invitasjon til runde</h2>
                     <p className="text-sm">Avsender: {varsling.invitasjon.avsender || "Ikke definert"}</p>
                     <div className="">
-                        <button className="w-7 cursor-pointer">
+                        <button onClick={handleClick(true, varsling.invitasjon)} className="w-7 cursor-pointer">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                         </button>
-                        <button className="w-7 cursor-pointer">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M6 6L18 18M18 6L6 18" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                        <button onClick={handleClick(false, varsling.invitasjon)} className="w-7 cursor-pointer">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M6 6L18 18M18 6L6 18" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                         </button>
                     </div>
                 </>
