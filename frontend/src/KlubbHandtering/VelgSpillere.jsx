@@ -3,6 +3,7 @@ import { validering } from './validation';
 import UseFetch from "./UseFetch";
 import HentBruker from "../BrukerHandtering/HentBruker";
 import { useHistory } from "react-router-dom";
+import InfoTooltip from "./infoTooltip";
 
 const VelgSpillere = (props) => {
     const { bane, onBekreftSpillere, bruker } = props;
@@ -59,6 +60,22 @@ const VelgSpillere = (props) => {
         console.log('spillere bekreftet:', spillere);
     };
 
+    const handleSubmitNySpiller = (e) => {
+        e.preventDefault();
+        if (nySpiller.trim() === '') {
+            setErrorMelding('Navn kan ikke være tomt');
+            return;
+        }
+        const nyGjestespiller = {
+            id: `guest-${Date.now()}`, // Unik ID for gjestespiller
+            navn: nySpiller,
+            poeng: 0,
+            total: 0
+        };
+        setSpillere([...spillere, nyGjestespiller]);
+        setNySpiller('');
+        setErrorMelding('');
+    };
 
     return (
         <div className="bg-gray-200">
@@ -68,7 +85,16 @@ const VelgSpillere = (props) => {
                         <h2 className="text-xl font-bold">Bane: {bane.baneNavn}</h2>
                     </div>
                     <div className="midtpanel py-2 border-b">
-                        <h3 className="text-md font-bold">Legg til annen bruker:</h3>
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-md font-bold">Legg til annen bruker:</h3>
+                            <InfoTooltip tekst={
+                            <>
+                                Skriv inn brukernavn<br />
+                                på en eksisterende bruker du ønsker å invitere. <br/>
+                                Invitasjon sendes ved trykk på "bekreft spillere"
+                            </>
+                            } />
+                        </div>
                         <form className="border-b py-2">
                             <input
                                 className="border rounded-lg px-2 py-1 mt-2"
@@ -93,8 +119,28 @@ const VelgSpillere = (props) => {
                         )}
                         </form>
                         <div className="py-2">
-                            <h3 className="text-md font-bold">Legg til gjestespiller:</h3>
-                            <button onClick={() => setLeggTilVisning(true)} className="text-md border mt-4 rounded-lg px-2 py-1 text-white bg-gray-600 hover:bg-gray-500">+ Gjestespiller</button>
+                            <div className="flex justify-between items-center">
+                                <h3 className="text-md font-bold">Legg til gjestespiller:</h3>
+                                <InfoTooltip tekst={
+                                <>
+                                    Skriv inn kallenavn <br />
+                                    på gjestespiller og trykk <br/>
+                                    "Opprett spiller" for å legge <br />
+                                    til gjestespiller i listen.
+                                </>
+                                } />
+                            </div>
+                            <form onSubmit={handleSubmitNySpiller} className="mt-4 ">
+                                <input
+                                    className="border rounded-lg px-2 py-1 text-md"
+                                    type="text"
+                                    placeholder="Navn"
+                                    value={nySpiller}
+                                    onChange={(e) => setNySpiller(e.target.value)}
+                                />
+                                <button type="submit" className="block mt-2 py-2 px-4 bg-gray-600 hover:bg-gray-500 rounded-lg text-sm text-white">Opprett gjestespiller</button>
+                            </form>
+                            {errorMelding && <p className="text-red-500">{errorMelding}</p>}
                         </div>
                     </div>
                     <div className="spillerliste">
