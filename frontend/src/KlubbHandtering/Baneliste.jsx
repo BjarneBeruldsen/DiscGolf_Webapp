@@ -9,9 +9,9 @@ import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import '../App.css';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 
-
-    const BaneListe = ({ baner, rediger, klubbId }) => {
+const BaneListe = ({ baner, rediger, klubbId }) => {
     const minne = useHistory();
     const { bruker, venter } = HentBruker();
     const [yrId, setYrId] = useState({});
@@ -20,7 +20,8 @@ import '../App.css';
     const [filteredBaner, setFilteredBaner] = useState(baner || []);
     const [locationFilter, setLocationFilter] = useState('');
     const [hullFilter, setHullFilter] = useState('');
-
+    const mapRef = useRef(null);
+    
 
     useEffect(() => {
         const hentYrIdForBaner = async () => {
@@ -58,8 +59,8 @@ import '../App.css';
         );
         
         setFilteredBaner(filtered);
-        setAktivBane(filtered);
-        
+        setAktivBane(filtered[aktivBaneIndex] || filtered[0] || null);
+
         if (filtered.length === 0 || aktivBaneIndex >= filtered.length) {
             setAktivBaneIndex(0);
         }
@@ -78,34 +79,38 @@ import '../App.css';
         else {
             minne.push(`/RedigerBane/${klubbId}/${bane._id}`); 
         }
-    }
-    useEffect(() => {
-        if (!baner) return;
-        setAktivBane(baner);
-    
-        if (baner.length <= aktivBaneIndex) {
-            setAktivBaneIndex(0);
-        }
-    }, [baner]); 
-    
+    };
 
     useEffect(() => {
         if (!baner || baner.length === 0) return;
 
         mapboxgl.accessToken = "pk.eyJ1IjoidW5rbm93bmdnc3MiLCJhIjoiY203eGhjdXBzMDUwaDJxc2RidXgwbjBqeSJ9.wlnVO6sI2-cY5Tx8uYv_XQ";
 
+        if (mapRef.current) return;
         const map = new mapboxgl.Map({
             container: 'mapContainer',
             style: "mapbox://styles/mapbox/satellite-streets-v12",
             center: [
-                baner[aktivBaneIndex]?.hull?.[0]?.startLongitude || 9.059,
-                baner[aktivBaneIndex]?.hull?.[0]?.startLatitude || 59.409
+                aktivBane?.hull?.[0]?.startLongitude || 9.059,
+                aktivBane?.hull?.[0]?.startLatitude || 59.409
             ],
-            zoom: 14,
-        })
+            zoom: 16,
+        });
 
-        const hull = baner[aktivBaneIndex]?.hull || [];
-        const coordinates = [];
+        mapRef.current = map;
+
+        const geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl,
+            zoom: 16
+        });
+
+        map.addControl(geocoder);
+
+        map.on('load', () => {
+            baner.forEach((bane, baneIndex) => {
+                const hull = bane?.hull || [];
+       const coordinates = [];
 
         hull.forEach(({ startLatitude, startLongitude, sluttLatitude, sluttLongitude }, i) => {
             if (startLatitude && startLongitude) {
@@ -144,8 +149,11 @@ import '../App.css';
         });
 
         if (coordinates.length > 1) {
-            map.on('load', () => {
-                map.addSource('line', {
+                    const sourceId = `line-${baneIndex}`;
+                    const layerId = `line-layer-${baneIndex}`;
+                    
+            if (!map.getSource(sourceId)) {
+            map.addSource(sourceId, {
                     type: 'geojson',
                     data: {
                         type: 'Feature',
@@ -157,9 +165,9 @@ import '../App.css';
                 });
 
                 map.addLayer({
-                    id: 'line-layer',
+                    id: layerId,
                     type: 'line',
-                    source: 'line',
+                    source: sourceId,
                     layout: {
                         'line-cap': 'round',
                         'line-join': 'round',
@@ -169,13 +177,20 @@ import '../App.css';
                         'line-width': 4,
                     },
                 });
-            });
+            }
         }
+            });
+        })
 
-        return () => map.remove();
-    }, [baner,rediger, aktivBaneIndex]);
+        return () => {
+            if (mapRef.current) {
+                mapRef.current.remove();
+                mapRef.current = null;
+            }
+        };
+    }, [baner, rediger, aktivBane]);
 
-    const baneYrId = yrId[aktivBane[aktivBaneIndex]?._id] || "1-72837";
+    const baneYrId = yrId[aktivBane?._id] || "1-72837";
 
     return (
         <div className="p-4">
@@ -220,12 +235,15 @@ import '../App.css';
                                 <div
                                     key={bane._id || index}
                                     className={`border rounded-lg p-4 cursor-pointer ${aktivBaneIndex === index ? "bg-gray-50" : ""}`}
-                                    onClick={() => setAktivBaneIndex(index)}
+                                    onClick={() => {
+                                            setAktivBane(filteredBaner[index]);
+                                            setAktivBaneIndex(index);
+                                        }}
                                 >
 
                                     <div className="topplinje border-b-2 flex justify-between text-xl font-bold ">
                                         <p>{bane.baneNavn}</p>
-                                        <p className="pl-20">Rating:5/10</p> {/*Kommer senere..*/}
+                                        <p className="pl-20">Rating:5/10</p>
                                     </div>
                                     <div className="hullVanskelighet border-b flex justify-between text-m my-4">
                                         <p>Antall hull: {antallHull}</p>
@@ -259,7 +277,7 @@ import '../App.css';
                     <div className="sticky space-y-4">
                         <div className="border rounded-lg p-4 bg-white">
                             <h3 className="text-lg font-semibold mb-2">
-                            Værvarsel for {aktivBane[aktivBaneIndex]?.baneNavn || "valgt bane"}
+                                Værvarsel for {aktivBane?.baneNavn || "valgt bane"}
                             </h3>
                             <iframe
                                 src={`https://www.yr.no/nb/innhold/${baneYrId}/card.html`}
