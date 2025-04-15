@@ -296,6 +296,19 @@ klubbRouter.post('/runder', async (req, res) => {
     })
 })
 
+//rute for å hente spillere
+klubbRouter.get('/spillere', async (req, res) => {
+    try {
+        const db = getDb();
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+        const brukere = await db.collection("Brukere").find({}).toArray();
+        res.status(200).json(brukere); 
+    } catch (err) {
+        console.error("Feil ved henting av brukere:", err);
+        res.status(500).json({ error: "Kunne ikke hente brukere" });
+    }
+})
+
 
 
 

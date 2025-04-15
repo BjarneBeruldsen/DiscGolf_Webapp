@@ -6,37 +6,18 @@ import { useHistory } from "react-router-dom";
 
 const VelgSpillere = (props) => {
     const { bane, onBekreftSpillere, bruker } = props;
+    const { data: brukere, error, isPending } = UseFetch(`${process.env.REACT_APP_API_BASE_URL}/spillere`);
     const [leggTilVisning, setLeggTilVisning] = useState(false);
     const [nySpiller, setNySpiller] = useState('');
     const [spillere, setSpillere] = useState([]);
     const [errorMelding, setErrorMelding] = useState('');
-    const [brukere, setBrukere] = useState([]);
     const [sok, setSok] = useState('');
     const [filtrerteBrukere, setFiltrerteBrukere] = useState([]);
     const [invitasjon, setInvitasjon] = useState({});
     const minne = useHistory();
 
-    const hentBrukere = async () => {
-        try {
-            const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/brukere`, {
-                method: "GET",
-                credentials: "include", // Sender cookies for autentisering
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            if (!respons.ok) {
-                throw new Error("Kunne ikke hente brukere");
-            }
-            const data = await respons.json();
-            setBrukere(data);
-        } catch (error) {
-            console.log(error.message);
-        }
-    };
 
     useEffect(() => {
-        hentBrukere();
         if (bruker) {
             setSpillere(prevSpillere => {
                 const eksisterendeSpiller = prevSpillere.find(spiller => spiller.id === bruker.id);
@@ -49,11 +30,13 @@ const VelgSpillere = (props) => {
     }, [bruker]);
 
     useEffect(() => {
-        setFiltrerteBrukere(
-            brukere.filter(bruker =>
-                bruker.brukernavn.toLowerCase().includes(sok.toLowerCase())
-            )
-        );
+        if (brukere && brukere.length > 0) {
+            setFiltrerteBrukere(
+                brukere.filter(bruker =>
+                    bruker.brukernavn.toLowerCase().includes(sok.toLowerCase())
+                )
+            );
+        }
     }, [sok, brukere]);
 
     const handleLeggTilBruker = (bruker) => {

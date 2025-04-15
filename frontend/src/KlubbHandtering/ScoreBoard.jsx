@@ -18,6 +18,7 @@ const ScoreBoard = () => {
     const mapContainerRef = useRef(null);
     const [antInviterte, setAntInviterte] = useState(0);
     const [spillereSomVises, setSpillereSomVises] = useState([]);
+    const [render, setRender] = useState(true);    
     const [nr, setNr] = useState(() => {
         const nr = localStorage.getItem('nr');
         return nr ? JSON.parse(nr) : 0;
@@ -124,7 +125,13 @@ const ScoreBoard = () => {
 
     const endreHull = (retning) => {
         setErrorMelding(null);
-        let erNull = sjekkErNullKast(nr); 
+        let erNull = true; 
+        if(!render) {
+            erNull = sjekkErNullKast(nr);
+        }
+        else {
+            erNull = false; 
+        }
         
         if (retning && nr < hull.length - 1 && !erNull) {
             setNr(nr + 1); 
@@ -158,7 +165,7 @@ const ScoreBoard = () => {
         };
         setInvitasjon(oppdatertInvitasjon);
 
-        // Vent til invitasjon er oppdatert før du sender den
+        // Wait for the invitation to update
         await new Promise(resolve => setTimeout(resolve, 0));
 
         console.log('invitasjon:', oppdatertInvitasjon);
@@ -169,8 +176,7 @@ const ScoreBoard = () => {
                 sendInvitasjon(spiller, oppdatertInvitasjon);
                 setAntInviterte(prevAntInviterte => prevAntInviterte + 1);
                 console.log('antall inviterte:', antInviterte); 
-            }
-            else {
+            } else {
                 setSpillereSomVises(prevSpillereSomVises => [...prevSpillereSomVises, spiller]);
                 console.log('spillere som skal vises', spillereSomVises);
             }
@@ -178,7 +184,8 @@ const ScoreBoard = () => {
         console.log('spillere: ', spillere); 
         setVisVelgSpillere(false);
         setVisScoreboard(true);
-        setSpillere(spillereSomVises)
+        setNr(1); 
+        setTimeout(() => setNr(0), 90); 
     };
 
     const lagreRunde = async () => {
