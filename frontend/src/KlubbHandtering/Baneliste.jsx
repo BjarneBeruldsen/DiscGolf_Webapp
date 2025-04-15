@@ -11,7 +11,7 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import '../App.css';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 
-const BaneListe = ({ baner, rediger, klubbId }) => {
+    const BaneListe = ({ baner, rediger, klubbId }) => {
     const minne = useHistory();
     const { bruker, venter } = HentBruker();
     const [yrId, setYrId] = useState({});
@@ -21,7 +21,7 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
     const [locationFilter, setLocationFilter] = useState('');
     const [hullFilter, setHullFilter] = useState('');
     const mapRef = useRef(null);
-    
+
 
     useEffect(() => {
         const hentYrIdForBaner = async () => {
@@ -94,15 +94,14 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
                 aktivBane?.hull?.[0]?.startLongitude || 9.059,
                 aktivBane?.hull?.[0]?.startLatitude || 59.409
             ],
-            zoom: 16,
+            zoom: 16.5,
         });
 
         mapRef.current = map;
 
         const geocoder = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
-            mapboxgl: mapboxgl,
-            zoom: 16
+            mapboxgl: mapboxgl
         });
 
         map.addControl(geocoder);
@@ -117,8 +116,8 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
                 const startEl = document.createElement('div');
                 startEl.className = 'marker';
                 startEl.style.backgroundImage = 'url("/disc.png")';
-                startEl.style.width = `50px`;
-                startEl.style.height = `50px`;
+                startEl.style.width = `55px`;
+                startEl.style.height = `55px`;
                 startEl.style.backgroundSize = '100%';
                 startEl.style.borderRadius = '50%';
                 startEl.style.cursor = 'pointer';
@@ -134,8 +133,8 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
                 const endEl = document.createElement('div');
                 endEl.className = 'marker';
                 endEl.style.backgroundImage = 'url("/kurv.png")';
-                endEl.style.width = `50px`;
-                endEl.style.height = `50px`;
+                endEl.style.width = `55px`;
+                endEl.style.height = `55px`;
                 endEl.style.backgroundSize = '100%';
                 endEl.style.borderRadius = '50%';
                 endEl.style.cursor = 'pointer';
@@ -243,7 +242,7 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
 
                                     <div className="topplinje border-b-2 flex justify-between text-xl font-bold ">
                                         <p>{bane.baneNavn}</p>
-                                        <p className="pl-20">Rating:5/10</p>
+                                        <p className="pl-20">Rating:5/10</p>{/*Kommer senere..*/}
                                     </div>
                                     <div className="hullVanskelighet border-b flex justify-between text-m my-4">
                                         <p>Antall hull: {antallHull}</p>
