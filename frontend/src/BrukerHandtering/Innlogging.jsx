@@ -23,7 +23,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
     //Frontend validering med regex
     const brukernavnRegex = /^[a-zA-Z0-9]{3,15}$/; //3-15 tegn, kun bokstaver og tall
     const epostRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; //E-post validering sjekker @ og .
-    const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,20}$/; //Minst 8 tegn og maks 20, ett spesialtegn
+    const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,20}$/; //Minst 8 tegn og maks 20, ett spesialtegn og stor bokstav
     const tallRegex = /^[0-9]+$/; //Sjekker at input er tall
 
     const erEpost = epostRegex.test(brukernavn);
@@ -36,7 +36,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
       return;
     }
     if (!passordRegex.test(passord)) {
-      setMelding(i18n.t("Passord må være minst 8 tegn og maks 20 tegn og ha ett spesialtegn."));
+      setMelding(i18n.t("Passord må være minst 8 tegn og maks 20 tegn og ha minst en stor bokstav og spesialtegn."));
       return;
     }
     if (!erTall || tallInput.length > 2) {

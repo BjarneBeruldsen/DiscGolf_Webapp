@@ -59,6 +59,25 @@
     "Passordet må være minst 8 tegn, maks 20 tegn." : "Password must be at least 8 characters, maximum 20 characters.",
     "Passordet må inneholde minst ett spesialtegn." : "Password must contain at least one special character.",
     "Passordene må være like." : "Passwords must match.",
+    "Ugyldig tilbakestillingslenke. Sjekk e-posten din igjen for lenke." : "Invalid reset link. Check your email again for the link.",
+    "Kunne ikke validere tilbakestillingslenken." : "Could not validate the reset link.",
+    "Feil ved tilbakestilling av passord:" : "Error resetting password:",
+    "Passord ble oppdatert!" : "Password updated!",
+    "Feil ved passsordoppdatering." : "Error updating password.",
+    "Validerer tilbakestillingslenke..." : "Validating reset link...",
+    "Oppdaterer..." : "Updating...",
+    "Denne tilbakestillingslenken er utløpt eller ugyldig." : "This reset link has expired or is invalid.",
+    "Vennligst gå tilbake og be om en ny tilbakestillingslenke." : "Please go back and request a new reset link.",
+    "Tilbake til innlogging" : "Back to login",
+    "Feil ved sending" : "Error while sending", 
+    "Feil ved sending av epost" : "Error while sending email",
+    "E-post sendt! Sjekk innboksen din for tilbakestillingslenke." : "Email sent! Check your inbox for the reset link.",
+    "En feil har skjedd" : "An error has occurred",
+    "Noe gikk galt" : "Something went wrong",
+    "Skriv inn tallet for å fortsette:" : "Enter the number to continue:",
+    "Sender..." : "Sending...",
+    "Send tilbakestillingslenke" : "Send reset link",
+    "Epost eller brukernavn" : "Email or username",
     "E-post må fylles ut." : "Email must be filled out.",
     "E-posten må være gyldig." : "Email must be valid.",
     "Brukernavn eller e-post må fylles ut." : "Username or email must be filled out.",
@@ -100,6 +119,7 @@
     "Værvarsel for": "Weather forecast for",
     "valgt bane": "selected course",
     "Rating": "Rating"
+
     
 
   } 

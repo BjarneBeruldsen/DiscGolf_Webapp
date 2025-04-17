@@ -12,7 +12,7 @@ const nodemailer = require('nodemailer');
 const { MongoClient } = require('mongodb');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const { beskyttetRute, sjekkBrukerAktiv, sjekkRolle } = require('./funksjoner');
+const { beskyttetRute, sjekkBrukerAktiv } = require('./funksjoner');
 const brukerRouter = express.Router();
 
 //Rute for registrering av bruker
@@ -23,7 +23,7 @@ brukerRouter.post("/Registrering", registreringValidering, registreringStopp, as
         //Validering av input med express-validator hentet fra validering.js
         const error = validationResult(req);
         if (!error.isEmpty()) {
-            return res.status(400).json({ error: error.array() });
+            return res.status(400).json({ error: error.array() });      
         }
         //Sjekker om brukernavn eller e-post allerede finnes i databasen
         const {brukernavn, epost, passord, bekreftPassord} = req.body;
@@ -47,7 +47,6 @@ brukerRouter.post("/Registrering", registreringValidering, registreringStopp, as
             passord: hashetPassord,
             epost: epost.trim().toLowerCase(),
             rolle: "loggetInn",
-            //tidspunkt: Date.now(),
         };
         await db.collection("Brukere").insertOne(nyBruker);
         //Logging
@@ -60,7 +59,7 @@ brukerRouter.post("/Registrering", registreringValidering, registreringStopp, as
 });
 
 //Rute for innlogging
-brukerRouter.post("/Innlogging", innloggingValidering, loggeInnStopp, (req, res, next) => {
+brukerRouter.post("/Innlogging", innloggingValidering, loggeInnStopp, async (req, res, next) => {
     const db = getDb();
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
     //Validering av input med express-validator hentet fra validering.js
@@ -94,7 +93,6 @@ brukerRouter.post("/Innlogging", innloggingValidering, loggeInnStopp, (req, res,
                     brukernavn: bruker.brukernavn,
                     epost: bruker.epost,
                     rolle: bruker.rolle,
-                    //tidspunkt: Date.now()
                 }
             });
         });
@@ -162,7 +160,7 @@ brukerRouter.delete("/SletteBruker", beskyttetRute, sletteValidering, sjekkBruke
         }
         //Sletter bruker
         const slettet = await db.collection("Brukere").deleteOne({ _id: bruker._id });
-        console.log(`Bruker slettet, brukernavn: ${bruker.brukernavn}, e-post: ${bruker.epost}, ID: ${bruker._id}`); //tidspunkt: ${bruker.tidspunkt}
+        console.log(`Bruker slettet, brukernavn: ${bruker.brukernavn}, e-post: ${bruker.epost}, ID: ${bruker._id}`); 
         if (slettet.deletedCount === 1) {
             //Logger ut og sletter session/cookie
             req.session.destroy((err) => {
@@ -307,49 +305,6 @@ brukerRouter.patch("/RedigerBruker", beskyttetRute, sjekkBrukerAktiv, redigering
     } catch (error) {
         console.error("Feil ved oppdatering av bruker:", error);
         return res.status(500).json({ error: "Noe gikk galt. Prøv igjen senere" });
-    }
-});
-/*
-//Hente brukerdata fra en spesifikk bruker, bruker sjekk-session istedenfor foreløpig da det funker bedre. 
-brukerRouter.get("/bruker", beskyttetRute, sjekkBrukerAktiv, async (req, res) => {
-    try {
-        const db = getDb();
-        if (!db) return res.status(500).json({ error: 'Ingen database tilkobling' });
-        const bruker = await db.collection('Brukere').findOne({ 
-            _id: new ObjectId(String(req.user._id))
-        });
-        if (!bruker) {
-            return res.status(404).json({ error: 'Bruker ikke funnet' });
-        }
-        res.status(200).json({
-            fornavn: bruker.fornavn || "",
-            etternavn: bruker.etternavn || "",
-            telefonnummer: bruker.telefonnummer || "",
-            bosted: bruker.bosted || "",
-        });
-    } catch (err) {
-        console.error("Feil ved henting av brukerdata:", err);
-        res.status(500).json({ error: "Kunne ikke hente brukerdata" });
-    }
-});
-*/
-//Rute for å hente alle brukere for søking etter brukere man kan komme i kontakt med
-brukerRouter.get("/hentBrukere", beskyttetRute, sjekkBrukerAktiv, async (req, res) => {
-    try {
-        const db = getDb();
-        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
-        const alleBrukere = [];
-        //Henter alle brukere basert på gitte regler(projections)
-        await db.collection("Brukere")
-            .find({})
-            .project({ brukernavn: 1, epost: 1, rolle: 1 })
-            .forEach(bruker => {
-                alleBrukere.push(bruker);
-            });
-        res.status(200).json(alleBrukere);
-    } catch (err) {
-        console.error("Feil ved henting av brukere:", err);
-        res.status(500).json({ error: "Feil ved henting av brukerliste" });
     }
 });
 
