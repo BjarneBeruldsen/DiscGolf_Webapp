@@ -4,9 +4,10 @@ import React, { useState } from "react";
 
 const MittAbonnement = ({ valgtUnderKategori, bruker }) => {
   const underKategorier = ["Mitt abonnement"];
-  const [harBetalt, setHarBetalt] = useState(bruker?.betalt || false);
+  const [harBetalt, setHarBetalt] = useState(bruker?.betalt || false); //Lagres i lokal state henter fra bruker objektet
   const [laster, setLaster] = useState(false);
 
+  //Funksjon for å betale abonnementet
   const handleBetaling = async () => {
     try {
       setLaster(true);
@@ -17,17 +18,18 @@ const MittAbonnement = ({ valgtUnderKategori, bruker }) => {
       });
       const data = await respons.json();
       if (respons.ok) { 
-        setHarBetalt(true);
+        setHarBetalt(true); //Setter harBetalt til true
       } else {
         console.error("Betaling feilet" || data.error);
       }
     } catch (error) {
       console.error("Feil ved betaling:", error);
     } finally {
-      setLaster(false);
+      setLaster(false); 
     }
   };
 
+  //Funksjon for å avslutte abonnementet
   const handleAvslutt = async () => {
     try {
       setLaster(true);
@@ -38,7 +40,7 @@ const MittAbonnement = ({ valgtUnderKategori, bruker }) => {
       });
       const data = await respons.json();
       if (respons.ok) {
-        setHarBetalt(false);
+        setHarBetalt(false); //Setter harBetalt til false
       } else {
         console.error("Avslutting av abonnement feilet" || data.error);
       }
@@ -50,6 +52,7 @@ const MittAbonnement = ({ valgtUnderKategori, bruker }) => {
     }
   }
 
+//Styling og design for hver funksjon/komponent
   return (
     <div className="bg-white shadow-xl rounded-lg p-6 w-full max-w-[500px] flex flex-col items-center">
 

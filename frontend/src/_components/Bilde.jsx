@@ -1,3 +1,4 @@
+//Author: Abdinasir Ali
 import React from 'react';
 
 const Bilde = () => {

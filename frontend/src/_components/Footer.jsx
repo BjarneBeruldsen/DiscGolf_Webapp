@@ -1,3 +1,5 @@
+//Author: Abdinasir Ali
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next'; 
@@ -22,6 +24,7 @@ const Footer = () => {
           <div className="text-center">
             <ul className="flex flex-wrap justify-center space-x-4 space-y-2 md:space-x-6 md:space-y-0 text-lg font-medium">
               <li><Link to="/Hjem" className="hover:text-gray-800">{t("Hjem")}</Link></li>
+              <li><Link to="/DiscGolf" className="hover:text-gray-800">{t("Om DiscGolf")}</Link></li>
               <li><Link to="/OmOss" className="hover:text-gray-800">{t("Om oss")}</Link></li>
               <li><Link to="/Abonnenter" className="hover:text-gray-800">{t("Abonnement Info")}</Link></li>
               <li><Link to="/Personvern" className="hover:text-gray-800">{t("Personvern")}</Link></li>
