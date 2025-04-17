@@ -176,6 +176,9 @@ function App() {
             <Route exact path="/Registrering">
               {loggetInnBruker ? <Redirect to="/Hjem" /> : <Registrering />}
             </Route>
+            <Route exact path="/ScoreBoard/:baneId">
+              <ScoreBoard />
+            </Route>
             <Route exact path="/ScoreBoard/:baneId/:rundeId">
               <ScoreBoard />
             </Route>

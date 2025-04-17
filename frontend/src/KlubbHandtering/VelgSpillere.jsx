@@ -15,6 +15,7 @@ const VelgSpillere = (props) => {
     const [sok, setSok] = useState('');
     const [filtrerteBrukere, setFiltrerteBrukere] = useState([]);
     const [invitasjon, setInvitasjon] = useState({});
+    const [antInviterte, setAntInviterte] = useState(0);
     const minne = useHistory();
 
 
@@ -45,6 +46,7 @@ const VelgSpillere = (props) => {
         const eksisterendeSpiller = spillere.find(spiller => spiller.id === bruker.id);
         if (!eksisterendeSpiller) {
             setSpillere([...spillere, { id: bruker._id, navn: bruker.brukernavn, poeng: 0, total: 0 }]);
+            setAntInviterte(prevAntall => prevAntall + 1);
         }
         console.log('spillere', spillere);
         setSok('');
@@ -56,7 +58,7 @@ const VelgSpillere = (props) => {
             setErrorMelding('Legg til minst en spiller');
             return;
         }
-        onBekreftSpillere(spillere);
+        onBekreftSpillere(spillere, antInviterte);
         console.log('spillere bekreftet:', spillere);
     };
 
