@@ -1,3 +1,4 @@
+//Author: Abdinasir Ali
 import React, { useState } from 'react';
 
 const KontaktOss = () => {
