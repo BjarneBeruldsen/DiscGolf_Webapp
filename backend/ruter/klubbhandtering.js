@@ -5,6 +5,7 @@ const { ObjectId } = require('mongodb');
 const { kobleTilDB, getDb } = require('../db'); 
 const { beskyttetRute } = require('./brukerhandtering/funksjoner');
 const { MongoClient } = require('mongodb');
+const db = require('../db');
 const klubbRouter = express.Router();
 let io;
 
@@ -280,6 +281,30 @@ klubbRouter.post('/brukere/:id/invitasjoner', async (req, res) => {
     }
 })
 
+//Rute for å slette invitasjon 
+klubbRouter.delete('/brukere/:id/invitasjoner/:rundeId', async (req, res) => {
+    const db = getDb(); 
+    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+    if(ObjectId.isValid(req.params.id) === false) {
+        return res.status(400).json({error: 'Ugyldig dokument-id'});
+    } else {
+        db.collection('Brukere')
+        .updateOne(
+            { _id: new ObjectId(req.params.id) }, 
+            { $pull: { invitasjoner: { 'invitasjon.rundeId': req.params.rundeId } } },
+        )
+        .then(result => {
+            if (result.modifiedCount === 0) {
+                return res.status(404).json({error: 'Invitasjon ikke funnet'});
+            }
+            res.status(200).json(result);
+        })
+        .catch(err => {
+            res.status(500).json({error: 'Feil ved sletting av invitasjon'});
+        });
+    }
+});
+
 //rute for å lagre runde 
 klubbRouter.post('/runder', async (req, res) => {
     const db = getDb(); 
@@ -290,11 +315,104 @@ klubbRouter.post('/runder', async (req, res) => {
     .insertOne(runde)
     .then(result => {
         res.status(201).json(result)
+        if (io) io.emit('rundeLagret', { type: 'ny', data: runde });
     })
     .catch(err => {
         res.status(500).json({error: 'Feil ved lagring av runde'})
     })
 })
+
+//rute for å lagre antall aksepterte invitasjoner 
+klubbRouter.patch('/runder/:id', async (req, res) => {
+    const db = getDb();
+    if (!db) return res.status(500).json({ error: 'Ingen database tilkobling' });
+
+    try {
+        const result = await db.collection('Runder').updateOne(
+            { rundeId: req.params.id },
+            { $inc: { antallAkseptert: 1 } }
+        );
+
+        const runde = await db.collection('Runder').findOne({ rundeId: req.params.id });
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ error: 'Runde ikke funnet' });
+        }
+
+        res.status(200).json({ message: 'Antall akseptert oppdatert', result});
+
+        if (io) io.emit('akseptertOppdatert', { type: 'ny', data: runde });
+    } catch (err) {
+        res.status(500).json({ error: 'Feil ved oppdatering av antall akseptert' });
+    }
+});
+
+//lagrute for å oppdatere antall ferdig spillere
+klubbRouter.patch('/runder/ferdig/:id', async (req, res) => {
+    const db = getDb();
+    if (!db) return res.status(500).json({ error: 'Ingen database tilkobling' });
+
+
+    try {
+        const result = await db.collection('Runder').updateOne(
+            { rundeId: req.params.id },
+            { $inc: { antallFerdig: 1 } }
+        );
+
+        const runde = await db.collection('Runder').findOne({ rundeId: req.params.id });
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ error: 'Runde ikke funnet' });
+        }
+
+        res.status(200).json({ message: 'Antall ferdig oppdatert', result });
+
+        if (io) io.emit('akseptertFerdig', { type: 'ny', data: runde });
+    } catch (err) {
+        res.status(500).json({ error: 'Feil ved oppdatering av antall ferdig' });
+    }
+})
+
+// Rute for å legge til poengkort til runde
+klubbRouter.post('/runder/:rundeId/poengkort', async (req, res) => {
+    const db = getDb();
+    if (!db) return res.status(500).json({ error: 'Ingen database tilkobling' });
+
+    const { rundeId } = req.params;
+    const poengkort = req.body;
+
+    try {
+        const result = await db.collection('Runder').updateOne(
+            { rundeId: rundeId },
+            { $push: { poengkort: poengkort } }
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ error: 'Runde ikke funnet' });
+        }
+
+        res.status(201).json({ message: 'Poengkort lagret', result });
+    } catch (err) {
+        res.status(500).json({ error: 'Feil ved lagring av poengkort' });
+    }
+});
+
+//rute for å hente runder
+klubbRouter.get('/runder/:rundeId', async (req, res) => {
+    const db = getDb();
+    if (!db) return res.status(500).json({ error: 'Ingen database tilkobling' });
+    try {
+        const rundeId = req.params.rundeId;
+        const runde = await db.collection('Runder').findOne({ rundeId: rundeId });
+        if (!runde) {
+            return res.status(404).json({ error: 'Runde ikke funnet' });
+        }
+        res.status(200).json(runde);
+    } catch (err) {
+        res.status(500).json({ error: 'Feil ved henting av runde' });
+    }
+})
+
 
 //rute for å hente spillere
 klubbRouter.get('/spillere', async (req, res) => {
@@ -308,6 +426,7 @@ klubbRouter.get('/spillere', async (req, res) => {
         res.status(500).json({ error: "Kunne ikke hente brukere" });
     }
 })
+
 
 
 

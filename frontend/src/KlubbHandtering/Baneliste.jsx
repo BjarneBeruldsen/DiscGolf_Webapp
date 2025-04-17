@@ -67,19 +67,24 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
     }, [baner, locationFilter, hullFilter, aktivBaneIndex]);
 
     const handleClick = (bane) => {
-        const rundeId = uuidv4(); // Generer et unikt rundeId for hver bane
-
-        if(bruker === null) {
+        if (bruker === null) {
             alert('logginn/registrer deg for å spille');
             minne.push('/Innlogging');
-        }
-        else if(!rediger) {
-            minne.push(`/ScoreBoard/${bane._id}/${rundeId}`); 
-        }
-        else {
-            minne.push(`/RedigerBane/${klubbId}/${bane._id}`); 
+        } else if (!rediger) {
+            minne.push(`/ScoreBoard/${bane._id}`); 
+        } else {
+            minne.push(`/RedigerBane/${klubbId}/${bane._id}`);
         }
     };
+    useEffect(() => {
+        if (!baner) return;
+        setAktivBane(baner);
+    
+        if (baner.length <= aktivBaneIndex) {
+            setAktivBaneIndex(0);
+        }
+    }, [baner]); 
+    
 
     useEffect(() => {
         if (!baner || baner.length === 0) return;

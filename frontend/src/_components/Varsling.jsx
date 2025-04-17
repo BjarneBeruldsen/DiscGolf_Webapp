@@ -51,7 +51,7 @@ const Varsling = ({ toggleVarsling }) => {
     }, [klubber, bruker]);
 
     const endreVisning = () => {
-        console.log('brukerid:', bruker._id);
+        console.log('brukerid:', bruker.id);
         if(bruker && bruker.id) {
             localStorage.setItem('spillere', JSON.stringify([{ id: bruker.id, navn: bruker.brukernavn, poeng: 0, total: 0, antallKast:[0] }]));
             localStorage.setItem('nr', JSON.stringify(0));
@@ -62,18 +62,45 @@ const Varsling = ({ toggleVarsling }) => {
     }
     
 
-    const handleClick = (godkjenn, invitasjon) => () => {
-       if(godkjenn) {
-        endreVisning();
-        console.log("Godkjenn invitasjon:", invitasjon);
-        minne.push(`/ScoreBoard/${invitasjon.baneId}/${invitasjon.rundeId}`);
-        toggleVarsling(); 
-       } 
-       else {
-          console.log("Avslå invitasjon:", invitasjon);
-       }
-    }
+    const handleClick = (godkjenn, invitasjon) => async () => {
+        console.log("invitasjon: ", invitasjon);
+        try {
+            if (godkjenn) {
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/runder/${invitasjon.rundeId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                });
 
+                if (!response.ok) {
+                    throw new Error('Feil ved oppdatering av antall akseptert');
+                }
+                console.log("Godkjenn invitasjon:", invitasjon);
+                endreVisning();
+
+                // re-render siden etter godkjenning
+                minne.push(`/`);
+                setTimeout(() => minne.push(`/ScoreBoard/${invitasjon.baneId}/${invitasjon.rundeId}`), 100);
+            } else {
+                console.log("Avslå invitasjon:", invitasjon);
+            }
+
+            // Slett invitasjonen etter godkjenning eller avslag
+            const deleteResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/brukere/${bruker.id}/invitasjoner/${invitasjon.rundeId}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            if (!deleteResponse.ok) {
+                throw new Error('Feil ved sletting av invitasjon');
+            }
+
+            // Oppdater varslinger etter sletting
+            setVarslinger(varslinger.filter(v => v.invitasjon?.rundeId !== invitasjon.rundeId));
+            toggleVarsling();
+        } catch (error) {
+            console.error("Feil ved håndtering av invitasjon:", error);
+        }
+    }
 
     const startIndex = currentPage * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;

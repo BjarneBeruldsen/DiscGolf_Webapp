@@ -1,6 +1,6 @@
 // Author: Bjarne Hovd Beruldsen
 import { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import UseFetch from './UseFetch';
 import VelgSpillere from "./VelgSpillere";
 import HentBruker from "../BrukerHandtering/HentBruker";
@@ -8,8 +8,13 @@ import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import mapboxgl from "mapbox-gl";
+import { useHistory } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';
+import socket from "../socket";
 
 const ScoreBoard = () => {
+    const minne = useHistory();
+    const location = useLocation(); // Hent gjeldende rute
     const { baneId, rundeId } = useParams();
     const { data: bane, error, isPending } = UseFetch(`${process.env.REACT_APP_API_BASE_URL}/baner/${baneId}`);
     const { bruker, venter } = HentBruker();
@@ -19,6 +24,15 @@ const ScoreBoard = () => {
     const [antInviterte, setAntInviterte] = useState(0);
     const [spillereSomVises, setSpillereSomVises] = useState([]);
     const [render, setRender] = useState(true);    
+    const [visVenter, setVisVenter] = useState(false);
+    const [visVenterFerdig, setVisVenterFerdig] = useState(false);  
+    const [antallAkseptert, setAntallAkseptert] = useState(0);
+    const [antFerdig, setAntFerdig] = useState(0);
+    const [venterAntall, setVenterAntall] = useState(0);    
+    const [venterFerdigAntall, setVenterFerdigAntall] = useState(0);
+    const [lagretPoengkort, setLagretPoengkort] = useState(false);
+    const [sortertPoengkort, setSortertPoengkort] = useState([]);
+    const [runde, setRunde] = useState({});
     const [nr, setNr] = useState(() => {
         const nr = localStorage.getItem('nr');
         return nr ? JSON.parse(nr) : 0;
@@ -40,8 +54,10 @@ const ScoreBoard = () => {
         const lagretVisOppsummering = localStorage.getItem('visOppsummering');
         return lagretVisOppsummering ? JSON.parse(lagretVisOppsummering) : false;
     });
+    const [visVentSpillere, setVisVentSpillere] = useState(false);
 
     const [errorMelding, setErrorMelding] = useState(null);
+    const hasUpdatedOnce = useRef(false); // Legg til useRef for å spore om handlingen er utført
 
     useEffect(() => {
         localStorage.setItem('spillere', JSON.stringify(spillere));
@@ -56,6 +72,7 @@ const ScoreBoard = () => {
             setHull(bane.hull);
         }
     }, [bane]);
+
 
     useEffect(() => {
         if (bane && bane.hull && nr === 0) { // Only apply logic when on hole number 1
@@ -75,6 +92,75 @@ const ScoreBoard = () => {
             });
         }
     }, [bane, hull, nr]); // Removed `spillere` from dependencies to avoid infinite loop
+
+    useEffect(() => {
+        if (!rundeId) {
+            setVisVelgSpillere(true);
+            setVisScoreboard(false);
+            setVisOppsummering(false);
+        }
+    });
+
+    useEffect(() => {
+        socket.on("rundeLagret", (data) => {
+            console.log("runde fra socket: " + data.data.rundeId);
+            console.log("runde fra socket: " + JSON.stringify(data.data)); 
+            console.log("rundeId fra url: " + rundeId);
+            if(data.data.rundeId === rundeId) {
+                setVisVenter(true);
+                setVisVelgSpillere(false);
+                setVisScoreboard(false);
+                setVisOppsummering(false);
+                setAntInviterte(data.data.antInviterte)
+                console.log("antall inviterte: " + antInviterte);
+            }
+        });
+
+        socket.on("akseptertOppdatert", (data) => {
+            console.log("akseptert oppdatert fra socket: " + data.data.rundeId);
+            console.log("runde fra socket akseptert: " + JSON.stringify(data.data)); 
+            console.log("rundeId fra url: " + rundeId);
+            if(data.data.rundeId === rundeId) {
+                setAntallAkseptert(data.data.antallAkseptert); 
+                console.log("antall akseptert: ", data.data.antallAkseptert)
+            }
+        }); 
+
+        socket.on("akseptertFerdig", (data) => {
+            console.log("akseptert oppdatert fra socket: " + data.data.rundeId);
+            console.log("runde fra socket akseptert: " + JSON.stringify(data.data)); 
+            if(data.data.rundeId === rundeId) {
+                setAntFerdig(data.data.antallFerdig); 
+                setAntInviterte(data.data.antInviterte);
+                setAntallAkseptert(data.data.antallAkseptert);
+                console.log("antall ferdig: ", data.data.antallFerdig)
+                leggTilPoengkort(data.data.poengkort);
+            }
+        })
+
+        setVenterAntall(antInviterte - antallAkseptert);
+
+        setVenterFerdigAntall(antInviterte - antFerdig);
+
+        if (venterAntall === 0) {
+            setVisVenter(false);
+            if (!visVelgSpillere && !visOppsummering && !visVenterFerdig) {
+                setVisScoreboard(true);
+                if (!hasUpdatedOnce.current) {
+                    hasUpdatedOnce.current = true; // Marker at handlingen er utført
+                    setNr(1);
+                    setTimeout(() => setNr(0), 100);
+                }
+            }
+        }
+
+        return () => {
+            socket.off('rundeLagret'); 
+            socket.off('akseptertOppdatert'); 
+            socket.off('akseptertFerdig');
+        };
+    })
+
 
     const oppdaterpoeng = (spillerId, endring) => {
         const oppdatertSpillere = spillere.map(spiller => {
@@ -150,8 +236,13 @@ const ScoreBoard = () => {
         }
     };
 
-    const handleBekreftSpillere = async (valgteSpillere) => {
-        console.log(bruker);
+    const handleBekreftSpillere = async (valgteSpillere, antInviterte) => {
+        const nyRundeId = uuidv4(); // Generate a unique rundeId
+
+        const basePath = `/ScoreBoard/${baneId}`;
+        minne.push(`${basePath}/${nyRundeId}`);
+      
+        setAntInviterte(antInviterte);
         const spillereMedPoeng = valgteSpillere.map(spiller => ({
             ...spiller,
             antallKast: Array(hull.length).fill(0),
@@ -160,49 +251,40 @@ const ScoreBoard = () => {
         const oppdatertInvitasjon = {
             avsender: bruker.brukernavn,
             baneId: baneId,
-            rundeId: rundeId,
+            rundeId: nyRundeId, // Use the generated rundeId
             tid: new Date().getTime() / 1000,
         };
         setInvitasjon(oppdatertInvitasjon);
-
+    
         // Wait for the invitation to update
         await new Promise(resolve => setTimeout(resolve, 0));
-
-        console.log('invitasjon:', oppdatertInvitasjon);
-        setSpillere(spillereMedPoeng);
-        console.log('spillere med poeng:', spillereMedPoeng);
+    
         for (const spiller of spillereMedPoeng) {
             if (bruker.id !== spiller.id && !spiller.id.startsWith("guest") && oppdatertInvitasjon) {
                 sendInvitasjon(spiller, oppdatertInvitasjon);
-                setAntInviterte(prevAntInviterte => prevAntInviterte + 1);
-                console.log('antall inviterte:', antInviterte); 
             } else {
                 setSpillereSomVises(prevSpillereSomVises => [...prevSpillereSomVises, spiller]);
-                console.log('spillere som skal vises', spillereSomVises);
             }
         }
-        console.log('spillere: ', spillere); 
+        setSpillere(spillereMedPoeng);
         setVisVelgSpillere(false);
         setVisScoreboard(true);
-        setNr(1); 
-        setTimeout(() => setNr(0), 90); 
+        lagreRunde(antInviterte, nyRundeId); 
     };
-
-    const lagreRunde = async () => {
-        console.log('antall inviterte i lagrerunde: ', antInviterte)
-        if (antInviterte === 0) {
-            console.error('Ingen spillere å lagre runde for');
-            return;
-        }
+    
+    const lagreRunde = async (antall, nyRundeId) => {
         const runde = {
-            antInviterte: antInviterte,
-            rundeId: rundeId
+            antInviterte: antall,
+            rundeId: nyRundeId, 
+            antallAkseptert: 0,
+            antallFerdig: 0,
+            poengkort: [],
         };
         try {
             const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/runder`, {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(runde)
+                body: JSON.stringify(runde),
             });
             if (!response.ok) {
                 throw new Error('Feil ved lagring av runde');
@@ -239,17 +321,28 @@ const ScoreBoard = () => {
             console.error('Feil ved sending av invitasjon:', error);
         }); 
 
-        lagreRunde(); 
     };
 
-    const handleAvsluttRunde = () => {
-        if(!sjekkErNullKast(nr)) {
+
+    const handleAvsluttRunde = async () => {
+        setVisVenterFerdig(true);
+        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/runder/ferdig/${rundeId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (!response.ok) {
+            throw new Error('Feil ved oppdatering av antall akseptert');
+        }
+
+
+        if(!sjekkErNullKast(nr) && !lagretPoengkort) {
             const nyPoengkort = {
                 spillere: spillere,
                 baneNavn: bane.baneNavn,
                 baneId: baneId
             };
-            
+            //lagrer poengkort pr.bruker
             fetch(`${process.env.REACT_APP_API_BASE_URL}/brukere/${bruker.id}/poengkort`, {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
@@ -263,10 +356,32 @@ const ScoreBoard = () => {
                 console.error('Feil ved lagring av poengkort:', error);
             });
 
+
+            //lagrer poengkort i runde 
+            fetch(`${process.env.REACT_APP_API_BASE_URL}/runder/${rundeId}/poengkort`, {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nyPoengkort })
+            }).then((response) => {
+                if (!response.ok) {
+                    throw new Error('Feil ved lagring av poengkort i runde');
+                }
+                return response.json();
+            }).catch(error => {
+                console.error('Feil ved lagring av poengkort i runde:', error);
+            });
+        }
+
+            setLagretPoengkort(true);
             setVisScoreboard(false);
             setVisVelgSpillere(false);
-            setVisOppsummering(true);
-        }
+            if(venterFerdigAntall <= -1) {
+                setVisVenterFerdig(false);
+                setVisOppsummering(true);
+                setAntInviterte(0);
+                setAntallAkseptert(0);
+                setAntFerdig(0);
+            }
         else {
             setErrorMelding("Alle spillere må kaste")
         }
@@ -279,6 +394,23 @@ const ScoreBoard = () => {
         setSpillereSomVises([]); 
         setNr(0);
         setVisScoreboard(false);
+        setLagretPoengkort(false); 
+        hasUpdatedOnce.current = false;
+        setSortertPoengkort([]);
+    }
+
+    const leggTilPoengkort = (poengkort) => {
+        const eksisterendeIds = new Set(sortertPoengkort.map(p => p.nyPoengkort.spillere[0]?.id)); //lagt til ved hjelp av Copilot
+        const nyePoengkort = poengkort.filter(p => !eksisterendeIds.has(p.nyPoengkort.spillere[0]?.id));
+        
+        const oppdatertPoengkort = [...sortertPoengkort, ...nyePoengkort].sort((a, b) => {
+            const totalA = a.nyPoengkort.spillere[0]?.total || 0;
+            const totalB = b.nyPoengkort.spillere[0]?.total || 0;
+            return totalA - totalB; 
+        });
+        
+        setSortertPoengkort(oppdatertPoengkort);
+        console.log('oppdaterte poenkort:', oppdatertPoengkort);
     }
 
     const sjekkErNullKast = (nr) => {
@@ -374,7 +506,6 @@ const ScoreBoard = () => {
     
         return () => map.remove();
     }, [hull, nr]);
-    
 
     return (
         <div className="innhold flex justify-center bg-gray-200">
@@ -421,20 +552,35 @@ const ScoreBoard = () => {
                     <table className="min-w-full bg-white">
                         <thead>
                             <tr>
+                                <th className="py-2">Plassering</th>
                                 <th className="py-2">Spiller</th>
                                 <th className="py-2">Total Poengsum</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {spillere.map(spiller => (
-                                <tr key={spiller.id}>
-                                    <td className="border px-4 py-2">{spiller.navn}</td>
-                                    <td className="border px-4 py-2">{spiller.total}</td>
+                            {sortertPoengkort.map((poengkort, index) => (
+                                <tr key={index}>
+                                    <td className="border px-4 py-2">{index + 1}</td>
+                                    <td className="border px-4 py-2">{poengkort.nyPoengkort.spillere[0]?.navn}</td>
+                                    <td className="border px-4 py-2">{poengkort.nyPoengkort.spillere[0]?.total}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                     <button onClick={handleNyRunde} className="mt-2 rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2">Ny runde</button>
+                </div>
+            )}
+            {visVenter && (
+                <div className="vent-spillere bg-white shadow rounded-lg m-8 border p-5 flex flex-col items-center">
+                    <h2 className="text-center font-bold text-xl mb-4">Venter på {venterAntall || 0} til å akseptere invitasjon...</h2>
+                </div>
+            )}
+            {visVenterFerdig && (
+                <div className="vent-spillere bg-white shadow rounded-lg m-8 border p-5 flex flex-col items-center">
+                    <h2 className="text-center font-bold text-xl mb-4">Venter på {(venterFerdigAntall+1) < 0 ? 0:venterFerdigAntall+1} spillere til å bli ferdig...</h2>
+                    {venterFerdigAntall <= -1 && (
+                        <button onClick={handleAvsluttRunde} className="rounded-full text-white bg-green-500 hover:bg-green-200 shadow mx-2 px-4 py-2">Se resultat</button>
+                    )}
                 </div>
             )}
         </div>
