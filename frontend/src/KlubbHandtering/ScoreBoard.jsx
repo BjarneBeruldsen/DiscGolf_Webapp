@@ -258,6 +258,9 @@ const ScoreBoard = () => {
     
         // Wait for the invitation to update
         await new Promise(resolve => setTimeout(resolve, 0));
+
+        setNr(1);
+        setTimeout(() => setNr(0), 100);
     
         for (const spiller of spillereMedPoeng) {
             if (bruker.id !== spiller.id && !spiller.id.startsWith("guest") && oppdatertInvitasjon) {
@@ -577,7 +580,7 @@ const ScoreBoard = () => {
             )}
             {visVenterFerdig && (
                 <div className="vent-spillere bg-white shadow rounded-lg m-8 border p-5 flex flex-col items-center">
-                    <h2 className="text-center font-bold text-xl mb-4">Venter på {(venterFerdigAntall+1) < 0 ? 0:venterFerdigAntall+1} spillere til å bli ferdig...</h2>
+                    <h2 className="text-center font-bold text-xl mb-4">Venter på {(venterFerdigAntall+1) < 0 ? 0: venterFerdigAntall+1} spillere til å bli ferdig...</h2>
                     {venterFerdigAntall <= -1 && (
                         <button onClick={handleAvsluttRunde} className="rounded-full text-white bg-green-500 hover:bg-green-200 shadow mx-2 px-4 py-2">Se resultat</button>
                     )}

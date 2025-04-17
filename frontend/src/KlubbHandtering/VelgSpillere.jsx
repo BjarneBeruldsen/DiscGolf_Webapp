@@ -42,6 +42,10 @@ const VelgSpillere = (props) => {
     }, [sok, brukere]);
 
     const handleLeggTilBruker = (bruker) => {
+        if(bruker._id === props.bruker.id) {
+            setErrorMelding('Du kan ikke invitere deg selv');
+            return; 
+        }
         console.log('legg til bruker: ', bruker);
         const eksisterendeSpiller = spillere.find(spiller => spiller.id === bruker.id);
         if (!eksisterendeSpiller) {
@@ -91,8 +95,8 @@ const VelgSpillere = (props) => {
                             <h3 className="text-md font-bold">Legg til annen bruker:</h3>
                             <InfoTooltip tekst={
                             <>
-                                Skriv inn brukernavn<br />
-                                på en eksisterende bruker du ønsker å invitere. <br/>
+                                Skriv inn brukernavn på alle<br />
+                                eksisterende brukere du ønsker å invitere. <br/>
                                 Invitasjon sendes ved trykk på "bekreft spillere"
                             </>
                             } />
@@ -127,8 +131,8 @@ const VelgSpillere = (props) => {
                                 <>
                                     Skriv inn kallenavn <br />
                                     på gjestespiller og trykk <br/>
-                                    "Opprett spiller" for å legge <br />
-                                    til gjestespiller i listen.
+                                    "+"-knappen for å legge <br />
+                                    til gjestespillere i listen.
                                 </>
                                 } />
                             </div>
@@ -140,9 +144,8 @@ const VelgSpillere = (props) => {
                                     value={nySpiller}
                                     onChange={(e) => setNySpiller(e.target.value)}
                                 />
-                                <button type="submit" className="block mt-2 py-2 px-4 bg-gray-600 hover:bg-gray-500 rounded-lg text-sm text-white">Opprett gjestespiller</button>
+                                <button type="submit" className="inline-block mt-2 ml-1 py-2 px-4 bg-gray-600 hover:bg-gray-500 rounded-full text-sm text-white">+</button>
                             </form>
-                            {errorMelding && <p className="text-red-500">{errorMelding}</p>}
                         </div>
                     </div>
                     <div className="spillerliste">
