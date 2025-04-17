@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const nocache = require('nocache');
 const compression = require('compression');
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
 const nodemailer = require('nodemailer');
 const MongoStore = require('connect-mongo');
 const { kobleTilDB, getDb } = require('./db');  
@@ -22,8 +23,10 @@ const http = require('http');
 const { Server } = require('socket.io');
 
 const app = express();
-app.use(express.urlencoded({ extended: true })); 
-
+//Lese html skjema i req.body hvis nødvendig
+app.use(express.urlencoded({ extended: true }));
+//Skulle egentlig bli brukt til samtykke til cookies, den gjør at man får tilgang til eksisterende cookies via req.cookies + sjekke samtykke med connect.sid, men vi kan bare ha den her.
+app.use(cookieParser());
 
 //https://github.com/express-rate-limit/express-rate-limit/wiki/Troubleshooting-Proxy-Issues
 app.set("trust proxy", 1); //Heroku kjører proxy og må settes til trust for at ulike ting skal fungere ordentlig som express-rate-limit (IP) og session
@@ -39,7 +42,6 @@ app.use(compression());
 //https://github.com/helmetjs/nocache
 //https://ivanpiskunov.medium.com/a-little-bit-about-node-js-security-by-hands-17470dddf4d0 
 //https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
-
 app.use("/Innlogging", nocache());  
 app.use("/Utlogging", nocache());   
 app.use("/SletteBruker", nocache()); 
@@ -179,6 +181,7 @@ server.listen(PORT, () => {
 app.get("/sjekk-session", async (req, res) => {
     //Sjekker om brukeren er logget inn
     if (req.isAuthenticated()) {
+      console.log("Cookie fra bruker:", req.cookies["connect.sid"]); 
         try {
             //Henter brukerdata fra databasen via bruker ID
             const bruker = await db.collection("Brukere").findOne({ _id: req.user._id });

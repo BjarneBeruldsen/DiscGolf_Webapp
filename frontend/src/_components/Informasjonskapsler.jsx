@@ -1,41 +1,32 @@
 //Author: Laurent Zogaj
-
 import React from 'react';
 
 const Informasjonskapsler = () => {
     return (
         <div className="p-6 max-w-3xl mx-auto">
             <h1 className="text-3xl font-bold mb-4">Informasjonskapsler</h1>
-            <p>Vi bruker informasjonskapsler (cookies) for å forbedre din brukeropplevelse.</p>
+            <p>Vi bruker informasjonskapsler (cookies) for å sikre funksjonalitet og sikkerhet.</p>
 
-                {/* Inspo hentet herifra: https://cookieinformation.com/no/kunnskapsbase/blog-nb/cookie-banner-tekst/ */}
+            {/* Inspo hentet herifra: https://cookieinformation.com/no/kunnskapsbase/blog-nb/cookie-banner-tekst/ */}
 
             <h2 className="text-2xl font-semibold mt-6 mb-2">1. Hva er informasjonskapsler?</h2>
-            <p>Informasjonskapsler er små tekstfiler eller binære data som lagres på enheten din når du besøker en nettside.</p>
+            <p>Informasjonskapsler er små tekstfiler som lagres på enheten din når du besøker en nettside. De brukes for å lagre informasjon mellom besøk.</p>
 
-            <h2 className="text-2xl font-semibold mt-6 mb-2">2. Hvilke typer informasjonskapsler bruker vi?</h2>
-            <ul className="list-disc pl-6">
-                <li><strong>Nødvendige informasjonskapsler:</strong> Sikrer at nettsiden fungerer som den skal.</li>
-                <li><strong>Analyse-informasjonskapsler:</strong> Hjelper oss med å forstå hvordan brukere navigerer på siden.</li>
-                <li><strong>Markedsførings-informasjonskapsler:</strong> Brukes til målrettet reklame.</li>
+            <h2 className="text-2xl font-semibold mt-6 mb-2">2. Hvilke informasjonskapsler bruker vi?</h2>
+            <p>Vi bruker kun en informasjonskapsel, og den er nødvendig for at applikasjonen skal være funksjonell:</p>
+            <ul className="list-disc pl-6 mt-2">
+                <li>
+                    <strong>connect.sid:</strong> Denne informasjonskapselen opprettes automatisk ved innlogging, og brukes til å holde deg innlogget så lenge sesjonen varer. 
+                    Den inneholder ingen personlig informasjon, og slettes når du logger ut eller etter en viss tids inaktivitet.
+                </li>
             </ul>
+            <p className="mt-2">
+                Vi bruker ikke analyse- eller markedsføringskapsler.
+            </p>
 
             <h2 className="text-2xl font-semibold mt-6 mb-2">3. Hvordan administrerer jeg informasjonskapsler?</h2>
-            <p>Du kan administrere informasjonskapsler i nettleseren din og slette dem når som helst.</p>
-
-            {/* 
-            <h2 className="text-2xl font-semibold mt-6 mb-2">4. Trekk tilbake samtykke</h2>
-            <button
-                onClick={() => {
-                    localStorage.removeItem("samtykkeForInformasjonskapsler");
-                    document.cookie = "samtykkeForInformasjonskapsler=; path=/; max-age=0"; //Har ikke fått testet dette godt nok enda, må testes mer og legge til en cookie banner som er koblet til denne funksjonen, på et vis.
-                    window.location.reload(); 
-                }}
-                className="bg-red-500 px-4 py-2 mt-2 text-white"
-            >
-                Trekk tilbake samtykke
-            </button>
-            */}
+            <p>Du kan administrere og slette informasjonskapsler via innstillingene i nettleseren din. 
+            Hvis du sletter nødvendige informasjonskapsler, kan innlogging og enkelte funksjoner slutte å fungere.</p>
         </div>
     );
 };

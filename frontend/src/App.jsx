@@ -12,6 +12,7 @@ import Header from "./_components/Header";
 import Footer from "./_components/Footer";
 import Bilde from "./_components/Bilde";
 import Hjem from './_components/Hjem';
+import Kjeks from "./_components/Kjeks";
 import Innlogging from './BrukerHandtering/Innlogging'; 
 import Registrering from './BrukerHandtering/Registrering';
 import Klubbside from './KlubbHandtering/Klubbside';
@@ -101,6 +102,7 @@ function App() {
             />
           </div>
         )}
+        <Kjeks />
         <div className="innhold">
           <Switch>
             <Route exact path="/">
@@ -182,7 +184,7 @@ function App() {
             <Route exact path="/MinePoengtavler">
               <PoengTavler />
             </Route>
-              
+            
             {/* 
             <Route exact path="/TilbakestillPassord/:token">
               <TilbakestillPassord />
