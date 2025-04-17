@@ -21,6 +21,7 @@ const tilgangRouter = require('./ruter/brukerhandtering/tilgangskontroll');
 const turneringRouter = require("./ruter/Turneringer");
 const http = require('http');
 const { Server } = require('socket.io');
+const { sjekkBrukerAktiv, beskyttetRute } = require('./ruter/brukerhandtering/funksjoner');
 
 const app = express();
 //Lese html skjema i req.body hvis nødvendig
@@ -200,7 +201,8 @@ app.get("/sjekk-session", async (req, res) => {
                     bosted: bruker.bosted,
                     rolle: bruker.rolle,
                     poengkort: bruker.poengkort, 
-                    invitasjoner: bruker.invitasjoner
+                    invitasjoner: bruker.invitasjoner,
+                    betalt : bruker.betalt,
                 },
             });
         } catch (err) { //Logging
@@ -279,7 +281,47 @@ app.get('/byer', async (req, res) => {
       }
       
   });
-  
+    //Rute for å oppdatere brukerens betalingsstatus for dems medlemskap/abo
+    app.post('/BetaleAbo', beskyttetRute, sjekkBrukerAktiv, async (req, res) => {
+      try { 
+          const db = getDb();
+          if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+          const bruker  = req.user;
+          //Setter betalt feltet til true i databasen
+          const resultat = await db.collection("Brukere").updateOne(
+            { _id: bruker._id },
+            { $set: { betalt: true } }
+          );
+          if (resultat.modifiedCount === 0) {
+              return res.status(404).json({ error: "Ingen endringer gjort" });
+          }
+          res.status(200).json({ message: "Betaling registrert"});
+      } catch (error) {
+          console.error("Feil under betaling", error);
+          res.status(500).json({ error: "Noe gikk galt" });
+      }
+    });
+    //Rute for å avslutte abonnementet
+    app.post('/AvslutteAbo', beskyttetRute, sjekkBrukerAktiv, async (req, res) => {
+      try {
+          const db = getDb();
+          if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+          const bruker  = req.user;
+          //Setter betalt feltet til false i databasen
+         const resultat = await db.collection("Brukere").updateOne(
+              { _id: bruker._id },
+              { $set: { betalt: false } }
+          );
+          if (resultat.modifiedCount === 0) {
+              return res.status(404).json({ error: "Ingen endringer gjort" });
+          }
+          res.status(200).json({ message: "Abonnement avsluttet"});
+      } catch (error) {
+          console.error("Feil under avslutting av abonnement", error);
+          res.status(500).json({ error: "Noe gikk galt" });
+      }
+    });
+
 //Håndter alle andre ruter med React Router
 app.get(/^(?!\/api).+/, (req, res) => { //Tilgangskontroll ruter funker ikke med wildcard
   res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));

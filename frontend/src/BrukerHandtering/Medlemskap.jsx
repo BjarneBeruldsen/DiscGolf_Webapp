@@ -79,7 +79,7 @@ const Medlemskap = () => {
     Personvern: ["Informasjonskapsler", "Synlighet", "GDPR"],
     Sikkerhet: ["To-faktor autentisering", "Gjennoppretting"],
     "Min Klubb": ["Min klubb", "Søk etter klubb", "Søk etter brukere", "Avregistrer"],
-    "Mitt abonnement": ["Mitt abonnement", "Betaling", "Avslutt abonnement"],
+    "Mitt abonnement": ["Mitt abonnement"],
   };
 
   //Funksjon for å bytte mellom hovedkategorier og underkategorier
@@ -176,9 +176,9 @@ const Medlemskap = () => {
         )}
 
         {valgtKategori === "Mitt abonnement" && valgtUnderKategori && (
-          <MittAbonnement valgtUnderKategori={valgtUnderKategori} />
+          <MittAbonnement valgtUnderKategori={valgtUnderKategori} bruker={bruker} />
         )}
-
+        
         {/* Fallback melding*/}
         {!valgtUnderKategori && (
           <p className="text-gray-600 text-center">Velg en underkategori for ditt behov</p>

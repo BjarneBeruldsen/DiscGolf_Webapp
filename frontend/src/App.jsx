@@ -38,6 +38,7 @@ import BrukerListe from "./Admin/BrukerListe";
 import RedigerBane from './KlubbHandtering/RedigerBane';
 import Varsling from './_components/Varsling';
 import socket from './socket';
+import AbonnementInfo from './_components/Abonnenter';
 
 function App() {
   const { bruker, venter } = HentBruker();
@@ -204,6 +205,7 @@ function App() {
             <Route exact path="/Sikkerhet" component={Sikkerhet} />
             <Route exact path="/Informasjonskapsler" component={Informasjonskapsler} />
             <Route exact path="/KontaktOss" component={KontaktOss} /> 
+            <Route exact path="/Abonnenter" component={AbonnementInfo} />
           </Switch>
           <Footer />
         </div>
