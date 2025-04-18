@@ -21,7 +21,17 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
     const [locationFilter, setLocationFilter] = useState('');
     const [hullFilter, setHullFilter] = useState('');
     const mapRef = useRef(null);
+    const [brukerPos, setBrukerPos] = useState(null);
+    const [visNæreBaner, setVisNæreBaner] = useState(false);
+    const [avstandKm, setAvstandKm] = useState(50);
 
+    useEffect(() => {
+        if (navigator.geolocation && visNæreBaner) {
+            navigator.geolocation.getCurrentPosition(
+                position => setBrukerPos({lat: position.coords.latitude, lng: position.coords.longitude})
+            );
+        }
+    }, [visNæreBaner]);
 
     useEffect(() => {
         const hentYrIdForBaner = async () => {
@@ -48,7 +58,7 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
     useEffect(() => {
         if (!baner) return;
         
-        const filtered = baner.filter(bane => 
+        let filtered = baner.filter(bane => 
             (!locationFilter || bane.plassering === locationFilter) && 
             (!hullFilter || 
                 (hullFilter === "6+" ? 
@@ -58,13 +68,21 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
             )
         );
         
+        if (visNæreBaner && brukerPos && filtered.length > 0) {
+            filtered = filtered.filter(bane => {
+                if (!bane.hull?.[0]?.startLatitude) return false;
+                const dist = Math.sqrt(Math.pow(bane.hull[0].startLatitude - brukerPos.lat, 2) + 
+                                     Math.pow(bane.hull[0].startLongitude - brukerPos.lng, 2)) * 111;
+                return dist <= avstandKm;
+            });
+        }
         setFilteredBaner(filtered);
         setAktivBane(filtered[aktivBaneIndex] || filtered[0] || null);
 
         if (filtered.length === 0 || aktivBaneIndex >= filtered.length) {
             setAktivBaneIndex(0);
         }
-    }, [baner, locationFilter, hullFilter, aktivBaneIndex]);
+    }, [baner, locationFilter, hullFilter, aktivBaneIndex, visNæreBaner, brukerPos, avstandKm]);
 
     const handleClick = (bane) => {
         if (bruker === null) {
@@ -112,6 +130,13 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
         map.addControl(geocoder);
 
         map.on('load', () => {
+
+            if (brukerPos) {
+                new mapboxgl.Marker({color: '#4285F4'})
+                    .setLngLat([brukerPos.lng, brukerPos.lat])
+                    .addTo(map);
+            }
+            
             baner.forEach((bane, baneIndex) => {
                 const hull = bane?.hull || [];
        const coordinates = [];
@@ -192,7 +217,7 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
                 mapRef.current = null;
             }
         };
-    }, [baner, rediger, aktivBane]);
+    }, [baner, rediger, aktivBane, brukerPos]);
 
     const baneYrId = yrId[aktivBane?._id] || "1-72837";
 
@@ -202,7 +227,10 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
                 <div className="location-filter w-1/2">
                     <select
                         value={locationFilter}
-                        onChange={(e) => setLocationFilter(e.target.value)}
+                        onChange={(e) => {
+                            setLocationFilter(e.target.value);
+                            setVisNæreBaner(false);
+                        }}
                         className="w-full border rounded p-2"
                     >
                         <option value="">Alle baner</option>
@@ -226,6 +254,21 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
                         <option value="5">5 hull</option>
                         <option value="6+">6+ hull</option>
                     </select>
+                </div>
+                
+                <div className="near-filter w-1/3 flex space-x-2">
+                    <select value={avstandKm} onChange={(e) => setAvstandKm(Number(e.target.value))} className="w-1/3 border rounded p-2">
+                        <option value={10}>10km</option>
+                        <option value={25}>25km</option>
+                        <option value={50}>50km</option>
+                        <option value={1000}>100km+</option>
+                    </select>
+                    <button
+                        onClick={() => setVisNæreBaner(!visNæreBaner)}
+                        className={`w-2/3 border rounded p-2 ${visNæreBaner ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
+                    >
+                        {visNæreBaner ? 'Viser baner i nærheten' : 'Vis baner i nærheten'}
+                    </button>
                 </div>
             </div>
             
