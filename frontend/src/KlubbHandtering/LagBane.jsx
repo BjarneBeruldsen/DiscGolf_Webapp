@@ -1,4 +1,4 @@
-// Author: Bjarne Hovd Beruldsen
+// Author: Bjarne Hovd Beruldsen & Abdinasir Ali
 import { useState } from 'react';
 import { validering } from './validation';
 import React, { useEffect, useRef } from "react";

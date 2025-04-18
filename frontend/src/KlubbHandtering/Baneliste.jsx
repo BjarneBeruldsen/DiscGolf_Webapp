@@ -1,4 +1,4 @@
-// Author: Bjarne Hovd Beruldsen
+// Author: Bjarne Hovd Beruldsen & Abdinasir Ali
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";

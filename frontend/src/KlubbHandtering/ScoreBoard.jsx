@@ -1,4 +1,4 @@
-// Author: Bjarne Hovd Beruldsen
+// Author: Bjarne Hovd Beruldsen & Abdinasir Ali
 import { useEffect, useState, useRef } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import UseFetch from './UseFetch';
