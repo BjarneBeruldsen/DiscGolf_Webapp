@@ -2,25 +2,27 @@
 import React, { useState, useEffect } from 'react';
 
 const Kjeks = () => {
-    const [visBanner, setVisBanner] = useState(false);
+    const [visBanner, setVisBanner] = useState(false); //State
 
     useEffect(() => {
+        //Sjekker om brukeren tidligere har lukket banneret i nåværende sesjon
         const lest = sessionStorage.getItem('informasjonskapslerLest');
         if (!lest) {
+            //Hvis ikke, vises banneret
             setVisBanner(true);
         }
     }, []);
-
+    //Funksjon for å lukke banneret og lagre status i sessionstorage
     const lukkBanner = () => {
         sessionStorage.setItem('informasjonskapslerLest', 'true');
         setVisBanner(false);
     };
-
+    //Hvis banneret ikke skal komme frem returnerer vi null altså ingenting skjer
     if (!visBanner) return null;
 
     return (
         <div 
-            className="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-6 z-[9999] shadow-xl w-full" 
+            className="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-6 z-[9999] shadow-xl w-full"
             style={{
                 position: 'fixed',
                 bottom: '0',
@@ -32,6 +34,7 @@ const Kjeks = () => {
         >
             <div className="max-w-6xl mx-auto">
                 <div className="flex flex-col md:flex-row justify-between items-center">
+                    {/* Informasjonstekst */}
                     <div className="mb-4 md:mb-0 flex-1">
                         <h3 className="text-xl font-bold mb-2">Informasjonskapsler</h3>
                         <p className="text-base">
@@ -39,6 +42,7 @@ const Kjeks = () => {
                             Ved å benytte nettsiden godtar du vår bruk av informasjonskapsler.
                         </p>
                     </div>
+                    {/* Lenke til mer info og knapp for å godta */}
                     <div className="flex flex-col sm:flex-row gap-3 ml-0 md:ml-6">
                         <a href="/Informasjonskapsler" className="text-blue-300 hover:text-blue-100 underline text-center">
                             Les mer

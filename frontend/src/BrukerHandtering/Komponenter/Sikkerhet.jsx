@@ -6,6 +6,15 @@ const Sikkerhet = ({ valgtUnderKategori }) => {
   //Funksjoner for de ulike underkategoriene kan legges til under her
 
 
+/* 
+
+Her hadde jeg ideer om å legge til funskjoner som:
+
+Gjennopprettning = f.eks. tilbakestilling av passord eller gjenoppretting av konto ved hjelp av koder eller liggnende
+
+To-faktor autentisering = f.eks. autentisering via sms eller e-post eller begge. Evt også med autentiseringsapper via QR-kode eller kode.
+
+*/
 
 
 //Styling og design for hver funksjon/komponent
@@ -16,8 +25,8 @@ const Sikkerhet = ({ valgtUnderKategori }) => {
         <p className="text-gray-600">Velg en underkategori for ditt behov</p>
       )}
 
-      {valgtUnderKategori === "To-faktor autentisering" && <p>2FA</p>}
-      {valgtUnderKategori === "Gjennoppretting" && <p>Gjenoppretting</p>}
+      {valgtUnderKategori === "To-faktor autentisering" && <p>2FA(Ikke implementert)</p>}
+      {valgtUnderKategori === "Gjennoppretting" && <p>Gjenoppretting(Ikke implementert)</p>}
     </div>
   );
 };

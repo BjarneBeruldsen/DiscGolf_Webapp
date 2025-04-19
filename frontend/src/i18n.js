@@ -1,3 +1,5 @@
+//Author: Laurent Zogaj
+
 //Inspo hentet fra: https://medium.com/@thelearning-curve/making-your-mern-stack-app-multilingual-with-i18next-cf30f4c77210 og https://www.i18next.com/
 
 

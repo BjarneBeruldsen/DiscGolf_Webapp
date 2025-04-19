@@ -76,7 +76,7 @@ const Medlemskap = () => {
     Administrasjon: ["AdminDashboard", "Administrere klubber"],
     Klubbinnstillinger: ["Klubbinformasjon", "Administrere turneringer", "Administrede medlem"],
     Brukerinnstillinger: ["Min informasjon", "Endre min informasjon", "Slett bruker"],
-    Personvern: ["Informasjonskapsler", "Synlighet", "GDPR"],
+    Personvern: ["Informasjonskapsler", "Synlighet"],
     Sikkerhet: ["To-faktor autentisering", "Gjennoppretting"],
     "Min Klubb": ["Min klubb", "Søk etter klubb", "Søk etter brukere", "Avregistrer"],
     "Mitt abonnement": ["Mitt abonnement"],

@@ -3,8 +3,7 @@
 import i18n from '../i18n';
 
 //Funksjon for å logge ut bruker
-const loggUtBruker = async (setLoggetInnBruker) => {
-const setMelding = "";
+const loggUtBruker = async (setLoggetInnBruker, setMelding) => {
 
 //Kontakter backend for å logge ut bruker
     try {
@@ -16,10 +15,11 @@ const setMelding = "";
         const data = await respons.json();
         if (respons.ok) {
             setLoggetInnBruker(null); //Logger ut bruker
-            window.location.reload(); //Tvinger en refresh 
+            window.location.reload(); //Tvinger en refresh for å sikre at alt blir "freshet opp"
             window.location.href = "/Hjem"; 
         } else {
             setMelding(i18n.t(data.error || "Utlogging feilet. Prøv igjen."));
+            return;
         }
     } catch (error) {
         setMelding(i18n.t("Feil ved utlogging", error));
