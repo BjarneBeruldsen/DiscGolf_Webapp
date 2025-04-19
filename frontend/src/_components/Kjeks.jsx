@@ -1,8 +1,10 @@
 //Author: Laurent Zogaj
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const Kjeks = () => {
     const [visBanner, setVisBanner] = useState(false); //State
+    const { t } = useTranslation();
 
     useEffect(() => {
         //Sjekker om brukeren tidligere har lukket banneret i nåværende sesjon
@@ -36,22 +38,21 @@ const Kjeks = () => {
                 <div className="flex flex-col md:flex-row justify-between items-center">
                     {/* Informasjonstekst */}
                     <div className="mb-4 md:mb-0 flex-1">
-                        <h3 className="text-xl font-bold mb-2">Informasjonskapsler</h3>
+                        <h3 className="text-xl font-bold mb-2">{t("Informasjonskapsler")}</h3>
                         <p className="text-base">
-                            Vi bruker kun nødvendige informasjonskapsler for å forbedre brukeropplevelsen og sørge for at nettsiden fungerer optimalt. 
-                            Ved å benytte nettsiden godtar du vår bruk av informasjonskapsler.
+                            {t("Vi bruker kun nødvendige informasjonskapsler for å forbedre brukeropplevelsen og sørge for at nettsiden fungerer optimalt. Ved å benytte nettsiden godtar du vår bruk av informasjonskapsler.")}
                         </p>
                     </div>
                     {/* Lenke til mer info og knapp for å godta */}
                     <div className="flex flex-col sm:flex-row gap-3 ml-0 md:ml-6">
                         <a href="/Informasjonskapsler" className="text-blue-300 hover:text-blue-100 underline text-center">
-                            Les mer
+                            {t("Les mer")}
                         </a>
                         <button
                             onClick={lukkBanner}
                             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded font-medium text-base min-w-[120px]"
                         >
-                            Jeg har lest
+                            {t("Jeg har lest")}
                         </button>
                     </div>
                 </div>

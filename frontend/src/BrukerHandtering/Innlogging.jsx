@@ -66,7 +66,7 @@ const Innlogging = ({ setLoggetInnBruker }) => {
         setMelding(i18n.t(data.error || "Feil ved innlogging. Sjekk brukernavn og passord, prøv igjen deretter."));
         return;
       } else {
-        setMelding("Innlogging vellykket!");
+        setMelding(i18n.t("Innlogging vellykket!"));
         setTimeout(() => {
           setLoggetInnBruker(data.bruker);
           minne.push("/Hjem");

@@ -244,6 +244,11 @@
     "Skriv inn tallet" : "Enter the number",
     "Brukernavn eller e-post" : "Username or email",
     "Vi behandler personopplysninger i samsvar med personopplysningsloven og GDPR." : "We process personal data in accordance with the Personal Data Act and GDPR.",
-    "Har du allerede en konto? Klikk her" : "Already have an account? Click here"
-    
+    "Har du allerede en konto? Klikk her" : "Already have an account? Click here",
+    "Innlogging vellykket!" : "Login successful!",
+    "Registrering vellykket! Du blir omdirigert til innlogging..." : "Registration successful! You will be redirected to login...",
+    "Vi bruker kun nødvendige informasjonskapsler for å forbedre brukeropplevelsen og sørge for at nettsiden fungerer optimalt. Ved å benytte nettsiden godtar du vår bruk av informasjonskapsler." : "We only use necessary cookies to improve the user experience and ensure that the website functions optimally. By using the website, you accept our use of cookies.",
+    "Jeg har lest" : "I have read",
+    "Les mer" : "Read more",
+    "Passord må være minst 8 tegn og maks 20 tegn og ha minst en stor bokstav og spesialtegn." : "Password must be at least 8 characters and a maximum of 20 characters and have at least one uppercase letter and special character."
 }
