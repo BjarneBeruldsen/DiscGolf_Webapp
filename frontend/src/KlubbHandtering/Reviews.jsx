@@ -75,7 +75,6 @@ const Review = ({ baneId }) => {
             setKommentar('');
             fetchReviews();
 
-            // Fjern success-melding etter 3 sekunder
             setTimeout(() => setSuccess(''), 3000);
         } catch (error) {
             setError(error.message);

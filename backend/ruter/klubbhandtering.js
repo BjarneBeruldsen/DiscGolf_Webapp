@@ -426,19 +426,13 @@ klubbRouter.get('/spillere', async (req, res) => {
         res.status(500).json({ error: "Kunne ikke hente brukere" });
     }
 })
-
-
-
-
 //Author: Ylli Ujkani
 //Rute for å hente alle anmeldelser for en bane
 klubbRouter.get('/baner/:id/reviews', async (req, res) => {
     try {
         const db = getDb();
         if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
-
         const baneId = req.params.id;
-
         // Hent anmeldelser fra databasen
         const reviews = await db.collection('Reviews').find({ baneId: baneId }).toArray();
         res.status(200).json(reviews);
@@ -454,21 +448,18 @@ klubbRouter.post('/baner/:id/reviews', sjekkBrukerAktiv, beskyttetRute, async (r
         if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
         const baneId = req.params.id;
         const { rating, kommentar } = req.body;
-
         //Validering
         if (rating < 1 || rating > 5) {
             return res.status(400).json({error: 'Vurdering må være mellom 1 og 5'});
         }
-
         const nyReview = {
             baneId: baneId,
             brukerId: req.user._id,
-            navn: req.user.fornavn + ' ' + req.user.etternavn,
+            navn: req.user.brukernavn,
             rating: parseInt(rating),
             kommentar: kommentar,
             dato: new Date()
         };
-
         const result = await db.collection('Reviews').insertOne(nyReview);
         res.status(201).json(result);
     } catch (error) {

@@ -1,4 +1,4 @@
-/* Author: Bjarne Beruldsen & Laurent Zogaj */
+/* Author: Bjarne Beruldsen, Laurent Zogaj, Abdinasir Ali, Severin Waller Sørensen & Ylli Ujkani */
 
 /* Tailwind CSS klasser */
 
@@ -157,4 +157,13 @@
     height: auto;
     max-height: 80vh; 
   }*/
+
+
+  .star-yellow {
+    @apply text-yellow-500;
+  }
+  .star-gray {
+    @apply text-gray-300;
+  }
+  
 }

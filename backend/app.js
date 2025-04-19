@@ -182,7 +182,7 @@ server.listen(PORT, () => {
 app.get("/sjekk-session", async (req, res) => {
     //Sjekker om brukeren er logget inn
     if (req.isAuthenticated()) {
-      console.log("Cookie fra bruker:", req.cookies["connect.sid"]); 
+      //console.log("Cookie fra bruker:", req.cookies["connect.sid"]); 
         try {
             //Henter brukerdata fra databasen via bruker ID
             const bruker = await db.collection("Brukere").findOne({ _id: req.user._id });
