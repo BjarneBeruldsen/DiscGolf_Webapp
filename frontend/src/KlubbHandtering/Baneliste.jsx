@@ -10,6 +10,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import '../App.css';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import Review from './Reviews';
 
     const BaneListe = ({ baner, rediger, klubbId }) => {
     const minne = useHistory();
@@ -287,11 +288,6 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
                                             setAktivBaneIndex(index);
                                         }}
                                 >
-
-                                    <div className="topplinje border-b-2 flex justify-between text-xl font-bold ">
-                                        <p>{bane.baneNavn}</p>
-                                        <p className="pl-20">Rating:5/10</p>{/*Kommer senere..*/}
-                                    </div>
                                     <div className="hullVanskelighet border-b flex justify-between text-m my-4">
                                         <p>Antall hull: {antallHull}</p>
                                         <p>Tilstand: <span className="text-green-400">God</span></p>
@@ -337,6 +333,12 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
                         <div className="h-[500px] rounded-lg border mt-6">
                             <div id="mapContainer" className="w-full h-full"></div>
                         </div>
+                        {/*Author: Ylli Ujkani*/}
+                        {aktivBane && aktivBane._id && (
+                            <div className="border rounded-lg p-4 bg-white mt-6">
+                                <Review baneId={aktivBane._id} />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

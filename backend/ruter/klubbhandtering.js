@@ -3,7 +3,7 @@
 const express = require('express');
 const { ObjectId } = require('mongodb');
 const { kobleTilDB, getDb } = require('../db'); 
-const { beskyttetRute } = require('./brukerhandtering/funksjoner');
+const { sjekkBrukerAktiv, beskyttetRute } = require('./brukerhandtering/funksjoner');
 const { MongoClient } = require('mongodb');
 const db = require('../db');
 const klubbRouter = express.Router();
@@ -429,6 +429,52 @@ klubbRouter.get('/spillere', async (req, res) => {
 
 
 
+
+//Author: Ylli Ujkani
+//Rute for å hente alle anmeldelser for en bane
+klubbRouter.get('/baner/:id/reviews', async (req, res) => {
+    try {
+        const db = getDb();
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+
+        const baneId = req.params.id;
+
+        // Hent anmeldelser fra databasen
+        const reviews = await db.collection('Reviews').find({ baneId: baneId }).toArray();
+        res.status(200).json(reviews);
+    } catch (error) {
+        res.status(500).json({error: 'Feil ved henting av anmeldelser'});
+    }
+});
+
+//Rute for å legge til en anmeldelse for en bane
+klubbRouter.post('/baner/:id/reviews', sjekkBrukerAktiv, beskyttetRute, async (req, res) => {
+    try {
+        const db = getDb();
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+        const baneId = req.params.id;
+        const { rating, kommentar } = req.body;
+
+        //Validering
+        if (rating < 1 || rating > 5) {
+            return res.status(400).json({error: 'Vurdering må være mellom 1 og 5'});
+        }
+
+        const nyReview = {
+            baneId: baneId,
+            brukerId: req.user._id,
+            navn: req.user.fornavn + ' ' + req.user.etternavn,
+            rating: parseInt(rating),
+            kommentar: kommentar,
+            dato: new Date()
+        };
+
+        const result = await db.collection('Reviews').insertOne(nyReview);
+        res.status(201).json(result);
+    } catch (error) {
+        res.status(500).json({error: 'Feil ved lagring av anmeldelse'});
+    }
+});
 
 
 module.exports = { klubbRouter, setSocketIO };
