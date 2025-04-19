@@ -3,6 +3,10 @@ import BaneListe from "./Baneliste";
 import UseFetch from "./UseFetch";
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
+import mapboxgl from "mapbox-gl";
+import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
+import 'mapbox-gl/dist/mapbox-gl.css';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 const RedigerBane = ({ klubb }) => {
     const minne = useHistory();
@@ -30,8 +34,11 @@ const RedigerBane = ({ klubb }) => {
     const avstandRef = useRef(null);
     const parRef = useRef(null);
     const [nr, setNr] = useState(0);
- 
-
+    const mapContainerRef = useRef(null);
+    const [startPosisjon, setStartPosisjon] = useState({startLatitude:null, startLongitude:null});
+    const [sluttPosisjon, setSluttPosisjon] = useState({sluttLatitude:null, sluttLongitude:null});
+    const [valgtHullNr, setValgtHullNr] = useState('');
+   
     const lagreEndrng = async () => {
         lagreHull(); 
         setNr(0);
@@ -106,7 +113,16 @@ const RedigerBane = ({ klubb }) => {
     }
 
     const lagreHull = () => {
-        hull[nr] = { ...hull[nr], avstand, par };  
+        hull[nr] = { 
+            ...hull[nr], 
+            avstand, 
+            par,
+            startLatitude: startPosisjon.startLatitude || hull[nr].startLatitude,
+            startLongitude: startPosisjon.startLongitude || hull[nr].startLongitude,
+            sluttLatitude: sluttPosisjon.sluttLatitude || hull[nr].sluttLatitude,
+            sluttLongitude: sluttPosisjon.sluttLongitude || hull[nr].sluttLongitude
+        };
+        
         console.log('lagre Hull:', hull);
     }
 
@@ -148,6 +164,166 @@ const RedigerBane = ({ klubb }) => {
         e.preventDefault();
     }
 
+    const finnHullNr = () => {
+        if (!valgtHullNr || hull.length === 0) return;
+        
+        const hullIndex = hull.findIndex(hole => hole.hullNr === parseInt(valgtHullNr));
+        if (hullIndex !== -1) {
+            lagreHull();
+            setNr(hullIndex);
+
+            setStartPosisjon({startLatitude: null, startLongitude: null});
+            setSluttPosisjon({sluttLatitude: null, sluttLongitude: null});  
+            if (mapContainerRef.current) {
+                visMap();
+            }
+        } else {
+            alert(`Hull nummer ${valgtHullNr} ble ikke funnet.`);
+        }
+    };
+    
+   
+    const visMap = () => {
+        if (!mapContainerRef.current) return;
+      
+        while (mapContainerRef.current.firstChild) {
+            mapContainerRef.current.removeChild(mapContainerRef.current.firstChild);
+        }
+        
+        mapboxgl.accessToken = "pk.eyJ1IjoidW5rbm93bmdnc3MiLCJhIjoiY203eGhjdXBzMDUwaDJxc2RidXgwbjBqeSJ9.wlnVO6sI2-cY5Tx8uYv_XQ";
+        
+        
+       
+        
+        const map = new mapboxgl.Map({
+            container: mapContainerRef.current,
+            style: "mapbox://styles/mapbox/satellite-streets-v12",
+            center: [hull[nr].startLongitude || 9.059, hull[nr].startLatitude || 59.409],
+            zoom: 15,
+        });
+        
+        
+        map.on('load', () => {
+            if (hull[nr].startLatitude && hull[nr].startLongitude) {
+                const startPoint = [hull[nr].startLongitude, hull[nr].startLatitude];
+                new mapboxgl.Marker({ color: "gray" })
+                    .setLngLat(startPoint)
+                    .addTo(map);
+                
+                if (hull[nr].sluttLatitude && hull[nr].sluttLongitude) {
+                    const stopPoint = [hull[nr].sluttLongitude, hull[nr].sluttLatitude];
+                    new mapboxgl.Marker({ color: "green" })
+                        .setLngLat(stopPoint)
+                        .addTo(map);
+                    
+                    
+                    map.addSource("hole-path", {
+                        type: "geojson",
+                        data: {
+                            type: "Feature",
+                            geometry: {
+                                type: "LineString",
+                                coordinates: [startPoint, stopPoint],
+                            },
+                        },
+                    });
+                    
+                    map.addLayer({
+                        id: "hole-path",
+                        type: "line",
+                        source: "hole-path",
+                        layout: {
+                            "line-join": "round",
+                            "line-cap": "round",
+                        },
+                        paint: {
+                            "line-color": "#ff7f00",
+                            "line-width": 4,
+                        },
+                    });
+                }
+            }
+        });
+        
+        let startPunkt = null;
+      
+        map.on("click", (e) => {
+            const clickedPos = { latitude: e.lngLat.lat, longitude: e.lngLat.lng };
+            
+            
+
+            //console.log("Saved position:", clickedPos);
+      
+          if (!startPunkt) {
+
+            setStartPosisjon({
+                startLatitude: clickedPos.latitude,
+                startLongitude: clickedPos.longitude,
+                
+              })
+
+            
+            startPunkt = [clickedPos.longitude, clickedPos.latitude];
+            new mapboxgl.Marker({ color: "gray" })
+            .setLngLat(startPunkt)
+            .addTo(map)
+          
+            
+          } else {
+
+            setSluttPosisjon({
+                sluttLatitude: clickedPos.latitude,
+                sluttLongitude: clickedPos.longitude,
+              })
+           
+           const stopPunkt = [clickedPos.longitude, clickedPos.latitude];
+            new mapboxgl.Marker({ color: "green" }) 
+            .setLngLat(stopPunkt)
+            .addTo(map);
+
+            if (map.getSource("hole-path")){
+              map.removeLayer("hole-path");
+              map.removeSource("hole-path");
+            }
+      
+          
+            map.addSource("hole-path",{
+              type: "geojson",
+              data: {
+                type: "Feature",
+                geometry: {
+                  type: "LineString",
+                  coordinates: [startPunkt, stopPunkt],
+                },
+              },
+            });
+      
+            map.addLayer({
+              id: "hole-path",
+              type: "line",
+              source: "hole-path",
+              layout: {
+                "line-join": "round",
+                "line-cap": "round",
+              },
+              paint: {
+                "line-color": "#ff7f00",
+                "line-width": 4,
+              },
+            });
+      
+           
+            startPunkt = null;
+        }
+    });
+    
+  
+};
+    useEffect(() => {
+        if (visRedigerHull && mapContainerRef.current) {
+            visMap();
+        }
+    }, [visRedigerHull, nr]);
     return ( 
     <div className="innhold">
         {klubb && klubb.baner ? (
@@ -264,6 +440,7 @@ const RedigerBane = ({ klubb }) => {
                                 </div>
                             </form>
                         </div>
+                        <div ref={mapContainerRef} className="w-full h-100" />                        
                         <div className="bunn-panel flex justify-between py-2 font-semibold text-md">
                             <button onClick={() => endreHull(false)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2">{"<-"}</button>
                             <button onClick={() => endreHull(true)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2">{"->"}</button>
