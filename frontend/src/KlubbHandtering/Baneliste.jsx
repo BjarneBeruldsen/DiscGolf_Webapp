@@ -287,7 +287,10 @@ import Review from './Reviews';
                                             setAktivBane(filteredBaner[index]);
                                             setAktivBaneIndex(index);
                                         }}
-                                >
+                                ><div className="topplinje border-b-2 flex justify-between text-xl font-bold ">
+                                <p>{bane.baneNavn}</p>
+                                
+                                </div>  
                                     <div className="hullVanskelighet border-b flex justify-between text-m my-4">
                                         <p>Antall hull: {antallHull}</p>
                                         <p>Tilstand: <span className="text-green-400">God</span></p>
