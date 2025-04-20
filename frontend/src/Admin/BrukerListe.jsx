@@ -1,18 +1,22 @@
 //Author: Severin Waller Sørensen
 
+/* Denne filen definerer en komponent for å vise en liste over brukere.
+ * Komponenten/filen henter brukerlisten via backend-API kall.
+ */
+
 import React, { useEffect, useState } from "react";
-import "../App.css"; // Importer CSS-fil for styling
+import "../App.css";
 
 const BrukerListe = () => {
   const [brukere, setBrukere] = useState([]);
   const [feilmelding, setFeilmelding] = useState("");
-  const [redigerBruker, setRedigerBruker] = useState(null); // Tilstand for redigering
+  const [redigerBruker, setRedigerBruker] = useState(null); 
 
   const hentBrukere = async () => {
     try {
       const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/brukere`, {
         method: "GET",
-        credentials: "include", // Sender cookies for autentisering
+        credentials: "include", 
         headers: {
           "Content-Type": "application/json",
         },
@@ -52,7 +56,18 @@ const BrukerListe = () => {
             throw new Error("Kunne ikke oppdatere bruker");
         }
 
-        alert("Bruker oppdatert!");
+        // Logg handlingen i systemloggen
+        await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/systemlogg`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            bruker: "DinBrukerNavn", // Bytt ut med faktisk brukernavn fra autentisering
+            handling: "Oppdaterte brukerrolle",
+            detaljer: `Endret rolle til '${redigerBruker.rolle}' for bruker '${redigerBruker.brukernavn}'`,
+          }),
+        });
+
         setRedigerBruker(null); // Lukk redigeringsskjemaet
         hentBrukere(); // Oppdater listen over brukere
     } catch (error) {
@@ -68,17 +83,37 @@ const BrukerListe = () => {
   const handleDelete = async (brukerId, brukernavn) => {
     const bekreft = window.confirm(`Er du sikker på at du vil slette brukeren "${brukernavn}"?`);
     if (!bekreft) return;
-
     try {
-      // Fjern eller tilbakestill denne delen hvis den ble endret
-      console.log(`Sletting av bruker med ID: ${brukerId}`);
+      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/brukere/${brukerId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+    
+      if (!respons.ok) {
+        throw new Error("Kunne ikke slette brukeren");
+      }
+
+      // Logg slettingen i systemloggen
+      await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/systemlogg`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+              bruker: "DinBrukerNavn", // Bytt ut med faktisk brukernavn fra autentisering
+              handling: "Slettet bruker",
+              detaljer: `Slettet brukeren '${brukernavn}' med ID '${brukerId}'`,
+          }),
+      });
+    
+      // Oppdater listen etter sletting
+      hentBrukere();
     } catch (error) {
       console.error("Feil ved sletting av bruker:", error.message);
       setFeilmelding("Kunne ikke slette brukeren. Prøv igjen senere.");
     }
   };
 
-  return (
+  return ( // Skrev et førsteutkast men spurte copilot om den kunne forbedre det og legge til CSS
     <div>
       <h2 className="text-lg font-bold mb-4">Brukerliste</h2>
       {feilmelding && <p className="text-red-500">{feilmelding}</p>}
@@ -96,6 +131,8 @@ const BrukerListe = () => {
               onChange={(e) => setRedigerBruker({ ...redigerBruker, rolle: e.target.value })}
             >
               <option value="bruker">Bruker</option>
+              <option value="medlem">Medlem</option>
+              <option value="klubbleder">Klubbleder</option>
               <option value="admin">Admin</option>
               <option value="hoved-admin">Hoved-admin</option>
             </select>
@@ -116,30 +153,35 @@ const BrukerListe = () => {
           </div>
         </div>
       ) : (
-        <ul className="space-y-2">
-          {brukere.map((bruker) => (
-            <li key={bruker._id} className="p-2 border rounded">
-              <p><strong>Brukernavn:</strong> {bruker.brukernavn}</p>
-              <p><strong>E-post:</strong> {bruker.epost}</p>
-              <p><strong>Rolle:</strong> {bruker.rolle}</p>
-              <button
-                className="custom-blue"
-                onClick={() => handleEdit(bruker)}
-              >
-                Rediger
-              </button>
-              <button 
-                className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                onClick={() => handleDelete(bruker._id, bruker.brukernavn)}
-              >
-                Slett
-              </button>
-            </li>
-          ))}
-        </ul>
+        // Hadde problemer med Tailwind og spurte copilt om hjelp/inline CSS
+        // dette (om burk av tailwind) ble foreslått for å gjøre det responsivt:
+        // Tailwind forslag <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "1rem" }}>
+        {brukere.map((bruker) => (
+          <div key={bruker._id} className="p-4 border rounded shadow-sm">
+            <p><strong>Brukernavn:</strong> {bruker.brukernavn}</p>
+            <p><strong>E-post:</strong> {bruker.epost}</p>
+            <p><strong>Rolle:</strong> {bruker.rolle}</p>
+            <button
+              className="custom-blue"
+              onClick={() => handleEdit(bruker)}
+            >
+              Rediger
+            </button>
+            <button 
+              className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+              onClick={() => handleDelete(bruker._id, bruker.brukernavn)}
+            >
+              Slett
+            </button>
+          </div>
+        ))}
+      </div>
+        
       )}
     </div>
   );
 };
 
+// Eksport av komponenten
 export default BrukerListe;

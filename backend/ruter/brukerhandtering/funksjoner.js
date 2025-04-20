@@ -1,6 +1,10 @@
 //Author: Laurent Zogaj & Severin Waller Sørensen
-const { kobleTilDB, getDb } = require('../../db'); 
 
+/* Denne filen inneholder funksjoner for tilganskontroll og autentisering i API-et.
+ * Dette sikrer at kun autoriserte brukere får tilgang til spesefikke deler av systemet.
+ */
+
+const { kobleTilDB, getDb } = require('../../db'); 
 
 //Rute for å sjekke om bruker er aktiv eller ikke, brukes i ulike ruter for enkel sjekk
 async function sjekkBrukerAktiv(req, res, next) {
@@ -31,9 +35,11 @@ function beskyttetRute(req, res, next) {
 
 // Sjekke brukerens rolle 
 // (parameteren roller = liste over roller som har tilgang til ruten)
+// Spurte copilt om å se over koden. Den foreslo å legge til '?' i req.user?.rolle 
+// slik at JavaScript ikke vil kaste feil om req.user er undefined eller null.
 function sjekkRolle(roller) {
     return (req, res, next) => {
-        const brukerRolle = req.user?.rolle; // ?.rolle (returner undefined hvis ikke eksisterer)
+        const brukerRolle = req.user?.rolle; 
         if (!brukerRolle || !roller.includes(brukerRolle)) {
             return res.status(403).json({ error: "Ingen tilgang" })
         }
@@ -41,4 +47,5 @@ function sjekkRolle(roller) {
     }
 }
 
+// eksporterer funksjonene slik at de kan brukes i andre filer
 module.exports = {sjekkBrukerAktiv, beskyttetRute, sjekkRolle};

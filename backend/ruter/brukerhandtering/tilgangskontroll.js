@@ -1,5 +1,10 @@
 //Author: Severin Waller Sørensen
 
+/* Denne filen definerer API-ruter for håndtering av brukere og tilgangskontroll.
+ * Den inkluderer CRUD-operasjoner som oppdatering og sletting av brukere,
+ * og sikrer at kun autentiserte brukere med riktige roller (f.eks. hoved-admin) kan utføre disse.
+ */
+
 const express = require('express');
 const { ObjectId } = require('mongodb');
 const { kobleTilDB, getDb } = require('../../db'); 
@@ -8,11 +13,8 @@ const { beskyttetRute, sjekkBrukerAktiv, sjekkRolle } = require('./funksjoner');
 const tilgangRouter = express.Router();
 
 
-
-
-
-
 // Rute for å redigere brukerinformasjon
+// sjekker at bruker er logget inn (beskyttetRute) og har riktig rolle (sjekkRolle, (i dette tilfellet hoved-admin))
 tilgangRouter.patch("/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
     try {
         console.log("Mottatt data for oppdatering:", req.body); // Logg dataene fra frontend
@@ -79,7 +81,7 @@ tilgangRouter.get('/bruker/rolle', beskyttetRute, async (req, res) => {
         }
         res.status(200).json({
             rolle: bruker.rolle,
-            superAdmin: bruker.superAdmin || false, // Returner superAdmin-status
+            hovedAdmin: bruker.hovedAdmin || false, // Returner hoved-admin-status
         });
     } catch (err) {
         console.error('Feil ved henting av brukerens rolle:', err);
@@ -100,18 +102,8 @@ tilgangRouter.get("/brukere", beskyttetRute, sjekkRolle(["hoved-admin"]), async 
     }
 });
 
-/* Skaper konflikt foreløpig
-tilgangRouter.get("/brukere", async (req, res) => {
-    try {
-        const db = getDb();
-        const brukere = await db.collection("Brukere").find({}).toArray(); // Henter alle brukere
-        res.status(200).json(brukere); // Returnerer brukerne som JSON
-    } catch (err) {
-        console.error("Feil ved henting av brukere:", err);
-        res.status(500).json({ error: "Kunne ikke hente brukere" });
-    }
-});
-*/
+
+// Rute for å hente spesifikk bruker basert på ID
 tilgangRouter.get("/brukere/:id", (req, res) => {
     res.json({ message: `GET-forespørsel mottatt for bruker-ID: ${req.params.id}` });
 });
@@ -121,9 +113,11 @@ tilgangRouter.get("/admin/systeminnstillinger", beskyttetRute, sjekkRolle(["hove
     res.json({ message: "Velkommen til systeminnstillinger!" });
 });
 
-
+// Rute for å teste tilgang til backend
+// Ble brukt underveis i utviklingen for å sjekke at backend kommunsierte
 tilgangRouter.get("/test", (req, res) => {
     res.json({ message: "Hei fra backend!" });
 });
 
+// eksporterer tilgangRouter slik at den kan brukes andre steder i applikasjonen
 module.exports = tilgangRouter;

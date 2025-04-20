@@ -1,5 +1,8 @@
 //Author: Severin Waller Sørensen
 
+/* Denne filen er en enkel komponent for admin-dashboardsiden
+ */
+
 import React from "react";
 
 const AdminDashboard = () => {
@@ -14,4 +17,5 @@ const AdminDashboard = () => {
   );
 };
 
+// Eksporterer slik at siden kan brukes i andre filer, f.eks. App.jsx
 export default AdminDashboard;

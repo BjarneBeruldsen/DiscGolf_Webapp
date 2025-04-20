@@ -1,5 +1,13 @@
 //Authors: Bjarne Beruldsen, Abdinasir Ali, Laurent Zogaj & Severin Waller Sørensen
 
+/* Denne filen er hovedkomponenten i applikasjonen.
+ * Den håndterer routing, autentisering og visning av forskjellige sider.
+ * De viktigste funksjonalitetene er
+ * - Dynamisk routing (via React Router)
+ * - Rollebasert tilgang (basert på brukerens rolle)
+ * - Tilkobling til backend via API-kall og socket
+ */
+
 import React, { useState, useEffect } from 'react';
 import './i18n';
 import LagKlubb from './KlubbHandtering/LagKlubb';
@@ -30,11 +38,11 @@ import KontaktOss from './_components/KontaktOss';
 import OmOss from './_components/OmOss';
 import PoengTavler from './KlubbHandtering/Poengtavler';
 import HentBruker from "./BrukerHandtering/HentBruker";
-import AdminRoute from "./Admin/AdminRoute";
 import AdminDashboard from './Admin/AdminDashboard';
 import TurneringsAdministrasjon from './Admin/TurneringsAdministrasjon';
 import Systeminnstillinger from './Admin/Systeminnstillinger';
 import BrukerListe from "./Admin/BrukerListe";
+import SystemLogg from "./Admin/LoggSystem";
 import RedigerBane from './KlubbHandtering/RedigerBane';
 import Varsling from './_components/Varsling';
 import socket from './socket';
@@ -160,8 +168,25 @@ function App() {
                 <Redirect to="/Innlogging" />
               )}
             </Route>
+            <Route exact path="/brukeradministrasjon">
+              {loggetInnBruker?.rolle === "hoved-admin" ? (
+                <SystemLogg />
+              ) : (
+                <Redirect to="/Innlogging" />
+              )}
+            </Route>
+            <Route exact path="/admindashboard">
+             {loggetInnBruker?.rolle === "hoved-admin" || 
+              loggetInnBruker?.rolle === "admin" ? (
+               <AdminDashboard />
+             ) : (
+               <Redirect to="/Innlogging" />
+             )}
+            </Route>
             <Route exact path="/turneringsadministrasjon">
-              {loggetInnBruker?.rolle === "klubbleder" ? (
+            {loggetInnBruker?.rolle === "klubbleder" || 
+             loggetInnBruker?.rolle === "admin" || 
+             loggetInnBruker?.rolle === "hoved-admin" ? (
                 <TurneringsAdministrasjon />
             ) : (
                 <Redirect to="/Innlogging" />

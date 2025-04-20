@@ -1,9 +1,9 @@
-//Author: Severin Waller Sørensen
+//Author: Laurent Zogaj & Severin Waller Sørensen
 import React, { useEffect, useState } from "react";
 
 const MinKlubb = ({ valgtUnderKategori }) => {
   const [rolle, setRolle] = useState(null);
-  const [superAdmin, setSuperAdmin] = useState(false);
+  const [hovedAdmin, setHovedAdmin] = useState(false);
   const underKategorier = ["Min klubb", "Søk etter klubb", "Avregistrer"];
 
   useEffect(() => {
@@ -15,7 +15,7 @@ const MinKlubb = ({ valgtUnderKategori }) => {
         });
         console.log("API-respons:", respons.data); // Legg til logging
         setRolle(respons.data.rolle);
-        setSuperAdmin(respons.data.superAdmin);
+        setHovedAdmin(respons.data.hovedAdmin);
       } catch (error) {
         console.error("Feil ved henting av brukerens rolle:", error);
       }
@@ -48,7 +48,7 @@ const MinKlubb = ({ valgtUnderKategori }) => {
       )}
 
       {/* hoved-admin-funksjonalitet */}
-      {superAdmin && (
+      {hovedAdmin && (
         <div className="mt-4">
           <h3 className="text-lg font-bold text-red-600">hoved-Admin-funksjoner</h3>
           <ul>

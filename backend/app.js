@@ -19,6 +19,7 @@ const { klubbRouter, setSocketIO } = require('./ruter/klubbhandtering');
 const brukerRouter = require('./ruter/brukerhandtering/brukerhandtering'); 
 const tilgangRouter = require('./ruter/brukerhandtering/tilgangskontroll');
 const turneringRouter = require("./ruter/Turneringer");
+const systemloggRouter = require("./ruter/systemlogger");
 const http = require('http');
 const { Server } = require('socket.io');
 const { sjekkBrukerAktiv, beskyttetRute } = require('./ruter/brukerhandtering/funksjoner');
@@ -168,6 +169,9 @@ app.use(turneringRouter);
 
 //Henter tilgangskontroll ruter
 app.use('/api', tilgangRouter);
+
+//Henter systemlogg ruter
+app.use('/api/systemlogg', systemloggRouter);
 
 // Endre serverstart til å bruke HTTP-serveren
 server.listen(PORT, () => {

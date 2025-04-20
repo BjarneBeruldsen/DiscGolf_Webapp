@@ -1,4 +1,10 @@
 //Author: Laurent Zogaj & Severin Waller Sørensen
+
+/* Denne filen er en React-kompoonent som fungerer som en sentral side for
+ * for brukere til å administrere sine innstillinger samt at den
+ * også gir brukeren tilgang til ulike funksjoner avhengig av brukerens rolle.
+ */
+
 import React, { useState } from "react";
 import "../App.css";
 import BrukerInnstillinger from "./Komponenter/BrukerInnstillinger.jsx";
@@ -9,8 +15,8 @@ import KlubbInformasjon from "./Komponenter/KlubbInformasjon.jsx";
 import MittAbonnement from "./Komponenter/MittAbonnement.jsx";
 import HentBruker from "./HentBruker.jsx"; 
 import AdminDashboard from "../Admin/AdminDashboard";
-import Systeminnstillinger from "../Admin/Systeminnstillinger.jsx";
 import BrukerListe from "../Admin/BrukerListe.jsx";
+import SystemLogg from "../Admin/LoggSystem.jsx";
 import TurneringsAdministrasjon from "../Admin/TurneringsAdministrasjon.jsx";
 
 const Medlemskap = () => {
@@ -147,6 +153,10 @@ const Medlemskap = () => {
           <BrukerListe />
         )}
 
+        {valgtKategori === "Systeminnstillinger" && valgtUnderKategori === "Systemlogg" && (
+          <SystemLogg />
+        )}
+
         {valgtKategori === "Administrasjon" && valgtUnderKategori === "AdminDashboard" && (
           <AdminDashboard />
         )}
@@ -188,4 +198,5 @@ const Medlemskap = () => {
   );
 };
 
+// eksporterer komponenten
 export default Medlemskap;

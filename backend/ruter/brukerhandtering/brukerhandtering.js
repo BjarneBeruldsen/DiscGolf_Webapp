@@ -12,7 +12,8 @@ const nodemailer = require('nodemailer');
 const { MongoClient } = require('mongodb');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const { beskyttetRute, sjekkBrukerAktiv } = require('./funksjoner');
+const { beskyttetRute, sjekkBrukerAktiv, sjekkRolle } = require('./funksjoner');
+const { leggTilSystemlogg } = require("../../models/Systemlogg");
 const brukerRouter = express.Router();
 
 //Rute for registrering av bruker
@@ -282,11 +283,13 @@ brukerRouter.patch("/RedigerBruker", beskyttetRute, sjekkBrukerAktiv, redigering
         if (!sjekkeEndringer) {
             return res.status(400).json({ error: "Ingen endringer gjort" });
         }
+
         //Utfører oppdatering til databasen av brukeren med autentisert bruker-ID
         const resultat = await db.collection("Brukere").updateOne(
             { _id: brukerId }, 
             { $set: oppdatering }
         );
+
         //Fjerner unødvendig fields hvis tomme
         const fjerne = await db.collection("Brukere").updateOne(
             { _id: brukerId },
@@ -298,6 +301,15 @@ brukerRouter.patch("/RedigerBruker", beskyttetRute, sjekkBrukerAktiv, redigering
                 console.log(`Fjernet unødvendige felt for bruker: ${bruker.brukernavn}, med epost: ${epost}`);
              }
                 console.log(`Brukeroppdatering fullført for: ${brukernavn}, med epost: ${epost}`);
+
+                //Lagrer endringen i systemlogg
+                await leggTilSystemlogg({
+                    tidspunkt: new Date(),
+                    bruker: req.user.brukernavn, // Brukernavn til den som utførte handlingen
+                    handling: "Oppdaterte brukerinformasjon",
+                    detaljer: `Endret informasjon for bruker '${brukernavn}' med e-post '${epost}'`
+                });
+
                     return res.status(200).json({ melding: "Brukerinformasjon oppdatert" });
             } else {
                 return res.status(404).json({ error: "Brukeren ble ikke funnet" });
