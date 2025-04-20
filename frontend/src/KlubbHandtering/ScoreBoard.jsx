@@ -91,7 +91,7 @@ const ScoreBoard = () => {
                 return isSame ? prevSpillere : oppdatertSpillere;
             });
         }
-    });
+    }, [nr, bane, hull, spillere]);
    
 
     useEffect(() => {
@@ -526,7 +526,7 @@ const ScoreBoard = () => {
                 <div className="midtpanel font-bold">
                     {spillere.map(spiller => (
                         <div key={spiller.id} className="spiller flex justify-center items-center my-2 border-b">
-                            <p className="p-5">{spiller.navn} (({spiller.total === 0 ? "E" : spiller.total}))</p>
+                            <p className="p-5">{spiller.navn} ({spiller.total === 0 ? "E" : spiller.total})</p>
                             <button onClick={() => oppdaterpoeng(spiller.id, -1)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow px-4 py-2 font-sans">-</button>
                             <p className="p-5">{spiller.antallKast[nr] || 0}</p>
                             <button onClick={() => oppdaterpoeng(spiller.id, 1)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow px-4 py-2">+</button>
