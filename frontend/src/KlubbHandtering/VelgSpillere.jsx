@@ -76,7 +76,7 @@ const VelgSpillere = (props) => {
             id: `guest-${Date.now()}`, // Unik ID for gjestespiller
             navn: nySpiller,
             poeng: 0,
-            total: 0
+            total: 0, 
         };
         setSpillere([...spillere, nyGjestespiller]);
         setNySpiller('');

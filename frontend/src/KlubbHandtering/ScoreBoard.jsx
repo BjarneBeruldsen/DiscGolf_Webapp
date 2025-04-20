@@ -23,7 +23,6 @@ const ScoreBoard = () => {
     const mapContainerRef = useRef(null);
     const [antInviterte, setAntInviterte] = useState(0);
     const [spillereSomVises, setSpillereSomVises] = useState([]);
-    const [render, setRender] = useState(true);    
     const [visVenter, setVisVenter] = useState(false);
     const [visVenterFerdig, setVisVenterFerdig] = useState(false);  
     const [antallAkseptert, setAntallAkseptert] = useState(0);
@@ -32,6 +31,7 @@ const ScoreBoard = () => {
     const [venterFerdigAntall, setVenterFerdigAntall] = useState(0);
     const [lagretPoengkort, setLagretPoengkort] = useState(false);
     const [sortertPoengkort, setSortertPoengkort] = useState([]);
+    const [totalAntKast, setTotalAntKast] = useState(0);
     const [runde, setRunde] = useState({});
     const [nr, setNr] = useState(() => {
         const nr = localStorage.getItem('nr');
@@ -41,7 +41,6 @@ const ScoreBoard = () => {
         const lagretSpillere = localStorage.getItem('spillere');
         return lagretSpillere ? JSON.parse(lagretSpillere) : []; 
     })
-    const [antallKast, setAntallKast] = useState([]);
     const [visScoreboard, setVisScoreboard] = useState( () => {
         const lagretVisScoreboard = localStorage.getItem('visScoreboard');
         return lagretVisScoreboard ? JSON.parse(lagretVisScoreboard) : false;
@@ -73,25 +72,27 @@ const ScoreBoard = () => {
         }
     }, [bane]);
 
-
+    //for spillere som blir invitert 
     useEffect(() => {
-        if (bane && bane.hull && nr === 0) { // Only apply logic when on hole number 1
+        if (bane && bane.hull && nr === 0) { 
             const oppdatertSpillere = spillere.map(spiller => {
-                if (spiller.total === 0) {
+                console.log("spiller: ", spiller);
+                if (spiller.total === 0 && spiller.antallKast.length === 1) {
                     return {
                         ...spiller,
-                        total: 0 - hull[nr]?.par || 0
+                        antallKast: Array(hull.length).fill("-"),
+                        total: 0,
                     };
                 }
                 return spiller;
             });
             setSpillere(prevSpillere => {
-                // Avoid unnecessary updates if no changes are made
                 const isSame = JSON.stringify(prevSpillere) === JSON.stringify(oppdatertSpillere);
                 return isSame ? prevSpillere : oppdatertSpillere;
             });
         }
-    }, [bane, hull, nr]); // Removed `spillere` from dependencies to avoid infinite loop
+    }, [bane, hull, nr]);
+   
 
     useEffect(() => {
         if (!rundeId) {
@@ -130,11 +131,11 @@ const ScoreBoard = () => {
             console.log("akseptert oppdatert fra socket: " + data.data.rundeId);
             console.log("runde fra socket akseptert: " + JSON.stringify(data.data)); 
             if(data.data.rundeId === rundeId) {
+                leggTilPoengkort(data.data.poengkort);
                 setAntFerdig(data.data.antallFerdig); 
                 setAntInviterte(data.data.antInviterte);
                 setAntallAkseptert(data.data.antallAkseptert);
                 console.log("antall ferdig: ", data.data.antallFerdig)
-                leggTilPoengkort(data.data.poengkort);
             }
         })
 
@@ -143,7 +144,12 @@ const ScoreBoard = () => {
         setVenterFerdigAntall(antInviterte - antFerdig);
 
         if (venterAntall === 0) {
+            if(visVelgSpillere) {
+                hasUpdatedOnce.current = false;
+            }
             setVisVenter(false);
+            console.log("status: ", visVelgSpillere, visOppsummering, visVenterFerdig);
+            console.log("har oppdatert: ", hasUpdatedOnce.current);
             if (!visVelgSpillere && !visOppsummering && !visVenterFerdig) {
                 setVisScoreboard(true);
                 if (!hasUpdatedOnce.current) {
@@ -166,17 +172,37 @@ const ScoreBoard = () => {
         const oppdatertSpillere = spillere.map(spiller => {
             if (spiller.id === spillerId) {
                 const oppdatertAntallKast = [...spiller.antallKast];
-                oppdatertAntallKast[nr] = (oppdatertAntallKast[nr] || 0) + endring;
-                if (oppdatertAntallKast[nr] < 0) {
-                    oppdatertAntallKast[nr] = 0; // Prevent negative throws
+                if(oppdatertAntallKast[nr] === "-" && endring > 0) {
+                    oppdatertAntallKast[nr] = parseInt(hull[nr].par);
                 }
-                const oppdatertTotal = spiller.total + endring;
+                else if(oppdatertAntallKast[nr] === "-" && endring < 0) {
+                    oppdatertAntallKast[nr] = parseInt(hull[nr].par - 1);
+                }
+                else {
+                    oppdatertAntallKast[nr] = parseInt(oppdatertAntallKast[nr] || 0) + endring;
+                }
+
+                if(oppdatertAntallKast[nr] === 0) {
+                    oppdatertAntallKast[nr] = "-";
+                }
+
+
+
+                let oppdatertTotal = 0;
+                console.log("oppdatertAntallKast: ", oppdatertAntallKast);
+                console.log("hull lengde: ", hull.length);
+                console.log("spiller: ", spiller);
+                for(let i=0;i<hull.length;i++) {
+                    if(oppdatertAntallKast[i] != "-") {
+                        oppdatertTotal += parseInt(oppdatertAntallKast[i]) - hull[i].par; 
+                    }
+                }   
                 setErrorMelding(null);
 
                 return {
                     ...spiller,
                     antallKast: oppdatertAntallKast,
-                    total: oppdatertTotal
+                    total: oppdatertTotal,
                 };
             }
             return spiller;
@@ -190,50 +216,19 @@ const ScoreBoard = () => {
         }
     }, [spillereSomVises]);
 
-    const oppdaterTotal = (retning) => {
-        if (retning) {
-            const oppdatertSpillere = spillere.map(spiller => ({
-                ...spiller,
-                poeng: 0,
-                total: Number(spiller.total) - Number(hull[nr + 1] ? hull[nr + 1].par : 0) //Number ble lagt til ved hjelp av Copilot
-            }));
-            setSpillere(oppdatertSpillere);
-        } else {
-            const oppdatertSpillere = spillere.map(spiller => ({
-                ...spiller,
-                poeng: 0,
-                total: Number(spiller.total) + Number(hull[nr] ? hull[nr].par : 0)
-            }));
-            setSpillere(oppdatertSpillere);
-        }
-    };
 
 
     const endreHull = (retning) => {
-        setErrorMelding(null);
-        let erNull = true; 
-        if(!render) {
-            erNull = sjekkErNullKast(nr);
-        }
-        else {
-            erNull = false; 
-        }
         
-        if (retning && nr < hull.length - 1 && !erNull) {
+        if (retning && nr < hull.length - 1) {
             setNr(nr + 1); 
-            if(nr <= hull.length - 1) {
-                oppdaterTotal(retning);
-            }
+            setErrorMelding(null);
             
         } else if (!retning && nr > 0) {
             setNr(nr - 1);
-            if(nr >= 1) {
-                oppdaterTotal(retning);
-            }
+            setErrorMelding(null);
         }
-        else {
-            setErrorMelding("Alle spillere må kaste")
-        }
+        console.log("spillere: ", spillere);
     };
 
     const handleBekreftSpillere = async (valgteSpillere, antInviterte) => {
@@ -245,8 +240,8 @@ const ScoreBoard = () => {
         setAntInviterte(antInviterte);
         const spillereMedPoeng = valgteSpillere.map(spiller => ({
             ...spiller,
-            antallKast: Array(hull.length).fill(0),
-            total: 0 - hull[nr].par,
+            antallKast: Array(hull.length).fill("-"),
+            total: 0,
         }));
         const oppdatertInvitasjon = {
             avsender: bruker.brukernavn,
@@ -328,18 +323,8 @@ const ScoreBoard = () => {
 
 
     const handleAvsluttRunde = async () => {
-        setVisVenterFerdig(true);
-        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/runder/ferdig/${rundeId}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-        });
-
-        if (!response.ok) {
-            throw new Error('Feil ved oppdatering av antall akseptert');
-        }
-
-
-        if(!sjekkErNullKast(nr) && !lagretPoengkort) {
+        if(!sjekkErNullKast() && !lagretPoengkort) {
+            setVisVenterFerdig(true);
             const nyPoengkort = {
                 spillere: spillere,
                 baneNavn: bane.baneNavn,
@@ -373,9 +358,20 @@ const ScoreBoard = () => {
             }).catch(error => {
                 console.error('Feil ved lagring av poengkort i runde:', error);
             });
-        }
-
             setLagretPoengkort(true);
+
+            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/runder/ferdig/${rundeId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+            });
+    
+            if (!response.ok) {
+                throw new Error('Feil ved oppdatering av antall akseptert');
+            }
+        }
+        else {
+            setErrorMelding("Alle hull er ikke fyllt ut")
+        }
             setVisScoreboard(false);
             setVisVelgSpillere(false);
             if(venterFerdigAntall <= -1) {
@@ -385,9 +381,6 @@ const ScoreBoard = () => {
                 setAntallAkseptert(0);
                 setAntFerdig(0);
             }
-        else {
-            setErrorMelding("Alle spillere må kaste")
-        }
     };
     
     const handleNyRunde = () => {
@@ -403,6 +396,7 @@ const ScoreBoard = () => {
     }
 
     const leggTilPoengkort = (poengkort) => {
+        console.log("poengkort fra socket: ", poengkort);
         const eksisterendeIds = new Set(sortertPoengkort.map(p => p.nyPoengkort.spillere[0]?.id)); //lagt til ved hjelp av Copilot
         const nyePoengkort = poengkort.filter(p => !eksisterendeIds.has(p.nyPoengkort.spillere[0]?.id));
         
@@ -413,17 +407,21 @@ const ScoreBoard = () => {
         });
         
         setSortertPoengkort(oppdatertPoengkort);
-        console.log('oppdaterte poenkort:', oppdatertPoengkort);
+        console.log('oppdaterte poengkort:', oppdatertPoengkort);
     }
 
-    const sjekkErNullKast = (nr) => {
-        let erNull = false;
-        for(let i=0;i<spillere.length;i++) {
-            if(spillere[i].antallKast[nr] === 0) {
-                erNull = true; 
+    const sjekkErNullKast = () => {
+        for(let spiller of spillere) {
+            console.log("spiller sjekkes: ", spiller);
+            for(let antall of spiller.antallKast) {
+                if(antall === "-" || antall === 0) {
+                    console.log("true returneres")
+                    return true;
+                }
             }
         }
-        return erNull;
+        console.log("false returneres")
+        return false;
     }
     useEffect(() => {
         if (!mapContainerRef.current || !hull || hull.length === 0 || !hull[nr]) return;
@@ -528,23 +526,23 @@ const ScoreBoard = () => {
                 <div className="midtpanel font-bold">
                     {spillere.map(spiller => (
                         <div key={spiller.id} className="spiller flex justify-center items-center my-2 border-b">
-                            <p className="p-5">{spiller.navn} ({spiller.total})</p>
+                            <p className="p-5">{spiller.navn} {spiller.total === 0 ? "E" : spiller.total}</p>
                             <button onClick={() => oppdaterpoeng(spiller.id, -1)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow px-4 py-2 font-sans">-</button>
                             <p className="p-5">{spiller.antallKast[nr] || 0}</p>
                             <button onClick={() => oppdaterpoeng(spiller.id, 1)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow px-4 py-2">+</button>
                         </div>
                     ))}
-                    <div className="flex justify-center items-center my-2">
-                        <p className="text-red-500">{errorMelding}</p>
-                    </div>
                 </div>
                 <div ref={mapContainerRef} className="w-full h-[300px]" />
+                <div className="flex justify-center items-center my-2">
+                        <p className="text-red-500">{errorMelding}</p>
+                </div>
                 <div className="bunn-panel flex justify-between py-2">
-                    <button onClick={() => endreHull(false)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2">{"<-"}</button>
+                    <button onClick={() => endreHull(false)} className={`rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2 ${nr === 0 ? "opacity-50 cursor-not-allowed" : ""}`}>{"<-"}</button>
                     {nr === hull.length - 1 && (
                         <button onClick={handleAvsluttRunde} className="rounded-full text-white bg-red-500 hover:bg-red-200 shadow mx-2 px-4 py-2">Avslutt</button>
                     )}
-                    <button onClick={() => endreHull(true)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2">{"->"}</button>
+                    <button onClick={() => endreHull(true)} className={`rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2 ${nr === hull.length-1 ? "opacity-50 cursor-not-allowed" : ""}`}>{"->"}</button>
                 </div>
             </div>
             )}
