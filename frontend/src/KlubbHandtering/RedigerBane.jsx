@@ -325,7 +325,7 @@ const RedigerBane = ({ klubb }) => {
         }
     }, [visRedigerHull, nr]);
     return ( 
-    <div className="innhold">
+    <div className="innhold h-[100vh] bg-gray-100">
         {klubb && klubb.baner ? (
             <>
                 <BaneListe baner={klubb.baner} klubbId={klubb._id} rediger={rediger} />

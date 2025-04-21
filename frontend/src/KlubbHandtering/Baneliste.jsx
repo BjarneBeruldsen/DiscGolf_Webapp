@@ -223,7 +223,7 @@ import Review from './Reviews';
     const baneYrId = yrId[aktivBane?._id] || "1-72837";
 
     return (
-        <div className="p-6 bg-white border-black shadow-2xl min-h-screen">
+        <div className="p-6 bg-white border-black shadow-[0_1px_12px_rgba(0,0,0,0.1)] min-h-screen">
             <div className="filter-controls flex flex-col md:flex-row gap-4 mb-6">
                 <div className="location-filter w-full md:w-1/3">
                     <label className="block text-sm font-medium text-gray-700 mb-1">Velg bane</label>
