@@ -273,7 +273,8 @@ import Review from './Reviews';
                     </select>
                     <button
                         onClick={() => setVisNæreBaner(!visNæreBaner)}
-                        className={`w-2/3 rounded-lg p-2.5 font-medium ${visNæreBaner ? 'bg-blue-600 text-white shadow-md hover:bg-blue-700' : 'bg-white border border-gray-300 hover:bg-gray-100'}`}
+                        className={`w-2/3 rounded-lg p-2.5 font-medium ${visNæreBaner ? 'active' : ''}`}
+
                     >
                         {visNæreBaner ? 'Viser baner i nærheten' : 'Vis baner i nærheten'}
                     </button>
