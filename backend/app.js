@@ -99,6 +99,9 @@ app.use(express.json());
 //Legger serving fra statiske filer fra REACT applikasjonen
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
+// Serve static files from the "filer" directory
+app.use('/filer', express.static(path.join(__dirname, '../filer')));
+
 //Konfigurasjon av session https://www.geeksforgeeks.org/how-to-handle-sessions-in-express/, https://expressjs.com/en/resources/middleware/session.html & https://www.passportjs.org/tutorials/password/session/  
 app.use(session({
     secret: process.env.SESSION_SECRET,
