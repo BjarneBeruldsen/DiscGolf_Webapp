@@ -19,6 +19,8 @@ const LagKlubbside = () => {
     const [visTurneringForm, setVisTurneringForm] = useState(false);
     const [errorMelding, setErrorMelding] = useState('');  
     const [visRedigerBane, setVisRedigerBane] = useState(false);
+    const [fil, setFil] = useState(null);
+    
 
     useEffect(() => {
         fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}`)
@@ -33,41 +35,66 @@ const LagKlubbside = () => {
             });
     }, [id]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
             sjekkNyhetTittel(nyhetTittel);
             sjekkNyhet(nyhet);
-        }
-        catch(error) {
+        } catch (error) {
             setErrorMelding(error.message);
             setLaster(false);
             return;
         }
 
-        const nyNyhet = { nyhetTittel, nyhet, tid : (new Date().getTime() / 1000) };
+        let filPath = null;
+        if (fil) {
+            const formData = new FormData();
+            formData.append('pdf', fil);
+
+            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/upload`, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                setErrorMelding('Feil ved opplasting av fil');
+                return;
+            }
+
+            const data = await response.json();
+            filPath = data.filePath; // Relative path to the uploaded file
+        }
+
+        const nyNyhet = {
+            nyhetTittel,
+            nyhet,
+            tid: new Date().getTime() / 1000,
+            fil: filPath,
+        };
 
         fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}/nyheter`, {
             method: 'POST',
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(nyNyhet)
-        }).then((response) => {
-            if(!response.ok) {
-                throw new Error('Feil ved lagring av nyhet');
-            }
-            else {
+            body: JSON.stringify(nyNyhet),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Feil ved lagring av nyhet');
+                }
                 return response.json();
-            }
-        }).then((data) => {
-            console.log('Ny nyhet lagt til', data);
-            setNyhetTittel('');
-            setNyhet('');
-            alert('Ny nyhet lagt til');
-            minne.push(`/`);
-        }).catch(error => {
-            console.error('Feil ved lagring av nyhet:', error);
-        });
+            })
+            .then((data) => {
+                console.log('Ny nyhet lagt til', data);
+                setNyhetTittel('');
+                setNyhet('');
+                setFil(null);
+                alert('Ny nyhet lagt til');
+                minne.push(`/`);
+            })
+            .catch((error) => {
+                console.error('Feil ved lagring av nyhet:', error);
+            });
     };
 
     const behandleVisning = (seksjon) => {
@@ -85,6 +112,12 @@ const LagKlubbside = () => {
     const handleBaneLagtTil = () => {
         setVisBaneForm(false);
         alert('Ny bane lagt til');
+    }
+
+    const handleEndring = (e) => {
+        const filListe = e.target.files;
+        setFil(filListe[0]);
+        console.log('fil:', filListe[0]);
     }
 
 
@@ -150,6 +183,22 @@ const LagKlubbside = () => {
                                                 className="w-full border border-gray-600 rounded-lg shadow-sm
                                                            px-4 py-2 focus:outline-none focus:border-blue-500"
                                             />
+                                        </div>
+                                        <div className='mb-5'>
+                                            <label>Last opp pdf:</label>
+                                            <div className="mt-2">
+                                                <label className="inline-block px-4 py-2 bg-gray-500 text-white rounded-lg cursor-pointer hover:bg-gray-800">
+                                                    Velg fil
+                                                    <input 
+                                                        type="file"
+                                                        name="pdf" 
+                                                        className="hidden"
+                                                        accept='application/pdf'
+                                                        onChange={(e) => {handleEndring(e)}}                        
+                                                    />
+                                                </label>
+                                                <label className='ml-2'>{fil ? fil.name : 'Ingen fil valgt'}</label>
+                                            </div>
                                         </div>
                                         <span className='text-red-500'>{ errorMelding }</span>
                                         <div className="mt-4">

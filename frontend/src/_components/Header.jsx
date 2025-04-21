@@ -14,7 +14,8 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling, refreshVa
   const [antallVarslinger, setAntallVarslinger] = useState(0);
   const [nyheter, setNyheter] = useState([]);
   const { bruker, venter } = HentBruker();
-  const [antInvitasjoner, setAntInvitasjoner] = useState(0); 
+  const [antInvitasjoner, setAntInvitasjoner] = useState(0);
+  const [erMedlem, setErMedlem] = useState(false);
 
 
   useEffect(() => {
@@ -29,7 +30,10 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling, refreshVa
         const klubber = await response.json();
     
         const nyheterMedKlubb = klubber
-          .filter((klubb) => Array.isArray(klubb.nyheter))
+          .filter((klubb) => {
+            // Sjekk om brukeren er medlem av klubben
+            return Array.isArray(klubb.medlemmer) && klubb.medlemmer.some(medlem => medlem.id === loggetInnBruker?.id);
+          })
           .flatMap((klubb) =>
             klubb.nyheter.map((nyhet) => ({
               ...nyhet,
@@ -54,18 +58,21 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling, refreshVa
     // Lytt til meldinger fra serveren
     socket.on('nyhetOppdatert', (data) => {
         console.log('Nyhet lagt til fra socket:', data);
-        setAntallVarslinger(antallVarslinger + 1); // Oppdater antall varslinger
-        refreshVarsling(); 
+        const erMedlem = Array.isArray(data.data.medlemmer) && data.data.medlemmer.some(medlem => medlem.id === loggetInnBruker?.id);
+        if (erMedlem) {
+            setAntallVarslinger(prev => prev + 1); // Oppdater antall varslinger
+            refreshVarsling(); // Refresh varslinger
+        }
     });
 
     socket.on('invitasjonOppdatert', (data) => {
         console.log('Invitasjon lagt til fra socket:', data);
-        console.log('mottakerid:', data.data.invitasjon.mottakerId)
-        console.log('loggetinnbrukerid:', loggetInnBruker.id)
-        if(data.data.invitasjon.mottakerId === loggetInnBruker.id) {
-          setAntallVarslinger(antallVarslinger + 1); // Oppdater antall varslinger
-          alert('Du har mottat en varsling!')
-          refreshVarsling(); 
+        console.log('mottakerid:', data.data.invitasjon.mottakerId);
+        console.log('loggetinnbrukerid:', loggetInnBruker.id);
+        if (data.data.invitasjon.mottakerId === loggetInnBruker.id) {
+            setAntallVarslinger(antallVarslinger + 1); // Oppdater antall varslinger
+            alert('Du har mottatt en varsling!');
+            refreshVarsling();
         }
     }); 
 
@@ -113,11 +120,13 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling, refreshVa
                 {t("Hjem")}
               </Link>
             </li>
-            <li>
-              <Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600">
-                {t("Rediger klubbside")}
-              </Link>
-            </li>
+              {loggetInnBruker && (loggetInnBruker.rolle === 'klubbleder' || loggetInnBruker.rolle === 'admin' || loggetInnBruker.rolle === 'hoved-admin') && (
+                <li>
+                <Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600">
+                  {t("Rediger klubbside")}
+                </Link>
+                </li>
+              )}
             <li>
               <Link to="/Baner" className="text-black font-bold hover:text-gray-600">
               {t("Baner")}
@@ -258,11 +267,13 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling, refreshVa
               {t("Hjem")}
               </Link>
             </li>
-            <li>
-              <Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>
-                {t("Velg Klubb")}
-              </Link>
-            </li>
+              {loggetInnBruker && (loggetInnBruker.rolle === 'klubbleder' || loggetInnBruker.rolle === 'admin' || loggetInnBruker.rolle === 'hoved-admin') && (
+                <li>
+                <Link to="/VelgKlubb" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>
+                  {t("Rediger klubbside")}
+                </Link>
+                </li>
+              )}
             <li>
               <Link to="/Baner" className="text-black font-bold hover:text-gray-600" onClick={lukkMeny}>
                 {t("Baner")}

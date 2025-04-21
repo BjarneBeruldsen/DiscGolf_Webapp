@@ -11,6 +11,13 @@ const Nyhetsliste = ({ nyheter, handleLiker, antLiker }) => {
                         <div className='topp-panel border-b'>
                             <h4 className="flex justify-center text-xl font-bold">{ nyhet.nyhetTittel }</h4>
                             <p className="mt-2 flex justify-center">{ nyhet.nyhet }</p>
+                            {nyhet.fil && (
+                                <p className="mt-2 flex justify-center">
+                                    <a href={`${process.env.REACT_APP_API_BASE_URL}/filer/${nyhet.fil}`} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+                                        Last ned PDF
+                                    </a>
+                                </p>
+                            )}
                         </div>
                         <div className='like&Kommenter border-b'>
                             <button type="submit" onClick={handleLiker} className="justify-center py-2 px-2 m-2 bg-gray-500 rounded-lg text-sm text-white hover:bg-gray-800">Liker

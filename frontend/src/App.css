@@ -167,3 +167,74 @@
   }
   
 }
+
+
+.filter-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .filter-controls {
+    flex-direction: row;
+  }
+}
+
+.filter-controls label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.25rem;
+}
+
+.filter-controls select {
+  width: 100%;
+  padding: 0.625rem;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  font-size: 1rem;
+}
+
+.filter-controls select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+.near-filter .flex {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.near-filter select {
+  width: 33%;
+}
+
+.near-filter button {
+  width: 66%;
+  padding: 0.625rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  background-color: white;
+  transition: background-color 0.2s ease;
+}
+
+.near-filter button:hover {
+  background-color: #f3f4f6;
+}
+
+.near-filter .active {
+  background-color: #2563eb;
+  color: white;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+}
+
+.near-filter .active:hover {
+  background-color: #1d4ed8;
+}

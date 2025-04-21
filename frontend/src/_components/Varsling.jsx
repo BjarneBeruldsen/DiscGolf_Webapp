@@ -18,6 +18,7 @@ const Varsling = ({ toggleVarsling }) => {
     const minne = useHistory();
     const itemsPerPage = 4; 
 
+
     useEffect(() => {
         if(bruker) {
             console.log("Bruker:", bruker);
@@ -27,14 +28,18 @@ const Varsling = ({ toggleVarsling }) => {
         if (klubber && klubber.length > 0) {
             const nyheterMedKlubb = klubber
                 .filter(klubb => Array.isArray(klubb.nyheter))
-                .map(klubb =>
-                    klubb.nyheter.map(nyhet => ({
+                .map(klubb => {
+                    // Filtrer nyheter basert på medlemskap
+                    const erMedlem = Array.isArray(klubb.medlemmer) && klubb.medlemmer.some(medlem => medlem.id === bruker?.id);
+                    if (!erMedlem) return []; // Hvis brukeren ikke er medlem, ekskluder nyheter
+
+                    return klubb.nyheter.map(nyhet => ({
                         ...nyhet,
                         klubbNavn: klubb.klubbnavn,
                         klubbId: klubb._id,
                         tid: nyhet.tid || 0 // Hvis nyhet ikke har tid, bruk 0 som fallback
-                    }))
-                )
+                    }));
+                })
                 .flat();
 
             const alleVarslinger = [

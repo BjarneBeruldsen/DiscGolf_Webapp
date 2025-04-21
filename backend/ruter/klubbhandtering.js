@@ -7,11 +7,32 @@ const { sjekkBrukerAktiv, beskyttetRute } = require('./brukerhandtering/funksjon
 const { MongoClient } = require('mongodb');
 const db = require('../db');
 const klubbRouter = express.Router();
+const multer = require('multer');
+const path = require('path');
 let io;
 
 function setSocketIO(socketIOInstance) {
     io = socketIOInstance;
 }
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, '../../filer'));
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    },
+});
+const upload = multer({ storage });
+
+// Route for file uploads
+klubbRouter.post('/upload', upload.single('pdf'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: 'Ingen fil ble lastet opp' });
+    }
+    res.status(200).json({ filePath: req.file.filename });
+});
 
 //Klubbhåndterings ruter 
 klubbRouter.get('/klubber', (req, res) => {
@@ -107,14 +128,21 @@ klubbRouter.post('/klubber/:id/nyheter', (req, res) => {
     if(ObjectId.isValid(req.params.id) === false) {
         return res.status(400).json({error: 'Ugyldig dokument-id'});
     } else {
-        const nyNyhet = {...req.body, _id: new ObjectId()};
+        const nyNyhet = {
+            ...req.body,
+            _id: new ObjectId(),
+            fil: req.body.fil 
+        };
         db.collection('Klubb')
         .updateOne(
             { _id: new ObjectId(req.params.id) },
             { $push: { nyheter: nyNyhet } }
         )
-        .then(result => {
-            if (io) io.emit('nyhetOppdatert', { type: 'ny', data: nyNyhet });
+        .then(async result => {
+            if (io) {
+                const klubb = await db.collection('Klubb').findOne({ _id: new ObjectId(req.params.id) });
+                io.emit('nyhetOppdatert', { type: 'ny', data: klubb }); // Send hele klubbobjektet
+            }
             res.status(201).json(result);
         })
         .catch(err => {

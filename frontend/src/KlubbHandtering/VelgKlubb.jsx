@@ -1,11 +1,13 @@
 import { Link, useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
+import HentBruker from "../BrukerHandtering/HentBruker";
 
 const VelgKlubb = () => {
     const [klubber, setKlubber] = useState([]);
     const [valgtKlubb, setValgtKlubb] = useState('');
     const minne = useHistory();
     const [laster, setLaster] = useState(false);
+    const { bruker } = HentBruker(); // Henter brukerdata fra HentBruker-hooket
 
 
     useEffect(() => {
@@ -16,14 +18,22 @@ const VelgKlubb = () => {
             .then(res => res.json())
             .then(data => {
                 console.log(data);
-                setKlubber(data);
+
+                let filtrerteKlubber = data;
+                if (bruker.rolle !== 'admin' && bruker.rolle !== 'hoved-admin') {
+                    filtrerteKlubber = data.filter(klubb =>
+                        klubb.medlemmer?.some(medlem => medlem.id === bruker.id && medlem.rolle === 'Klubbleder')
+                    );
+                }
+
+                setKlubber(filtrerteKlubber);
                 setLaster(false);
             })
             .catch(error => {
                 console.error('Feil ved henting av klubber:', error);
                 setLaster(false);
             });
-    }, []);
+    }, [bruker]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
