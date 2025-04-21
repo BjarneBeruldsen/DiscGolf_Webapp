@@ -367,7 +367,7 @@ import Review from './Reviews';
                             <iframe
                                 src={`https://www.yr.no/nb/innhold/${baneYrId}/card.html`}
                                 frameBorder="0"
-                                className="absolute top-0 left-0 w-full h-full rounded-xxl"
+                                className="absolute top-0 left-0 w-full h-full rounded-xxl pointer-events-none"
                                 title="Værmelding"
                             />
                         </div>
