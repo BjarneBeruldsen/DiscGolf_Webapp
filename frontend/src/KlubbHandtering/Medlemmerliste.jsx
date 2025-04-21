@@ -3,7 +3,7 @@ import React from 'react';
 
 const Medlemmerliste = ({ medlemmer }) => {
     return (
-        <div className="p-4 bg-gray shadow rounded-lg">
+        <div className="p-4 bg-gray shadow rounded-lg h-[100vh]">
             <div className="bg-white p-4 rounded-lg shadow-md">
                 <h1 className="text-2xl font-bold mb-4 border-b">Medlemmer</h1>
                 <ul className="">

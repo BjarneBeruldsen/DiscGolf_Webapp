@@ -1,7 +1,7 @@
 // Author: Bjarne Hovd Beruldsen
 const Turneringerliste = () => {
     return ( 
-    <div>
+    <div className="h-[100vh]">
         <h1>Turneringer</h1>
     </div> );
 }

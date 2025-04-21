@@ -7,7 +7,7 @@ const Baner = () => {
   const { data: baner, error, isPending } = UseFetch(`${process.env.REACT_APP_API_BASE_URL}/banerListe`);
   return (
     <div className="min-h-screen flex flex-col bg-gray-200">
-      <h1 className="text-xl font-bold flex justify-center pt-2">Alle Baner:</h1>
+      
       {error && <div>{error}</div>}
       {isPending && <div>Laster...</div>}
       <BaneListe baner={baner} />
