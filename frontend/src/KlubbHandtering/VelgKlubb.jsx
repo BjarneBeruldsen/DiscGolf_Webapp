@@ -43,15 +43,15 @@ const VelgKlubb = () => {
     };
 
     return (
-        <div className="velg bg-gray-200 p-4  flex justify-center min-h-[100vh] ">
-            <div className="innhold bg-gray-200 p-4 mt-50">
-                <h2 className="text-3xl font-bold mb-4">Velg en klubb</h2>
-                <p className="mb-4">Ikke registrert klubb?</p>
-                <Link to="/LagKlubb" className="text-blue-500 underline mb-4 block">Opprett ny klubb her</Link>
-                <p className="mb-4">Velg en klubb du skal redigere side for:</p>
+        <div className="velg bg-gray-100 p-6 flex justify-center min-h-[100vh]">
+            <div className="innhold bg-white p-6 mt-12 rounded-2xl shadow-lg w-full max-w-2xl">
+                <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">Velg en klubb</h2>
+                <p className="text-center text-gray-600 mb-2">Ikke registrert klubb?</p>
+                <Link to="/LagKlubb" className="text-center text-blue-600 hover:text-blue-800 underline mb-6 block transition-colors">Opprett ny klubb her</Link>
+                <p className="text-center text-gray-700 mb-6">Velg en klubb du skal redigere side for:</p>
                 <div className="nyhet-form mt-8 sm:mx-auto sm:w-full sm:max-w-md form-container">
-                    <form onSubmit={handleSubmit} className="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
-                        <label className="block text-sm font-medium">
+                    <form onSubmit={handleSubmit} className="bg-white py-8 px-6 shadow-md rounded-2xl sm:px-10 border border-gray-200">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
                             Klubber:
                         </label>
                         <div className="mt-2">
@@ -60,7 +60,7 @@ const VelgKlubb = () => {
                                 id="klubber"
                                 value={valgtKlubb}
                                 onChange={(e) => setValgtKlubb(e.target.value)}
-                                className="w-full border border-gray-600 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:border-blue-500"
+                                className="w-full border border-gray-300 rounded-xl shadow-sm px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                             >
                                 <option value="">Velg en klubb</option>
                                 {klubber.map(klubb => (
@@ -68,9 +68,9 @@ const VelgKlubb = () => {
                                 ))}
                             </select>
                         </div>
-                        <div className="mt-4">
-                        {!laster && <button type="submit" className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white">Velg klubb</button>}
-                        {laster && <button disabled className="w-full flex justify-center py-4 bg-gray-400 rounded-lg text-sm text-white">Velg klubb..</button>}
+                        <div className="mt-6">
+                        {!laster &&( <button type="submit" className="w-full flex justify-center py-3 bg-blue-600 hover:bg-blue-700 transition text-white font-medium rounded-xl shadow">Velg klubb</button>)}
+                        {laster &&( <button disabled className="w-full flex justify-center py-3 bg-blue-300 text-white font-medium rounded-xl shadow">Velg klubb..</button>)}
                         </div>
                     </form>
                 </div>
