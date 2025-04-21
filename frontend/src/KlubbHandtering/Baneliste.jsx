@@ -118,7 +118,7 @@ import Review from './Reviews';
                 aktivBane?.hull?.[0]?.startLongitude || 9.059,
                 aktivBane?.hull?.[0]?.startLatitude || 59.409
             ],
-            zoom: 16.5,
+            zoom: 14.5,
         });
 
         mapRef.current = map;
@@ -223,16 +223,17 @@ import Review from './Reviews';
     const baneYrId = yrId[aktivBane?._id] || "1-72837";
 
     return (
-        <div className="p-4">
-            <div className="filter-controls flex gap-4 mb-4">
-                <div className="location-filter w-1/2">
+        <div className="p-6 bg-gray-50 min-h-screen">
+            <div className="filter-controls flex flex-col md:flex-row gap-4 mb-6">
+                <div className="location-filter w-full md:w-1/3">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Velg bane</label>
                     <select
                         value={locationFilter}
                         onChange={(e) => {
                             setLocationFilter(e.target.value);
                             setVisNæreBaner(false);
                         }}
-                        className="w-full border rounded p-2"
+                        className="w-full border border-gray-300 rounded-lg p-2.5 bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                         <option value="">Alle baner</option>
                         {baner && [...new Set(baner.map(bane => bane.plassering))].filter(Boolean).map(location => (
@@ -240,12 +241,12 @@ import Review from './Reviews';
                         ))}
                     </select>
                 </div>
-                
-                <div className="hull-filter w-1/2">
+                <div className="hull-filter w-full md:w-1/3">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Antall hull</label>
                     <select
                         value={hullFilter}
                         onChange={(e) => setHullFilter(e.target.value)}
-                        className="w-full border rounded p-2"
+                        className="w-full border border-gray-300 rounded-lg p-2.5 bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                         <option value="">Alle hull</option>
                         <option value="1">1 hull</option>
@@ -256,9 +257,15 @@ import Review from './Reviews';
                         <option value="6+">6+ hull</option>
                     </select>
                 </div>
-                
-                <div className="near-filter w-1/3 flex space-x-2">
-                    <select value={avstandKm} onChange={(e) => setAvstandKm(Number(e.target.value))} className="w-1/3 border rounded p-2">
+            
+            <div className="near-filter w-full md:w-1/3">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Avstand</label>
+                <div className="flex space-x-2">
+                    <select
+                        value={avstandKm} 
+                        onChange={(e) => setAvstandKm(Number(e.target.value))} 
+                        className="w-1/3 border border-gray-300 rounded-lg p-2.5 bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
                         <option value={10}>10km</option>
                         <option value={25}>25km</option>
                         <option value={50}>50km</option>
@@ -266,15 +273,15 @@ import Review from './Reviews';
                     </select>
                     <button
                         onClick={() => setVisNæreBaner(!visNæreBaner)}
-                        className={`w-2/3 border rounded p-2 ${visNæreBaner ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
+                        className={`w-2/3 rounded-lg p-2.5 font-medium ${visNæreBaner ? 'bg-blue-600 text-white shadow-md hover:bg-blue-700' : 'bg-white border border-gray-300 hover:bg-gray-100'}`}
                     >
                         {visNæreBaner ? 'Viser baner i nærheten' : 'Vis baner i nærheten'}
                     </button>
+                    </div>
                 </div>
             </div>
-            
-            <div className="bane-layout">
-                <div className="bane-left">
+            <div className="bane-layout grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="bane-left lg:col-span-2">
                 {(filteredBaner && filteredBaner.length > 0) ? (
                     <div className="space-y-4">
                         {filteredBaner.map((bane, index) => {
@@ -282,29 +289,50 @@ import Review from './Reviews';
                             return (
                                 <div
                                     key={bane._id || index}
-                                    className={`border rounded-lg p-4 cursor-pointer ${aktivBaneIndex === index ? "bg-gray-50" : ""}`}
+                                    className={`border border-gray-200 rounded-xl p-5 cursor-pointer hover:shadow-md ${aktivBaneIndex === index ? "bg-blue-50 border-blue-200 shadow-md" : "bg-white"}`}
                                     onClick={() => {
                                             setAktivBane(filteredBaner[index]);
                                             setAktivBaneIndex(index);
                                         }}
-                                ><div className="topplinje border-b-2 flex justify-between text-xl font-bold ">
-                                <p>{bane.baneNavn}</p>
-                                
+                                >
+                                    <div className="topplinje border-b border-gray-200 flex justify-between items-center pb-3 mb-3">
+                                        <h3 className="text-xl font-bold text-gray-800">{bane.baneNavn}</h3>
+                                    </div>  
+                                    <div className="hullVanskelighet flex flex-wrap justify-between text-sm text-gray-600 mb-4">
+                                        <div className="flex items-center space-x-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M12 5l7 7-7 7" />
+                                            </svg>
+                                            <span>Antall hull: {antallHull}</span>
+                                        </div>
+                                        <div className="flex items-center space-x-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span>Tilstand: <span className="text-green-500 font-medium">God</span></span>
+                                        </div>
+                                        <div className="flex items-center space-x-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                            </svg>
+                                            <span>Nivå: {bane.vanskelighet}</span>
                                 </div>  
-                                    <div className="hullVanskelighet border-b flex justify-between text-m my-4">
-                                        <p>Antall hull: {antallHull}</p>
-                                        <p>Tilstand: <span className="text-green-400">God</span></p>
-                                        <p className="pl-20">Nivå: {bane.vanskelighet}</p>
                                     </div>
-                                    <div className="nederstelinje inline-block">
-                                        <div className="beskrivelse pr-4 wrap">
-                                            <p>{bane.beskrivelse}</p>
-                                            <div className="knapp">
+                                    <div className="nederstelinje ">
+                                        <div className="beskrivelse ">
+                                            <p className="text-gray-600 mb-4">{bane.beskrivelse}</p>
+                                            <div className="flex justify-end">
                                                 {!rediger && (
-                                                    <button type="submit" onClick={() => handleClick(bane)} className="py-2 px-2 bg-gray-500 rounded-lg text-sm text-white mt-2 hover:bg-gray-400">Spill</button>
+                                                    <button 
+                                                        type="button" 
+                                                        onClick={() => handleClick(bane)} 
+                                                        className="py-2 px-4 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium text-white  shadow-sm">Spill</button>
                                                 )}
                                                 {rediger && (
-                                                    <button type="submit" onClick={() => handleClick(bane)} className="py-2 px-2 bg-gray-500 rounded-lg text-sm text-white mt-2 hover:bg-gray-400">Rediger</button>
+                                                    <button 
+                                                        type="button" 
+                                                        onClick={() => handleClick(bane)} 
+                                                        className="py-2 px-4 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium text-white shadow-sm">Rediger</button>
                                                 )}
                                             </div>
                                         </div>
@@ -314,32 +342,50 @@ import Review from './Reviews';
                             })}
                         </div>
                     ) : (
-                        <div className='flex justify-center'>
-                    <h1>Ingen baner tilgjengelig...</h1>
+                    <div className="flex justify-center items-center h-32 bg-white rounded-xl border border-gray-200 shadow-sm">
+                        <div className="text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <h1 className="text-gray-500 font-medium">Ingen baner tilgjengelig...</h1>
+                        </div>
                 </div>
-                    )}
-                </div>
-                <div className="bane-right">
-                    <div className="sticky space-y-4">
-                        <div className="border rounded-lg p-4 bg-white">
-                            <h3 className="text-lg font-semibold mb-2">
-                                Værvarsel for {aktivBane?.baneNavn || "valgt bane"}
-                            </h3>
+                )}
+            </div>
+            <div className="bane-right">
+                <div className="sticky top-6 space-y-6">
+                    <div className="border border-gray-200 rounded-xl p-5 bg-white shadow-sm">
+                        <h3 className="text-lg font-semibold mb-3 text-gray-800 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                            </svg>
+                            Værvarsel for {aktivBane?.baneNavn || "valgt bane"}
+                        </h3>
+                        <div className="h-[350px] w-full">
+                        <div className="relative w-full h-[350px] pb-[30%]">
                             <iframe
                                 src={`https://www.yr.no/nb/innhold/${baneYrId}/card.html`}
                                 frameBorder="0"
-                                className="w-full h-[290px]"
+                                className="absolute top-0 left-0 w-full h-full rounded-xxl"
                                 title="Værmelding"
                             />
                         </div>
-    
-                        <div className="h-[500px] rounded-lg border mt-6">
+                        </div>
+                      
+                    </div>
+                        <div className="h-96 rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                             <div id="mapContainer" className="w-full h-full"></div>
                         </div>
                         {/*Author: Ylli Ujkani*/}
-                        {aktivBane && aktivBane._id && (
-                            <div className="border rounded-lg p-4 bg-white mt-6">
-                                <Review baneId={aktivBane._id} />
+                    {aktivBane && aktivBane._id && (
+                        <div className="border border-gray-200 rounded-xl p-5 bg-white shadow-sm">
+                            <h3 className="text-lg font-semibold mb-3 text-gray-800 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                                </svg>
+                                Anmeldelser
+                            </h3>
+                            <Review baneId={aktivBane._id} />
                             </div>
                         )}
                     </div>
