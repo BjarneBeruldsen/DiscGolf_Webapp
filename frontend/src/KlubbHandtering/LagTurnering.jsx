@@ -1,6 +1,6 @@
 const LagTurnering = () => {
     return ( 
-    <div>
+    <div className="min-h-[100vh]">
         <h1>Lag turnering</h1>
     </div> 
     );
