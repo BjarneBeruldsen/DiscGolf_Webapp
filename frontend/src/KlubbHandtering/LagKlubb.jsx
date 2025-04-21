@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { sjekkKlubbnavn, sjekkKontaktinfo } from './validation';
+import HentBruker from '../BrukerHandtering/HentBruker';
 
 const LagKlubb = () => {
     const [klubbnavn, setKlubbnavn] = useState('');
@@ -10,6 +11,7 @@ const LagKlubb = () => {
     const [laster, setLaster] = useState(false);
     const minne = useHistory();
     const [errorMelding, setErrorMelding] = useState('');
+    const { bruker } = HentBruker(); // Henter brukerdata fra HentBruker-hooket
 
     const handleSubmit = (e) => {
         e.preventDefault(); 
@@ -22,8 +24,13 @@ const LagKlubb = () => {
             setErrorMelding(error.message);
             return;
         }
+        const klubbleder = bruker; 
 
-        const klubb = { klubbnavn, kontaktinfo }; 
+
+        const medlemmer = [{ id: klubbleder.id, navn: klubbleder.brukernavn, 
+            rolle: "Klubbleder", kontaktinfo: klubbleder.epost }]; // Legger til den innloggede brukeren som medlem
+
+        const klubb = { klubbnavn, kontaktinfo, medlemmer }; 
 
         setLaster(true); 
 

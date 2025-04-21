@@ -138,8 +138,11 @@ klubbRouter.post('/klubber/:id/nyheter', (req, res) => {
             { _id: new ObjectId(req.params.id) },
             { $push: { nyheter: nyNyhet } }
         )
-        .then(result => {
-            if (io) io.emit('nyhetOppdatert', { type: 'ny', data: nyNyhet });
+        .then(async result => {
+            if (io) {
+                const klubb = await db.collection('Klubb').findOne({ _id: new ObjectId(req.params.id) });
+                io.emit('nyhetOppdatert', { type: 'ny', data: klubb }); // Send hele klubbobjektet
+            }
             res.status(201).json(result);
         })
         .catch(err => {
