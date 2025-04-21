@@ -58,21 +58,20 @@ const KontaktOss = () => {
 
   return (
     <div
-      className="flex flex-col items-center justify-center min-h-[90vh] bg-no-repeat bg-cover zoomed-out-bg"
+      className="flex flex-col items-center justify-center min-h-[90vh] bg-no-repeat bg-cover zoomed-out-bg px-4"
       style={{
         backgroundImage: `url('https://zewailcity.edu.eg/_next/image?url=https%3A%2F%2Fzcadminpanel.zewailcity.edu.eg%2Fuploads%2Fcontactus_1c630b0d93.jpg&w=3840&q=75')`,
       }}
     >
-      <h1 className="text-3xl mt-30 font-semibold text-white">Kontakt oss</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col items-center bg-white p-8 rounded-lg shadow-md w-85">
-        <div className="space-y-2 w-full">
-          
+      <form
+        onSubmit={handleSubmit}className="flex flex-col items-center bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
+        <h1 className="text-4xl font-bold text-black mb-8">Kontakt oss</h1>
+        <div className="space-y-4 w-full">
           <input
             name="navn"
             value={epostForm.navn}
             onChange={handleInputChange}
-            className="w-full h-10 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2
-             focus:ring-blue-500 placeholder:text-gray-400"
+            className="w-full h-12 px-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 transition"
             type="text"
             placeholder="Navn*"
             required
@@ -83,8 +82,7 @@ const KontaktOss = () => {
             name="epost"
             value={epostForm.epost}
             onChange={handleInputChange}
-            className="w-full h-10 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2
-             focus:ring-blue-500 placeholder:text-gray-400"
+            className="w-full h-12 px-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 transition"
             type="email"
             placeholder="Epost*"
             required
@@ -95,8 +93,7 @@ const KontaktOss = () => {
             name="melding"
             value={epostForm.melding}
             onChange={handleInputChange}
-            className="w-full h-28 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2
-             focus:ring-blue-500 placeholder:text-gray-400"
+            className="w-full h-32 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 transition resize-none"
             maxLength={300}
             placeholder="Max 300 tegn*"
             required
@@ -105,12 +102,10 @@ const KontaktOss = () => {
          
           <button
             type="submit"
-            className="bg-gray-600 text-white px-4 py-2 mt-4 rounded-lg w-full border border-gray-500"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl w-full transition shadow"
           >
             {status}
-           
-          </button>
-          <p>{status === 'Sender...' ? 'Sender Meldingen...' : null}</p>
+          </button>{status === 'Sender...' && (<p className="text-center text-gray-500 text-sm mt-2">Sender meldingen...</p>)}
         </div>
       </form>
     </div>
