@@ -123,7 +123,7 @@ const LagKlubbside = () => {
 
     return (
         <div className=" bg-gray-200">
-            <div className="lagklubbside p-4 mt-8">
+            <div className="lagklubbside p-4 mt-8 min-h-[100vh]">
                 {klubb ? (
                     <>
                         <div className="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
