@@ -62,7 +62,7 @@ const BrukerListe = () => {
           headers: { "Content-Type": "application/json" },
           credentials: "include",
           body: JSON.stringify({
-            bruker: "DinBrukerNavn", // Bytt ut med faktisk brukernavn fra autentisering
+            bruker: "brukernavn", // Må endre/lage funksjon for å hente ut brukernavn for den som utfører operasjonen
             handling: "Oppdaterte brukerrolle",
             detaljer: `Endret rolle til '${redigerBruker.rolle}' for bruker '${redigerBruker.brukernavn}'`,
           }),
@@ -99,7 +99,7 @@ const BrukerListe = () => {
           headers: { "Content-Type": "application/json" },
           credentials: "include",
           body: JSON.stringify({
-              bruker: "DinBrukerNavn", // Bytt ut med faktisk brukernavn fra autentisering
+              bruker: "brukernavn", // Må endre/lage funksjon for å hente ut brukernavn for den som utfører operasjonen
               handling: "Slettet bruker",
               detaljer: `Slettet brukeren '${brukernavn}' med ID '${brukerId}'`,
           }),
@@ -130,8 +130,8 @@ const BrukerListe = () => {
               value={redigerBruker.rolle}
               onChange={(e) => setRedigerBruker({ ...redigerBruker, rolle: e.target.value })}
             >
-              <option value="bruker">Bruker</option>
-              <option value="medlem">Medlem</option>
+              <option value="loggetInn">LoggetInn</option>
+              <option value="klubbmedlem">Klubbmedlem</option>
               <option value="klubbleder">Klubbleder</option>
               <option value="admin">Admin</option>
               <option value="hoved-admin">Hoved-admin</option>
