@@ -97,7 +97,7 @@ import Review from './Reviews';
     };
     useEffect(() => {
         if (!baner) return;
-        setAktivBane(baner);
+        setAktivBane(baner[0]);
     
         if (baner.length <= aktivBaneIndex) {
             setAktivBaneIndex(0);
