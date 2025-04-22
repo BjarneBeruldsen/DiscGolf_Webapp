@@ -144,6 +144,7 @@ const ScoreBoard = () => {
         setVenterFerdigAntall(antInviterte - antFerdig);
 
         if (venterAntall === 0) {
+            console.log("venterAntall: ", venterAntall);
             if(visVelgSpillere) {
                 hasUpdatedOnce.current = false;
             }
@@ -154,8 +155,8 @@ const ScoreBoard = () => {
                 setVisScoreboard(true);
                 if (!hasUpdatedOnce.current) {
                     hasUpdatedOnce.current = true; // Marker at handlingen er utført
-                    setNr(1);
-                    setTimeout(() => setNr(0), 500);
+                    // setNr(1);
+                    // setTimeout(() => setNr(0), 500);
                 }
             }
         }
