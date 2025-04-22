@@ -365,8 +365,8 @@ brukerRouter.post("/GlemtPassord", sendingAvMailStopp, async (req, res) => {
         //Og lenken var aktiv hele tiden naturligvis da den ikke hadde token.
         //Generer token og utløpsdato/tid
         const token = crypto.randomBytes(20).toString("hex"); //Bruker crypto pakken for generering av token
-        //const tokenDato = new Date(Date.now() + 3600000); //1 time + dato
-        const tokenDato = new Date(Date.now() + 180000); //3 minutter for testing + dato
+        const tokenDato = new Date(Date.now() + 3600000); //1 time + dato. Dvs at tokenet er gyldig i 1 time(lenken)
+        //const tokenDato = new Date(Date.now() + 180000); //3 minutter for testing + dato
         //Lagrer token og utløpsdatoen i databasen
         await db.collection("Brukere").updateOne(
             { _id: bruker._id },
