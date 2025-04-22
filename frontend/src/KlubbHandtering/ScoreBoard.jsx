@@ -155,8 +155,8 @@ const ScoreBoard = () => {
                 setVisScoreboard(true);
                 if (!hasUpdatedOnce.current) {
                     hasUpdatedOnce.current = true; // Marker at handlingen er utført
-                    // setNr(1);
-                    // setTimeout(() => setNr(0), 500);
+                    setNr(1);
+                    setTimeout(() => setNr(0), 100);
                 }
             }
         }
@@ -255,8 +255,6 @@ const ScoreBoard = () => {
         // Wait for the invitation to update
         await new Promise(resolve => setTimeout(resolve, 0));
 
-        setNr(1);
-        setTimeout(() => setNr(0), 100);
     
         for (const spiller of spillereMedPoeng) {
             if (bruker.id !== spiller.id && !spiller.id.startsWith("guest") && oppdatertInvitasjon) {
@@ -268,6 +266,8 @@ const ScoreBoard = () => {
         setSpillere(spillereMedPoeng);
         setVisVelgSpillere(false);
         setVisScoreboard(true);
+        setNr(1);
+        setTimeout(() => setNr(0), 100);
         lagreRunde(antInviterte, nyRundeId); 
     };
     
