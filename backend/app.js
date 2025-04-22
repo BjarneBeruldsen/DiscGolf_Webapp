@@ -126,14 +126,14 @@ app.use(session({
     rolling: false,                      //Fornyer session ved hvert request, ikke vits forholder oss til maxAge
     store: MongoStore.create({           //https://github.com/jdesboeufs/connect-mongo?tab=readme-ov-file (Brukte denne docen for å forstå hvordan man setter opp session med mongo og hva som bør være med)
       mongoUrl: process.env.MONGODB_URI, //URI til databasen 
-      ttl: 5 * 24 * 60 * 60, //5 dager
+      ttl: 60 * 60 * 24, //1 dag
       autoRemove: 'native', //Fjerner session automatisk
     }),                       
     cookie: {
         secure: process.env.NODE_ENV === 'production', //Må være true for at cookies skal fungere på nettsiden og false dersom siden skal funke lokalt, eller settes til production
         httpOnly: process.env.NODE_ENV === 'production', //Må være false når man tester lokalt og true ellers. Eller settes til production
         sameSite: process.env.NODE_ENV === 'production' ? "strict" : "lax", //Må være strict for at cookies skal fungere på nettsiden, sett den til "lax" for at siden skal funke lokalt
-        maxAge: 1000 * 60 * 60 * 24 * 5,    //5 dager
+        maxAge: 1000 * 60 * 60 * 24,    //1 dag
     }
 }));
 
