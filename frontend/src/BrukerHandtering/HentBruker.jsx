@@ -1,4 +1,9 @@
 //Author: Laurent Zogaj
+/*
+Dette er en hook som henter brukerdata fra innlogget bruker.
+Den kontakter da sjekk-session i backend for å sjekke om brukeren er logget inn,
+og deretter returnerer den brukerdataen som er definert i backend.
+*/
 import { useEffect, useState } from "react";
 
 const HentBruker = () => {
@@ -18,7 +23,7 @@ const HentBruker = () => {
                 //Hvis forespørselen er ok setter vi brukerdata
                 if (response.ok) {
                     const data = await response.json();
-                    setBruker(data.bruker);
+                    setBruker(data.bruker); //Setter brukerdata
                     console.log("Bruker er logget inn"); 
                 } else {
                     throw new Error("Ingen aktiv session");

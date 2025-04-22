@@ -1,12 +1,18 @@
 //Author: Laurent Zogaj
-
+/*
+Denne komponenten håndterer innlogging av bruker.
+Bruker useState for å håndtere ulike tilstander og data
+Det har også blitt kodet en manuell captcha for ekstra beskyttelse.
+Den håndterer også enkel validering av inputfeltene med regex.
+Bruker skjemafunksjon fra react.
+*/
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import i18n from "../i18n";
 import { useTranslation } from 'react-i18next'; 
 
-const Innlogging = ({ setLoggetInnBruker }) => {
+const Innlogging = ({ setLoggetInnBruker }) => { //Propp som kan brukes i andre komponenter
   const [brukernavn, setBrukernavn] = useState("");
   const [passord, setPassord] = useState("");
   const [melding, setMelding] = useState("");
@@ -14,13 +20,13 @@ const Innlogging = ({ setLoggetInnBruker }) => {
   const minne = useHistory(); 
   const [tall, setTall] = useState(Math.floor(Math.random() * 99) + 1);
   const [tallInput, setTallInput] = useState("");
-  const { t } = useTranslation();
+  const { t } = useTranslation(); //Oversettelse
 
   //Skjemafunksjon for innlogging
   const handleSubmit = async (event) => {              //https://legacy.reactjs.org/docs/forms.html
     event.preventDefault();
 
-    //Frontend validering med regex
+    //Frontend validering med regex (Fått hjelp av Copilot med regex)
     const brukernavnRegex = /^[a-zA-Z0-9]{3,15}$/; //3-15 tegn, kun bokstaver og tall
     const epostRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; //E-post validering sjekker @ og .
     const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,20}$/; //Minst 8 tegn og maks 20, ett spesialtegn og stor bokstav
@@ -68,14 +74,14 @@ const Innlogging = ({ setLoggetInnBruker }) => {
       } else {
         setMelding(i18n.t("Innlogging vellykket!"));
         setTimeout(() => {
-          setLoggetInnBruker(data.bruker);
+          setLoggetInnBruker(data.bruker); //Setter innlogget bruker i state (brukerdata blir lagret i state)
           minne.push("/Hjem");
           window.location.reload();//Tvinger en refresh for å sikre at alt blir "freshet opp"
         }, 2000);
       }
     } catch (error) {
       console.error("Innloggingsfeil:", error);
-      setTall(Math.floor(Math.random() * 99) + 1);
+      setTall(Math.floor(Math.random() * 99) + 1); //Genererer nytt tall
       setTallInput("");
       setMelding(i18n.t("Feil ved innlogging. Prøv igjen."));
     } finally {

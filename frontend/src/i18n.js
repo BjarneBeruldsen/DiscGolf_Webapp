@@ -1,5 +1,10 @@
 //Author: Laurent Zogaj
 
+/*
+Denne filen håndterer oversettelser.
+Den skal automatisk "Switche" over til engelsk basert på systemspråk.
+*/
+
 //Inspo hentet fra: https://medium.com/@thelearning-curve/making-your-mern-stack-app-multilingual-with-i18next-cf30f4c77210 og https://www.i18next.com/
 
 

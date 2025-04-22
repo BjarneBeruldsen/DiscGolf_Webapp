@@ -1,4 +1,9 @@
 //Author: Laurent Zogaj
+/*
+Denne filen håndter utlogging av bruker
+Blir kalt når bruker trykker på loggut knappen som finnes i header.jsx
+Brukeren nullstilles i state og blir sendt til hjemmesiden
+*/
 
 import i18n from '../i18n';
 

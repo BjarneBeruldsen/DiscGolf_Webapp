@@ -1,5 +1,11 @@
 //Author: Laurent Zogaj
 
+/*
+Denne filen håndterer sletting av bruker.
+Den tar inn brukerinformasjon og passord fra bruker og sender det til backend for sletting.
+Denne filen blir brukt i BrukerInnstillinger.jsx filen også.
+*/
+
 import i18n from '../i18n';
 
 //Funksjon for å slette bruker
@@ -21,7 +27,7 @@ const SletteBruker = async (brukerInput, passord, setBruker, setMelding, minne) 
     } else { 
       setMelding(i18n.t("Bruker er nå slettet, du blir nå sendt til hjemmesiden"));
       setTimeout(() => {
-        setBruker(null);
+        setBruker(null); //Nullstiller bruker
         minne.push("/Hjem");  
         window.location.reload(); //Tvinger en refresh for å sikre at alt blir "freshet opp"
       }, 2000);

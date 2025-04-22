@@ -1,4 +1,7 @@
 //Author: Laurent Zogaj
+/*
+Denne filen viser frem abonnementet til brukeren og gir mulighet for å betale eller avslutte abonnementet.
+*/
 
 import React, { useState } from "react";
 
@@ -25,14 +28,14 @@ const MittAbonnement = ({ valgtUnderKategori, bruker }) => {
     } catch (error) {
       console.error("Feil ved betaling:", error);
     } finally {
-      setLaster(false); 
+      setLaster(false); //Setter laster til false
     }
   };
 
   //Funksjon for å avslutte abonnementet
   const handleAvslutt = async () => {
     try {
-      setLaster(true);
+      setLaster(true); 
       const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/AvslutteAbo`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -48,7 +51,7 @@ const MittAbonnement = ({ valgtUnderKategori, bruker }) => {
     catch (error) {
       console.error("Feil ved avslutting av abonnement:", error);
     } finally {
-      setLaster(false);
+      setLaster(false); //Setter laster til false
     }
   }
 

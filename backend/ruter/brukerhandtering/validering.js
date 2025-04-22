@@ -1,32 +1,45 @@
 //Author: Laurent Zogaj
-//Valideringer med express-validator https://express-validator.github.io/docs/
-//Rate limit for å stoppe brute force angrep https://www.npmjs.com/package/express-rate-limit
-//Valideringer som legges til i ruter for å sjekke ulike inputer og stoppe for mange forespørsler og forsøk
+
+/* Dette er en viktig fil. Denne filen håndterer validering av ulike inputs.
+Dette for å forhindre NoSQLi og XSS angrep. 
+Samtidig har vi rate limiting for å stoppe brute force angrep, altså stoppe antall requests fra samme IP.
+De ulike konstantene blir så kalt i ulike ruter der man ønsker å validere input.
+*/
+//https://express-validator.github.io/docs/
+//https://www.npmjs.com/package/express-rate-limit
 
 const { body } = require("express-validator");
 const rateLimit = require("express-rate-limit");
 
+//Kunne egt gjenbrukt en, siden de gjør det samme men gjør det enklere å forstå hva som skjer
+//Tidsbegrensning og antall(max) er satt til en litt snillere beskyttelse med tanke på sensur/testing.
 const loggeInnStopp = rateLimit({
-    windowMs: 60 * 60 * 1000, //15 minutter
-    max: 25, //Maks 10 logg inn fra samme IP
+    windowMs: 30 * 60 * 1000, //30 minutter
+    max: 50, //Maks 50 logg inn fra samme IP
     message: { error: "For mange innloggingsforsøk, prøv igjen senere" },
 });
 
 const registreringStopp = rateLimit({
-    windowMs: 2 * 60 * 60 * 1000, //1 time 
-    max: 25, //Maks 10 registreringsforsøk fra samme IP
+    windowMs: 30 * 60 * 1000, //30 minutter
+    max: 50, //Maks 50 registreringsforsøk fra samme IP
     message: { error: "For mange registreringsforsøk, prøv igjen senere" },
 });
 
 const endringStopp = rateLimit({
-    windowMs: 2 * 60 * 60 * 1000, //1 time 
-    max: 25, //Maks 10 endringer av bruker fra samme IP
+    windowMs: 30 * 60 * 1000, //30 minutter
+    max: 50, //Maks 50 endringer av bruker fra samme IP
+    message: { error: "For mange registreringsforsøk, prøv igjen senere" },
+});
+
+const sendingAvMailStopp = rateLimit({
+    windowMs: 30 * 60 * 1000, //30 minutter
+    max: 50, //Maks 50 requests
     message: { error: "For mange registreringsforsøk, prøv igjen senere" },
 });
 
 const nyttPassordStopp = rateLimit({
-    windowMs: 2* 60 * 60 * 1000, //1 time
-    max: 25, //Maks 10 endringer av passord fra samme IP
+    windowMs: 30 * 60 * 1000, //30 minutter
+    max: 50, //Maks 50 requests
     message: { error: "For mange registreringsforsøk, prøv igjen senere" },
 });
 
@@ -52,6 +65,8 @@ const registreringValidering = [
         .isLength({ min: 8, max: 20 }).withMessage("Passordet må være minst 8 tegn, maks 20 tegn.")
         .matches(/[A-Z]/).withMessage("Passordet må inneholde minst en stor bokstav.")
         .matches(/[-.@$!%*?&]/).withMessage("Passordet må inneholde minst ett spesialtegn.")
+        //Custom var noe copilot anbefalte dobbelt sjekket dette med docs da jeg ikke hadde fått det med meg at det faktisk var en del av express-validator
+        //Custom validering for å sjekke at passordene er like
         .custom((value, { req }) => {
             if (value !== req.body.passord) {
                 throw new Error("Passordene må være like.");
@@ -74,6 +89,7 @@ const innloggingValidering = [
         .trim()
         .escape()
         .notEmpty().withMessage("Brukernavn eller e-post må fylles ut.")
+        //Her sjekker vi om det er et gyldig brukernavn eller e-post
         .custom((value) => {
             const erBrukernavn = /^[a-zA-Z0-9]{3,15}$/.test(value);
             const erEpost = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -92,13 +108,11 @@ const innloggingValidering = [
 //Validering av redigering
 const redigeringValidering = [
     body('nyttBrukernavn')
-        //.optional({ checkFalsy: true })
         .trim()
         .escape()
         .isLength({ min: 3, max: 15 }).withMessage("Nytt brukernavn må være mellom 3 og 15 tegn.")
         .isAlphanumeric().withMessage("Nytt brukernavn kan bare inneholde bokstaver og tall."),
     body('nyEpost')
-        //.optional({ checkFalsy: true })
         .trim()
         .escape()
         .isEmail().withMessage("E-post må være gyldig.")
@@ -115,6 +129,7 @@ const redigeringValidering = [
         .optional({ checkFalsy: true })
         .trim()
         .escape()
+        //Copilot generert/foreslått. Sjekker om gammelt passord blir fylt ut
         .custom((value, { req }) => {
             if (req.body.nyttPassord && !value) {
                 throw new Error("Du må oppgi ditt gamle passord hvis du vil endre passord.");
@@ -123,7 +138,7 @@ const redigeringValidering = [
         }),
     //Ekstra felt
     body(['fornavn', 'etternavn'])
-    .optional({ checkFalsy: true, nullable: true })
+    .optional({ checkFalsy: true, nullable: true }) 
         .trim()
         .escape()
         .isLength({ min: 1, max: 50 }).withMessage("Navn må være mellom 1 og 50 tegn."),
@@ -145,6 +160,7 @@ const sletteValidering = [
         .trim()
         .escape()
         .notEmpty().withMessage("Brukernavn eller e-post må fylles ut.")
+        //Her sjekker vi om det er et gyldig brukernavn eller e-post
         .custom((value) => {
             const erBrukernavn = /^[a-zA-Z0-9]{3,15}$/.test(value);
             const erEpost = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -175,6 +191,7 @@ body("bekreftPassord")
     .isLength({ min: 8, max: 20 }).withMessage("Passordet må være minst 8 tegn, maks 20.")
     .matches(/[A-Z]/).withMessage("Passordet må inneholde minst en stor bokstav.")
     .matches(/[-.@$!%*?&]/).withMessage("Passordet må inneholde minst ett spesialtegn.")
+    //Samme som den tidligere genererte av copilot
     .custom((value, { req }) => {
     if (value !== req.body.nyttPassord) {
         throw new Error("Passordene må være like.");
@@ -183,7 +200,7 @@ body("bekreftPassord")
     }
 }),
 ];
-//Andre valideringer her
+
 
 
 
@@ -191,6 +208,7 @@ body("bekreftPassord")
 
 
 //Husk å legge til variablene her 
+//Eksporterer valideringene 
 module.exports = { 
     registreringValidering, 
     innloggingValidering, 
@@ -200,5 +218,6 @@ module.exports = {
     registreringStopp,
     endringStopp,
     nyttPassordValidering,
-    nyttPassordStopp
+    nyttPassordStopp,
+    sendingAvMailStopp
 };

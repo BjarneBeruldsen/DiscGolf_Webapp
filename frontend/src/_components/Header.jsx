@@ -86,9 +86,9 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling, refreshVa
 }, )
 
   const loggUt = async () => {
-    const utloggingVellykket = await loggUtBruker(setLoggetInnBruker);
+    const utloggingVellykket = await loggUtBruker(setLoggetInnBruker); //Funksjon for å logge ut bruker fra utlogging.jsx
     if (utloggingVellykket) {
-      setLoggetInnBruker(null);
+      setLoggetInnBruker(null); //Logger ut brukeren
       lukkMeny();
     } else {
       console.error("Utlogging feilet!");

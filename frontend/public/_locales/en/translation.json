@@ -22,7 +22,7 @@
     "Kontakt oss": "Contact Us",
     "Om oss": "About Us",
     "Med over 18,000 baner verden over, er sporten i vekst og passer for spillere i alle aldre og ferdighetsnivåer.": "With over 18,000 courses worldwide, the sport is growing and suitable for players of all ages and skill levels.",
-    "Disc golf er en spennende utendørs sport der målet er å kaste en frisbee i en kurv på færrest mulig kast": "Disc golf is an exciting outdoor sport where the goal is to throw a frisbee into a basket in the fewest possible throws.",
+    "Disc golf er en spennende utendørs sport der målet er å kaste en frisbee i en kurv på færrest mulig kast. ": "Disc golf is an exciting outdoor sport where the goal is to throw a frisbee into a basket in the fewest possible throws.",
     "PoengTavler": "Scoreboards",
     "Brukernavn eller e-post er allerede registrert": "Username or email is already registered",
     "Feil ved registrering": "Registration error",
@@ -248,6 +248,8 @@
     "Innlogging vellykket!" : "Login successful!",
     "Registrering vellykket! Du blir omdirigert til innlogging..." : "Registration successful! You will be redirected to login...",
     "Vi bruker kun nødvendige informasjonskapsler for å forbedre brukeropplevelsen og sørge for at nettsiden fungerer optimalt. Ved å benytte nettsiden godtar du vår bruk av informasjonskapsler." : "We only use necessary cookies to improve the user experience and ensure that the website functions optimally. By using the website, you accept our use of cookies.",
+    "Feil ved passordoppdatering" : "Error updating password",
+    "Passordet er oppdatert!" : "Password is updated!",
     "Jeg har lest" : "I have read",
     "Les mer" : "Read more",
     "Passord må være minst 8 tegn og maks 20 tegn og ha minst en stor bokstav og spesialtegn." : "Password must be at least 8 characters and a maximum of 20 characters and have at least one uppercase letter and special character."

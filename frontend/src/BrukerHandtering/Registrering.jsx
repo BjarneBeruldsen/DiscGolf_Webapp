@@ -1,4 +1,12 @@
 //Author: Laurent Zogaj
+/*
+Denne komponenten håndterer registrering av bruker.
+Bruker useState for å håndtere ulike tilstander og data
+Det har også blitt kodet en manuell captcha for ekstra beskyttelse.
+Den håndterer også enkel validering av inputfeltene med regex.
+Bruker skjemafunksjon fra react.
+Her blir bruker registrering sendt til backend for en sjekk og tilbake for å vise melding.
+*/
 
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -22,7 +30,7 @@ const Registrering = () => {
     const handleSubmit = async (event) => {        //https://legacy.reactjs.org/docs/forms.html
         event.preventDefault();
 
-        //Frontend validering med regex
+        //Frontend validering med regex (Fått hjelp av Copilot med regex)
         const brukernavnRegex = /^[a-zA-Z0-9]{3,15}$/; //3-15 tegn, kun bokstaver og tall
         const epostRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; //E-post validering sjekker @ og .
         const passordRegex = /^(?=.*[A-Z])(?=.*[-.@$!%*?&]).{8,20}$/; //Minst 8 tegn og maks 20, ett spesialtegn og stor bokstav

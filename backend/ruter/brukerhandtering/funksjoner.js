@@ -4,7 +4,7 @@
  * Dette sikrer at kun autoriserte brukere får tilgang til spesefikke deler av systemet.
  */
 
-const { kobleTilDB, getDb } = require('../../db'); 
+const { getDb } = require('../../db'); 
 
 //Rute for å sjekke om bruker er aktiv eller ikke, brukes i ulike ruter for enkel sjekk
 async function sjekkBrukerAktiv(req, res, next) {

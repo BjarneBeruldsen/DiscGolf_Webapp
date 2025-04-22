@@ -1,11 +1,16 @@
 //Author: Laurent Zogaj
+/*
+Denne filen håndterer det som kommer frem i UIet på medlemskap i brukerinstillinger
+Samt at den innhenter funksjoner fra SletteBruker.jsx og endreBruker.jsx.
+*/
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import SletteBruker from "../SletteBruker.jsx";
 import endreBruker from "../endringAvBruker.jsx";
 
 const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
-  const [visSlettBoks, setVisSlettBoks] = useState(false);
+  const [visSlettBoks, setVisSlettBoks] = useState(false); //Viser eller skjuler slettingsboksen
+  //Default verdier som er satt til tomme strenger
   const [brukerInput, setBrukerInput] = useState(""); 
   const [passord, setPassord] = useState("");
   const [melding, setMelding] = useState("");
@@ -20,7 +25,8 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
   const [bosted, setBosted] = useState("");
   
   const minne = useHistory();
-  const erAdmin = bruker?.rolle === "admin" || bruker?.rolle === "hoved-admin";
+  //Sjekker om hva slags rolle bruker har
+  //const hvaErBruker = bruker && ["Admin", "Hoved-admin", "Klubbleder", "Medlem"].includes(bruker.rolle);
 
   //Setter brukerinformasjonen i feltene som viser brukeren informasjonen
   useEffect(() => {
@@ -42,7 +48,7 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
       setMelding("Fyll inn brukernavn/e-post og passord.");
       return;
     } try {
-      await SletteBruker(brukerInput, passord, setBruker, setMelding, minne);
+      await SletteBruker(brukerInput, passord, setBruker, setMelding, minne); //Slettebruker fra SletteBruker.jsx
     } catch (error) {
       console.error("Feil ved sletting av bruker:", error);
       setMelding("Feil ved sletting av bruker, sjekk brukernavn/epost og passord, prøv igjen deretter.");
@@ -61,14 +67,15 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
       setMelding("Du må oppgi ditt nåværende passord for å endre til nytt passord.");
       return;
     }
-    //Her konverterer vi tomme strenger til null, slik at fjerning i backend kan fjerne unødvendige felter som er tomme 
+    //Her konverterer vi tomme strenger til null, slik at fjerning i backend kan fjerne unødvendige felter som er tomme
+    //Denne metoden ble foreslått av Copilot 
     const fornavnTilBackend = fornavn === "" ? null : fornavn;
     const etternavnTilBackend = etternavn === "" ? null : etternavn;
     const telefonnummerTilBackend = telefonnummer === "" ? null : telefonnummer;
     const bostedTilBackend = bosted === "" ? null : bosted;
     
     //Kaller på endreBruker funksjonen som henter fra backend og oppdaterer informasjonen
-    await endreBruker(
+    await endreBruker( //EndreBruker fra endreBruker.jsx
       nyttBrukernavn, 
       nyEpost, 
       nyttPassord, 
@@ -105,12 +112,9 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
             className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
           />
           <p className="text-gray-600">Her er din registrerte brukerinformasjon</p>
-          {/* Viser om bruker er admin eller ikke under brukerinformasjon */}
-          {erAdmin && (
-            <p className="text-blue-600">Du er registrert som: {bruker.rolle} og har tilgang til flere funksjoner.</p>
-          )}
-          {!erAdmin && (
-            <p className="text-red-600">Du er registrert som: Bruker og har kun tilgang til enkle funksjoner.</p>
+          {/* Viser hva slags rolle bruker har */}
+          {bruker && bruker.rolle && (
+          <p className="text-blue-600">Du er registrert som: {bruker.rolle} og har tilgang til ulike funksjoner.</p>
           )}
         </div>
       )}

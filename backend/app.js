@@ -1,5 +1,11 @@
 //Authors: Bjarne Beruldsen, Laurent Zogaj, Abdinasir Ali & Severin Waller Sørensen
 
+/*
+Dette er app.js filen som er hovedfilen for backend applikasjonen vår.
+Her starter vi opp serveren og setter opp de ulike rutene som skal brukes i applikasjonen ved å hente dem fra de ulike filene i backend.
+Vi setter opp blant annet express, express-session, cors og andre viktige middlewares for å få det hele til å fungere.
+*/
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -40,7 +46,8 @@ app.disable('x-powered-by'); //Disabled for sikkerhet da man kan se hvilken tekn
 //Brukes for gzip komprimering. Fant ut av dette med chrome dev tools og lighthouse, og det ble da anbefalt å bruke dette for å øke ytelsen
 app.use(compression());
 
-//NoCache Sikrer at nettleserer ikke lagrer cache for sensitive data/sider etter anbefalning av ZAP
+//NoCache Sikrer at nettleserer ikke lagrer cache for sensitive data/sider etter anbefalning av ZAP resultater.
+//Bruker dette på "sårbare" ruter som kan inneholde sensitive data
 //https://github.com/helmetjs/nocache
 //https://ivanpiskunov.medium.com/a-little-bit-about-node-js-security-by-hands-17470dddf4d0 
 //https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
@@ -50,14 +57,20 @@ app.use("/SletteBruker", nocache());
 app.use("/Registrering", nocache());
 app.use("/sjekk-session", nocache());
 app.use("/redigerBruker", nocache());
+app.use("/GlemtPassord", nocache());
+app.use("/TilbakestillPassord", nocache());
+app.use("/ValideringToken", nocache());
 
+//Aller først hadde vi app use cors og kun det. Men etter lesing om sikkerhet fant vi ut at dette var en dårlig løsning, og at det var best å sette opp cors med spesifikke domener.
+//https://auth0.com/blog/cors-tutorial-a-guide-to-cross-origin-resource-sharing/
 app.use(cors({
     origin: [process.env.REACT_APP_API_BASE_URL, "http://localhost:3000", "http://localhost:8000"], 
     credentials: true,
 }));
 
 //Default Helmet konfigurasjon med litt konfigurasjoner for at bilder vi bruker skal lastes opp riktig og fremtidig ressurser https://helmetjs.github.io/ & https://github.com/helmetjs/helmet
-//Må nok endres etterhvert når kart/vær osv legges til
+//Helmet setter en del HTTP headers for å beskytte applikasjonen mot "populære" angrep som XSS, clickjacking og andre angrep. 
+//Samtidig så man konfigurere den for å tillate ulike kilder som man kan se under her.
 app.use(
     helmet({
       contentSecurityPolicy: {
@@ -103,15 +116,16 @@ app.use(express.static(path.join(__dirname, '../frontend/build')));
 // Serve static files from the "filer" directory
 app.use('/filer', express.static(path.join(__dirname, '../filer')));
 
-//Konfigurasjon av session https://www.geeksforgeeks.org/how-to-handle-sessions-in-express/, https://expressjs.com/en/resources/middleware/session.html & https://www.passportjs.org/tutorials/password/session/  
+//Konfigurasjon av session https://www.geeksforgeeks.org/how-to-handle-sessions-in-express/, https://expressjs.com/en/resources/middleware/session.html & https://www.passportjs.org/tutorials/password/session/
+//De linkene over er brukt for å forstå oppsettet og hvordan man konfigurerer det  
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,                       //Lagrer session på hver request selv om ingen endringer er gjort
     saveUninitialized: false,            //Lagrer session selv uten ny data 
     proxy: process.env.NODE_ENV === 'production', //Må være true for at Heroku skal funke eller settes til production
     rolling: false,                      //Fornyer session ved hvert request, ikke vits forholder oss til maxAge
-    store: MongoStore.create({           //https://github.com/jdesboeufs/connect-mongo?tab=readme-ov-file
-      mongoUrl: process.env.MONGODB_URI, //URL til databasen 
+    store: MongoStore.create({           //https://github.com/jdesboeufs/connect-mongo?tab=readme-ov-file (Brukte denne docen for å forstå hvordan man setter opp session med mongo og hva som bør være med)
+      mongoUrl: process.env.MONGODB_URI, //URI til databasen 
       ttl: 5 * 24 * 60 * 60, //5 dager
       autoRemove: 'native', //Fjerner session automatisk
     }),                       
@@ -185,7 +199,8 @@ server.listen(PORT, () => {
     }
 });
 
-//Sjekk av session
+//Sjekk av session (en "auth-check" rute. Denne sjekker hver gang nettsiden blir åpnet av en besøker om bruker er logget inn eller ikke. Dersom logget inn returnerer den brukerdata som da kan bli hentet globalt på nettsiden av ulike rutere for innlogga brukere).
+//Data vil ikke bli returnert med mindre man da er logget inn
 app.get("/sjekk-session", async (req, res) => {
     //Sjekker om brukeren er logget inn
     if (req.isAuthenticated()) {
@@ -219,15 +234,16 @@ app.get("/sjekk-session", async (req, res) => {
     return res.status(401).json({ error: "Ingen aktiv session" });
 });
 
-//Tilbakestille testdata fra klubb collection 
-app.delete('/tommeTestdata', (res) => {
-    db.collection('Klubb').deleteMany({})
-        .then(result => {
-            res.status(200).json({ message: 'Testdata tømt' });
-        })
-        .catch(err => {
-            res.status(500).json({ error: 'Feil ved tømming av testdata' });
-        });
+//Tilbakestille testdata fra klubb og reviews collection 
+app.delete('/tommeTestdata', async (req, res) => {
+  try {
+      await db.collection('Klubb').deleteMany({});
+      await db.collection('Reviews').deleteMany({});
+      res.status(200).json({ message: 'Testdata tømt for Klubber og Reviews' });
+  } catch (error) {
+      console.error("Feil ved tømming av testdata:", error);
+      res.status(500).json({ error: 'Feil ved tømming av testdata' });
+  }
 });
 
 //Kontaktskjema
@@ -298,7 +314,7 @@ app.get('/byer', async (req, res) => {
           const resultat = await db.collection("Brukere").updateOne(
             { _id: bruker._id },
             { $set: { betalt: true } }
-          );
+          );//Sjekker om endringer ble gjort
           if (resultat.modifiedCount === 0) {
               return res.status(404).json({ error: "Ingen endringer gjort" });
           }
@@ -318,7 +334,7 @@ app.get('/byer', async (req, res) => {
          const resultat = await db.collection("Brukere").updateOne(
               { _id: bruker._id },
               { $set: { betalt: false } }
-          );
+          );//Sjekker om endringer ble gjort
           if (resultat.modifiedCount === 0) {
               return res.status(404).json({ error: "Ingen endringer gjort" });
           }
@@ -330,6 +346,6 @@ app.get('/byer', async (req, res) => {
     });
 
 //Håndter alle andre ruter med React Router
-app.get(/^(?!\/api).+/, (req, res) => { //Tilgangskontroll ruter funker ikke med wildcard
+app.get(/^(?!\/api).+/, (req, res) => { //Tilgangskontroll ruter funker ikke med wildcard. Dette er en workaround generert av copilot. Der man setter opp en regex som matcher alt som ikke starter med /api.
   res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });

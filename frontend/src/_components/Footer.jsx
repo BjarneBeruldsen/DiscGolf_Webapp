@@ -15,7 +15,7 @@ const Footer = () => {
           <div className="text-center md:text-left">
             <h1 className="text-xl font-bold text-gray-800">DiscGolf</h1>
             <p className="text-sm text-gray-700 mt-2 max-w-lg">
-              {t("Disc golf er en spennende utendørs sport der målet er å kaste en frisbee i en kurv på færrest mulig kast")}
+              {t("Disc golf er en spennende utendørs sport der målet er å kaste en frisbee i en kurv på færrest mulig kast. ")}
               {t("Med over 18,000 baner verden over, er sporten i vekst og passer for spillere i alle aldre og ferdighetsnivåer.")}
             </p>
           </div>
