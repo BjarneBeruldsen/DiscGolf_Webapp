@@ -155,7 +155,7 @@ const ScoreBoard = () => {
                 if (!hasUpdatedOnce.current) {
                     hasUpdatedOnce.current = true; // Marker at handlingen er utført
                     setNr(1);
-                    setTimeout(() => setNr(0), 100);
+                    setTimeout(() => setNr(0), 500);
                 }
             }
         }
