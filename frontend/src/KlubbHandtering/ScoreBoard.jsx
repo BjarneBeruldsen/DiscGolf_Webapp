@@ -509,7 +509,7 @@ const ScoreBoard = () => {
     }, [hull, nr]);
 
     return (
-        <div className="innhold flex justify-center bg-gray-200 h-[100vh] ">
+        <div className="innhold flex justify-center bg-gray-200">
             {error && <div>{error}</div>}
             {isPending && <div>Laster...</div>}
             {visScoreboard && (
