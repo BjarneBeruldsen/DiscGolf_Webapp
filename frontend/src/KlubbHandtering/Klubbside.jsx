@@ -128,14 +128,14 @@ const Klubbside = () => {
                             <div className='navbar p-2'>
                                 <button onClick={() => handleVis('nyheter')} className={`justify-center py-2 px-2 m-2 text-sm ${valgtSeksjon === 'nyheter' ? 'border-b-2 border-black-500' : 'rounded-lg bg-white text-gray hover:bg-gray-200'}`}>Nyheter</button>
                                 <button onClick={() => handleVis('baner')} className={`justify-center py-2 px-2 m-2 text-sm ${valgtSeksjon === 'baner' ? 'border-b-2 border-black-500' : 'rounded-lg bg-white text-gray hover:bg-gray-200'}`}>Baner</button>
-                                <button onClick={() => handleVis('turneringer')} className={`justify-center py-2 px-2 m-2 text-sm ${valgtSeksjon === 'turneringer' ? 'border-b-2 border-black-500' : 'rounded-lg bg-white text-gray hover:bg-gray-200'}`}>Turneringer</button>
+                                {/* <button onClick={() => handleVis('turneringer')} className={`justify-center py-2 px-2 m-2 text-sm ${valgtSeksjon === 'turneringer' ? 'border-b-2 border-black-500' : 'rounded-lg bg-white text-gray hover:bg-gray-200'}`}>Turneringer</button> */}
                                 <button onClick={() => handleVis('medlemmer')} className={`justify-center py-2 px-2 m-2 text-sm ${valgtSeksjon === 'medlemmer' ? 'border-b-2 border-black-500' : 'rounded-lg bg-white text-gray hover:bg-gray-200'}`}>Medlemmer</button>
                             </div>
                         </div>
                 
                         {visNyheter && <Nyhetsliste nyheter={klubb.nyheter} handleLiker={handleLiker} antLiker={antLiker} />}
                         {visBaner && <BaneListe baner={klubb.baner}/>}
-                        {visTurneringer && <Turneringerliste />}
+                        {/* {visTurneringer && <Turneringerliste />} */}
                         {visMedlemmer && <Medlemmerliste medlemmer={klubb.medlemmer} />}
                     </div>
                 )}
