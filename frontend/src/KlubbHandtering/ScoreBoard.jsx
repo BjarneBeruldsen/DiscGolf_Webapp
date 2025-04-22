@@ -108,10 +108,13 @@ const ScoreBoard = () => {
             console.log("runde fra socket: " + JSON.stringify(data.data)); 
             console.log("rundeId fra url: " + rundeId);
             if(data.data.rundeId === rundeId) {
-                setVisVenter(true);
-                setVisVelgSpillere(false);
-                setVisScoreboard(false);
-                setVisOppsummering(false);
+                if(data.data.antInviterte > 0) {
+                    console.log("vis venter slår til"); 
+                    setVisVenter(true);
+                    setVisVelgSpillere(false);
+                    setVisScoreboard(false);
+                    setVisOppsummering(false);
+                }
                 setAntInviterte(data.data.antInviterte)
                 console.log("antall inviterte: " + antInviterte);
             }
