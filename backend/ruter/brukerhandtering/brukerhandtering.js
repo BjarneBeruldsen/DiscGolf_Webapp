@@ -396,7 +396,7 @@ brukerRouter.post("/GlemtPassord", sendingAvMailStopp, async (req, res) => {
             html: `<p>Hei,</p>
                     <p>Klikk på følgende lenke for å tilbakestille passordet ditt:</p>
                     <a href="${resetUrl}">${resetUrl}</a>
-                    <p>Lenken er gyldig i 3 minutter.</p>`
+                    <p>Lenken er gyldig i 1 time.</p>`
         };
         //Sender eposten
         transporter.sendMail(mailOptions, (error, info) => {
