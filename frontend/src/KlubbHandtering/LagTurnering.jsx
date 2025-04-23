@@ -49,10 +49,13 @@ const LagTurnering = () => {
   };
 
   return (
-    <div>
-      <h3 className="text-xl font-semibold mb-4">Opprett ny turnering</h3>
-      {feilmelding && <p style={{ color: "red" }}>{feilmelding}</p>}
-      <div className="space-y-4">
+    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+      {/* Overskrift */}
+      <h3 className="text-2xl font-bold mb-6 text-gray-800 text-center">Opprett ny turnering</h3>
+      {/* Feilmelding */}
+      {feilmelding && <p className="text-red-500 text-center mb-4">{feilmelding}</p>}
+      {/* Skjema for oppretting */}
+      <div className="space-y-6">
         <div>
           <label className="block text-lg font-medium text-gray-700">Navn:</label>
           <input
@@ -61,6 +64,7 @@ const LagTurnering = () => {
             value={nyTurnering.navn}
             onChange={handleInputChange}
             className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Skriv inn navn på turneringen"
           />
         </div>
         <div>
@@ -81,6 +85,7 @@ const LagTurnering = () => {
             value={nyTurnering.bane}
             onChange={handleInputChange}
             className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Skriv inn navnet på banen"
           />
         </div>
         <div>
@@ -91,12 +96,14 @@ const LagTurnering = () => {
             onChange={handleInputChange}
             className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows="4"
+            placeholder="Skriv inn en kort beskrivelse av turneringen"
           />
         </div>
-        <div className="flex justify-end gap-4 mt-4">
+        {/* Knapp for å opprette turnering */}
+        <div className="flex justify-end gap-4">
           <button
             onClick={opprettTurnering}
-            className="custom-blue px-4 py-2 rounded-md text-white font-semibold shadow-sm hover:bg-blue-600 transition duration-200"
+            className="bg-blue-500 text-white px-6 py-3 rounded-md font-semibold shadow-sm hover:bg-blue-600 transition duration-200"
             disabled={isLoading}
           >
             {isLoading ? "Lagrer..." : "Opprett turnering"}
