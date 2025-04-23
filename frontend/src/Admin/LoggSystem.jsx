@@ -7,9 +7,9 @@
 import React, { useEffect, useState } from "react";
 
 const SystemLogg = () => {
-  const [logg, setLogg] = useState([]); // State for systemloggdata
-  const [isLoading, setIsLoading] = useState(true); // State for lasting
-  const [error, setError] = useState(null); // State for feil
+  const [logg, setLogg] = useState([]); 
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Henter systemloggdata fra backend
   useEffect(() => {
@@ -35,7 +35,7 @@ const SystemLogg = () => {
 
     hentSystemlogg();
   }, []);
-
+  // Bruk/hjelp av KI (Copilot) for design/implementering av CSS
   // Spurte KI (Copilot) om hjelp til å få tabell i synkende rekkefølge
   // sort({ tidspunkt: -1 })  i backend (Systemlogg.js) fungerte ikke slik jeg ønsket
   return ( 

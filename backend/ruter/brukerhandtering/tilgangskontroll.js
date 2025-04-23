@@ -74,14 +74,14 @@ tilgangRouter.get('/bruker/rolle', beskyttetRute, async (req, res) => {
     try {
         const db = getDb();
         if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
-        console.log("req.user:", req.user); // Legg til logging
+        console.log("req.user:", req.user); 
         const bruker = await db.collection('Brukere').findOne({ _id: req.user._id });
         if (!bruker) {
             return res.status(404).json({ error: 'Bruker ikke funnet' });
         }
         res.status(200).json({
             rolle: bruker.rolle,
-            hovedAdmin: bruker.hovedAdmin || false, // Returner hoved-admin-status
+            hovedAdmin: bruker.hovedAdmin || false, 
         });
     } catch (err) {
         console.error('Feil ved henting av brukerens rolle:', err);
@@ -95,7 +95,7 @@ tilgangRouter.get("/brukere", beskyttetRute, sjekkRolle(["hoved-admin"]), async 
         const db = getDb();
         if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
         const brukere = await db.collection("Brukere").find({}).toArray();
-        res.status(200).json(brukere); // Returnerer JSON
+        res.status(200).json(brukere); 
     } catch (err) {
         console.error("Feil ved henting av brukere:", err);
         res.status(500).json({ error: "Kunne ikke hente brukere" });

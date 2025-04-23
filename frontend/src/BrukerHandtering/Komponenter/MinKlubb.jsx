@@ -1,4 +1,9 @@
 //Author: Laurent Zogaj & Severin Waller Sørensen
+
+/*
+ *
+ */
+
 import React, { useEffect, useState } from "react";
 
 const MinKlubb = ({ valgtUnderKategori }) => {

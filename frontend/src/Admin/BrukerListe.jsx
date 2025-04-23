@@ -113,7 +113,7 @@ const BrukerListe = () => {
     }
   };
 
-  return ( // Skrev et førsteutkast men spurte copilot om den kunne forbedre det og legge til CSS
+  return ( // Bruk/hjelp av KI (Copilot) for design/implementering av CSS
     <div>
       <h2 className="text-lg font-bold mb-4">Brukerliste</h2>
       {feilmelding && <p className="text-red-500">{feilmelding}</p>}
