@@ -37,7 +37,7 @@ const LagTurnering = () => {
       });
     const opprettet = await respons.json();
     if (!respons.ok) {
-      setFeilmelding(opprettet.error);
+      setFeilmelding(`${opprettet.error}\nKan derfor ikke opprette turnering`);
     } else {
       setTurneringer([...turneringer, opprettet]);
       setNyTurnering({ navn: "", dato: "", bane: "", beskrivelse: "" });
