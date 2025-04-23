@@ -32,6 +32,7 @@ const LagTurnering = () => {
         body: JSON.stringify(nyTurnering),
         credentials: "include",
       });
+<<<<<<< HEAD
 
       if (!respons.ok) {
         throw new Error("Kunne ikke opprette turnering");
@@ -39,6 +40,16 @@ const LagTurnering = () => {
 
       const opprettet = await respons.json();
       console.log("Turnering opprettet:", opprettet);
+=======
+    const opprettet = await respons.json();
+    if (!respons.ok) {
+      setFeilmelding(`${opprettet.error}\nKan derfor ikke opprette turnering`);
+    } else {
+      setTurneringer([...turneringer, opprettet]);
+      setNyTurnering({ navn: "", dato: "", bane: "", beskrivelse: "" });
+      setVisOpprettSkjema(false); // Gå tilbake til listen etter oppretting
+      }
+>>>>>>> f0b0a3d594391fcee5a4be6ad277af87203dbca8
     } catch (error) {
       console.error("Feil ved opprettelse av turnering:", error.message);
       setFeilmelding(error.message);

@@ -57,9 +57,21 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
   //Endring av brukerinformasjon under her: 
   const handleEndringAvBruker = async () => {
     setMelding("");
+    const regex = /^[a-zA-ZæøåÆØÅ]+$/; //Frontend validering 
+    const regexTelefon = /^[0-9+\s-]{8,15}$/; //Telefonnummer validering   
     //Validerer inputfeltene, vi tilatter ikke at brukeren sender inn tomme felt 
     if (!nyttBrukernavn || nyttBrukernavn.trim() === "" || !nyEpost || nyEpost.trim() === "") {
       setMelding("Brukernavn og e-post kan ikke være tomme.");
+      return;
+    }
+    //Validerer at fornavn og etternavn kun inneholder bokstaver
+    if ((fornavn && !regex.test(fornavn)) || (etternavn && !regex.test(etternavn)) || ((bosted && !regex.test(bosted)))) {
+      setMelding("Fornavn, etternavn og bosted kan kun inneholde bokstaver.");
+      return;
+    }
+    //Validerer at telefonnummeret er gyldig
+    if (telefonnummer && !regexTelefon.test(telefonnummer)) {
+      setMelding("Telefonnummer må være et gyldig format.");
       return;
     }
     //Bekreftelse av passord for å endre det

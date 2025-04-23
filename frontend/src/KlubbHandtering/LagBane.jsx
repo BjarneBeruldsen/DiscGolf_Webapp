@@ -25,6 +25,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
     const mapContainerRef = useRef(null);
     const[startPosisjon, setStartPosisjon] = useState({startLatitude:null, startLongitude:null});
     const[sluttPosisjon, setSluttPosisjon] =useState({sluttLatitude:null, sluttLongitude:null});
+    const [obZoner, setObZoner] = useState([]);
     
 
     const handleSubmit = (e) => {
@@ -53,7 +54,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
             return;
         }
 
-        const nyBane = { baneNavn, hull, vanskelighet, beskrivelse, plassering };
+        const nyBane = { baneNavn, hull, vanskelighet, beskrivelse, plassering, obZoner }; 
 
         fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${klubbId}/baner`, {
             method: 'POST',
@@ -93,13 +94,59 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
         });
       
         let startPunkt = null;
+        let obKoordinater = []; 
+        let obNr = 0;
       
         map.on("click", (e) => {
-            const clickedPos = { latitude: e.lngLat.lat, longitude: e.lngLat.lng };
-            
-            
+                   
+            if (e.originalEvent.altKey) {
+                const closed = [...obKoordinater, obKoordinater[0]];
+                obKoordinater.push([e.lngLat.lng, e.lngLat.lat]);
+                
+                new mapboxgl.Marker({ color: "red", scale: 0.5 })
+                    .setLngLat([e.lngLat.lng, e.lngLat.lat])
+                    .addTo(map);
 
-            //console.log("Saved position:", clickedPos);
+                    if (obKoordinater.length > 2) {
+                        const closed = [...obKoordinater, obKoordinater[0]];
+                      
+                        setObZoner(prev => [...prev, { coordinates: closed }]);
+                        obKoordinater = [];
+                      }  
+
+                if (obKoordinater.length > 2) {
+                    const obId = `ob-${obNr++}`;
+                    
+                    if (map.getSource(obId)) map.removeSource(obId);
+                    map.addSource(obId, {
+                        type: 'geojson',
+                        data: {
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Polygon',
+                            coordinates: [obKoordinater]
+                            }
+                        }
+                    });
+                    map.addLayer({
+                        id: obId,
+                        type: 'fill',
+                        source: obId,
+                        paint: {
+                            'fill-color': '#FF0000',
+                            'fill-opacity': 0.3
+                            }
+                    });
+                    
+                    setObZoner(prev => [...prev, { coordinates: closed }]);
+                    obKoordinater = [];
+                }
+                return;  
+            }
+                
+            const clickedPos = { latitude: e.lngLat.lat, longitude: e.lngLat.lng };
+
+            
       
           if (!startPunkt) {
 
@@ -227,6 +274,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                                 <>
                                     Trykk en gang for å velge startposisjon (utslagssted).<br />
                                     Deretter trykk en gang for å velge sluttposisjon (kurv).<br />
+                                    Hold Alt og klikk for å markere OB-soner (min/maks 3 punkter for å opprette en sone).<br />
                                 </>
                                 } />
                         </div>
