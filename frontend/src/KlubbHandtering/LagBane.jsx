@@ -7,6 +7,7 @@ import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import InfoTooltip from './infoTooltip';
 
 
 const LagBane = ({ klubbId, onBaneLagtTil }) => {
@@ -73,6 +74,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
             console.error('Feil ved lagring av bane:', error);
             setErrorMelding('Feil ved lagring av bane');
         });
+        window.location.reload(false);
     };
 
     const handleVisning = (seksjon) => {
@@ -217,9 +219,17 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                             className="w-full border border-gray-600 rounded-lg shadow-sm
                                     px-4 py-2 focus:outline-none focus:border-blue-500 font-serif"
                         />
-                        <label className='block font-medium mt-2'>
-                            Start og sluttposisjon:
-                        </label>
+                        <div className='flex items-center justify-between border rounded-lg px-4 py-2 mt-4'>
+                            <label className='block font-medium mt-2'>
+                                Start og sluttposisjon:
+                            </label>
+                            <InfoTooltip tekst={
+                                <>
+                                    Trykk en gang for å velge startposisjon (utslagssted).<br />
+                                    Deretter trykk en gang for å velge sluttposisjon (kurv).<br />
+                                </>
+                                } />
+                        </div>
                         <div>
                         <div ref={mapContainerRef} className="w-full h-100" />
                         </div>

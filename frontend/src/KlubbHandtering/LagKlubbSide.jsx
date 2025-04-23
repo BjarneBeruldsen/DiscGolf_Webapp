@@ -71,6 +71,7 @@ const LagKlubbside = () => {
             nyhet,
             tid: new Date().getTime() / 1000,
             fil: filPath,
+            klubbId: id, 
         };
 
         fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}/nyheter`, {

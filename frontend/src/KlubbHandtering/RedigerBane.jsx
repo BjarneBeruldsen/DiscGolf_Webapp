@@ -7,6 +7,7 @@ import mapboxgl from "mapbox-gl";
 import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import InfoTooltip from "./infoTooltip";
 
 const RedigerBane = ({ klubb }) => {
     const minne = useHistory();
@@ -440,7 +441,21 @@ const RedigerBane = ({ klubb }) => {
                                 </div>
                             </form>
                         </div>
-                        <div ref={mapContainerRef} className="w-full h-100" />                        
+                        <div>
+                        <div className="flex items-center justify-between mt-2">
+                        <label className='block font-medium mt-2'>
+                                Start og sluttposisjon:
+                            </label>
+                            <InfoTooltip tekst={
+                                <>
+                                    Trykk en gang for å velge startposisjon (utslagssted).<br />
+                                    Deretter trykk en gang for å velge sluttposisjon (kurv).<br />
+                                    Gamle posisjoner blir overskrevet.
+                                </>
+                                } /> 
+                        </div>
+                                <div ref={mapContainerRef} className="w-full h-100" />
+                        </div>                      
                         <div className="bunn-panel flex justify-between py-2 font-semibold text-md">
                             <button onClick={() => endreHull(false)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2">{"<-"}</button>
                             <button onClick={() => endreHull(true)} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2">{"->"}</button>

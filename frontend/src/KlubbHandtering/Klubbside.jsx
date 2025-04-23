@@ -40,10 +40,25 @@ const Klubbside = () => {
     }, [erMedlem, klubb, bruker]);
 
 
-    const handleLiker = () => {
-        setAntLiker(antLiker + 1);
-        console.log(antLiker)
-    }
+    const handleLiker = (nyhetId) => {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/nyheter/${nyhetId}/like`, {
+            method: 'PATCH',
+            headers: { "Content-Type": "application/json" },
+        })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error('Feil ved oppdatering av likes');
+            }
+            return res.json();
+        })
+        .then(data => {
+            console.log('Likes oppdatert:', data);
+            window.location.reload(); // Oppdaterer siden for å vise oppdaterte likes
+        })
+        .catch(error => {
+            console.error('Feil ved oppdatering av likes:', error);
+        });
+    };
 
     const handleUpdate = () => {
         const nyttMedlem = bruker;
