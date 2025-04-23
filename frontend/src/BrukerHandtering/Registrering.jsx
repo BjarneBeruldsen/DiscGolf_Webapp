@@ -76,7 +76,7 @@ const Registrering = () => {
         setLaster(true);
         //Kontakter backend for registrering
         try {
-            const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Registrering`, {
+            const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/bruker`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ brukernavn, epost, passord, bekreftPassord }),
@@ -190,7 +190,7 @@ return (
                 {melding && (
                     <p
                         className={`mt-4 text-center ${
-                            melding.toLowerCase().includes("vellykket")
+                            melding.toLowerCase().includes("vellykket" && "sucessful")
                                 ? "text-green-500"
                                 : "text-red-500"
                         }`}

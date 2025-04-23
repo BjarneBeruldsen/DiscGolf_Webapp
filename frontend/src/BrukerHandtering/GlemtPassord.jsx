@@ -55,7 +55,7 @@ const GlemtPassord = () => {
     }
     //Kontakter backend for glemt passord
     try {
-      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/GlemtPassord`, {
+      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/passord/glemt`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({brukerInput}),

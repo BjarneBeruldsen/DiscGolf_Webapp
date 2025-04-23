@@ -36,7 +36,7 @@ const TilbakestillPassord = () => {
         return;
       }
       try { //Kontakter backend
-        const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/ValideringToken`, {
+        const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/passord/valider`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ token, epost }), //Sender token og epost til backend
@@ -78,7 +78,7 @@ const TilbakestillPassord = () => {
       return;
     }
     try { //Kontakter backend for å oppdatere passordet
-      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/TilbakestillPassord`, {
+      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/passord/tilbakestill`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, epost, nyttPassord }), //Sender token, epost og nytt passord til backend
