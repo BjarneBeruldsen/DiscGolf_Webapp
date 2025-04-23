@@ -11,13 +11,14 @@ import BrukerInnstillinger from "./Komponenter/BrukerInnstillinger.jsx";
 import Personvern from "./Komponenter/Personvern.jsx";
 import Sikkerhet from "./Komponenter/Sikkerhet.jsx";
 import MinKlubb from "./Komponenter/MinKlubb.jsx";
-import KlubbInformasjon from "./Komponenter/KlubbInformasjon.jsx";
 import MittAbonnement from "./Komponenter/MittAbonnement.jsx";
 import HentBruker from "./HentBruker.jsx"; 
 import AdminDashboard from "../Admin/AdminDashboard";
 import BrukerListe from "../Admin/BrukerListe.jsx";
 import SystemLogg from "../Admin/LoggSystem.jsx";
-import TurneringsAdministrasjon from "../Admin/TurneringsAdministrasjon.jsx";
+import GlobaleInnstillinger from "../Admin/GlobaleInnstillinger.jsx";
+import AdministrereKlubber from "../Admin/AdministrereKlubber.jsx";
+import MedlemsAdministrasjon from "../KlubbHandtering/AdministrereMedlem.jsx";
 
 const Medlemskap = () => {
   const { bruker, setBruker } = HentBruker(); //Henter brukerdata fra HentBruker.jsx
@@ -80,7 +81,7 @@ const Medlemskap = () => {
   const underKategorier = {
     Systeminnstillinger: ["Globale innstillinger", "Brukeradministrasjon", "Systemlogg"],
     Administrasjon: ["AdminDashboard", "Administrere klubber"],
-    Klubbinnstillinger: ["Klubbinformasjon", "Administrede medlem"],
+    Klubbinnstillinger: ["Administrere medlem"],
     Brukerinnstillinger: ["Min informasjon", "Endre min informasjon", "Slett bruker"],
     Personvern: ["Informasjonskapsler", "Synlighet"],
     Sikkerhet: ["To-faktor autentisering", "Gjennoppretting"],
@@ -149,6 +150,10 @@ const Medlemskap = () => {
       {/*Høyre Meny*/}
       <div className="content-box flex flex-col items-center justify-center gap-6">
 
+        {valgtKategori === "Systeminnstillinger" && valgtUnderKategori === "Globale innstillinger" && (
+          <GlobaleInnstillinger />
+        )}
+
         {valgtKategori === "Systeminnstillinger" && valgtUnderKategori === "Brukeradministrasjon" && (
           <BrukerListe />
         )}
@@ -161,8 +166,12 @@ const Medlemskap = () => {
           <AdminDashboard />
         )}
 
-        {valgtKategori === "Klubbinnstillinger" && valgtUnderKategori === "Klubbinformasjon" && (
-          <KlubbInformasjon />
+        {valgtKategori === "Administrasjon" && valgtUnderKategori === "Administrere klubber" && (
+          <AdministrereKlubber />
+        )}
+
+        {valgtKategori === "Klubbinnstillinger" && valgtUnderKategori === "Administrere medlem" && (
+          <MedlemsAdministrasjon />
         )}
 
         {valgtKategori === "Brukerinnstillinger" && valgtUnderKategori && (

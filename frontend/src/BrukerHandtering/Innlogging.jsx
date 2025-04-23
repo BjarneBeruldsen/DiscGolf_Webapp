@@ -57,7 +57,7 @@ const Innlogging = ({ setLoggetInnBruker }) => { //Propp som kan brukes i andre 
     setLaster(true);
     //Kontakter backend for innlogging
     try {
-      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Innlogging`, {
+      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ brukernavn, passord }),
@@ -155,7 +155,7 @@ const tallRiktig = tallInput !== "" && parseInt(tallInput) === tall;
           {melding && (
             <p
               className={`mt-4 text-center ${
-                  melding.toLowerCase().includes("vellykket")
+                melding.toLowerCase().includes("vellykket") || melding.toLowerCase().includes("successful") 
                       ? "text-green-500"
                       : "text-red-500"
                   }`}

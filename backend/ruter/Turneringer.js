@@ -15,7 +15,7 @@ const { validationResult } = require("express-validator");
 
 const turneringRouter = express.Router();
 
-// POST /api/turneringer - Opprett ny turnering
+// Opprett ny turnering
 // sjekker at kun brukere med rolle som klubbleder (eller høyere) kan opprette turneringer
 turneringRouter.post("/api/turneringer", beskyttetRute, sjekkRolle (["klubbleder", "admin", "hoved-admin"]), turneringValidering, async (req, res) => {
     const db = getDb();
@@ -25,7 +25,7 @@ turneringRouter.post("/api/turneringer", beskyttetRute, sjekkRolle (["klubbleder
       return res.status(400).json({ error: error.array()[0].msg });
     }
     // Sjekker at alle påkrevde felt er fylt ut
-    if (!navn || !dato || !bane) {
+    if (!navn || !dato || !bane ) {
       return res.status(400).json({ error: "Mangler påkrevde felt" });
     }
 
@@ -51,16 +51,14 @@ turneringRouter.post("/api/turneringer", beskyttetRute, sjekkRolle (["klubbleder
 
 // Funksjon som henter alle turneringene
 turneringRouter.get("/api/turneringer", async (req, res) => {
-    try {
-      const db = getDb();
-      const turneringer = await db.collection("Turneringer").find().toArray();
-      res.status(200).json(turneringer);
-    } catch (err) {
-      console.error("Feil ved henting av turneringer:", err);
-      res.status(500).json({ error: "Kunne ikke hente turneringer" });
-    }
-  });
-  
-// eksporterer turneringRouter slik at den kan brukes for å håndtere API-kall
-// relatert til turneringer i app.js
+  try {
+    const db = getDb();
+    const turneringer = await db.collection("Turneringer").find().toArray();
+    res.status(200).json(turneringer);
+  } catch (err) {
+    console.error("Feil ved henting av turneringer:", err);
+    res.status(500).json({ error: "Kunne ikke hente turneringer" });
+  }
+});
+
 module.exports = turneringRouter;

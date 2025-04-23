@@ -16,9 +16,9 @@ function initDb() {
 }
 
 // Funksjon for å lage en ny turnering
-async function lagTurnering(turneringData) {
+async function lagTurnering(nyTurnering) {
   if (!db) initDb(); // Sikrer at DB er satt
-  const resultat = await db.collection("Turneringer").insertOne(turneringData);
+  const resultat = await db.collection("Turneringer").insertOne(nyTurnering);
   return resultat.insertedId;
 }
 
@@ -50,6 +50,6 @@ async function slettTurnering(id) {
 
 // eksporterer funksjonene slik at de kan brukes i andre filer
 module.exports = { lagTurnering,
-   hentAlleTurneringer, hentTurneringVedId,
-   oppdaterTurnering, slettTurnering,
+   hentAlleTurneringer, oppdaterTurnering, 
+   slettTurnering,
 };

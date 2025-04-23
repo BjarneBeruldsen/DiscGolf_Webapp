@@ -1,8 +1,6 @@
 //Author: Severin Waller Sørensen
 
-/* Denne filen er en React-komponent som gir funksjonalitet for å
- * administrere turneringer. Den lar brukeren opprette nye turneringer
- * og hente en liste over turneringer.
+/* Denne filen er en React-komponent sfor å opprette nye turneringer
  */
 
 import React, { useEffect, useState } from "react";
@@ -17,15 +15,14 @@ const LagTurnering = () => {
     beskrivelse: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [visOpprettSkjema, setVisOpprettSkjema] = useState(false); // Ny state for å vise skjemaet
 
-  // Håndterer endringer i input-feltene
+  // Funksjon for å håndtere endringer i inputfeltene
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNyTurnering({ ...nyTurnering, [name]: value });
   };
 
-  // POST-forespørsel: opprett en ny turnering
+  // Opprett en ny turnering
   const opprettTurnering = async () => {
     setIsLoading(true);
     try {
@@ -41,21 +38,18 @@ const LagTurnering = () => {
     } else {
       setTurneringer([...turneringer, opprettet]);
       setNyTurnering({ navn: "", dato: "", bane: "", beskrivelse: "" });
-      setVisOpprettSkjema(false); // Gå tilbake til listen etter oppretting
       }
     } catch (error) {
-      console.error("Feil:", error.message);
+      console.error("Feil ved opprettelse av turnering:", error.message);
+      setFeilmelding(error.message);
     }
     setIsLoading(false);
   };
 
-  return (
+  return ( // Bruk/hjelp av KI (Copilot) for design av skjema/implementering av CSS
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      {/* Overskrift */}
       <h3 className="text-2xl font-bold mb-6 text-gray-800 text-center">Opprett ny turnering</h3>
-      {/* Feilmelding */}
       {feilmelding && <p className="text-red-500 text-center mb-4">{feilmelding}</p>}
-      {/* Skjema for oppretting */}
       <div className="space-y-6">
         <div>
           <label className="block text-lg font-medium text-gray-700">Navn:</label>
@@ -100,7 +94,6 @@ const LagTurnering = () => {
             placeholder="Skriv inn en kort beskrivelse av turneringen"
           />
         </div>
-        {/* Knapp for å opprette turnering */}
         <div className="flex justify-end gap-4">
           <button
             onClick={opprettTurnering}

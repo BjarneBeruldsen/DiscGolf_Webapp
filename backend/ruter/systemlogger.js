@@ -10,7 +10,7 @@ const { beskyttetRute, sjekkRolle } = require("./brukerhandtering/funksjoner");
 
 const systemloggRouter = express.Router();
 
-// POST /api/systemlogg - Legg til en ny systemloggoppføring
+// Legg til en ny systemloggoppføring
 systemloggRouter.post("/", async (req, res) => {
     const db = getDb();
     const { bruker, handling, detaljer } = req.body;
@@ -37,7 +37,7 @@ systemloggRouter.post("/", async (req, res) => {
   }
 );
 
-// GET /api/systemlogg - Hent alle systemloggoppføringer
+// Hent alle systemloggoppføringer
 systemloggRouter.get("/", async (req, res) => {
     const db = getDb();
 
