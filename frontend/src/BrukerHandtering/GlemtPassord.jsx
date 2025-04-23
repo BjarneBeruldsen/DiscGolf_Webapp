@@ -132,7 +132,11 @@ const GlemtPassord = () => {
             <Link to="/Innlogging">{t("Tilbake til innlogging")}</Link>
           </p>
           {melding && (
-          <p className={`mt-4 ${melding.includes("sendt") ? "text-green-500" : "text-red-500"} text-center`}>
+          <p className={`mt-4 ${
+          melding.toLowerCase().includes("sendt") || melding.toLowerCase().includes("sent") 
+          ? "text-green-500" 
+          : "text-red-500"} 
+          text-center`}>
             {melding}
           </p>
           )}

@@ -190,8 +190,8 @@ return (
                 {melding && (
                     <p
                         className={`mt-4 text-center ${
-                            melding.toLowerCase().includes("vellykket" && "sucessful")
-                                ? "text-green-500"
+                            melding.toLowerCase().includes("vellykket") || melding.toLowerCase().includes("successful") 
+                            ? "text-green-500"
                                 : "text-red-500"
                         }`}
                     >

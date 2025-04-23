@@ -155,7 +155,7 @@ const tallRiktig = tallInput !== "" && parseInt(tallInput) === tall;
           {melding && (
             <p
               className={`mt-4 text-center ${
-                  melding.toLowerCase().includes("vellykket" && "successful")
+                melding.toLowerCase().includes("vellykket") || melding.toLowerCase().includes("successful") 
                       ? "text-green-500"
                       : "text-red-500"
                   }`}

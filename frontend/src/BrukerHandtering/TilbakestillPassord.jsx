@@ -158,7 +158,11 @@ const TilbakestillPassord = () => {
           </p>
 
           {melding && tokenGyldig && (
-            <p className={`mt-4 ${melding.includes("oppdatert") ? "text-green-500" : "text-red-500"} text-center`}>
+            <p className={`mt-4 ${
+              melding.toLocaleLowerCase().includes("oppdatert") || melding.toLowerCase().includes("updated") 
+              ? "text-green-500" 
+              : "text-red-500"} 
+              text-center`}>
               {melding}
             </p>
           )}
