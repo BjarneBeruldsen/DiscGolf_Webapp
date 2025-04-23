@@ -42,6 +42,8 @@ const LagKlubb = () => {
         .then(res => res.json())
         .then(data => {
             if (data.errors) {
+                console.error('Feil ved lagring av klubb:', data.errors);
+                setErrorMelding(data.errors[0].msg);
                 setLaster(false);
             } else {
                 console.log('Ny klubb lagt til', data);

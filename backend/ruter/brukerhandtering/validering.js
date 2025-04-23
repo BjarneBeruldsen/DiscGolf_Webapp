@@ -141,6 +141,7 @@ const redigeringValidering = [
     .optional({ checkFalsy: true, nullable: true }) 
         .trim()
         .escape()
+        .matches(/^[a-zA-ZæøåÆØÅ]+$/).withMessage("Navn kan bare inneholde bokstaver.")
         .isLength({ min: 1, max: 50 }).withMessage("Navn må være mellom 1 og 50 tegn."),
     body('telefonnummer')
     .optional({ checkFalsy: true, nullable: true })
@@ -151,6 +152,7 @@ const redigeringValidering = [
     .optional({ checkFalsy: true, nullable: true })
         .trim()
         .escape()
+        .matches(/^[a-zA-ZæøåÆØÅ]+$/).withMessage("Bosted kan bare inneholde bokstaver.")
         .isLength({ min: 1, max: 20 }).withMessage("Bosted må være mellom 1 og 100 tegn.")
 ];
 
@@ -200,6 +202,44 @@ body("bekreftPassord")
     }
 }),
 ];
+//Validering av turnering
+const turneringValidering = [
+    body('navn')
+        .trim()
+        .escape()
+        .matches (/^[a-zA-ZæøåÆØÅ0-9\s-]+$/).withMessage("Bane kan bare inneholde bokstaver, tall og mellomrom.")
+        .notEmpty().withMessage("Navn må fylles ut.")
+        .isLength({ min: 3, max: 50 }).withMessage("Navnet må være mellom 3 og 50 tegn."),
+    body('dato')
+        .notEmpty().withMessage("Dato må fylles ut.")
+        .isISO8601().withMessage("Dato må være gyldig."),
+    body('bane')
+        .trim()
+        .escape()
+        .matches (/^[a-zA-ZæøåÆØÅ0-9\s-]+$/).withMessage("Bane kan bare inneholde bokstaver, tall og mellomrom.")
+        .notEmpty().withMessage("Bane må fylles ut."),
+    body('beskrivelse')
+        .trim()
+        .escape()
+        .optional({ checkFalsy: true })
+        .isLength({ max: 500 }).withMessage("Beskrivelse kan ikke være mer enn 500 tegn.")
+        .matches (/^[a-zA-ZæøåÆØÅ0-9\s-.,!?]+$/).withMessage("Beskrivelse kan bare inneholde bokstaver, tall og mellomrom.")
+];
+//Validering av lagklubb
+const lagKlubbValidering = [
+    body('klubbnavn')
+        .trim()
+        .escape()
+        .matches (/^[a-zA-ZæøåÆØÅ0-9\s-]+$/).withMessage("Klubbnavn kan bare inneholde bokstaver, tall og mellomrom.")
+        .notEmpty().withMessage("Klubbnavn må fylles ut.")
+        .isLength({ min: 3, max: 50 }).withMessage("Klubbnavnet må være mellom 3 og 50 tegn."),
+    body('kontaktinfo')
+        .trim()
+        .escape()
+        .notEmpty().withMessage("Kontaktinfo må fylles ut.")
+        .isEmail().withMessage("E-post må være gyldig.")
+        .normalizeEmail(),
+];
 
 
 
@@ -219,5 +259,7 @@ module.exports = {
     endringStopp,
     nyttPassordValidering,
     nyttPassordStopp,
-    sendingAvMailStopp
+    sendingAvMailStopp,
+    turneringValidering,
+    lagKlubbValidering
 };
