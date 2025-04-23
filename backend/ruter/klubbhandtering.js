@@ -151,6 +151,42 @@ klubbRouter.post('/klubber/:id/nyheter', (req, res) => {
     }
 });
 
+// Rute for å legge til likes og kommentarer til en nyhet
+klubbRouter.patch('/klubber/:klubbId/nyheter/:nyhetId', async (req, res) => {
+    const db = getDb();
+    if (!db) return res.status(500).json({ error: 'Ingen database tilkobling' });
+
+    const { klubbId, nyhetId } = req.params;
+    const { liker, kommentar, brukernavn } = req.body;
+
+    if (!ObjectId.isValid(klubbId) || !ObjectId.isValid(nyhetId)) {
+        return res.status(400).json({ error: 'Ugyldig dokument-id' });
+    }
+
+    try {
+        const oppdatering = {};
+        if (liker) {
+            oppdatering.$inc = { 'nyheter.$.likes': 1 };
+        }
+        if (kommentar) {
+            oppdatering.$push = { 'nyheter.$.kommentarer': { brukernavn, kommentar, dato: new Date() } };
+        }
+
+        const result = await db.collection('Klubb').updateOne(
+            { _id: new ObjectId(klubbId), 'nyheter._id': new ObjectId(nyhetId) },
+            oppdatering
+        );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ error: 'Nyhet ikke funnet' });
+        }
+
+        res.status(200).json({ message: 'Nyhet oppdatert', result });
+    } catch (error) {
+        res.status(500).json({ error: 'Feil ved oppdatering av nyhet' });
+    }
+});
+
 //rute som legger til bane til git klubb
 klubbRouter.post('/klubber/:id/baner', (req, res) => {
     const db = getDb();
