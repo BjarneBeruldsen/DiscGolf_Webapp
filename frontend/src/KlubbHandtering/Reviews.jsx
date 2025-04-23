@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import HentBruker from '../BrukerHandtering/HentBruker';
+import { useTranslation } from 'react-i18next';
 
 const Review = ({ baneId }) => {
     const { bruker } = HentBruker();
@@ -11,6 +12,7 @@ const Review = ({ baneId }) => {
     const [success, setSuccess] = useState('');
     const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(true);
+    const { t } = useTranslation();
 
     // Henter anmeldelser og nullstiller skjema/meldinger når bane byttes
     useEffect(() => {
@@ -96,7 +98,7 @@ const Review = ({ baneId }) => {
     return (
         <div className="mt-4">
             <div className="flex items-center mb-4">
-                <h3 className="text-lg font-semibold mr-2">Vurdering:</h3>
+                <h3 className="text-lg font-semibold mr-2">{t('Vurdering:')}</h3>
                 <div className="flex items-center">
                     <span className="text-2xl font-bold mr-2">{calculateAverageRating()}</span>
                     <div className="flex">
@@ -113,15 +115,15 @@ const Review = ({ baneId }) => {
                         ))}
                     </div>
                     <span className="ml-2 text-sm text-gray-500">
-                        ({reviews.length} {reviews.length === 1 ? 'anmeldelse' : 'anmeldelser'})
+                        ({reviews.length} {reviews.length === 1 ? t('anmeldelse') : t('anmeldelser')})
                     </span>
                 </div>
             </div>
-
+    
             {bruker && (
                 <form onSubmit={handleSubmit} className="mb-4">
                     <div className="mb-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Din vurdering:</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">{t('Din vurdering:')}</label>
                         <div className="flex space-x-2">
                             {[1, 2, 3, 4, 5].map((star) => (
                                 <div
@@ -142,12 +144,12 @@ const Review = ({ baneId }) => {
                         </div>
                         {rating > 0 && (
                             <p className="text-sm text-gray-600 mt-1">
-                                Du har valgt {rating} stjerne{rating > 1 ? 'r' : ''}
+                                {t('Du har valgt')} {rating} {t('stjerne')}{rating > 1 && t('r')}
                             </p>
                         )}
                     </div>
                     <div className="mb-2">
-                        <label className="block text-sm font-medium text-gray-700">Din kommentar:</label>
+                        <label className="block text-sm font-medium text-gray-700">{t('Din kommentar:')}</label>
                         <textarea
                             value={kommentar}
                             onChange={(e) => setKommentar(e.target.value)}
@@ -161,22 +163,22 @@ const Review = ({ baneId }) => {
                         type="submit"
                         className="bg-blue-500 text-white font-semibold px-6 py-2.5 rounded shadow-sm border border-blue-600 hover:bg-blue-600 transition-colors duration-200"
                     >
-                        Legg til anmeldelse
+                        {t('Legg til anmeldelse')}
                     </button>
                 </form>
             )}
-
+    
             {error && <div className="text-red-500 mb-2">{error}</div>}
             {success && <div className="text-green-500 mb-2">{success}</div>}
 
             <div className="mt-4">
-                <h4 className="text-lg font-semibold mb-2">Anmeldelser:</h4>
-                {loading && <p>Laster anmeldelser...</p>}
-                {!loading && reviews.length === 0 && <p>Ingen anmeldelser ennå</p>}
+                <h4 className="text-lg font-semibold mb-2">{t('Anmeldelser:')}</h4>
+                {loading && <p>{t('Laster anmeldelser...')}</p>}
+                {!loading && reviews.length === 0 && <p>{t('Ingen anmeldelser ennå')}</p>}
                 {reviews && reviews.map((review) => (
                     <div key={review._id} className="border rounded p-4 mb-2">
                         <div className="flex items-center mb-2">
-                            <span className="font-semibold mr-2">{review.navn || 'Anonym'}</span>
+                        <span className="font-semibold mr-2">{review.navn || t('Anonym')}</span>
                             <div className="flex">
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <svg

@@ -11,8 +11,10 @@ import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import '../App.css';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import Review from './Reviews';
+import { useTranslation } from 'react-i18next';
 
     const BaneListe = ({ baner, rediger, klubbId }) => {
+    const { t } = useTranslation();
     const minne = useHistory();
     const { bruker, venter } = HentBruker();
     const [yrId, setYrId] = useState({});
@@ -249,7 +251,7 @@ import Review from './Reviews';
         <div className="p-6 bg-white border-black shadow-[0_1px_12px_rgba(0,0,0,0.1)] min-h-screen">
             <div className="filter-controls flex flex-col md:flex-row gap-4 mb-6">
                 <div className="location-filter w-full md:w-1/3">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Velg bane</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('Velg bane')}</label>
                     <select
                         value={locationFilter}
                         onChange={(e) => {
@@ -258,48 +260,47 @@ import Review from './Reviews';
                         }}
                         className="w-full border border-gray-300 rounded-lg p-2.5 bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
-                        <option value="">Alle baner</option>
+                        <option value="">{t('Alle baner')}</option>
                         {baner && [...new Set(baner.map(bane => bane.plassering))].filter(Boolean).map(location => (
                             <option key={location} value={location}>{location}</option>
                         ))}
                     </select>
                 </div>
                 <div className="hull-filter w-full md:w-1/3">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Antall hull</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('Antall hull')}</label>
                     <select
                         value={hullFilter}
                         onChange={(e) => setHullFilter(e.target.value)}
                         className="w-full border border-gray-300 rounded-lg p-2.5 bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
-                        <option value="">Alle hull</option>
-                        <option value="1">1 hull</option>
-                        <option value="2">2 hull</option>
-                        <option value="3">3 hull</option>
-                        <option value="4">4 hull</option>
-                        <option value="5">5 hull</option>
-                        <option value="6+">6+ hull</option>
+                        <option value="">{t('Alle hull')}</option>
+                        <option value="1">{t('1 hull')}</option>
+                        <option value="2">{t('2 hull')}</option>
+                        <option value="3">{t('3 hull')}</option>
+                        <option value="4">{t('4 hull')}</option>
+                        <option value="5">{t('5 hull')}</option>
+                        <option value="6+">{t('6+ hull')}</option>
                     </select>
                 </div>
             
             <div className="near-filter w-full md:w-1/3">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Avstand</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('Avstand')}</label>
                 <div className="flex space-x-2">
                     <select
                         value={avstandKm} 
                         onChange={(e) => setAvstandKm(Number(e.target.value))} 
                         className="w-1/3 border border-gray-300 rounded-lg p-2.5 bg-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
-                        <option value={10}>10km</option>
-                        <option value={25}>25km</option>
-                        <option value={50}>50km</option>
-                        <option value={1000}>100km+</option>
+                        <option value={10}>{t('10km')}</option>
+                        <option value={25}>{t('25km')}</option>
+                        <option value={50}>{t('50km')}</option>
+                       <option value={1000}>{t('100km+')}</option>
                     </select>
                     <button
                         onClick={() => setVisNæreBaner(!visNæreBaner)}
                         className={`w-2/3 rounded-lg p-2.5 font-medium ${visNæreBaner ? 'active' : ''}`}
-
                     >
-                        {visNæreBaner ? 'Viser baner i nærheten' : 'Vis baner i nærheten'}
+                        {visNæreBaner ? t('Viser baner i nærheten') : t('Vis baner i nærheten')}
                     </button>
                     </div>
                 </div>
@@ -327,20 +328,20 @@ import Review from './Reviews';
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M12 5l7 7-7 7" />
                                             </svg>
-                                            <span>Antall hull: {antallHull}</span>
+                                            <span>{t('Antall hull:')} {antallHull}</span>
                                         </div>
                                         <div className="flex items-center space-x-1">
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
-                                            <span>Tilstand: <span className="text-green-500 font-medium">God</span></span>
+                                            <span>{t('Tilstand:')} <span className="text-green-500 font-medium">{t('God')}</span></span>
                                         </div>
                                         <div className="flex items-center space-x-1">
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                                             </svg>
-                                            <span>Nivå: {bane.vanskelighet}</span>
-                                </div>  
+                                            <span>{t('Nivå:')} {bane.vanskelighet}</span>
+                                        </div>  
                                     </div>
                                     <div className="nederstelinje ">
                                         <div className="beskrivelse ">
@@ -350,13 +351,13 @@ import Review from './Reviews';
                                                     <button 
                                                         type="button" 
                                                         onClick={() => handleClick(bane)} 
-                                                        className="py-2 px-4 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium text-white  shadow-sm">Spill</button>
+                                                        className="py-2 px-4 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium text-white  shadow-sm">{t('Spill')}</button>
                                                 )}
                                                 {rediger && (
                                                     <button 
                                                         type="button" 
                                                         onClick={() => handleClick(bane)} 
-                                                        className="py-2 px-4 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium text-white shadow-sm">Rediger</button>
+                                                        className="py-2 px-4 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium text-white shadow-sm">{t('Rediger')}</button>
                                                 )}
                                             </div>
                                         </div>
@@ -371,7 +372,7 @@ import Review from './Reviews';
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <h1 className="text-gray-500 font-medium">Ingen baner tilgjengelig...</h1>
+                            <h1 className="text-gray-500 font-medium">{t('Ingen baner tilgjengelig...')}</h1>
                         </div>
                 </div>
                 )}
@@ -383,15 +384,14 @@ import Review from './Reviews';
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
                             </svg>
-                            Værvarsel for {aktivBane?.baneNavn || "valgt bane"}
+                            {t('Værvarsel for')} {aktivBane?.baneNavn || t('valgt bane')}
                         </h3>
                         <div className="h-[350px] w-full">
                         <div className="relative w-full h-[350px] pb-[30%]">
                             <iframe
-                                src={`https://www.yr.no/nb/innhold/${baneYrId}/card.html`}
-                                frameBorder="0"
+                                src={`https://www.yr.no/nb/innhold/${baneYrId}/card.html`}                                    frameBorder="0"
                                 className="absolute top-0 left-0 w-full h-full rounded-xxl pointer-events-none"
-                                title="Værmelding"
+                                title={t('Værmelding')}
                             />
                         </div>
                         </div>
@@ -407,7 +407,7 @@ import Review from './Reviews';
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                                 </svg>
-                                Anmeldelser
+                                {t('Anmeldelser')}
                             </h3>
                             <Review baneId={aktivBane._id} />
                             </div>
