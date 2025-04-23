@@ -433,6 +433,7 @@ brukerRouter.post("/ValideringToken", async (req, res) => {
                 grunn: 'Ingen bruker funnet med dette token og e-post'
             });
         }
+        //Copilot bidro her
         //Sjekk om token er utløpt
         const tokenUtløpt = new Date(bruker.resetTokenDato).getTime();
         const tokenNå = Date.now();
@@ -472,6 +473,7 @@ brukerRouter.post('/TilbakestillPassord', nyttPassordStopp, nyttPassordValiderin
         //Sjekker om token er utløpt
         const tokenUtløpt = new Date(bruker.resetTokenDato).getTime();
         const tokenNå = Date.now();
+        //Copilot bidro her
         //Hvis den har det fjerner vi den fra databasen
         if (tokenUtløpt <= tokenNå) {
             await db.collection('Brukere').updateOne(

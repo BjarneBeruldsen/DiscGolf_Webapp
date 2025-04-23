@@ -7,6 +7,8 @@ const { sjekkBrukerAktiv, beskyttetRute } = require('./brukerhandtering/funksjon
 const { MongoClient } = require('mongodb');
 const db = require('../db');
 const klubbRouter = express.Router();
+const { lagKlubbValidering } = require("./brukerhandtering/validering");
+const { validationResult } = require("express-validator");
 const multer = require('multer');
 const path = require('path');
 let io;
@@ -68,10 +70,14 @@ klubbRouter.get('/klubber/:id', (req, res) => {
     }
 })
 
-klubbRouter.post('/klubber', (req, res) => {
+klubbRouter.post('/klubber', lagKlubbValidering, (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
     const klubb = req.body;
+    const error = validationResult(req);
+    if (!error.isEmpty()) { //Henter validering
+        return res.status(400).json({ error: error.array()[0].msg });
+    }
     db.collection('Klubb')
     .insertOne(klubb)
     .then(result => {
