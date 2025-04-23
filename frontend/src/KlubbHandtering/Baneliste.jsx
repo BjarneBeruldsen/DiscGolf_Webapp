@@ -209,6 +209,29 @@ import Review from './Reviews';
                 });
             }
         }
+
+            bane.obZoner?.forEach((obZone, i) => {
+                map.addSource(`ob-${baneIndex}-${i}`, {
+                    type: 'geojson',
+                    data: {
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Polygon',
+                            coordinates: [obZone.coordinates]
+                            }
+                        }
+                    });
+            
+                map.addLayer({
+                    id: `ob-layer-${baneIndex}-${i}`,
+                    type: 'fill',
+                    source: `ob-${baneIndex}-${i}`,
+                    paint: {
+                        'fill-color': '#FF0000',
+                        'fill-opacity': 0.3
+                        }
+                    });
+                });           
             });
         })
 
