@@ -3,7 +3,7 @@
 /* Denne filen er en React-komponent som gir funksjonalitet for å
  * administrere turneringer. Den lar brukeren opprette nye turneringer
  * og hente en liste over turneringer.
- */
+ 
 
 import React, { useEffect, useState } from "react";
 
@@ -172,3 +172,4 @@ const TurneringsAdministrasjon = () => {
 };
 
 export default TurneringsAdministrasjon;
+*/

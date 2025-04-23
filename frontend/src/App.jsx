@@ -39,7 +39,6 @@ import OmOss from './_components/OmOss';
 import PoengTavler from './KlubbHandtering/Poengtavler';
 import HentBruker from "./BrukerHandtering/HentBruker";
 import AdminDashboard from './Admin/AdminDashboard';
-import TurneringsAdministrasjon from './Admin/TurneringsAdministrasjon';
 import Systeminnstillinger from './Admin/Systeminnstillinger';
 import BrukerListe from "./Admin/BrukerListe";
 import SystemLogg from "./Admin/LoggSystem";
@@ -181,15 +180,6 @@ function App() {
                <AdminDashboard />
              ) : (
                <Redirect to="/Innlogging" />
-             )}
-            </Route>
-            <Route exact path="/turneringsadministrasjon">
-            {loggetInnBruker?.rolle === "klubbleder" || 
-             loggetInnBruker?.rolle === "admin" || 
-             loggetInnBruker?.rolle === "hoved-admin" ? (
-                <TurneringsAdministrasjon />
-            ) : (
-                <Redirect to="/Innlogging" />
              )}
             </Route>
             <Route exact path="/Innlogging">

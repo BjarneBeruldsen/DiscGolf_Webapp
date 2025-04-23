@@ -80,7 +80,7 @@ const Medlemskap = () => {
   const underKategorier = {
     Systeminnstillinger: ["Globale innstillinger", "Brukeradministrasjon", "Systemlogg"],
     Administrasjon: ["AdminDashboard", "Administrere klubber"],
-    Klubbinnstillinger: ["Klubbinformasjon", "Administrere turneringer", "Administrede medlem"],
+    Klubbinnstillinger: ["Klubbinformasjon", "Administrede medlem"],
     Brukerinnstillinger: ["Min informasjon", "Endre min informasjon", "Slett bruker"],
     Personvern: ["Informasjonskapsler", "Synlighet"],
     Sikkerhet: ["To-faktor autentisering", "Gjennoppretting"],
@@ -163,10 +163,6 @@ const Medlemskap = () => {
 
         {valgtKategori === "Klubbinnstillinger" && valgtUnderKategori === "Klubbinformasjon" && (
           <KlubbInformasjon />
-        )}
-
-        {valgtKategori === "Klubbinnstillinger" && valgtUnderKategori === "Administrere turneringer" && (
-          <TurneringsAdministrasjon />
         )}
 
         {valgtKategori === "Brukerinnstillinger" && valgtUnderKategori && (
