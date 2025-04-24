@@ -4,8 +4,10 @@ import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { sjekkKlubbnavn, sjekkKontaktinfo } from './validation';
 import HentBruker from '../BrukerHandtering/HentBruker';
+import { useTranslation } from 'react-i18next';
 
 const LagKlubb = () => {
+    const { t } = useTranslation();
     const [klubbnavn, setKlubbnavn] = useState('');
     const [kontaktinfo, setKontaktinfo] = useState('');
     const [laster, setLaster] = useState(false);
@@ -63,12 +65,12 @@ const LagKlubb = () => {
     return (
         <div className="lag bg-gray-200 p-4 flex justify-center min-h-screen">
             <div className="w-full max-w-md">
-                <h2 className="text-3xl font-bold mb-4 text-center">Legg Til en klubb</h2>
-                <Link to="/VelgKlubb" className="text-blue-500 underline mb-4 block text-center">Har allerede en klubb?</Link>
+                <h2 className="text-3xl font-bold mb-4 text-center">{t('Legg Til en klubb')}</h2>
+                <Link to="/VelgKlubb" className="text-blue-500 underline mb-4 block text-center">{t('Har allerede en klubb?')}</Link>
                 <div className="nyhet-form mt-8 sm:mx-auto sm:w-full sm:max-w-md form-container">
                     <form onSubmit={handleSubmit} className="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
                         <label className="block text-sm font-medium mb-2">
-                            Klubbnavn:
+                            {t('Klubbnavn')}:
                         </label>
                         <div className="mt-2 mb-4">
                             <input 
@@ -81,7 +83,7 @@ const LagKlubb = () => {
                             />
                         </div>
                         <label className="block text-sm font-medium mb-2">
-                            Mailadresse:
+                            {t('Mailadresse')}:
                         </label>
                         <div className="mt-2 mb-4">
                             <input 
@@ -94,8 +96,8 @@ const LagKlubb = () => {
                             <span className='text-red-500'>{errorMelding}</span>
                         </div>
                         <div className="mt-4">
-                            {!laster && <button type="submit" className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white">Legg til klubb</button>}
-                            {laster && <button disabled className="w-full flex justify-center py-4 bg-gray-400 rounded-lg text-sm text-white">Legger til klubb..</button>}
+                            {!laster && <button type="submit" className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white">{t('Legg til klubb')}</button>}
+                            {laster && <button disabled className="w-full flex justify-center py-4 bg-gray-400 rounded-lg text-sm text-white">{t('Legger til klubb..')}</button>}
                         </div>
                     </form>
                 </div>

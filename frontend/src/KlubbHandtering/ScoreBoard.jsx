@@ -11,8 +11,10 @@ import mapboxgl from "mapbox-gl";
 import { useHistory } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import socket from "../socket";
+import { useTranslation } from 'react-i18next';
 
 const ScoreBoard = () => {
+    const { t } = useTranslation();
     const minne = useHistory();
     const location = useLocation(); // Hent gjeldende rute
     const { baneId, rundeId } = useParams();

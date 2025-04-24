@@ -5,8 +5,10 @@ import UseFetch from "./UseFetch";
 import HentBruker from "../BrukerHandtering/HentBruker";
 import { useHistory } from "react-router-dom";
 import InfoTooltip from "./infoTooltip";
+import { useTranslation } from 'react-i18next';
 
 const VelgSpillere = (props) => {
+    const { t } = useTranslation();
     const { bane, onBekreftSpillere, bruker } = props;
     const { data: brukere, error, isPending } = UseFetch(`${process.env.REACT_APP_API_BASE_URL}/spillere`);
     const [leggTilVisning, setLeggTilVisning] = useState(false);
@@ -89,16 +91,16 @@ const VelgSpillere = (props) => {
             {bane && !leggTilVisning && (
                 <div className="border rounded-lg shadow-lg bg-white m-8 p-8">
                     <div className="overskrft border-b">
-                        <h2 className="text-xl font-bold">Bane: {bane.baneNavn}</h2>
+                        <h2 className="text-xl font-bold">{t('Bane')}: {bane.baneNavn}</h2>
                     </div>
                     <div className="midtpanel py-2 border-b">
                         <div className="flex justify-between items-center">
-                            <h3 className="text-md font-bold">Legg til annen bruker:</h3>
+                            <h3 className="text-md font-bold">{t('Legg til annen bruker')}:</h3>
                             <InfoTooltip tekst={
                             <>
-                                Skriv inn brukernavn på alle<br />
-                                eksisterende brukere du ønsker å invitere. <br/>
-                                Invitasjon sendes ved trykk på "bekreft spillere"
+                                {t('Skriv inn brukernavn på alle')}<br />
+                                {t('eksisterende brukere du ønsker å invitere.')} <br/>
+                                {t('Invitasjon sendes ved trykk på "bekreft spillere"')}
                             </>
                             } />
                         </div>
@@ -106,7 +108,7 @@ const VelgSpillere = (props) => {
                             <input
                                 className="border rounded-lg px-2 py-1 mt-2"
                                 type="text"
-                                placeholder="Søk etter brukernavn"
+                                placeholder={t('Søk etter brukernavn')}
                                 value={sok}
                                 onChange={(e) => setSok(e.target.value)}
                             />
@@ -127,13 +129,13 @@ const VelgSpillere = (props) => {
                         </form>
                         <div className="py-2">
                             <div className="flex justify-between items-center">
-                                <h3 className="text-md font-bold">Legg til gjestespiller:</h3>
+                                <h3 className="text-md font-bold">{t('Legg til gjestespiller')}:</h3>
                                 <InfoTooltip tekst={
                                 <>
-                                    Skriv inn kallenavn <br />
-                                    på gjestespiller og trykk <br/>
-                                    "+"-knappen for å legge <br />
-                                    til gjestespillere i listen.
+                                    {t('Skriv inn kallenavn')} <br />
+                                    {t('på gjestespiller og trykk')} <br/>
+                                    {t('+"-knappen for å legge')} <br />
+                                    {t('til gjestespillere i listen.')}
                                 </>
                                 } />
                             </div>
@@ -141,7 +143,7 @@ const VelgSpillere = (props) => {
                                 <input
                                     className="border rounded-lg px-2 py-1 text-md"
                                     type="text"
-                                    placeholder="Navn"
+                                    placeholder={t('Navn')}
                                     value={nySpiller}
                                     onChange={(e) => setNySpiller(e.target.value)}
                                 />
@@ -150,7 +152,7 @@ const VelgSpillere = (props) => {
                         </div>
                     </div>
                     <div className="spillerliste">
-                        <h3 className="text-md font-bold">Spillere:</h3>
+                        <h3 className="text-md font-bold">{t('Spillere')}:</h3>
                         {spillere.map(spiller => (
                             <div key={spiller.id} className="spiller border-b py-2">
                                 <p>{spiller.navn}</p>
@@ -158,7 +160,7 @@ const VelgSpillere = (props) => {
                         ))}
                     </div>
                     <div className="bekreft">
-                        <button onClick={handleBekreftSpillere} className="border rounded-lg px-2 py-1 mt-2 text-md bg-gray-600 hover:bg-gray-500 text-white">Bekreft spillere</button>
+                        <button onClick={handleBekreftSpillere} className="border rounded-lg px-2 py-1 mt-2 text-md bg-gray-600 hover:bg-gray-500 text-white">{t('Bekreft spillere')}</button>
                         {errorMelding && <p className="text-red-500">{errorMelding}</p>}
                     </div>
                 </div>
@@ -166,7 +168,7 @@ const VelgSpillere = (props) => {
 
             {leggTilVisning && (
                 <div className="border rounded-lg shadow-lg bg-white m-8 p-8">
-                    <p className="font-bold">Spillernavn:</p>
+                    <p className="font-bold">{t('Spillernavn')}:</p>
                     <form onSubmit={(e) => {
                         e.preventDefault();
                         if (nySpiller.trim() === '') {
@@ -187,12 +189,12 @@ const VelgSpillere = (props) => {
                         <input
                             className="border rounded-lg px-2 py-1 mt-2 text-md"
                             type="text"
-                            placeholder="Navn"
+                            placeholder={t('Navn')}
                             value={nySpiller}
                             onChange={(e) => setNySpiller(e.target.value)}
                         />
                         <div>
-                            <button type="submit" className="mt-2 py-2 px-4 bg-gray-600 hover:bg-gray-500 rounded-lg text-sm text-white">Opprett spiller</button>
+                            <button type="submit" className="mt-2 py-2 px-4 bg-gray-600 hover:bg-gray-500 rounded-lg text-sm text-white">{t('Opprett spiller')}</button>
                         </div>
                         {errorMelding && <p className="text-red-500">{errorMelding}</p>}
                     </form>

@@ -4,8 +4,10 @@
  */
 
 import React, { useEffect, useState } from "react";
+import { useTranslation } from 'react-i18next';
 
 const LagTurnering = () => {
+  const { t } = useTranslation();
   const [turneringer, setTurneringer] = useState([]);
   const [feilmelding, setFeilmelding] = useState("");
   const [nyTurnering, setNyTurnering] = useState({
@@ -48,22 +50,22 @@ const LagTurnering = () => {
 
   return ( // Bruk/hjelp av KI (Copilot) for design av skjema/implementering av CSS
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h3 className="text-2xl font-bold mb-6 text-gray-800 text-center">Opprett ny turnering</h3>
+      <h3 className="text-2xl font-bold mb-6 text-gray-800 text-center">{t('Opprett ny turnering')}</h3>
       {feilmelding && <p className="text-red-500 text-center mb-4">{feilmelding}</p>}
       <div className="space-y-6">
         <div>
-          <label className="block text-lg font-medium text-gray-700">Navn:</label>
+          <label className="block text-lg font-medium text-gray-700">{t('Navn')}:</label>
           <input
             type="text"
             name="navn"
             value={nyTurnering.navn}
             onChange={handleInputChange}
             className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Skriv inn navn på turneringen"
+            placeholder={t('Skriv inn navn på turneringen')}
           />
         </div>
         <div>
-          <label className="block text-lg font-medium text-gray-700">Dato:</label>
+          <label className="block text-lg font-medium text-gray-700">{t('Dato')}:</label>
           <input
             type="date"
             name="dato"
@@ -73,25 +75,25 @@ const LagTurnering = () => {
           />
         </div>
         <div>
-          <label className="block text-lg font-medium text-gray-700">Bane:</label>
+          <label className="block text-lg font-medium text-gray-700">{t('Bane')}:</label>
           <input
             type="text"
             name="bane"
             value={nyTurnering.bane}
             onChange={handleInputChange}
             className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Skriv inn navnet på banen"
+            placeholder={t('Skriv inn navnet på banen')}
           />
         </div>
         <div>
-          <label className="block text-lg font-medium text-gray-700">Beskrivelse:</label>
+          <label className="block text-lg font-medium text-gray-700">{t('Beskrivelse')}:</label>
           <textarea
             name="beskrivelse"
             value={nyTurnering.beskrivelse}
             onChange={handleInputChange}
             className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows="4"
-            placeholder="Skriv inn en kort beskrivelse av turneringen"
+            placeholder={t('Skriv inn en kort beskrivelse av turneringen')}
           />
         </div>
         <div className="flex justify-end gap-4">
@@ -100,7 +102,7 @@ const LagTurnering = () => {
             className="bg-blue-500 text-white px-6 py-3 rounded-md font-semibold shadow-sm hover:bg-blue-600 transition duration-200"
             disabled={isLoading}
           >
-            {isLoading ? "Lagrer..." : "Opprett turnering"}
+            {isLoading ? t('Lagrer...') : t('Opprett turnering')}
           </button>
         </div>
       </div>
