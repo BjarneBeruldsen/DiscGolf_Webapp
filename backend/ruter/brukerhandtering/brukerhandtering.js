@@ -29,7 +29,7 @@ const brukerRouter = express.Router(); //Opprettelse av router for å så bruke 
 //Kort forklart:
 //Legger til bruker i databasen ved å hente inputene fra frontend, deretter sjekke om det ikke er noen med samme brukernavn eller e-post.
 //Deretter kryptere passordet og lagre det i databasen, altså hashingen.
-brukerRouter.post("/Registrering", registreringValidering, registreringStopp, async (req, res) => {
+brukerRouter.post("/bruker", registreringValidering, registreringStopp, async (req, res) => {
     try {
         const db = getDb();
         if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -74,7 +74,7 @@ brukerRouter.post("/Registrering", registreringValidering, registreringStopp, as
 //Rute for innlogging
 //Kort forklart:
 //Bruker passport sine funksjoner for innlogging og retunerer deretter brukerdata.
-brukerRouter.post("/Innlogging", innloggingValidering, loggeInnStopp, async (req, res, next) => {
+brukerRouter.post("/session", innloggingValidering, loggeInnStopp, async (req, res, next) => {
     const db = getDb();
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
     //Validering av input med express-validator hentet fra validering.js
@@ -92,23 +92,31 @@ brukerRouter.post("/Innlogging", innloggingValidering, loggeInnStopp, async (req
         if (!bruker) {
             return res.status(400).json({ error: info.message });
         }
-        //Logger inn bruker og lagrer session (req.login er en Passport-funksjon)
-        req.logIn(bruker, (err) => {
+        //Regenererer session for å hindre session fixation angrep
+        req.session.regenerate((err) => {
             if (err) {
-                return next(err);
+                console.error("Feil ved regenerering av session:", err);
+                return res.status(500).json({ error: "Feil ved innlogging" });
             }
-            const { brukernavn, epost } = bruker; //Henter logget inn bruker for logging
-            console.log(`Bruker logget inn: ${brukernavn}, e-post: ${epost}, rolle: ${bruker.rolle}`);
-            console.log(`Session aktiv med ID: ${req.sessionID}`);
-            //Returnerer brukerdata
-            return res.status(200).json({
-                message: "Innlogging vellykket", 
-                bruker: {
-                    id: bruker._id,
-                    brukernavn: bruker.brukernavn,
-                    epost: bruker.epost,
-                    rolle: bruker.rolle,
+            //Logger inn bruker og lagrer session (req.login er en Passport-funksjon)
+            req.logIn(bruker, (err) => {
+                if (err) {
+                    console.error("Feil ved innlogging:", err);
+                    return res.status(500).json({ error: "Feil ved innlogging" });
                 }
+                const { brukernavn, epost } = bruker; //Henter logget inn bruker for logging
+                console.log(`Bruker logget inn: ${brukernavn}, e-post: ${epost}, rolle: ${bruker.rolle}`);
+                console.log(`Session aktiv med ID: ${req.sessionID}`);
+                //Returnerer brukerdata
+                return res.status(200).json({
+                    message: "Innlogging vellykket", 
+                    bruker: {
+                        id: bruker._id,
+                        brukernavn: bruker.brukernavn,
+                        epost: bruker.epost,
+                        rolle: bruker.rolle,
+                    }
+                });
             });
         });
     })(req, res, next);
@@ -117,7 +125,7 @@ brukerRouter.post("/Innlogging", innloggingValidering, loggeInnStopp, async (req
 //Utlogging
 //Kort forklart:
 //Bruker passport sin funksjon for utlogging og sletter session/cookie
-brukerRouter.post("/Utlogging", beskyttetRute, sjekkBrukerAktiv, async (req, res) => {
+brukerRouter.delete("/session", beskyttetRute, sjekkBrukerAktiv, async (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
     try {
@@ -152,7 +160,7 @@ brukerRouter.post("/Utlogging", beskyttetRute, sjekkBrukerAktiv, async (req, res
 //Sletting av bruker
 //Kort forklart:
 //Finner brukeren via frontend inputs. Sjekker passordet og sletter brukeren, og deretter logger ut/sletter session for å fjerne alt av "rusk" som kan være igjen.
-brukerRouter.delete("/SletteBruker", beskyttetRute, sletteValidering, sjekkBrukerAktiv, async (req, res) => {
+brukerRouter.delete("/bruker/:id", beskyttetRute, sletteValidering, sjekkBrukerAktiv, async (req, res) => {
     try {
         const db = getDb();
         if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -200,7 +208,7 @@ brukerRouter.delete("/SletteBruker", beskyttetRute, sletteValidering, sjekkBruke
 });
 //Rute for å redigere brukerinformasjon og legge til mer info som fornavn, etternavn, telefonnummer og bosted
 //Forklaringer under
-brukerRouter.patch("/RedigerBruker", beskyttetRute, sjekkBrukerAktiv, redigeringValidering, endringStopp, async (req, res) => {
+brukerRouter.patch("/bruker/:id", beskyttetRute, sjekkBrukerAktiv, redigeringValidering, endringStopp, async (req, res) => {
     try {
         //Oppretter variabler/konstanter for redigering av bruker og objekt for å samle på endringer/oppdateringer og eventuelle fjerning av felt
         const fjerning = {};
@@ -344,7 +352,7 @@ brukerRouter.patch("/RedigerBruker", beskyttetRute, sjekkBrukerAktiv, redigering
 //Noe gjenbruk av samme logikken som vi har brukt i de andre rutene
 //Nedenfor her
 //Rute for glemt passord
-brukerRouter.post("/GlemtPassord", sendingAvMailStopp, async (req, res) => {
+brukerRouter.post("/passord/glemt", sendingAvMailStopp, async (req, res) => {
     try {
         const db = getDb();
         if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -415,7 +423,7 @@ brukerRouter.post("/GlemtPassord", sendingAvMailStopp, async (req, res) => {
 });
 //Jeg prøvde først å holde meg til to ruter men fant ut det ble rotete og vanskelig
 //Rute for validering av token 
-brukerRouter.post("/ValideringToken", async (req, res) => {
+brukerRouter.post("/passord/valider", async (req, res) => {
     try {
         const db = getDb();
         if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -455,7 +463,7 @@ brukerRouter.post("/ValideringToken", async (req, res) => {
     }
 });
 //Rute for tilbakestilling av passord
-brukerRouter.post('/TilbakestillPassord', nyttPassordStopp, nyttPassordValidering, async (req, res) => {
+brukerRouter.post("/passord/tilbakestill", nyttPassordStopp, nyttPassordValidering, async (req, res) => {
     try {
         const db = getDb();
         if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});

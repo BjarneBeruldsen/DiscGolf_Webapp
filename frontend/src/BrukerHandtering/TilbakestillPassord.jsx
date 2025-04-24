@@ -36,7 +36,7 @@ const TilbakestillPassord = () => {
         return;
       }
       try { //Kontakter backend
-        const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/ValideringToken`, {
+        const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/passord/valider`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ token, epost }), //Sender token og epost til backend
@@ -78,7 +78,7 @@ const TilbakestillPassord = () => {
       return;
     }
     try { //Kontakter backend for å oppdatere passordet
-      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/TilbakestillPassord`, {
+      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/passord/tilbakestill`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, epost, nyttPassord }), //Sender token, epost og nytt passord til backend
@@ -158,7 +158,11 @@ const TilbakestillPassord = () => {
           </p>
 
           {melding && tokenGyldig && (
-            <p className={`mt-4 ${melding.includes("oppdatert") ? "text-green-500" : "text-red-500"} text-center`}>
+            <p className={`mt-4 ${
+              melding.toLocaleLowerCase().includes("oppdatert") || melding.toLowerCase().includes("updated") 
+              ? "text-green-500" 
+              : "text-red-500"} 
+              text-center`}>
               {melding}
             </p>
           )}

@@ -12,8 +12,8 @@ const loggUtBruker = async (setLoggetInnBruker, setMelding) => {
 
 //Kontakter backend for å logge ut bruker
     try {
-        const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/Utlogging`, {
-            method: "POST",
+        const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/session`, {
+            method: "DELETE",
             credentials: "include",
             headers: {"Content-Type": "application/json"},
         });

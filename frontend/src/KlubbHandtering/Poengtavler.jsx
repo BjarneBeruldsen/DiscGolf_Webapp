@@ -1,3 +1,4 @@
+// Author: Bjarne Hovd Beruldsen
 import { useEffect, useState } from "react";
 import HentBruker from "../BrukerHandtering/HentBruker";
 

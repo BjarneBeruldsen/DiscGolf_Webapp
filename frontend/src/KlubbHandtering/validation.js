@@ -1,3 +1,5 @@
+//Author: Bjarne Hovd Beruldsen
+
 export const validering = (tekst, minLengde, maxLengde) => {
     if (tekst.length < minLengde || tekst.length > maxLengde) {
         throw new Error(`Teksten må være mellom ${minLengde} og ${maxLengde} tegn`);
