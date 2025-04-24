@@ -1,3 +1,8 @@
+/* 
+Denne filen viser en oversikt over alle klubber ved å hente data fra API 
+og sende det til KlubbListe-komponenten.
+*/
+
 // Author: Bjarne Hovd Beruldsen
 import UseFetch from "./UseFetch";
 import KlubbListe from "./KlubbListe";

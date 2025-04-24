@@ -1,5 +1,12 @@
+/* 
+Denne filen inneholder en tooltip-komponent som er gjenbrukbar 
+og viser tekst når brukeren holder musen over ikonet.
+*/
+
 // Author: Bjarne Hovd Beruldsen
+
 import { useState } from "react";
+
 
 const InfoTooltip = ({tekst}) => {
   const [isHovered, setIsHovered] = useState(false);

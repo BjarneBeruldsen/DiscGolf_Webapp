@@ -1,3 +1,7 @@
+/*  
+Denne filen viser et scoreboard for en bane, 
+lar brukeren oppdatere poeng og avslutte runden. 
+*/
 // Author: Bjarne Hovd Beruldsen & Abdinasir Ali
 import { useEffect, useState, useRef } from "react";
 import { useParams, useLocation } from "react-router-dom";
@@ -60,6 +64,7 @@ const ScoreBoard = () => {
     const [errorMelding, setErrorMelding] = useState(null);
     const hasUpdatedOnce = useRef(false); // Legg til useRef for å spore om handlingen er utført
 
+    //laster inn data fra localStorage
     useEffect(() => {
         localStorage.setItem('spillere', JSON.stringify(spillere));
         localStorage.setItem('nr', JSON.stringify(nr));
@@ -68,6 +73,7 @@ const ScoreBoard = () => {
         localStorage.setItem('visOppsummering', JSON.stringify(visOppsummering));
     }, [spillere, nr, visVelgSpillere, visScoreboard, visOppsummering]); 
 
+    //laster inn data om hull 
     useEffect(() => {
         if (bane && bane.hull) {
             setHull(bane.hull);
@@ -96,6 +102,7 @@ const ScoreBoard = () => {
     }, [nr, bane, hull, spillere]);
    
 
+    //visvelgspillere er true når det ikke er noen rundeId i url-en
     useEffect(() => {
         if (!rundeId) {
             setVisVelgSpillere(true);
@@ -104,6 +111,7 @@ const ScoreBoard = () => {
         }
     });
 
+    //metode som kommuniserer med server via socket.io
     useEffect(() => {
         socket.on("rundeLagret", (data) => {
             console.log("runde fra socket: " + data.data.rundeId);
@@ -174,6 +182,7 @@ const ScoreBoard = () => {
     })
 
 
+    //oppdaterer poengsumm for spiller enten negativt eller positivt
     const oppdaterpoeng = (spillerId, endring) => {
         const oppdatertSpillere = spillere.map(spiller => {
             if (spiller.id === spillerId) {
@@ -216,6 +225,7 @@ const ScoreBoard = () => {
         setSpillere(oppdatertSpillere);
     };
 
+    //hvis spillereSomVises er tom, så settes spillere til spillereSomVises
     useEffect(() => {
         if (spillereSomVises.length > 0) {
             setSpillere(spillereSomVises);
@@ -224,6 +234,7 @@ const ScoreBoard = () => {
 
 
 
+    //endrer hull basert på retning (venstre eller høyre)
     const endreHull = (retning) => {
         
         if (retning && nr < hull.length - 1) {
@@ -237,6 +248,7 @@ const ScoreBoard = () => {
         console.log("spillere: ", spillere);
     };
 
+    //bekfreter spillere og legger til invitasjoner 
     const handleBekreftSpillere = async (valgteSpillere, antInviterte) => {
         const nyRundeId = uuidv4(); // Generate a unique rundeId
 
@@ -276,6 +288,7 @@ const ScoreBoard = () => {
         lagreRunde(antInviterte, nyRundeId); 
     };
     
+    //lagrer runde data i databasen
     const lagreRunde = async (antall, nyRundeId) => {
         const runde = {
             antInviterte: antall,
@@ -300,6 +313,7 @@ const ScoreBoard = () => {
         }
     };
 
+    //sender invitasjon til spillerne
     const sendInvitasjon = (spiller, invitasjon) => {
         const brukerId = spiller.id;
 
@@ -328,6 +342,7 @@ const ScoreBoard = () => {
     };
 
 
+    //avslutter runde og lagrer poengkort og antall ferdig
     const handleAvsluttRunde = async () => {
         if(!sjekkErNullKast() && !lagretPoengkort) {
             setVisVenterFerdig(true);
@@ -389,6 +404,7 @@ const ScoreBoard = () => {
             }
     };
     
+    //nullstiller spilldata 
     const handleNyRunde = () => {
         setVisOppsummering(false);
         setVisVelgSpillere(true);
@@ -401,6 +417,7 @@ const ScoreBoard = () => {
         setSortertPoengkort([]);
     }
 
+    //legger til poengkort i sortertPoengkort for utskrivning av oppsummering 
     const leggTilPoengkort = (poengkort) => {
         console.log("poengkort fra socket: ", poengkort);
         const eksisterendeIds = new Set(sortertPoengkort.map(p => p.nyPoengkort.spillere[0]?.id)); //lagt til ved hjelp av Copilot
@@ -416,6 +433,7 @@ const ScoreBoard = () => {
         console.log('oppdaterte poengkort:', oppdatertPoengkort);
     }
 
+    //sjekker om det er null kast i spillere
     const sjekkErNullKast = () => {
         for(let spiller of spillere) {
             console.log("spiller sjekkes: ", spiller);

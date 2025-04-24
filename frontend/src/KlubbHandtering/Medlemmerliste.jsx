@@ -1,3 +1,7 @@
+/*  
+Denne filen viser en liste over medlemmer i en klubb, 
+inkludert deres roller og kontaktinformasjon. 
+*/
 // Author: Bjarne Hovd Beruldsen
 import React from 'react';
 import { useTranslation } from 'react-i18next';

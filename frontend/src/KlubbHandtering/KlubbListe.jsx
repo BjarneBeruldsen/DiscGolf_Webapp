@@ -1,4 +1,10 @@
+/* 
+Denne filen lager en liste over klubber som sendes med som prop. 
+Denne listen brukes i Klubbsider-komponenten.
+*/
+
 // Author: Bjarne Hovd Beruldsen
+
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 

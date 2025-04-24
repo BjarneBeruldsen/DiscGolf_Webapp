@@ -1,3 +1,6 @@
+/*  
+Denne filen henter og viser en liste over alle nyheter fra API-et. 
+*/
 // Author: Bjarne Hovd Beruldsen
 import React from "react";
 import UseFetch from './UseFetch'; 

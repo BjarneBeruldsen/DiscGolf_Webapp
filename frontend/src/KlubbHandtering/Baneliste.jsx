@@ -1,4 +1,11 @@
 // Author: Bjarne Hovd Beruldsen & Abdinasir Ali
+
+/*
+Denne filen inneholder komponentene for å vise baner og deres detaljer. 
+Den er gjennbrukt på flere sider i applikasjonen, 
+inkludert klubbens side og redigeringsside.
+ */
+
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
@@ -12,6 +19,7 @@ import '../App.css';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import Review from './Reviews';
 import { useTranslation } from 'react-i18next';
+
 
     const BaneListe = ({ baner, rediger, klubbId }) => {
     const { t } = useTranslation();
@@ -87,6 +95,7 @@ import { useTranslation } from 'react-i18next';
         }
     }, [baner, locationFilter, hullFilter, aktivBaneIndex, visNæreBaner, brukerPos, avstandKm]);
 
+    //Linker til scoreboard eller redigeringsside avhengig av om redigeringsmodus er aktivert
     const handleClick = (bane) => {
         if (bruker === null) {
             alert('logginn/registrer deg for å spille');

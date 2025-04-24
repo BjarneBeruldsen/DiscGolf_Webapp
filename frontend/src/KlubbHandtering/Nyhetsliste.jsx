@@ -1,3 +1,7 @@
+/*  
+Denne filen viser en liste over nyheter, 
+lar brukeren kommentere og åpne vedlagte PDF-dokumenter. 
+*/
 // Author: Bjarne Hovd Beruldsen
 import React, { useEffect, useState } from 'react';
 import HentBruker from '../BrukerHandtering/HentBruker';
@@ -9,6 +13,7 @@ const Nyhetsliste = ({ nyheter, handleLiker }) => {
     const [visKommentar, setVisKommentar] = useState(false);
     const { t } = useTranslation();
 
+    // Henter lagret kommentarvisning fra localStorage
     useEffect(() => {
         const savedVisKommentar = localStorage.getItem('visKommentar');
         if (savedVisKommentar !== null) {
@@ -16,6 +21,7 @@ const Nyhetsliste = ({ nyheter, handleLiker }) => {
         }
     }, []);
 
+    // legger kommentar til nyhet 
     const handleKommenter = async (nyhet) => {
         if (!bruker) {
             alert(t('Du må være innlogget for å kommentere.'));
@@ -45,6 +51,7 @@ const Nyhetsliste = ({ nyheter, handleLiker }) => {
         }
     };
 
+    // Håndterer visning av kommentarfeltet
     const handleClick = () => {
         const newVisKommentar = !visKommentar;
         setVisKommentar(newVisKommentar);

@@ -1,3 +1,7 @@
+/*  
+Denne filen lar brukeren redigere informasjon om en bane, 
+inkludert hull, avstand, par og posisjoner. 
+*/
 // Author: Bjarne Hovd Beruldsen & Abdinasir Ali
 import { useState, useEffect, useRef } from "react";
 import BaneListe from "./Baneliste";
@@ -42,7 +46,8 @@ const RedigerBane = ({ klubb }) => {
     const [startPosisjon, setStartPosisjon] = useState({startLatitude:null, startLongitude:null});
     const [sluttPosisjon, setSluttPosisjon] = useState({sluttLatitude:null, sluttLongitude:null});
     const [valgtHullNr, setValgtHullNr] = useState('');
-   
+
+    //lagrer endringer i banen
     const lagreEndrng = async () => {
         lagreHull(); 
         setNr(0);
@@ -78,12 +83,14 @@ const RedigerBane = ({ klubb }) => {
         }
     };
 
+    //angrer endringer i banen
     const angreEndring = () => { 
         alert('Endringer angret!');
         minne.push(`/LagKlubbSide/${klubbId}`);
     }
 
 
+    //henter banedata
     useEffect(() => {
         if (bane) {
             setBaneNavn(bane.baneNavn);
@@ -93,6 +100,7 @@ const RedigerBane = ({ klubb }) => {
         }
     }, [bane]);
 
+    //henter hulldata
     useEffect(() => {
         if (hull.length > 0) {
             setAvstand(hull[nr].avstand);
@@ -101,6 +109,7 @@ const RedigerBane = ({ klubb }) => {
     }, [nr, hull]);
 
 
+    //endrer hull basert på retning 
     const endreHull = (retning) => {
         if (retning && nr < hull.length - 1) {
             lagreHull();
@@ -110,12 +119,14 @@ const RedigerBane = ({ klubb }) => {
         }
     };
 
+    //lagrer endringer i hull
     const regHull= () => {
         lagreEndrng();
         alert('Endringer på hull er lagret');
         handleVisning('bane')();
     }
 
+    //lagrer hull i hull-arrayet
     const lagreHull = () => {
         hull[nr] = { 
             ...hull[nr], 
@@ -130,6 +141,7 @@ const RedigerBane = ({ klubb }) => {
         console.log('lagre Hull:', hull);
     }
 
+    //håndterer visning av seksjoner 
     const handleVisning = (seksjon) => () => {
         setVisRedigerBane(seksjon === 'bane');
         setVisRedigerHull(seksjon === 'hull');
@@ -137,6 +149,7 @@ const RedigerBane = ({ klubb }) => {
 
 
 
+    // kontrollerer redigering av baneinformasjon
     const handleRediger = (seksjon) => () => {
         setRedigerBeskrivelse(false);
         setRedigerVanskelighet(false);
@@ -164,6 +177,7 @@ const RedigerBane = ({ klubb }) => {
         }
     };
 
+    //hindrer refresh av siden ved submit
     const handleSubmit = (e) => {
         e.preventDefault();
     }
