@@ -8,9 +8,10 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import InfoTooltip from './infoTooltip';
-
+import { useTranslation } from 'react-i18next';
 
 const LagBane = ({ klubbId, onBaneLagtTil }) => {
+    const { t } = useTranslation();
     const [hullNr, setHullNr] = useState(1);
     const [avstand, setAvstand] = useState('');
     const [par, setPar] = useState('');
@@ -46,15 +47,19 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
 
     const handleLagreBane = () => {
         setErrorMelding('');
-        try {
-            validering(beskrivelse, 2, 60)
+        if (hull.length < 2) {
+            setErrorMelding('Du må legge til minst 2 hull før du kan lagre banen.');
+            return;
         }
-        catch(error) {
+        try {
+            validering(beskrivelse, 2, 60);
+        }
+        catch (error) {
             setErrorMelding(error.message + ' i beskrivelsen');
             return;
         }
 
-        const nyBane = { baneNavn, hull, vanskelighet, beskrivelse, plassering, obZoner }; 
+        const nyBane = { baneNavn, hull, vanskelighet, beskrivelse, plassering, obZoner };
 
         fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${klubbId}/baner`, {
             method: 'POST',
@@ -79,9 +84,15 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
     };
 
     const handleVisning = (seksjon) => {
+        if (seksjon === 'bane' && hull.length < 2) {
+            setErrorMelding('Du må legge til minst 2 hull før du kan fullføre registreringen.');
+            return;
+        }
+        setErrorMelding('');
         setHullVisning(seksjon === 'hull');
         setBaneVisning(seksjon === 'bane');
-    }  
+    };
+      
     useEffect(() => {
         if (!mapContainerRef.current) return;
       
@@ -236,12 +247,12 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                 {hullVisning && (
                 <div>
                     <div className='border rounded-lg font-bold text-xl bg-white flex justify-center py-4'>
-                        <h2>Hull: { hullNr }</h2>
+                        <h2>{t('Hull')}: { hullNr }</h2>
                     </div>
 
                     <form onSubmit={handleSubmit} className="bg-white py-8 px-6 shadow rounded-lg sm:px-10 mt-4 md:w-150 w-100">
                         <label className='block font-medium mt-2'>
-                            Avstand:
+                            {t('Avstand')}:
                         </label>
                         <input 
                             type="number" 
@@ -254,7 +265,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                                     px-4 py-2 focus:outline-none focus:border-blue-500 font-serif"
                         />
                         <label className='block font-medium mt-2'>
-                            Par:
+                            {t('Par')}:
                         </label>
                         <input 
                             type="number" 
@@ -268,13 +279,13 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                         />
                         <div className='flex items-center justify-between border rounded-lg px-4 py-2 mt-4'>
                             <label className='block font-medium mt-2'>
-                                Start og sluttposisjon:
+                                {t('Start og sluttposisjon')}:
                             </label>
                             <InfoTooltip tekst={
                                 <>
-                                    Trykk en gang for å velge startposisjon (utslagssted).<br />
-                                    Deretter trykk en gang for å velge sluttposisjon (kurv).<br />
-                                    Hold Alt og klikk for å markere OB-soner (min/maks 3 punkter for å opprette en sone).<br />
+                                    {t('Trykk en gang for å velge startposisjon (utslagssted).')}<br />
+                                    {t('Deretter trykk en gang for å velge sluttposisjon (kurv).')}<br />
+                                    {t('Hold Alt og klikk for å markere OB-soner (min/maks 3 punkter for å opprette en sone).')}<br />
                                 </>
                                 } />
                         </div>
@@ -284,11 +295,11 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
 
                         <div className='flex items-center justify-between border rounded-lg px-4 py-2 mt-4'>
                             <label className='block font-medium mt-2'>
-                                Legg til hull:
+                                {t('Legg til hull')}:
                             </label>
                             <button type="submit" className="rounded-full bg-yellow-200 hover:bg-yellow-500 shadow px-4 py-2">+</button>
                         </div>
-                        <button onClick={() => handleVisning("bane")} className="rounded-full bg-yellow-200 hover:bg-yellow-500 shadow mx-2 px-4 py-2 mt-4">Fullfør Registrering</button>
+                        <button onClick={() => handleVisning("bane")} className="rounded-full bg-yellow-200 hover:bg-yellow-500 shadow mx-2 px-4 py-2 mt-4">{t('Fullfør Registrering')}</button>
                     </form>
                 </div>
                 )}
@@ -296,7 +307,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                 <div className='bunn-panel m-4'>
                     <form>
                         <label className='block font-medium mt-2'>
-                            Navn:
+                            {t('Navn')}:
                         </label>
                         <input 
                             type="text"
@@ -307,15 +318,15 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                                     px-4 py-2 focus:outline-none focus:border-blue-500 font-serif"
                         />
                         <label>
-                            Vanskelighetsgrad:
+                            {t('Vanskelighetsgrad')}:
                         </label>
                         <select id="vanskelighetsgrad" name='vanskelighetsgrad' value={vanskelighet} onChange={(e) => setVanskelighet(e.target.value)} className="w-full border border-gray-600 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:border-blue-500 font-serif">
-                            <option value="Lett">Lett</option>
-                            <option value="Middels">Middels</option>
-                            <option value="Vanskelig">Vanskelig</option>
+                            <option value="Lett">{t('Lett')}</option>
+                            <option value="Middels">{t('Middels')}</option>
+                            <option value="Vanskelig">{t('Vanskelig')}</option>
                         </select>
                         <label>
-                            Beskriv banen:
+                            {t('Beskriv banen')}:
                         </label>
                         <input 
                             type="text"
@@ -326,7 +337,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                                     px-4 py-2 focus:outline-none focus:border-blue-500 font-serif"
                         />
                          <label>
-                            Plassering:
+                            {t('Plassering')}:
                         </label>
                         <input 
                             type="text"
@@ -337,7 +348,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                                     px-4 py-2 focus:outline-none focus:border-blue-500 font-serif"
                         />
                     </form>
-                    <button onClick={handleLagreBane} className="rounded-full bg-yellow-200 hover:bg-yellow-500 shadow mx-2 px-4 py-2 mt-4">Lagre bane</button>
+                    <button onClick={handleLagreBane} className="rounded-full bg-yellow-200 hover:bg-yellow-500 shadow mx-2 px-4 py-2 mt-4">{t('Lagre bane')}</button>
                 </div>
                 )}
                 {errorMelding && <p className='text-red-500'>{errorMelding}</p>}

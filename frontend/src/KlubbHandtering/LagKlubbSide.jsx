@@ -6,8 +6,10 @@ import { sjekkNyhetTittel, sjekkNyhet } from './validation';
 import LagBane from './LagBane';
 import LagTurnering from './LagTurnering';
 import RedigerBane from './RedigerBane';
+import { useTranslation } from 'react-i18next';
 
 const LagKlubbside = () => {
+    const { t } = useTranslation();
     const { id } = useParams();
     const [klubb, setKlubb] = useState(null);
     const [nyhetTittel, setNyhetTittel] = useState('');
@@ -129,36 +131,36 @@ const LagKlubbside = () => {
                     <>
                         <div className="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
                             <div className='overskriftpanel bg-white border-b'>
-                                <h2 className="text-3xl font-bold">Klubb: {klubb.klubbnavn}</h2>
-                                <p className="text-2xl font-bold">Kontaktinfo: {klubb.kontaktinfo}</p>
+                                <h2 className="text-3xl font-bold">{t('Klubb')}: {klubb.klubbnavn}</h2>
+                                <p className="text-2xl font-bold">{t('Kontaktinfo')}: {klubb.kontaktinfo}</p>
                             </div>
                             <div className='flex justify-center'>
-                            <button onClick={() => behandleVisning("nyhet")} className="justify-center py-2 px-2 m-2 bg-gray-500 rounded-lg text-sm text-white hover:bg-gray-800">Nyhet
+                            <button onClick={() => behandleVisning("nyhet")} className="justify-center py-2 px-2 m-2 bg-gray-500 rounded-lg text-sm text-white hover:bg-gray-800">{t('Nyhet')}
                                 <svg className="w-6 inline-block" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
                                 </svg>
                             </button>
-                            <button onClick={() => behandleVisning("bane")} className="justify-center py-2 px-2 m-2 bg-gray-500 rounded-lg text-sm text-white hover:bg-gray-800">Bane
+                            <button onClick={() => behandleVisning("bane")} className="justify-center py-2 px-2 m-2 bg-gray-500 rounded-lg text-sm text-white hover:bg-gray-800">{t('Bane')}
                                 <svg className="w-6 inline-block" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
                                 </svg>
                             </button>
-                            <button onClick={() => behandleVisning("turnering")} className="justify-center py-2 px-2 m-2 bg-gray-500 rounded-lg text-sm text-white hover:bg-gray-800">Turnering
+                            <button onClick={() => behandleVisning("turnering")} className="justify-center py-2 px-2 m-2 bg-gray-500 rounded-lg text-sm text-white hover:bg-gray-800">{t('Turnering')}
                                 <svg className="w-6 inline-block" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
                                 </svg>
                             </button>
-                            <button onClick={() => behandleVisning("redigerBane")} className="justify-center py-2 px-2 m-2 bg-gray-500 rounded-lg text-sm text-white hover:bg-gray-800">Rediger Bane
+                            <button onClick={() => behandleVisning("redigerBane")} className="justify-center py-2 px-2 m-2 bg-gray-500 rounded-lg text-sm text-white hover:bg-gray-800">{t('Rediger Bane')}
                                 <svg className='w-6 pl-2 inline-block' xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 512 506.3"><path fill="#fff" fill-rule="nonzero" d="M119.42 6.87h125.91l-60.09 62.8h-65.82c-15.62 0-29.77 6.34-39.97 16.53l-.12.13a56.351 56.351 0 00-16.54 39.97v317.24h317.25c15.63 0 29.77-6.34 39.97-16.54l.12-.12c10.2-10.2 16.54-24.35 16.54-39.97V322.1l62.79-65.59v130.4c0 32.73-13.42 62.55-35.05 84.24l-.2.2c-21.68 21.58-51.48 34.98-84.17 34.98H47.92c-13.08 0-25.02-5.38-33.75-14.05l-.18-.19C5.36 483.38 0 471.46 0 458.42V126.3c0-32.74 13.43-62.56 35.06-84.25l.19-.19C56.94 20.27 86.72 6.87 119.42 6.87zm184.8 311.78l-122.6 24.97 17.73-130.45 104.87 105.48zm-66.17-144.94L401.27 3.81c4.47-3.72 8.95-5.16 14.11-2.2l93.64 90.68c3.72 4.48 4.48 9.64-.76 14.87l-165.41 172.1-104.8-105.55z"/></svg>                            </button>
                             </div>
                         </div>
                         {visNyhetForm && (
                             <div className="nyhet-form mt-8 sm:mx-auto sm:w-full sm:max-w-md form-container">
                                 <div className="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
-                                    <h3 className="text-2xl font-bold">Legg til nyheter</h3>
+                                    <h3 className="text-2xl font-bold">{t('Legg til nyheter')}</h3>
                                     <form onSubmit={handleSubmit}>
                                         <label className="block text-sm font-medium">
-                                            Nyhetstittel: 
+                                            {t('Nyhetstittel')}: 
                                         </label>
                                         <div className="mt-2">
                                             <input 
@@ -171,7 +173,7 @@ const LagKlubbside = () => {
                                             />
                                         </div>
                                         <label className="block text-sm font-medium mt-2">
-                                            Nyhet:
+                                            {t('Nyhet')}:
                                         </label>
                                         <div className="mt-2">
                                             <textarea
@@ -186,10 +188,10 @@ const LagKlubbside = () => {
                                             />
                                         </div>
                                         <div className='mb-5'>
-                                            <label>Last opp pdf:</label>
+                                            <label>{t('Last opp pdf')}:</label>
                                             <div className="mt-2">
                                                 <label className="inline-block px-4 py-2 bg-gray-500 text-white rounded-lg cursor-pointer hover:bg-gray-800">
-                                                    Velg fil
+                                                    {t('Velg fil')}
                                                     <input 
                                                         type="file"
                                                         name="pdf" 
@@ -198,13 +200,13 @@ const LagKlubbside = () => {
                                                         onChange={(e) => {handleEndring(e)}}                        
                                                     />
                                                 </label>
-                                                <label className='ml-2'>{fil ? fil.name : 'Ingen fil valgt'}</label>
+                                                <label className='ml-2'>{fil ? fil.name : t('Ingen fil valgt')}</label>
                                             </div>
                                         </div>
                                         <span className='text-red-500'>{ errorMelding }</span>
                                         <div className="mt-4">
-                                            {!laster && <button type="submit" className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white mt-2">Legg til nyhet</button>}
-                                            {laster && <button disabled className="w-full flex justify-center py-4 bg-gray-300 rounded-lg text-sm text-white">Legg til nyhet..</button>}
+                                            {!laster && <button type="submit" className="w-full flex justify-center py-4 bg-gray-500 rounded-lg text-sm text-white mt-2">{t('Legg til nyhet')}</button>}
+                                            {laster && <button disabled className="w-full flex justify-center py-4 bg-gray-300 rounded-lg text-sm text-white">{t('Legg til nyhet..')}</button>}
                                         </div>
                                     </form>
                                 </div>
