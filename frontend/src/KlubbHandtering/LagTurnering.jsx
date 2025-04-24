@@ -1,6 +1,6 @@
-//Author: Severin Waller Sørensen
+//Author: Severin Waller Sørensen & Laurent Zogaj
 
-/* Denne filen er en React-komponent sfor å opprette nye turneringer
+/* Denne filen er en React-komponent for å opprette nye turneringer
  */
 
 import React, { useEffect, useState } from "react";
