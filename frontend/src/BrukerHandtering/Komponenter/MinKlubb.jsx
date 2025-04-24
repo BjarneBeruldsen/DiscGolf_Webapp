@@ -32,13 +32,13 @@ const MinKlubb = ({ valgtUnderKategori }) => {
     <div className="bg-white shadow-xl rounded-lg p-6 w-full max-w-[500px] flex flex-col items-center">
 
       {!underKategorier.includes(valgtUnderKategori) && (
-        <p className="text-gray-600">Velg en underkategori for ditt behov</p>
+        <p className="text-gray-600"></p>
       )}
 
-      {valgtUnderKategori === "Min klubb" && <p>Informasjon om din klubb</p>}
-      {valgtUnderKategori === "Søk etter klubb" && <p>Søkefunksjonalitet</p>}
-      {valgtUnderKategori === "Søk etter brukere" && <p>Søk etter brukere</p>}
-      {valgtUnderKategori === "Avregistrer" && <p>Avregistrering</p>}
+      {valgtUnderKategori === "Min klubb" && <p>Informasjon om din klubb(Ikke implementert)</p>}
+      {valgtUnderKategori === "Søk etter klubb" && <p>Søkefunksjonalitet(Ikke implementert)</p>}
+      {valgtUnderKategori === "Søk etter brukere" && <p>Søk etter brukere(Ikke implementert)</p>}
+      {valgtUnderKategori === "Avregistrer" && <p>Avregistrering(Ikke implementert)</p>}
 
       {/* Dynamisk innhold basert på rolle
       {rolle === "admin" && (
