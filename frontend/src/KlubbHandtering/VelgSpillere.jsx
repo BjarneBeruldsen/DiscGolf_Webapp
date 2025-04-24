@@ -1,3 +1,4 @@
+//Author: Bjarne Hovd Beruldsen
 import { useState, useEffect } from "react";
 import { validering } from './validation';
 import UseFetch from "./UseFetch";

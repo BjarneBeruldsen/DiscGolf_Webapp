@@ -1,3 +1,4 @@
+//Author: Bjarne Hovd Beruldsen
 import { io } from 'socket.io-client';
 
 // Opprett socket-tilkobling

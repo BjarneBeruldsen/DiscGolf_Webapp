@@ -1,3 +1,4 @@
+// Author: Bjarne Hovd Beruldsen & Abdinasir Ali
 import { useState, useEffect, useRef } from "react";
 import BaneListe from "./Baneliste";
 import UseFetch from "./UseFetch";
