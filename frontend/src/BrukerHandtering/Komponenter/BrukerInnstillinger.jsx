@@ -10,6 +10,7 @@ import endreBruker from "../endringAvBruker.jsx";
 
 const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
   const [visSlettBoks, setVisSlettBoks] = useState(false); //Viser eller skjuler slettingsboksen
+  const [laster, setLaster] = useState(false); //En laster som brukes for å vise at noe skjer
   //Default verdier som er satt til tomme strenger
   const [brukerInput, setBrukerInput] = useState(""); 
   const [passord, setPassord] = useState("");
@@ -47,11 +48,15 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
     if (!brukerInput.trim().toLowerCase() || !passord.trim().toLowerCase()) {
       setMelding("Fyll inn brukernavn/e-post og passord.");
       return;
-    } try {
+    }
+      setLaster(true);
+    try {
       await SletteBruker(brukerInput, passord, setBruker, setMelding, minne); //Slettebruker fra SletteBruker.jsx
     } catch (error) {
       console.error("Feil ved sletting av bruker:", error);
       setMelding("Feil ved sletting av bruker, sjekk brukernavn/epost og passord, prøv igjen deretter.");
+    } finally {
+      setLaster(false);
     }
   };
   //Endring av brukerinformasjon under her: 
@@ -224,6 +229,8 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
             placeholder="Skriv inn brukernavn eller epost"
             value={brukerInput}
             onChange={(e) => setBrukerInput(e.target.value)}
+            disabled={laster}
+            required
             className="w-full px-3 py-2 border border-gray-300 rounded mb-3"
           />
           <input
@@ -231,20 +238,28 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
             placeholder="Bekreft passord"
             value={passord}
             onChange={(e) => setPassord(e.target.value)}
+            disabled={laster}
+            required
             className="w-full px-3 py-2 border border-gray-300 rounded"
           />
           <button
             onClick={handleSlettBruker}
+            disabled={laster}
             className="bg-red-600 text-white px-4 py-2 rounded w-full mt-4 hover:bg-red-700"
           >
-            Bekreft Sletting
+            {laster ? "Laster..." : "Bekreft Sletting"}
           </button>
+          {!laster && (
           <button
             onClick={() => setVisSlettBoks(false)}
             className="bg-gray-300 text-black px-4 py-2 rounded w-full mt-2 hover:bg-gray-400"
           >
             Avbryt
-          </button>
+            </button>
+          )}
+          {laster && ( 
+            <p className="mt-4 text-gray-600 text-center">Sletter bruker, vennligst vent...</p>
+          )}
           {melding && (
           <p className="mt-4 text-red-600 text-center">{melding}</p>
           )}

@@ -391,5 +391,6 @@
     "Antall kast totalt": "Total number of throws",
     "Gjennomsnittlig kast pr.runde": "Average throws per round",
     "Beste score": "Best score",
-    "Antall hole in one": "Number of hole-in-ones"
+    "Antall hole in one": "Number of hole-in-ones",
+    "Sletter bruker, vennligst vent..." : "Deleting user, please wait..."
 }
