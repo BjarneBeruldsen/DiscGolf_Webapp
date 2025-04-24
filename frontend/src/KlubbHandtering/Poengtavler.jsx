@@ -1,9 +1,10 @@
 // Author: Bjarne Hovd Beruldsen
 import { useEffect, useState } from "react";
 import HentBruker from "../BrukerHandtering/HentBruker";
+import { useTranslation } from 'react-i18next';
 
 const PoengTavler = () => {
-
+    const { t } = useTranslation();
     const { bruker, venter } = HentBruker();
     const [poengTavler, setPoengTavler] = useState([]);
     const [visStatistikk, setVisStatistikk] = useState(true);
@@ -17,7 +18,6 @@ const PoengTavler = () => {
     const [gjennomsnittligKast, setGjennomsnittligKast] = useState(0);
     const [besteScore, setBesteScore] = useState(0);
     const [antHoleInOne, setAntHoleInOne] = useState(0);
-
 
     useEffect(() => {
         if (bruker && bruker.poengkort && bruker.poengkort.length > 0) {
@@ -37,7 +37,6 @@ const PoengTavler = () => {
                 const spillere = poengTavle.nyPoengkort.spillere;
                 setAntRunder(poengTavler.length);
         
-
                 const spiller = spillere[0]
                 totalScore += spiller.total || 0;
                 totalKast += sumKast(spiller) || 0; 
@@ -45,7 +44,6 @@ const PoengTavler = () => {
                     bestScore = spiller.total;
                 }
         
-                
                 //finner antall hole in one
                 for (let i = 0; i < spiller.antallKast.length; i++) {
                     if (spiller.antallKast[i] === 1) {
@@ -82,27 +80,27 @@ const PoengTavler = () => {
         <div className="statistikk bg-gray-200 min-h-[100vh]">
             <div className='topp-panel bg-white p-4 shadow w-full mb-25'>
                 <div className='overskrift border-b'>
-                    <h2 className="text-3xl font-bold">{ brukernavn } sin statistikk</h2>
+                    <h2 className="text-3xl font-bold">{brukernavn} {t('sin statistikk')}</h2>
                 </div>
                 <div className='navbar p-2'>
-                    <button onClick={() => handleVis('statistikk')} className={`justify-center py-2 px-2 m-2 text-sm ${valgtSeksjon === 'statistikk' ? 'border-b-2 border-black-500' : 'rounded-lg bg-white text-gray hover:bg-gray-200'}`}>Statistikk</button>
-                    <button onClick={() => handleVis('poengtavler')} className={`justify-center py-2 px-2 m-2 text-sm ${valgtSeksjon === 'poengtavler' ? 'border-b-2 border-black-500' : 'rounded-lg bg-white text-gray hover:bg-gray-200'}`}>Poengtavler</button>
+                    <button onClick={() => handleVis('statistikk')} className={`justify-center py-2 px-2 m-2 text-sm ${valgtSeksjon === 'statistikk' ? 'border-b-2 border-black-500' : 'rounded-lg bg-white text-gray hover:bg-gray-200'}`}>{t('Statistikk')}</button>
+                    <button onClick={() => handleVis('poengtavler')} className={`justify-center py-2 px-2 m-2 text-sm ${valgtSeksjon === 'poengtavler' ? 'border-b-2 border-black-500' : 'rounded-lg bg-white text-gray hover:bg-gray-200'}`}>{t('Poengtavler')}</button>
                 </div>
             </div>
-            {venter && <div>Laster...</div>}
+            {venter && <div>{t('Laster...')}</div>}
             {visPoengtavler ? ( 
             <div className="grid lg-grid-cols-2 gap-4">
             {poengTavler && poengTavler.length > 0  ? (
                 poengTavler.map((poengTavle, index) => (
                     <div className="oppsummering bg-white shadow rounded-lg m-8 border p-5 min-w-80" key={index}>
-                        <h2 className="text-center font-bold text-xl mb-4">Poengkort fra: {poengTavle.nyPoengkort.baneNavn}</h2>
+                        <h2 className="text-center font-bold text-xl mb-4">{t('Poengkort fra')}: {poengTavle.nyPoengkort.baneNavn}</h2>
                         <div className="bg-white shadow-md rounded-xl">
                             <table className="w-full">
                                 <thead>
                                     <tr>
-                                        <th className="p-4 border-b bg-gray-200 rounded-tl-xl">Spiller</th>
-                                        <th className="p-4 border-b bg-gray-200">Antall kast</th>
-                                        <th className="p-4 border-b bg-gray-200 rounded-tr-xl">Total Poengsum</th>
+                                        <th className="p-4 border-b bg-gray-200 rounded-tl-xl">{t('Spiller')}</th>
+                                        <th className="p-4 border-b bg-gray-200">{t('Antall kast')}</th>
+                                        <th className="p-4 border-b bg-gray-200 rounded-tr-xl">{t('Total Poengsum')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -116,7 +114,7 @@ const PoengTavler = () => {
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="2" className="border px-4 py-2">Ingen spillere tilgjengelig</td>
+                                            <td colSpan="2" className="border px-4 py-2">{t('Ingen spillere tilgjengelig')}</td>
                                         </tr>
                                     )}
                                 </tbody>
@@ -126,7 +124,7 @@ const PoengTavler = () => {
                 ))
             ) : (
                 <div className='flex justify-center'>
-                    <h1>Ingen poengtavler tilgjengelig...</h1>
+                    <h1>{t('Ingen poengtavler tilgjengelig...')}</h1>
                 </div>
             )}
             </div> 
@@ -135,27 +133,27 @@ const PoengTavler = () => {
                     <div className="statistikk bg-white shadow rounded-xl m-8 p-5 w-full">
                     <div className="grid md-grid-cols-3 gap-6">
                             <div className="bg-gray-100 shadow-md rounded-xl p-4">
-                                <p className="text-sm">Antall runder</p>
+                                <p className="text-sm">{t('Antall runder')}</p>
                                 <p className="text-xl font-bold">{antRunder}</p>
                             </div>
                             <div className="bg-gray-100 shadow-md rounded-xl p-4">
-                                <p className="text-sm">Gjennomsnitlig score</p>
+                                <p className="text-sm">{t('Gjennomsnittlig score')}</p>
                                 <p className="text-xl font-bold">{gjennomsnittligScore}</p>
                             </div>
                             <div className="bg-gray-100 shadow-md rounded-xl p-4">
-                                <p className="text-sm">Antall kast totalt</p>
+                                <p className="text-sm">{t('Antall kast totalt')}</p>
                                 <p className="text-xl font-bold">{antallKastTotalt}</p>
                             </div>
                             <div className="bg-gray-100 shadow-md rounded-xl p-4">
-                                <p className="text-sm">Gjennomsnitlig kast pr.runde</p>
+                                <p className="text-sm">{t('Gjennomsnittlig kast pr.runde')}</p>
                                 <p className="text-xl font-bold">{gjennomsnittligKast}</p>
                             </div>
                             <div className="bg-gray-100 shadow-md rounded-xl p-4">
-                            <p className="text-sm">Beste score</p>
+                            <p className="text-sm">{t('Beste score')}</p>
                             <p className="text-xl font-bold">{besteScore}</p>
                             </div>
                             <div className="bg-gray-100 shadow-md rounded-xl p-4">
-                            <p className="text-sm">Antall hole in one</p>
+                            <p className="text-sm">{t('Antall hole in one')}</p>
                             <p className="text-xl font-bold">{antHoleInOne}</p>
                             </div>
                         </div>

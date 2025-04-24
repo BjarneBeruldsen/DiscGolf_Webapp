@@ -376,5 +376,20 @@
     "Avsender": "Sender",
     "Ikke definert": "Not defined",
     "Ukjent varslingstype": "Unknown notification type",
-    "Ingen varsler tilgjengelig.": "No notifications available."
+    "Ingen varsler tilgjengelig.": "No notifications available.", 
+    "sin statistikk": "statistics",
+    "Statistikk": "Statistics",
+    "Poengtavler": "Scoreboards",
+    "Poengkort fra": "Scorecard from",
+    "Spiller": "Player",
+    "Antall kast": "Number of throws",
+    "Total Poengsum": "Total Score",
+    "Ingen spillere tilgjengelig": "No players available",
+    "Ingen poengtavler tilgjengelig...": "No scoreboards available...",
+    "Antall runder": "Number of rounds",
+    "Gjennomsnittlig score": "Average score",
+    "Antall kast totalt": "Total number of throws",
+    "Gjennomsnittlig kast pr.runde": "Average throws per round",
+    "Beste score": "Best score",
+    "Antall hole in one": "Number of hole-in-ones"
 }
