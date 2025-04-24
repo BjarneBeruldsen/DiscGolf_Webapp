@@ -155,6 +155,14 @@ import { useTranslation } from 'react-i18next';
                 startEl.style.borderRadius = '50%';
                 startEl.style.cursor = 'pointer';
 
+                const popup = new mapboxgl.Popup({ offset: 10 })
+                .setHTML(`<h3>${bane.baneNavn}</h3><p>${bane.beskrivelse}</p>`);
+    
+                new mapboxgl.Marker(startEl)
+                .setLngLat([startLongitude, startLatitude])
+                .setPopup(popup)  
+                .addTo(map);
+
                 new mapboxgl.Marker(startEl)
                     .setLngLat([startLongitude, startLatitude])
                     .addTo(map);
@@ -171,6 +179,15 @@ import { useTranslation } from 'react-i18next';
                 endEl.style.backgroundSize = '100%';
                 endEl.style.borderRadius = '50%';
                 endEl.style.cursor = 'pointer';
+
+                const popup = new mapboxgl.Popup({ offset: 10 })
+                .setHTML(`<h3>${bane.baneNavn}</h3><p>${bane.beskrivelse}</p>`);
+    
+                new mapboxgl.Marker(endEl)
+                .setLngLat([startLongitude, startLatitude])
+                .setPopup(popup)  
+                .addTo(map);
+
 
                 new mapboxgl.Marker(endEl)
                     .setLngLat([sluttLongitude, sluttLatitude])
