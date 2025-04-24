@@ -507,12 +507,37 @@ const ScoreBoard = () => {
                         'line-width': 4,
                     },
                 });
+                
+                
+                if (bane && bane.obZoner) {
+                    bane.obZoner.forEach((obZone, i) => {
+                        map.addSource(`ob-${i}`, {
+                            type: 'geojson',
+                            data: {
+                                type: 'Feature',
+                                geometry: {
+                                    type: 'Polygon',
+                                    coordinates: [obZone.coordinates]
+                                }
+                            }
+                        });
+                    
+                        map.addLayer({
+                            id: `ob-layer-${i}`,
+                            type: 'fill',
+                            source: `ob-${i}`,
+                            paint: {
+                                'fill-color': '#FF0000',
+                                'fill-opacity': 0.3
+                            }
+                        });
+                    });
+                }
             });
         }
 
-    
         return () => map.remove();
-    }, [hull, nr]);
+    }, [hull, nr, bane]);
 
     return (
         <div className="innhold flex justify-center bg-gray-200">
