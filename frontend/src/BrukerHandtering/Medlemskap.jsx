@@ -3,6 +3,7 @@
 /* Denne filen er en React-kompoonent som fungerer som en sentral side for
  * for brukere til å administrere sine innstillinger samt at den
  * også gir brukeren tilgang til ulike funksjoner avhengig av brukerens rolle.
+ * Engelsk oversettelse her har ikke fungert dessverre. 
  */
 
 import React, { useState } from "react";
