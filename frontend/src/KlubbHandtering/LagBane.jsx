@@ -278,6 +278,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                                     {t('Trykk en gang for å velge startposisjon (utslagssted).')}<br />
                                     {t('Deretter trykk en gang for å velge sluttposisjon (kurv).')}<br />
                                     {t('Hold Alt og klikk for å markere OB-soner (min/maks 3 punkter for å opprette en sone).')}<br />
+                                    {t('MERK: denne siden må være på norsk for at lagring skal fungere')}<br />
                                 </>
                                 } />
                         </div>
@@ -313,9 +314,9 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                             {t('Vanskelighetsgrad')}:
                         </label>
                         <select id="vanskelighetsgrad" name='vanskelighetsgrad' value={vanskelighet} onChange={(e) => setVanskelighet(e.target.value)} className="w-full border border-gray-600 rounded-lg shadow-sm px-4 py-2 focus:outline-none focus:border-blue-500 font-serif">
-                            <option value="Lett">{t('Lett')}</option>
-                            <option value="Middels">{t('Middels')}</option>
-                            <option value="Vanskelig">{t('Vanskelig')}</option>
+                            <option value="Lett">Lett</option>
+                            <option value="Middels">Middels</option>
+                            <option value="Vanskelig">Vanskelig</option>
                         </select>
                         <label>
                             {t('Beskriv banen')}:
