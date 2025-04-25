@@ -1,10 +1,10 @@
-# Prosjektoppgave: Discgolf
+# Prosjektoppgave: DiscGolf
 
 Veiledning til faglærer/sensor
 
 Testbrukere: 
 
-![image](https://github.com/user-attachments/assets/a3623728-382c-4ed9-af54-80e23a5aa74c)
+![image](https://github.com/user-attachments/assets/dab74ceb-9ada-4ca8-bdc0-49d93cee9acc)
 
 Nettside: https://disk-applikasjon-39f504b7af19.herokuapp.com/
 
