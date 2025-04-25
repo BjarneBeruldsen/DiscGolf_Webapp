@@ -263,14 +263,14 @@ const transporter = nodemailer.createTransport({
     if (!navn || !epost || !melding) {
       return res.status(400).json({ melding: 'Alle felt må fylles ut' });
     }
-  
+    // Konfigurerer e-postinnstillinger for å sende en melding
     const mailOptions = {
       from: process.env.EPOST_BRUKER, 
       to: process.env.EPOST_BRUKER, 
       subject: `Ny melding fra ${navn}`, 
       text: `Navn: ${navn}\nE-post: ${epost}\nMelding: ${melding}`,
     };
-  
+  // Sender e-posten ved hjelp av Nodemailer
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.error('Feil ved sending av e-post:', error);
@@ -281,14 +281,14 @@ const transporter = nodemailer.createTransport({
       }
     });
   });
-
+// Rute for å hente alle byer fra databasen
 app.get('/byer', async (req, res) => {
     try {
       const db = getDb(); 
       if (!db) throw new Error('Database not connected');
-      
+      // Henter alle dokumenter fra "by" samlingen i databasen
       const byer = await db.collection('by').find().toArray(); 
-      
+        // Sjekker om det finnes noen byer i databasen
       if (!byer || byer.length === 0) {
         return res.status(200).json([]);
       }
@@ -296,8 +296,9 @@ app.get('/byer', async (req, res) => {
       res.status(200).json(byer);
       
     } catch (err) {
+       // Logger feilen til konsollen
         console.error('Feil under databehandling:', err);
-      
+      // Returnerer en feilmelding med statuskode 500
         res.status(500).json({
           error: 'Noe gikk galt'
         });
