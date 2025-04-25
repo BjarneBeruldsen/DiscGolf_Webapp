@@ -1,4 +1,5 @@
 // Author: Bjarne Hovd Beruldsen & Abdinasir Ali
+// ObZoner er ikke helt funskjonell, spessielt på baneliste så blir ikke alle zoner vist, men de blir oprettet korrekt
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
@@ -13,7 +14,7 @@ import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import Review from './Reviews';
 import { useTranslation } from 'react-i18next';
 
-    const BaneListe = ({ baner, rediger, klubbId }) => {
+const BaneListe = ({ baner, rediger, klubbId }) => {
     const { t } = useTranslation();
     const minne = useHistory();
     const { bruker, venter } = HentBruker();
@@ -27,8 +28,11 @@ import { useTranslation } from 'react-i18next';
     const [brukerPos, setBrukerPos] = useState(null);
     const [visNæreBaner, setVisNæreBaner] = useState(false);
     const [avstandKm, setAvstandKm] = useState(50);
+    const [visObZoner, setVisObZoner] = useState(true); 
+    const [banerMedObZoner, setBanerMedObZoner] = useState([]);
 
     useEffect(() => {
+        // Henter brukerens posisjon hvis "Vis baner i nærheten" er aktivert
         if (navigator.geolocation && visNæreBaner) {
             navigator.geolocation.getCurrentPosition(
                 position => setBrukerPos({lat: position.coords.latitude, lng: position.coords.longitude})
@@ -37,6 +41,7 @@ import { useTranslation } from 'react-i18next';
     }, [visNæreBaner]);
 
     useEffect(() => {
+         // Henter Yr-IDs for baner basert på plassering
         const hentYrIdForBaner = async () => {
             try {
                 const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/byer`);
@@ -44,7 +49,9 @@ import { useTranslation } from 'react-i18next';
 
                 const yr_Id = {};
                 baner.forEach((bane) => {
-                    const matchetBy = byer.find((by) => by.navn === bane.plassering);
+                    const matchetBy = byer.find((by) =>
+                        bane.plassering.toLowerCase().includes(by.navn.toLowerCase())
+                      );
                     if (matchetBy) {
                         yr_Id[bane._id] = matchetBy.yr_id;
                     }
@@ -58,7 +65,21 @@ import { useTranslation } from 'react-i18next';
         hentYrIdForBaner();
     }, [baner]);
     
+    
     useEffect(() => {
+        // Filtrerer baner som har OB-soner
+        if (!baner) return;
+        
+        const banerMedOb = baner.filter(bane => {
+            
+            return bane.hull?.some(hull => hull.obZoner && hull.obZoner.length > 0);
+        }).map(bane => bane._id);
+        
+        setBanerMedObZoner(banerMedOb);
+    }, [baner]);
+    
+    useEffect(() => {
+        // Filtrerer baner basert på plassering, antall hull og brukerens posisjon
         if (!baner) return;
         
         let filtered = baner.filter(bane => 
@@ -108,11 +129,16 @@ import { useTranslation } from 'react-i18next';
     
 
     useEffect(() => {
+        // oppdaterer Mapbox-kartet med baner, OB-soner og brukerens posisjon
         if (!baner || baner.length === 0) return;
 
         mapboxgl.accessToken = "pk.eyJ1IjoidW5rbm93bmdnc3MiLCJhIjoiY203eGhjdXBzMDUwaDJxc2RidXgwbjBqeSJ9.wlnVO6sI2-cY5Tx8uYv_XQ";
 
-        if (mapRef.current) return;
+        if (mapRef.current) {
+            mapRef.current.remove();
+            mapRef.current = null;
+        }
+        
         const map = new mapboxgl.Map({
             container: 'mapContainer',
             style: "mapbox://styles/mapbox/satellite-streets-v12",
@@ -134,17 +160,13 @@ import { useTranslation } from 'react-i18next';
 
         map.on('load', () => {
 
-            if (brukerPos) {
-                new mapboxgl.Marker({color: '#4285F4'})
-                    .setLngLat([brukerPos.lng, brukerPos.lat])
-                    .addTo(map);
-            }
-            
+        
             baner.forEach((bane, baneIndex) => {
                 const hull = bane?.hull || [];
        const coordinates = [];
 
-        hull.forEach(({ startLatitude, startLongitude, sluttLatitude, sluttLongitude }, i) => {
+        hull.forEach(({ startLatitude, startLongitude, sluttLatitude, sluttLongitude, obZoner }, i) => {
+             // Legger til start- og sluttmarkører for hvert hull
             if (startLatitude && startLongitude) {
                 const startEl = document.createElement('div');
                 startEl.className = 'marker';
@@ -161,10 +183,6 @@ import { useTranslation } from 'react-i18next';
                 new mapboxgl.Marker(startEl)
                 .setLngLat([startLongitude, startLatitude])
                 .setPopup(popup)  
-                .addTo(map);
-
-                new mapboxgl.Marker(startEl)
-                    .setLngLat([startLongitude, startLatitude])
                     .addTo(map);
 
                 coordinates.push([startLongitude, startLatitude]);
@@ -181,22 +199,47 @@ import { useTranslation } from 'react-i18next';
                 endEl.style.cursor = 'pointer';
 
                 const popup = new mapboxgl.Popup({ offset: 10 })
-                .setHTML(`<h3>${bane.baneNavn}</h3><p>${bane.beskrivelse}</p>`);
-    
+                .setHTML(`<h3>${bane.baneNavn}</h3><p>${bane.beskrivelse}</p><p>Hull: ${i + 1}</p>`);
                 new mapboxgl.Marker(endEl)
-                .setLngLat([startLongitude, startLatitude])
+                .setLngLat([sluttLongitude, sluttLatitude])
                 .setPopup(popup)  
-                .addTo(map);
-
-
-                new mapboxgl.Marker(endEl)
-                    .setLngLat([sluttLongitude, sluttLatitude])
                     .addTo(map);
 
                 coordinates.push([sluttLongitude, sluttLatitude]);
             }
-        });
 
+                   // Legger til OB-soner på kartet
+                    if (visObZoner && obZoner && obZoner.length > 0) {
+                        obZoner.forEach((obZone, i) => {
+                            const sourceId = `ob-${baneIndex}-${i}-${i}`;
+                            const layerId = `ob-layer-${baneIndex}-${i}-${i}`;
+                            
+                            if (!map.getSource(sourceId)) {
+                                map.addSource(sourceId, {
+                                    type: 'geojson',
+                                    data: {
+                                        type: 'Feature',
+                                        geometry: {
+                                            type: 'Polygon',
+                                            coordinates: [obZone.coordinates]
+                                        }
+                                    }
+                                });
+                            
+                                map.addLayer({
+                                    id: layerId,
+                                    type: 'fill',
+                                    source: sourceId,
+                                    paint: {
+                                        'fill-color': '#FF0000',
+                                        'fill-opacity': 0.3
+                                    }
+                                });
+                            }
+                        });
+            }
+        });
+        // Legger til linjer mellom hullene
         if (coordinates.length > 1) {
                     const sourceId = `line-${baneIndex}`;
                     const layerId = `line-layer-${baneIndex}`;
@@ -228,41 +271,24 @@ import { useTranslation } from 'react-i18next';
                 });
             }
         }
-
-            bane.obZoner?.forEach((obZone, i) => {
-                map.addSource(`ob-${baneIndex}-${i}`, {
-                    type: 'geojson',
-                    data: {
-                        type: 'Feature',
-                        geometry: {
-                            type: 'Polygon',
-                            coordinates: [obZone.coordinates]
-                            }
-                        }
-                    });
-            
-                map.addLayer({
-                    id: `ob-layer-${baneIndex}-${i}`,
-                    type: 'fill',
-                    source: `ob-${baneIndex}-${i}`,
-                    paint: {
-                        'fill-color': '#FF0000',
-                        'fill-opacity': 0.3
-                        }
-                    });
                 });           
-            });
-        })
+        });
 
         return () => {
+            // Fjerner kartet når komponenten blir kjørt
             if (mapRef.current) {
                 mapRef.current.remove();
                 mapRef.current = null;
             }
         };
-    }, [baner, rediger, aktivBane, brukerPos]);
+    }, [baner, rediger, aktivBane, brukerPos, visObZoner]);
 
     const baneYrId = yrId[aktivBane?._id] || "1-72837";
+    
+    
+    const toggleObZoner = () => {
+        setVisObZoner(!visObZoner);
+    };
 
     return (
         <div className="p-6 bg-white border-black shadow-[0_1px_12px_rgba(0,0,0,0.1)] min-h-screen">

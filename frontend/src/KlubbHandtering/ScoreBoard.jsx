@@ -35,6 +35,7 @@ const ScoreBoard = () => {
     const [sortertPoengkort, setSortertPoengkort] = useState([]);
     const [totalAntKast, setTotalAntKast] = useState(0);
     const [runde, setRunde] = useState({});
+    const [visObZoner, setVisObZoner] = useState(false);
     const [nr, setNr] = useState(() => {
         const nr = localStorage.getItem('nr');
         return nr ? JSON.parse(nr) : 0;
@@ -69,6 +70,7 @@ const ScoreBoard = () => {
     }, [spillere, nr, visVelgSpillere, visScoreboard, visOppsummering]); 
 
     useEffect(() => {
+        // Setter hullene for banen når banen lastes inn
         if (bane && bane.hull) {
             setHull(bane.hull);
         }
@@ -429,11 +431,13 @@ const ScoreBoard = () => {
         console.log("false returneres")
         return false;
     }
+
     useEffect(() => {
+        //oppdaterer Mapbox kartet for hullene
         if (!mapContainerRef.current || !hull || hull.length === 0 || !hull[nr]) return;
-    
+
         mapboxgl.accessToken = "pk.eyJ1IjoidW5rbm93bmdnc3MiLCJhIjoiY203eGhjdXBzMDUwaDJxc2RidXgwbjBqeSJ9.wlnVO6sI2-cY5Tx8uYv_XQ";
-    
+
         const map = new mapboxgl.Map({
             container: mapContainerRef.current,
             style: "mapbox://styles/mapbox/satellite-streets-v12",
@@ -507,11 +511,14 @@ const ScoreBoard = () => {
                         'line-width': 4,
                     },
                 });
-                
-                
-                if (bane && bane.obZoner) {
-                    bane.obZoner.forEach((obZone, i) => {
-                        map.addSource(`ob-${i}`, {
+
+
+        
+                if (hull[nr] && hull[nr].obZoner && hull[nr].obZoner.length > 0) {// går gjennom alle OB-soner for det aktuelle hullet
+                    hull[nr].obZoner.forEach((obZone, i) => {
+
+                    if (obZone.coordinates && obZone.coordinates.length > 2) {
+                        map.addSource(`current-ob-${i}`, {
                             type: 'geojson',
                             data: {
                                 type: 'Feature',
@@ -522,20 +529,21 @@ const ScoreBoard = () => {
                             }
                         });
                     
-                        map.addLayer({
-                            id: `ob-layer-${i}`,
+                        map.addLayer({// Legger til et lag for OB-sonen med farge
+                            id: `current-ob-layer-${i}`,
                             type: 'fill',
-                            source: `ob-${i}`,
+                            source: `current-ob-${i}`,
                             paint: {
                                 'fill-color': '#FF0000',
                                 'fill-opacity': 0.3
                             }
                         });
+                    }
                     });
                 }
             });
         }
-
+        // Rydder opp ved å fjerne kartinstansen 
         return () => map.remove();
     }, [hull, nr, bane]);
 

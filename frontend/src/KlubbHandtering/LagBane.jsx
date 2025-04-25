@@ -24,25 +24,31 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
     const [hullVisning, setHullVisning] = useState(true);
     const [baneVisning, setBaneVisning] = useState(false);
     const mapContainerRef = useRef(null);
-    const[startPosisjon, setStartPosisjon] = useState({startLatitude:null, startLongitude:null});
-    const[sluttPosisjon, setSluttPosisjon] =useState({sluttLatitude:null, sluttLongitude:null});
-    const [obZoner, setObZoner] = useState([]);
+    const [startPosisjon, setStartPosisjon] = useState({startLatitude: null, startLongitude: null});
+    const [sluttPosisjon, setSluttPosisjon] = useState({sluttLatitude: null, sluttLongitude: null});
+    const [currentObZoner, setCurrentObZoner] = useState([]);
     
-
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const nyttHull = { hullNr, avstand, par, 
-            
+        const nyttHull = { 
+            hullNr, 
+            avstand, 
+            par, 
             startLatitude: startPosisjon.startLatitude,
             startLongitude: startPosisjon.startLongitude,
             sluttLatitude: sluttPosisjon.sluttLatitude,
-            sluttLongitude: sluttPosisjon.sluttLongitude
+            sluttLongitude: sluttPosisjon.sluttLongitude,
+            obZoner: currentObZoner // Include OB zones with the hull
         };
+        
         setHull([...hull, nyttHull]);
         setHullNr(hullNr + 1);
         setAvstand('');
         setPar('');
+        setStartPosisjon({startLatitude: null, startLongitude: null});
+        setSluttPosisjon({sluttLatitude: null, sluttLongitude: null});
+        setCurrentObZoner([]); // Reset current OB zones after adding the hull
     };
 
     const handleLagreBane = () => {
@@ -59,7 +65,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
             return;
         }
 
-        const nyBane = { baneNavn, hull, vanskelighet, beskrivelse, plassering, obZoner };
+        const nyBane = { baneNavn, hull, vanskelighet, beskrivelse, plassering };
 
         fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${klubbId}/baner`, {
             method: 'POST',
@@ -100,7 +106,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
         const map = new mapboxgl.Map({
          container: mapContainerRef.current,
          style: "mapbox://styles/mapbox/satellite-streets-v12",
-         center: [9.059,59.409 ],
+         center: [9.059,59.409],
          zoom: 15,
         });
       
@@ -111,21 +117,14 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
         map.on("click", (e) => {
                    
             if (e.originalEvent.altKey) {
-                const closed = [...obKoordinater, obKoordinater[0]];
                 obKoordinater.push([e.lngLat.lng, e.lngLat.lat]);
                 
                 new mapboxgl.Marker({ color: "red", scale: 0.5 })
                     .setLngLat([e.lngLat.lng, e.lngLat.lat])
                     .addTo(map);
 
-                    if (obKoordinater.length > 2) {
-                        const closed = [...obKoordinater, obKoordinater[0]];
-                      
-                        setObZoner(prev => [...prev, { coordinates: closed }]);
-                        obKoordinater = [];
-                      }  
-
                 if (obKoordinater.length > 2) {
+                    const closed = [...obKoordinater, obKoordinater[0]];
                     const obId = `ob-${obNr++}`;
                     
                     if (map.getSource(obId)) map.removeSource(obId);
@@ -149,97 +148,90 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                             }
                     });
                     
-                    setObZoner(prev => [...prev, { coordinates: closed }]);
+                    // Add the OB zone to the current hull's OB zones
+                    setCurrentObZoner(prev => [...prev, { coordinates: closed }]);
                     obKoordinater = [];
                 }
                 return;  
             }
                 
             const clickedPos = { latitude: e.lngLat.lat, longitude: e.lngLat.lng };
-
-            
       
-          if (!startPunkt) {
-
-            setStartPosisjon({
-                startLatitude: clickedPos.latitude,
-                startLongitude: clickedPos.longitude,
+            if (!startPunkt) {
+                setStartPosisjon({
+                    startLatitude: clickedPos.latitude,
+                    startLongitude: clickedPos.longitude,
+                })
                 
-              })
-
+                startPunkt = [clickedPos.longitude, clickedPos.latitude];
+                new mapboxgl.Marker({ color: "gray" })
+                .setLngLat(startPunkt)
+                .addTo(map)
+            } else {
+                setSluttPosisjon({
+                    sluttLatitude: clickedPos.latitude,
+                    sluttLongitude: clickedPos.longitude,
+                })
             
-            startPunkt = [clickedPos.longitude, clickedPos.latitude];
-            new mapboxgl.Marker({ color: "gray" })
-            .setLngLat(startPunkt)
-            .addTo(map)
-          
-            
-          } else {
+                const stopPunkt = [clickedPos.longitude, clickedPos.latitude];
+                new mapboxgl.Marker({ color: "green" }) 
+                .setLngLat(stopPunkt)
+                .addTo(map);
 
-            setSluttPosisjon({
-                sluttLatitude: clickedPos.latitude,
-                sluttLongitude: clickedPos.longitude,
-              })
-           
-           const stopPunkt = [clickedPos.longitude, clickedPos.latitude];
-            new mapboxgl.Marker({ color: "green" }) 
-            .setLngLat(stopPunkt)
-            .addTo(map);
-
-            if (map.getSource("hole-path")){
-              map.removeLayer("hole-path");
-              map.removeSource("hole-path");
+                if (map.getSource("hole-path")){
+                    map.removeLayer("hole-path");
+                    map.removeSource("hole-path");
+                }
+        
+                map.addSource("hole-path",{
+                    type: "geojson",
+                    data: {
+                        type: "Feature",
+                        geometry: {
+                            type: "LineString",
+                            coordinates: [startPunkt, stopPunkt],
+                        },
+                    },
+                });
+        
+                map.addLayer({
+                    id: "hole-path",
+                    type: "line",
+                    source: "hole-path",
+                    layout: {
+                        "line-join": "round",
+                        "line-cap": "round",
+                    },
+                    paint: {
+                        "line-color": "#ff7f00",
+                        "line-width": 4,
+                    },
+                });
+        
+                startPunkt = null;
             }
-      
-          
-            map.addSource("hole-path",{
-              type: "geojson",
-              data: {
-                type: "Feature",
-                geometry: {
-                  type: "LineString",
-                  coordinates: [startPunkt, stopPunkt],
-                },
-              },
-            });
-      
-            map.addLayer({
-              id: "hole-path",
-              type: "line",
-              source: "hole-path",
-              layout: {
-                "line-join": "round",
-                "line-cap": "round",
-              },
-              paint: {
-                "line-color": "#ff7f00",
-                "line-width": 4,
-              },
-            });
-      
-           
-            startPunkt = null;
-          }
         });
+        
         const geocoder = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
             mapboxgl: mapboxgl
-          }
-        );
+        });
+        
         map.addControl(geocoder);
         
         let lokasjon = null;
 
         geocoder.on('result', function (e) {
             lokasjon = e.result.place_name;
+            setPlassering(lokasjon);
             console.log("Navn på sted:", lokasjon); 
         });
 
         return () => {
-          map.remove();
-          map.off("click");
+            map.remove();
+            map.off("click");
         };
-      }, []);
+    }, []);
 
     return (
         <div className="lagbane-form mt-8 sm:mx-auto sm:w-full sm:max-w-md form-container flex justify-center">

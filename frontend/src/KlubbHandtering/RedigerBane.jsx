@@ -1,4 +1,5 @@
 // Author: Bjarne Hovd Beruldsen & Abdinasir Ali
+//redigering av Obzonerer ikke helt funksjonelt /:
 import { useState, useEffect, useRef } from "react";
 import BaneListe from "./Baneliste";
 import UseFetch from "./UseFetch";
@@ -42,6 +43,10 @@ const RedigerBane = ({ klubb }) => {
     const [startPosisjon, setStartPosisjon] = useState({startLatitude:null, startLongitude:null});
     const [sluttPosisjon, setSluttPosisjon] = useState({sluttLatitude:null, sluttLongitude:null});
     const [valgtHullNr, setValgtHullNr] = useState('');
+    const [aktivZone, setAktivZone] = useState([]);
+    const [mapInstance, setMapInstance] = useState(null);
+    const [obLayers, setObLayers] = useState([]);
+    const [tegnerObSone, setTegnerObSone] = useState(false);
    
     const lagreEndrng = async () => {
         lagreHull(); 
@@ -83,7 +88,6 @@ const RedigerBane = ({ klubb }) => {
         minne.push(`/LagKlubbSide/${klubbId}`);
     }
 
-
     useEffect(() => {
         if (bane) {
             setBaneNavn(bane.baneNavn);
@@ -94,18 +98,23 @@ const RedigerBane = ({ klubb }) => {
     }, [bane]);
 
     useEffect(() => {
+        // Oppdaterer informasjon for det aktive hullet når hullnummeret endres
         if (hull.length > 0) {
             setAvstand(hull[nr].avstand);
             setPar(hull[nr].par);
+            
+            
+            // legger til obZone for nåverende hull hvis det finnes
+            setAktivZone(hull[nr].obZoner || []);
         }
     }, [nr, hull]);
-
 
     const endreHull = (retning) => {
         if (retning && nr < hull.length - 1) {
             lagreHull();
             setNr(nr + 1);  
         } else if (!retning && nr > 0) {
+            lagreHull();
             setNr(nr - 1);
         }
     };
@@ -124,18 +133,21 @@ const RedigerBane = ({ klubb }) => {
             startLatitude: startPosisjon.startLatitude || hull[nr].startLatitude,
             startLongitude: startPosisjon.startLongitude || hull[nr].startLongitude,
             sluttLatitude: sluttPosisjon.sluttLatitude || hull[nr].sluttLatitude,
-            sluttLongitude: sluttPosisjon.sluttLongitude || hull[nr].sluttLongitude
+            sluttLongitude: sluttPosisjon.sluttLongitude || hull[nr].sluttLongitude,
+            obZoner: aktivZone // Save the current OB zones
         };
         
         console.log('lagre Hull:', hull);
     }
 
     const handleVisning = (seksjon) => () => {
+        if (visRedigerHull) {
+            lagreHull();
+        }
+        
         setVisRedigerBane(seksjon === 'bane');
         setVisRedigerHull(seksjon === 'hull');
     }
-
-
 
     const handleRediger = (seksjon) => () => {
         setRedigerBeskrivelse(false);
@@ -186,19 +198,33 @@ const RedigerBane = ({ klubb }) => {
         }
     };
     
-   
+    // funskjon til å fjerne alle obZoner
+    const clearObZones = () => {
+        setAktivZone([]);
+        
+        // fjerner obzoner hvis de finnes
+        if (mapInstance && obLayers.length > 0) {
+            obLayers.forEach(layerId => {
+                if (mapInstance.getLayer(layerId)) {
+                    mapInstance.removeLayer(layerId);
+                }
+                if (mapInstance.getSource(layerId)) {
+                    mapInstance.removeSource(layerId);
+                }
+            });
+            setObLayers([]);
+        }
+    };
+    // funksjon for å vise kartet
     const visMap = () => {
         if (!mapContainerRef.current) return;
-      
+      // Fjerner tidligere kartinstanser
         while (mapContainerRef.current.firstChild) {
             mapContainerRef.current.removeChild(mapContainerRef.current.firstChild);
         }
         
         mapboxgl.accessToken = "pk.eyJ1IjoidW5rbm93bmdnc3MiLCJhIjoiY203eGhjdXBzMDUwaDJxc2RidXgwbjBqeSJ9.wlnVO6sI2-cY5Tx8uYv_XQ";
-        
-        
-       
-        
+        // Oppretter en ny kartinstans
         const map = new mapboxgl.Map({
             container: mapContainerRef.current,
             style: "mapbox://styles/mapbox/satellite-streets-v12",
@@ -206,8 +232,10 @@ const RedigerBane = ({ klubb }) => {
             zoom: 15,
         });
         
+        setMapInstance(map);// Lagrer kartinstansen
         
         map.on('load', () => {
+            // Legger til start- og sluttposisjon for hullet
             if (hull[nr].startLatitude && hull[nr].startLongitude) {
                 const startPoint = [hull[nr].startLongitude, hull[nr].startLatitude];
                 new mapboxgl.Marker({ color: "gray" })
@@ -220,7 +248,7 @@ const RedigerBane = ({ klubb }) => {
                         .setLngLat(stopPoint)
                         .addTo(map);
                     
-                    
+                    // Legger til en linje mellom start- og sluttposisjon
                     map.addSource("hole-path", {
                         type: "geojson",
                         data: {
@@ -247,39 +275,134 @@ const RedigerBane = ({ klubb }) => {
                     });
                 }
             }
+
+            const newObLayers = [];// Legger til eksisterende OB-soner på kartet
+            if (hull[nr].obZoner && hull[nr].obZoner.length > 0) {
+                hull[nr].obZoner.forEach((zone, index) => {
+                    const obId = `ob-existing-${index}`;
+                    newObLayers.push(obId);
+                    
+                    map.addSource(obId, {
+                        type: 'geojson',
+                        data: {
+                            type: 'Feature',
+                            geometry: {
+                                type: 'Polygon',
+                                coordinates: [zone.coordinates]
+                            }
+                        }
+                    });
+                    
+                    map.addLayer({
+                        id: obId,
+                        type: 'fill',
+                        source: obId,
+                        paint: {
+                            'fill-color': '#FF0000',
+                            'fill-opacity': 0.3
+                        }
+                    });
+                });
+                
+                setObLayers(newObLayers);
+            }
         });
         
         let startPunkt = null;
-      
+        let obKoordinater = [];
+        let obNr = 0;
+       // Håndterer klikk på kartet for å legge til OB-soner eller start/sluttposisjon
         map.on("click", (e) => {
-            const clickedPos = { latitude: e.lngLat.lat, longitude: e.lngLat.lng };
-            
-            
+             // Legger til OB-soner ved å holde inne Alt-tasten og klikke
+            if (e.originalEvent.altKey) {
+                
+                if (obKoordinater.length === 0) {
+                    setTegnerObSone(true);
+                }
+                
+                obKoordinater.push([e.lngLat.lng, e.lngLat.lat]);
+                
+                new mapboxgl.Marker({ color: "red", scale: 0.5 })
+                    .setLngLat([e.lngLat.lng, e.lngLat.lat])
+                    .addTo(map);
 
-            //console.log("Saved position:", clickedPos);
+                if (obKoordinater.length > 2) {
+                    const closed = [...obKoordinater, obKoordinater[0]];
+                    const obId = `ob-new-${obNr++}`;
+                    
+                    if (map.getSource(obId)) map.removeSource(obId);
+                    map.addSource(obId, {
+                        type: 'geojson',
+                        data: {
+                            type: 'Feature',
+                            geometry: {
+                                type: 'Polygon',
+                                coordinates: [obKoordinater]
+                            }
+                        }
+                    });
+                    
+                    map.addLayer({
+                        id: obId,
+                        type: 'fill',
+                        source: obId,
+                        paint: {
+                            'fill-color': '#FF0000',
+                            'fill-opacity': 0.3
+                        }
+                    });
+                    
+                    setObLayers(prev => [...prev, obId]);// Oppdaterer listen over OB-lag
+                    setAktivZone(prev => [...prev, { coordinates: closed }]);// Lagrer OB-sonen
+                    obKoordinater = [];
+                    setTegnerObSone(false);
+                }
+                return;
+            }
+            const clearObZones = () => {
+                setAktivZone([]);
+                
+                // fjer zone hvis finnes
+                if (mapInstance && obLayers.length > 0) {
+                    obLayers.forEach(layerId => {
+                        if (mapInstance.getLayer(layerId)) {
+                            mapInstance.removeLayer(layerId);
+                        }
+                        if (mapInstance.getSource(layerId)) {
+                            mapInstance.removeSource(layerId);
+                        }
+                    });
+                    setObLayers([]);
+                }
+            };
+            
+            
+            if (tegnerObSone) return;
+            
+            const clickedPos = { latitude: e.lngLat.lat, longitude: e.lngLat.lng };
       
           if (!startPunkt) {
-
+            // Setter startposisjon
             setStartPosisjon({
                 startLatitude: clickedPos.latitude,
                 startLongitude: clickedPos.longitude,
                 
-              })
 
+             });
             
             startPunkt = [clickedPos.longitude, clickedPos.latitude];
             new mapboxgl.Marker({ color: "gray" })
             .setLngLat(startPunkt)
-            .addTo(map)
+            .addTo(map);
           
             
           } else {
-
+             // Setter sluttposisjon
             setSluttPosisjon({
                 sluttLatitude: clickedPos.latitude,
                 sluttLongitude: clickedPos.longitude,
-              })
            
+              });
            const stopPunkt = [clickedPos.longitude, clickedPos.latitude];
             new mapboxgl.Marker({ color: "green" }) 
             .setLngLat(stopPunkt)
@@ -290,7 +413,7 @@ const RedigerBane = ({ klubb }) => {
               map.removeSource("hole-path");
             }
       
-          
+          // Legger til en linje mellom start- og sluttposisjon
             map.addSource("hole-path",{
               type: "geojson",
               data: {
@@ -317,14 +440,15 @@ const RedigerBane = ({ klubb }) => {
             });
       
            
-            startPunkt = null;
+            startPunkt = null; // Tilbakestiller startpunktet
         }
     });
+    };
     
-  
-};
+    
     useEffect(() => {
         if (visRedigerHull && mapContainerRef.current) {
+             // Viser kartet når "Rediger Hull" er aktiv
             visMap();
         }
     }, [visRedigerHull, nr]);
@@ -465,7 +589,8 @@ const RedigerBane = ({ klubb }) => {
                         </div>
                         <div className="bunn-panel flex justify-between py-2 font-semibold text-md">
                             <button onClick={handleVisning('bane')} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2">{t('Angre')}</button>
-                            <button onClick={regHull} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2">{t('Fullfør')}</button>
+                            <button onClick={clearObZones} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2">{t('Fjern OB-soner')}</button>
+                            <button onClick={regHull} className="rounded-full text-white bg-gray-500 hover:bg-gray-200 shadow mx-2 px-4 py-2">{t('Fullfør')}</button>                            
                         </div>
                     </div>
                     )} 
