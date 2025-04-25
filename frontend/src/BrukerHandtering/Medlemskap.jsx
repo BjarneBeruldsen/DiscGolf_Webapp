@@ -19,8 +19,10 @@ import SystemLogg from "../Admin/LoggSystem.jsx";
 import GlobaleInnstillinger from "../Admin/GlobaleInnstillinger.jsx";
 import AdministrereKlubber from "../Admin/AdministrereKlubber.jsx";
 import MedlemsAdministrasjon from "../KlubbHandtering/AdministrereMedlem.jsx";
+import { useTranslation } from "react-i18next";
 
 const Medlemskap = () => {
+  const { t } = useTranslation();
   const { bruker, setBruker } = HentBruker(); //Henter brukerdata fra HentBruker.jsx
   const [valgtKategori, setValgtKategori] = useState("Brukerinnstillinger");
   const [valgtUnderKategori, setValgtUnderKategori] = useState("");
@@ -110,7 +112,7 @@ const Medlemskap = () => {
     >
       {/*Venstre Meny*/}
       <div className="menu-box">
-        <h2 className="text-lg font-bold mb-4">Innstillinger</h2>
+        <h2 className="text-lg font-bold mb-4">{t("Innstillinger")}</h2>
         <ul className="space-y-4">
           {hovedKategorier.map((kat) => (
             <li key={kat}>
@@ -196,7 +198,7 @@ const Medlemskap = () => {
         
         {/* Fallback melding*/}
         {!valgtUnderKategori && (
-          <p className="text-gray-600 text-center">Velg en underkategori for ditt behov</p>
+          <p className="text-gray-600 text-center">{t("Velg en underkategori for ditt behov")}</p>
         )}
       </div>
     </div>

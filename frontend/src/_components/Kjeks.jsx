@@ -1,4 +1,11 @@
 //Author: Laurent Zogaj
+/*
+En komponent som oppretter et banner for informasjonskapsler som vises nederst på skjermen.
+Dette er lagret i sessionStorage så denne vil alltid dukke opp uansett bruker når man forlatter nettsider vår og kommer tilbake.
+Jeg hadde egentlig lyst til å bruke dette med en cookie i begynnelsen. Men så endret jeg det til session men det ble for mye mas og kanskje ikke helt gjennomtenkt. 
+Og nå local storage
+*/
+
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -8,15 +15,15 @@ const Kjeks = () => {
 
     useEffect(() => {
         //Sjekker om brukeren tidligere har lukket banneret i nåværende sesjon
-        const lest = sessionStorage.getItem('informasjonskapslerLest');
+        const lest = localStorage.getItem('informasjonskapslerLest');
         if (!lest) {
             //Hvis ikke, vises banneret
             setVisBanner(true);
         }
     }, []);
-    //Funksjon for å lukke banneret og lagre status i sessionstorage
+    //Funksjon for å lukke banneret og lagre status i sessionstorage 
     const lukkBanner = () => {
-        sessionStorage.setItem('informasjonskapslerLest', 'true');
+        localStorage.setItem('informasjonskapslerLest', 'true');
         setVisBanner(false);
     };
     //Hvis banneret ikke skal komme frem returnerer vi null altså ingenting skjer
@@ -31,7 +38,7 @@ const Kjeks = () => {
                 left: '0',
                 right: '0',
                 zIndex: 9999,
-                boxShadow: '0 -4px 10px rgba(0,0,0,0.2)'
+                boxShadow: '0 -4px 10px rgba(0,0,0,0.2)'        //Dette måtte jeg få hjelp til av copilot
             }}
         >
             <div className="max-w-6xl mx-auto">

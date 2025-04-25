@@ -47,12 +47,14 @@ import Varsling from './_components/Varsling';
 import socket from './socket';
 import AbonnementInfo from './_components/Abonnenter';
 import DiscGolfInfo from './_components/DiscGolf';
+import { useTranslation } from 'react-i18next';
 
 function App() {
   const { bruker, venter } = HentBruker();
   const [loggetInnBruker, setLoggetInnBruker] = useState(null);
   const [sessionLastet, setSessionLastet] = useState(false); 
-  const [visVarsling, setVisVarsling] = useState(false); 
+  const [visVarsling, setVisVarsling] = useState(false);
+  const { t } = useTranslation(); //Oversettelse 
 
   // Setter loggetInnBruker til bruker og angir sessionLastet til true når brukeren er lastet og venter er false
   useEffect(() => {
@@ -75,8 +77,8 @@ function App() {
     };
   }, []);
 
-  if (!sessionLastet) {
-    return <p className="text-center text-gray-700 mt-10">Laster inn...</p>;
+  if (!sessionLastet) { //Legger til en laster inn tilstand hvis siden "tenker" litt.
+    return <p className="text-center text-gray-700 mt-10">{t("Laster inn...")}</p>;
   }
 
   const sendMessage = (melding) => {

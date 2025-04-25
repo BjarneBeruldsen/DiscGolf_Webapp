@@ -7,6 +7,7 @@ endring/legge/slette brukerinformasjon, tilbakestilling/glemt passord.
 Dette ved hjelp av direkte CRUD-operasjoner mot MongoDB-databasen, ved hjelp av Node.js driveren for mongodb.
 Passport blir brukt for autentisering.
 Bruker validering med express-validator for å forhindre NoSQLi og XSS og rate-limiting for å forhindre brute-force angrep.
+express.router for å lage ruter gjenbruke dem i app.js i backend.
 */
 
 const express = require('express'); //Importerer express
@@ -92,7 +93,7 @@ brukerRouter.post("/session", innloggingValidering, loggeInnStopp, async (req, r
         if (!bruker) {
             return res.status(400).json({ error: info.message });
         }
-        //Regenererer session for å hindre session fixation angrep
+        //Regenererer session for å hindre session fixation angrep (fant ut av dette etter pentesting og debugging, ikke at det var en feil men gjør innlogging mer sikker)
         req.session.regenerate((err) => {
             if (err) {
                 console.error("Feil ved regenerering av session:", err);
@@ -453,6 +454,7 @@ brukerRouter.post("/passord/valider", async (req, res) => {
                 { $unset: { resetToken: 1, resetTokenDato: 1 } }
             );
         }//Returnerer gyldig status og tid til utløp
+        //Copilot bidro her
         return res.status(200).json({
             gyldig: tokenGyldig,
             tidDiff: Math.floor((tokenUtløpt - tokenNå) / 1000)
@@ -462,6 +464,7 @@ brukerRouter.post("/passord/valider", async (req, res) => {
         return res.status(500).json({ error: "Noe gikk galt. Prøv igjen senere" });
     }
 });
+//Dette er da ruten som tilbakestiller passordet
 //Rute for tilbakestilling av passord
 brukerRouter.post("/passord/tilbakestill", nyttPassordStopp, nyttPassordValidering, async (req, res) => {
     try {
@@ -479,6 +482,7 @@ brukerRouter.post("/passord/tilbakestill", nyttPassordStopp, nyttPassordValideri
             return res.status(400).json({ error: "Ugyldig token eller e-post" });
         }
         //Sjekker om token er utløpt
+        //Copilot bidro her
         const tokenUtløpt = new Date(bruker.resetTokenDato).getTime();
         const tokenNå = Date.now();
         //Copilot bidro her
@@ -516,4 +520,5 @@ brukerRouter.post("/passord/tilbakestill", nyttPassordStopp, nyttPassordValideri
     }
 });
 
+//Eksporterer routeren slik at den kan brukes i app.js
 module.exports = brukerRouter;

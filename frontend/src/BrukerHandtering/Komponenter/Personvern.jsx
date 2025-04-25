@@ -1,8 +1,10 @@
 //Author: Laurent Zogaj
 import React from "react";
+import { useTranslation } from 'react-i18next';
 
 const Personvern = ({ valgtUnderKategori }) => {
   const underKategorier = ["Informasjonskapsler", "Synlighet"];
+  const { t } = useTranslation();
   //Funksjoner for de ulike underkategoriene kan legges til under her
 
 
@@ -22,17 +24,16 @@ Eventuelt også en "toggle" for å skru av og på samtykker osv.
 
 
 //Styling og design for hver funksjon/komponent
-  return (
-    <div className="bg-white shadow-xl rounded-lg p-6 w-full max-w-[500px] flex flex-col items-center">
+return (
+  <div className="bg-white shadow-xl rounded-lg p-6 w-full max-w-[500px] flex flex-col items-center">
+    {!underKategorier.includes(valgtUnderKategori) && (
+      <p className="text-gray-600">{t("Velg en underkategori for ditt behov")}</p>
+    )}
 
-      {!underKategorier.includes(valgtUnderKategori) && (
-        <p className="text-gray-600">Velg en underkategori for ditt behov</p>
-      )}
-
-      {valgtUnderKategori === "Informasjonskapsler" && <p>Informasjonskapsler(Ikke implementert)</p>}
-      {valgtUnderKategori === "Synlighet" && <p>Synlighetsinnstillinger(Ikke implementert)</p>}
-    </div>
-  );
+    {valgtUnderKategori === t("Informasjonskapsler") && <p>{t("Informasjonskapsler (Ikke implementert)")}</p>}
+    {valgtUnderKategori === t("Synlighet") && <p>{t("Synlighetsinnstillinger (Ikke implementert)")}</p>}
+  </div>
+);
 };
 
 export default Personvern;

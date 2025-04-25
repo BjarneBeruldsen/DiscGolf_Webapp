@@ -34,6 +34,7 @@ i18n
 
 //Gjør det mulig å teste oversettelsen direkte i console i nettleseren
 //Bruk: i18n.changeLanguage('en') for å teste og i18n.changeLanguage('no') for norsk
+//Spurte copilot om dette
 window.i18n = i18n;
 
 export default i18n;

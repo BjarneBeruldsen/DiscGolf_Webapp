@@ -1,5 +1,9 @@
 //Author: Laurent Zogaj
 
+/*
+En enkel komponent for å vise generell informasjon om DiscGolf.
+*/
+
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 

@@ -12,9 +12,9 @@ import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
 const TilbakestillPassord = () => {
-  const { token } = useParams(); //Henter token fra URL
-  const urlParams = new URLSearchParams(window.location.search); //Søker etter epost i URLet
-  const epost = urlParams.get('email');//Henter epost fra URL
+  const { token } = useParams(); //Henter token fra URL (copilot)
+  const urlParams = new URLSearchParams(window.location.search); //Søker etter epost i URLet (copilot)
+  const epost = urlParams.get('email');//Henter epost fra URL (copilot)
   const minne = useHistory(); //Force navigering 
   const { t } = useTranslation(); //Oversettelse
 
@@ -27,6 +27,7 @@ const TilbakestillPassord = () => {
 
   //Validerer tokenet og eposten når komponenten lastes som da er når bruker trykker på lenken i eposten
   //Bruker da useEffect for å kjøre valideringen
+  //Jeg satte det opp men copilot kom med tips om å bruke det på denne måten
   useEffect(() => {
     const validerToken = async () => {
       if (!token || !epost) { //Sjekker om token eller epost mangler 
@@ -42,6 +43,7 @@ const TilbakestillPassord = () => {
           body: JSON.stringify({ token, epost }), //Sender token og epost til backend
           credentials: "include",
         });
+        //Henter respons fra backend
         const data = await respons.json();
         if (!respons.ok || !data.gyldig) {
           setMelding(t("Denne tilbakestillingslenken er utløpt eller ugyldig"));

@@ -75,7 +75,7 @@ passport.deserializeUser(async (id, done) => {
             return done(null, false, { message: "Ugyldig dokument-id" });
         }
         //Henter brukeren fra databasen
-        const bruker = await db.collection("Brukere").findOne({ _id: new ObjectId(String(id)) });
+        const bruker = await db.collection("Brukere").findOne({ _id: new ObjectId(String(id)) }); //Copilot foreslo å bruke String(id) for å konvertere id til en streng, tenkte ikke på dette. Brukte hele tiden en deprecated metode som ikke fungerte.
 
         //Hvis brukeren ikke finnes, returnerer vi en feilmelding
         if (!bruker) {

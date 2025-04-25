@@ -1,4 +1,8 @@
 //Author: Laurent Zogaj
+/*
+En enkel komponent for å vise informasjon om informasjonskapsler og sesjoner.
+*/
+
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
