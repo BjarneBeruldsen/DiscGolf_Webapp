@@ -2,7 +2,7 @@
 /*
 Denne filen håndterer det som kommer frem i UIet på medlemskap i brukerinstillinger
 Samt at den innhenter funksjoner fra SletteBruker.jsx og endreBruker.jsx.
-Ikke fått oversetting til å funke her dessverre
+Ikke fått oversetting til å funke her dessverre, fikk heller ikke tid til å debugge det. Dårlig prioritering fra min side.
 */
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
