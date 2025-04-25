@@ -134,7 +134,7 @@ const RedigerBane = ({ klubb }) => {
             startLongitude: startPosisjon.startLongitude || hull[nr].startLongitude,
             sluttLatitude: sluttPosisjon.sluttLatitude || hull[nr].sluttLatitude,
             sluttLongitude: sluttPosisjon.sluttLongitude || hull[nr].sluttLongitude,
-            obZoner: aktivZone // Save the current OB zones
+            obZoner: aktivZone 
         };
         
         console.log('lagre Hull:', hull);
@@ -202,7 +202,7 @@ const RedigerBane = ({ klubb }) => {
     const clearObZones = () => {
         setAktivZone([]);
         
-        // fjerner obzoner hvis de finnes
+        // fjerner obzoner hvis de finnes 
         if (mapInstance && obLayers.length > 0) {
             obLayers.forEach(layerId => {
                 if (mapInstance.getLayer(layerId)) {
@@ -276,7 +276,7 @@ const RedigerBane = ({ klubb }) => {
                 }
             }
 
-            const newObLayers = [];// Legger til eksisterende OB-soner på kartet
+            const newObLayers = [];// Legger til eksisterende OB-soner på kartet, brukte copilot her, med mine tilpassninger
             if (hull[nr].obZoner && hull[nr].obZoner.length > 0) {
                 hull[nr].obZoner.forEach((zone, index) => {
                     const obId = `ob-existing-${index}`;
@@ -313,7 +313,7 @@ const RedigerBane = ({ klubb }) => {
         let obNr = 0;
        // Håndterer klikk på kartet for å legge til OB-soner eller start/sluttposisjon
         map.on("click", (e) => {
-             // Legger til OB-soner ved å holde inne Alt-tasten og klikke
+             // Legger til OB-soner ved å holde inne Alt-tasten og klikke, brukte copilot her, med mine tilpassninger
             if (e.originalEvent.altKey) {
                 
                 if (obKoordinater.length === 0) {
@@ -362,7 +362,7 @@ const RedigerBane = ({ klubb }) => {
             const clearObZones = () => {
                 setAktivZone([]);
                 
-                // fjer zone hvis finnes
+                // fjer zone hvis finnesbrukte copilot her, med mine tilpassninger
                 if (mapInstance && obLayers.length > 0) {
                     obLayers.forEach(layerId => {
                         if (mapInstance.getLayer(layerId)) {

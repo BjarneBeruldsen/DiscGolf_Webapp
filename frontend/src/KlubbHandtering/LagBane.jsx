@@ -39,7 +39,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
             startLongitude: startPosisjon.startLongitude,
             sluttLatitude: sluttPosisjon.sluttLatitude,
             sluttLongitude: sluttPosisjon.sluttLongitude,
-            obZoner: currentObZoner // Include OB zones with the hull
+            obZoner: currentObZoner
         };
         
         setHull([...hull, nyttHull]);
@@ -48,7 +48,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
         setPar('');
         setStartPosisjon({startLatitude: null, startLongitude: null});
         setSluttPosisjon({sluttLatitude: null, sluttLongitude: null});
-        setCurrentObZoner([]); // Reset current OB zones after adding the hull
+        setCurrentObZoner([]); 
     };
 
     const handleLagreBane = () => {
@@ -101,7 +101,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
       
     useEffect(() => {
         if (!mapContainerRef.current) return;
-      
+      // Setter opp Mapbox-kartet
         mapboxgl.accessToken = "pk.eyJ1IjoidW5rbm93bmdnc3MiLCJhIjoiY203eGhjdXBzMDUwaDJxc2RidXgwbjBqeSJ9.wlnVO6sI2-cY5Tx8uYv_XQ";
         const map = new mapboxgl.Map({
          container: mapContainerRef.current,
@@ -113,9 +113,10 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
         let startPunkt = null;
         let obKoordinater = []; 
         let obNr = 0;
-      
+      // Håndterer klikk på kartet
         map.on("click", (e) => {
-                   
+            // Hvis Alt-tasten holdes inne, oppretter vi en OB-sone 
+            // brukte copilot her, med mine tilpassninger     
             if (e.originalEvent.altKey) {
                 obKoordinater.push([e.lngLat.lng, e.lngLat.lat]);
                 
@@ -148,41 +149,45 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                             }
                     });
                     
-                    // Add the OB zone to the current hull's OB zones
+                    // legg til obZone til nåværende hull
                     setCurrentObZoner(prev => [...prev, { coordinates: closed }]);
                     obKoordinater = [];
                 }
                 return;  
             }
-                
+            // Hvis Alt-tasten ikke holdes inne, håndterer vi start- og sluttposisjon for hullet
             const clickedPos = { latitude: e.lngLat.lat, longitude: e.lngLat.lng };
       
             if (!startPunkt) {
+                 // Setter startposisjonen for hullet
                 setStartPosisjon({
                     startLatitude: clickedPos.latitude,
                     startLongitude: clickedPos.longitude,
                 })
                 
                 startPunkt = [clickedPos.longitude, clickedPos.latitude];
+                 // Legger til en grå markør for startposisjonen
                 new mapboxgl.Marker({ color: "gray" })
                 .setLngLat(startPunkt)
                 .addTo(map)
             } else {
+                // Setter sluttposisjonen for hullet
                 setSluttPosisjon({
                     sluttLatitude: clickedPos.latitude,
                     sluttLongitude: clickedPos.longitude,
                 })
             
                 const stopPunkt = [clickedPos.longitude, clickedPos.latitude];
+                // Legger til en grønn markør for sluttposisjonen
                 new mapboxgl.Marker({ color: "green" }) 
                 .setLngLat(stopPunkt)
                 .addTo(map);
-
+                // Fjerner eksisterende linje mellom start- og sluttposisjon hvis den finnes
                 if (map.getSource("hole-path")){
                     map.removeLayer("hole-path");
                     map.removeSource("hole-path");
                 }
-        
+                // Legger til en linje mellom start- og sluttposisjon
                 map.addSource("hole-path",{
                     type: "geojson",
                     data: {
@@ -207,11 +212,11 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
                         "line-width": 4,
                     },
                 });
-        
+                // Tilbakestiller startpunktet
                 startPunkt = null;
             }
         });
-        
+        // Legger til en søkefunksjon for plasseringer på kartet
         const geocoder = new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
             mapboxgl: mapboxgl
@@ -220,13 +225,13 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
         map.addControl(geocoder);
         
         let lokasjon = null;
-
+        // Håndterer resultatet fra søkefunksjonen
         geocoder.on('result', function (e) {
             lokasjon = e.result.place_name;
             setPlassering(lokasjon);
             console.log("Navn på sted:", lokasjon); 
         });
-
+          // Rydder opp kartet når komponenten 
         return () => {
             map.remove();
             map.off("click");

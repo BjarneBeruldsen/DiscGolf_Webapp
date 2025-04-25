@@ -265,6 +265,7 @@ const transporter = nodemailer.createTransport({
     }
     // Konfigurerer e-postinnstillinger for å sende en melding
     const mailOptions = {
+      //forslag fra copilot
       from: process.env.EPOST_BRUKER, 
       to: process.env.EPOST_BRUKER, 
       subject: `Ny melding fra ${navn}`, 
@@ -290,15 +291,17 @@ app.get('/byer', async (req, res) => {
       const byer = await db.collection('by').find().toArray(); 
         // Sjekker om det finnes noen byer i databasen
       if (!byer || byer.length === 0) {
+        //forslag fra copilot
         return res.status(200).json([]);
       }
-  
+      //forslag fra copilot  
       res.status(200).json(byer);
       
     } catch (err) {
        // Logger feilen til konsollen
         console.error('Feil under databehandling:', err);
       // Returnerer en feilmelding med statuskode 500
+      //forslag fra copilot
         res.status(500).json({
           error: 'Noe gikk galt'
         });

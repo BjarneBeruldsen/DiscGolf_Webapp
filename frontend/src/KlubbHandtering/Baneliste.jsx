@@ -42,6 +42,8 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
 
     useEffect(() => {
          // Henter Yr-IDs for baner basert på plassering
+         // yr idene i db er generert av copilot
+         // kunne blir gjort manuelt men hadde flere timer
         const hentYrIdForBaner = async () => {
             try {
                 const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/byer`);
@@ -65,18 +67,7 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
         hentYrIdForBaner();
     }, [baner]);
     
-    
-    useEffect(() => {
-        // Filtrerer baner som har OB-soner
-        if (!baner) return;
-        
-        const banerMedOb = baner.filter(bane => {
-            
-            return bane.hull?.some(hull => hull.obZoner && hull.obZoner.length > 0);
-        }).map(bane => bane._id);
-        
-        setBanerMedObZoner(banerMedOb);
-    }, [baner]);
+
     
     useEffect(() => {
         // Filtrerer baner basert på plassering, antall hull og brukerens posisjon
@@ -91,7 +82,8 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
                 )
             )
         );
-        
+        // Filtrerer baner basert på brukerens posisjon 
+        // brukte copilot på regning av distanse, med mine tilpassninger
         if (visNæreBaner && brukerPos && filtered.length > 0) {
             filtered = filtered.filter(bane => {
                 if (!bane.hull?.[0]?.startLatitude) return false;
@@ -183,7 +175,7 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
                 new mapboxgl.Marker(startEl)
                 .setLngLat([startLongitude, startLatitude])
                 .setPopup(popup)  
-                    .addTo(map);
+                .addTo(map);
 
                 coordinates.push([startLongitude, startLatitude]);
             }
@@ -208,7 +200,7 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
                 coordinates.push([sluttLongitude, sluttLatitude]);
             }
 
-                   // Legger til OB-soner på kartet
+                   // Legger til OB-soner på kartet brukte copilot her, med mine tilpassninger
                     if (visObZoner && obZoner && obZoner.length > 0) {
                         obZoner.forEach((obZone, i) => {
                             const sourceId = `ob-${baneIndex}-${i}-${i}`;
@@ -283,7 +275,8 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
         };
     }, [baner, rediger, aktivBane, brukerPos, visObZoner]);
 
-    const baneYrId = yrId[aktivBane?._id] || "1-72837";
+    const baneYrId = yrId[aktivBane?._id] || "1-72837"; // yr-id-ene i db er generert av copilot
+                                                        // kunne blitt gjort manuelt men hadde tatt lengre tid
     
     
     const toggleObZoner = () => {
