@@ -3,6 +3,8 @@
 /*
 Denne filen håndterer oversettelser.
 Den skal automatisk "Switche" over til engelsk basert på systemspråk.
+Vi har ikke implementert en knapp for dette, dessverre så enten via å sette engelsk til nummer 1 språkvalg i nettleseren eller kjøre den koden her nede i konsollet. 
+Det er visse sider som ikke er 100% oversatt, det bør ha blitt markert at det ikke er, hvis ikke beklger jeg det. 
 */
 
 //Inspo hentet fra: https://medium.com/@thelearning-curve/making-your-mern-stack-app-multilingual-with-i18next-cf30f4c77210 og https://www.i18next.com/
