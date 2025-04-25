@@ -265,7 +265,7 @@ const transporter = nodemailer.createTransport({
     }
     // Konfigurerer e-postinnstillinger for å sende en melding
     const mailOptions = {
-      //forslag fra copilot
+      //forslag fra copilot, med mine tilpasninger
       from: process.env.EPOST_BRUKER, 
       to: process.env.EPOST_BRUKER, 
       subject: `Ny melding fra ${navn}`, 
@@ -278,6 +278,7 @@ const transporter = nodemailer.createTransport({
         res.status(500).json({ melding: 'Feil ved sending av e-post' });
       } else {
         console.log('E-post sendt:', info.response);
+        //forslag av copilot, med mine tilpasninger
         res.status(200).json({ melding: 'E-post sendt vellykket' });
       }
     });
@@ -301,7 +302,7 @@ app.get('/byer', async (req, res) => {
        // Logger feilen til konsollen
         console.error('Feil under databehandling:', err);
       // Returnerer en feilmelding med statuskode 500
-      //forslag fra copilot
+      //forslag fra copilot, med tilpasninger
         res.status(500).json({
           error: 'Noe gikk galt'
         });
