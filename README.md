@@ -1,4 +1,4 @@
-# Prosjektoppgave: DiscGolf
+# Prosjektoppgave: DiscGolf Applikasjon
 
 Nettside: https://disk-applikasjon-39f504b7af19.herokuapp.com/
 
