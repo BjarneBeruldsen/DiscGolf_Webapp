@@ -35,10 +35,10 @@ const MinKlubb = ({ valgtUnderKategori }) => {
         <p className="text-gray-600"></p>
       )}
 
-      {valgtUnderKategori === "Min klubb" && <p>Informasjon om din klubb(Ikke implementert)</p>}
-      {valgtUnderKategori === "Søk etter klubb" && <p>Søkefunksjonalitet(Ikke implementert)</p>}
-      {valgtUnderKategori === "Søk etter brukere" && <p>Søk etter brukere(Ikke implementert)</p>}
-      {valgtUnderKategori === "Avregistrer" && <p>Avregistrering(Ikke implementert)</p>}
+      {valgtUnderKategori === "Min klubb" && <p>Ikke implementert</p>}
+      {valgtUnderKategori === "Søk etter klubb" && <p>Ikke implementert</p>}
+      {valgtUnderKategori === "Søk etter brukere" && <p>Ikke implementert</p>}
+      {valgtUnderKategori === "Avregistrer" && <p>Ikke implementert</p>}
 
       {/* Dynamisk innhold basert på rolle
       {rolle === "admin" && (

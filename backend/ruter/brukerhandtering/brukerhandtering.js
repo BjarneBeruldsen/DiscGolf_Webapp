@@ -161,7 +161,7 @@ brukerRouter.delete("/session", beskyttetRute, sjekkBrukerAktiv, async (req, res
 //Sletting av bruker
 //Kort forklart:
 //Finner brukeren via frontend inputs. Sjekker passordet og sletter brukeren, og deretter logger ut/sletter session for å fjerne alt av "rusk" som kan være igjen.
-brukerRouter.delete("/bruker/:id", beskyttetRute, sletteValidering, sjekkBrukerAktiv, async (req, res) => {
+brukerRouter.delete("/bruker", beskyttetRute, sletteValidering, sjekkBrukerAktiv, async (req, res) => {
     try {
         const db = getDb();
         if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -209,7 +209,7 @@ brukerRouter.delete("/bruker/:id", beskyttetRute, sletteValidering, sjekkBrukerA
 });
 //Rute for å redigere brukerinformasjon og legge til mer info som fornavn, etternavn, telefonnummer og bosted
 //Forklaringer under
-brukerRouter.patch("/bruker/:id", beskyttetRute, sjekkBrukerAktiv, redigeringValidering, endringStopp, async (req, res) => {
+brukerRouter.patch("/bruker", beskyttetRute, sjekkBrukerAktiv, redigeringValidering, endringStopp, async (req, res) => {
     try {
         //Oppretter variabler/konstanter for redigering av bruker og objekt for å samle på endringer/oppdateringer og eventuelle fjerning av felt
         const fjerning = {};

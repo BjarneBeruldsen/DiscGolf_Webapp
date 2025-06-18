@@ -8,7 +8,7 @@ Denne tar i mot det som kommer fra brukerinnstillinger.jsx og sender det videre 
 //Kontakter backend for å endre brukerinformasjon
 async function endreBruker(nyttBrukernavn, nyEpost, nyttPassord, passord, fornavn, etternavn, telefonnummer, bosted, minne, setMelding) {
   try {
-    const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/bruker/:id`, {
+    const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/bruker`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

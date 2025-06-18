@@ -8,9 +8,8 @@ import React from "react";
 const GlobaleInnstillinger = () => {
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold text-gray-800">Globale Innstillinger</h1>
       <p className="mt-4 text-gray-600">
-        (ikke implementert)
+        Ikke implementert
       </p>
       {/* Flere funksjoner for, TBC */}
     </div>

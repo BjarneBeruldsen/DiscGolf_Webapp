@@ -239,7 +239,8 @@ app.delete('/tommeTestdata', async (req, res) => {
   try {
       await db.collection('Klubb').deleteMany({});
       await db.collection('Reviews').deleteMany({});
-      res.status(200).json({ message: 'Testdata tømt for Klubber og Reviews' });
+      await db.collection('Turneringer').deleteMany({});
+      res.status(200).json({ message: 'Testdata tømt' });
   } catch (error) {
       console.error("Feil ved tømming av testdata:", error);
       res.status(500).json({ error: 'Feil ved tømming av testdata' });

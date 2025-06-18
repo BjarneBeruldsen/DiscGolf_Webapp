@@ -15,6 +15,7 @@ const Hjem = () => {
             .then(res => res.json())
             .then(data => {
                 alert(data.message);
+                window.location.reload();
             })
             .catch(error => {
                 console.error(t('Feil ved tømming av testdata:'), error);

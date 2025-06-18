@@ -120,9 +120,9 @@ const Klubbside = () => {
 
     }
 
-    return ( 
-        <div className="bg-gray-200">
-            <div className="innhold ">
+     return (
+        <div className="bg-gray-200 flex flex-col min-h-screen">
+            <div className="innhold flex-grow">
                 { laster && <div>{t('Laster...')}</div> }
                 { error && <div>{ error }</div> }
                 { klubb && (
@@ -157,11 +157,10 @@ const Klubbside = () => {
                                 <button onClick={() => handleVis('medlemmer')} className={`justify-center py-2 px-2 m-2 text-sm ${valgtSeksjon === 'medlemmer' ? 'border-b-2 border-black-500' : 'rounded-lg bg-white text-gray hover:bg-gray-200'}`}>{t('Medlemmer')}</button>
                             </div>
                         </div>
-                
                         {visNyheter && <Nyhetsliste nyheter={klubb.nyheter} handleLiker={handleLiker} antLiker={antLiker} />}
-                        {visBaner && <BaneListe baner={klubb.baner}/>}
-                        {visTurneringer && <Turneringerliste />}
-                        {visMedlemmer && <Medlemmerliste medlemmer={klubb.medlemmer} />}
+                        {visBaner && <BaneListe baner={klubb.baner}/>}      
+                        {visTurneringer && <Turneringerliste />}            
+                        {visMedlemmer && <Medlemmerliste medlemmer={klubb.medlemmer} />}  
                     </div>
                 )}
             </div>

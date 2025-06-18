@@ -25,8 +25,8 @@ return (
       {!underKategorier.includes(valgtUnderKategori) && (
       <p className="text-gray-600">{t("Velg en underkategori for ditt behov")}</p>
     )}
-      {valgtUnderKategori === t("To-faktor autentisering") && <p>{t("2FA(Ikke implementert)")}</p>}
-      {valgtUnderKategori === t("Gjennoppretting") && <p>{t("Gjenoppretting(Ikke implementert)")}</p>}
+      {valgtUnderKategori === t("To-faktor autentisering") && <p>{t("Ikke implementert")}</p>}
+      {valgtUnderKategori === t("Gjennoppretting") && <p>{t("Ikke implementert")}</p>}
     </div>
   );
 };

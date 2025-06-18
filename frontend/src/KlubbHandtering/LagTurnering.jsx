@@ -3,13 +3,13 @@
 /* Denne filen er en React-komponent for å opprette nye turneringer
  */
 
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from 'react-i18next';
 
 const LagTurnering = () => {
   const { t } = useTranslation();
   const [turneringer, setTurneringer] = useState([]);
-  const [feilmelding, setFeilmelding] = useState("");
+  const [melding, setMelding] = useState({ text: "", type: "" });
   const [nyTurnering, setNyTurnering] = useState({
     navn: "",
     dato: "",
@@ -22,36 +22,52 @@ const LagTurnering = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNyTurnering({ ...nyTurnering, [name]: value });
+    if (melding.text) setMelding({ text: "", type: "" });
   };
 
   // Opprett en ny turnering
   const opprettTurnering = async () => {
     setIsLoading(true);
+    setMelding({ text: "", type: "" });
     try {
-      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/turneringer`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(nyTurnering),
-        credentials: "include",
-      });
-    const opprettet = await respons.json();
-    if (!respons.ok) {
-      setFeilmelding(`${opprettet.error}\nKan derfor ikke opprette turnering`);
-    } else {
-      setTurneringer([...turneringer, opprettet]);
-      setNyTurnering({ navn: "", dato: "", bane: "", beskrivelse: "" });
+      const respons = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/api/turneringer`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(nyTurnering),
+          credentials: "include",
+        }
+      );
+      const data = await respons.json();
+      if (!respons.ok) {
+        setMelding({
+          text: `${data.error} \nKan derfor ikke opprette turnering`,
+          type: "error"
+        });
+      } else {
+        setTurneringer([...turneringer, data]);
+        setMelding({ text: t('Turnering opprettet!'), type: "success" });
+        setNyTurnering({ navn: "", dato: "", bane: "", beskrivelse: "" });
+        setTimeout(() => window.location.reload(), 1000);
       }
     } catch (error) {
       console.error("Feil ved opprettelse av turnering:", error.message);
-      setFeilmelding(error.message);
+      setMelding({ text: error.message, type: "error" });
     }
     setIsLoading(false);
   };
 
   return ( // Bruk/hjelp av KI (Copilot) for design av skjema/implementering av CSS
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h3 className="text-2xl font-bold mb-6 text-gray-800 text-center">{t('Opprett ny turnering')}</h3>
-      {feilmelding && <p className="text-red-500 text-center mb-4">{feilmelding}</p>}
+      <h3 className="text-2xl font-bold mb-6 text-gray-800 text-center">
+        {t('Opprett ny turnering')}
+      </h3>
+      {melding.text && (
+        <p className={`text-center mb-4 ${melding.type === 'error' ? 'text-red-500' : 'text-green-600'}`}>
+          {melding.text}
+        </p>
+      )}
       <div className="space-y-6">
         <div>
           <label className="block text-lg font-medium text-gray-700">{t('Navn')}:</label>

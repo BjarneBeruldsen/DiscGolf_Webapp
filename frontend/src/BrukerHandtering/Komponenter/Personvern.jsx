@@ -30,8 +30,8 @@ return (
       <p className="text-gray-600">{t("Velg en underkategori for ditt behov")}</p>
     )}
 
-    {valgtUnderKategori === t("Informasjonskapsler") && <p>{t("Informasjonskapsler (Ikke implementert)")}</p>}
-    {valgtUnderKategori === t("Synlighet") && <p>{t("Synlighetsinnstillinger (Ikke implementert)")}</p>}
+    {valgtUnderKategori === t("Informasjonskapsler") && <p>{t("Ikke implementert")}</p>}
+    {valgtUnderKategori === t("Synlighet") && <p>{t("Ikke implementert")}</p>}
   </div>
 );
 };

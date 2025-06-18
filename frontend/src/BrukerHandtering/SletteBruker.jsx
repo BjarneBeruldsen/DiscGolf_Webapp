@@ -13,7 +13,7 @@ const SletteBruker = async (brukerInput, passord, setBruker, setMelding, minne) 
 
   //Kontakter backend for å slette bruker
   try {
-    const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/bruker/:id`, {
+    const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/bruker`, {
       method: "DELETE",
       headers: {"Content-Type": "application/json"},
       credentials: "include",
