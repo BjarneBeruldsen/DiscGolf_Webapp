@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "@mapbox/mapbox-gl-directions": "^4.3.1",
-    "@tailwindcss/cli": "^4.0.1",
+    "@tailwindcss/cli": "^4.1.10",
+    "@tailwindcss/oxide": "^4.1.10",
     "@types/react-router-dom": "^5.3.3",
     "autoprefixer": "^10.4.21",
     "bcryptjs": "^3.0.2",
@@ -32,8 +33,8 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-i18next": "^12.1.0",
-    "react-router-dom": "^5.3.4",
     "react-router": "^5.3.4",
+    "react-router-dom": "^5.3.4",
     "react-scripts": "^5.0.1",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
@@ -58,14 +59,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@emnapi/core": "^1.4.3",
     "@emnapi/runtime": "^1.4.3",
     "@emnapi/wasi-threads": "^1.0.2",
     "@napi-rs/wasm-runtime": "^0.2.11",
     "@tybys/wasm-util": "^0.9.0",
-    "concurrently": "^9.1.2",
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/react-router-dom": "^5.3.3",
-    "autoprefixer": "^10.4.21"
+    "autoprefixer": "^10.4.21",
+    "concurrently": "^9.1.2"
   }
 }
