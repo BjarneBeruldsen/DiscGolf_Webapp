@@ -20,7 +20,7 @@
     "express-validator": "^7.2.1",
     "helmet": "^8.1.0",
     "mongodb": "^6.17.0",
-    "multer": "^2.0.1",
+    "multer": "^2.0.2",
     "nocache": "^4.0.0",
     "nodemailer": "^7.0.3",
     "passport": "^0.7.0",
