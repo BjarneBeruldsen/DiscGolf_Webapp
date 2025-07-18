@@ -22,7 +22,7 @@
     "i18next-http-backend": "^1.4.5",
     "mapbox-gl": "^3.13.0",
     "mongodb": "^6.17.0",
-    "multer": "^2.0.1",
+    "multer": "^2.0.2",
     "nocache": "^4.0.0",
     "nodemailer": "^7.0.3",
     "passport": "^0.7.0",
