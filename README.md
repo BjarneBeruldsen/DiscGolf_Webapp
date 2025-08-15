@@ -1,4 +1,4 @@
-# DiscGolf Hub
+# DiscGolf Webapp
 
 En webapplikasjon for diskgolfspillere, lagledere og klubbadministratorer.  
 Med **runde-spilling**, **scoreboard i sanntid**, **kartvisning**, **klubbsider med nyheter og baner**, samt **turneringsadministrasjon** – alt med rollebasert tilgangskontroll.
