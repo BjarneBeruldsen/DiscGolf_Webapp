@@ -31,7 +31,7 @@ Med **runde-spilling**, **scoreboard i sanntid**, **kartvisning**, **klubbsider 
 
 ### Backend
 - **Node.js + Express.js** – API-ruter, autentisering, RBAC.
-- **MongoDB (Mongoose)** – NoSQL-database for brukere, klubber, baner, runder, turneringer.
+- **MongoDB (MongoDB Node Driver)** – NoSQL-database for brukere, klubber, baner, runder, turneringer.
 - **Passport.js + express-session** – Autentisering og brukerøkter.
 - **Socket.IO** – Sanntid scoreoppdateringer.
 - **Helmet, CORS, rate-limit** – Sikkerhetslag.
