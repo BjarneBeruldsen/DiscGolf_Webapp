@@ -143,7 +143,7 @@ const Klubbside = () => {
                                 <button onClick={() => handleVis('medlemmer')} className={`justify-center py-2 px-2 m-2 text-sm ${valgtSeksjon === 'medlemmer' ? 'border-b-2 border-black-500' : 'rounded-lg bg-white text-gray hover:bg-gray-200'}`}>{t('Medlemmer')}</button>
                             </div>
                         </div>
-                        {visNyheter && <Nyhetsliste nyheter={klubb.nyheter} handleLiker={handleLiker} antLiker={antLiker} />}
+                        {visNyheter && <Nyhetsliste nyheter={klubb.nyheter} antLiker={antLiker} />}
                         {visBaner && <BaneListe baner={klubb.baner}/>}      
                         {visTurneringer && <Turneringerliste />}            
                         {visMedlemmer && <Medlemmerliste medlemmer={klubb.medlemmer} />}  
