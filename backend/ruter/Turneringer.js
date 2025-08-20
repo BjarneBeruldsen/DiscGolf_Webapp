@@ -15,7 +15,7 @@ const { validationResult } = require("express-validator");
 
 const turneringRouter = express.Router();
 
-// Opprett ny turnering
+// Opprett ny turnering.
 // sjekker at kun brukere med rolle som klubbleder (eller høyere) kan opprette turneringer
 turneringRouter.post("/api/turneringer", beskyttetRute, sjekkRolle (["klubbleder", "admin", "hoved-admin"]), turneringValidering, async (req, res) => {
     const db = getDb();
