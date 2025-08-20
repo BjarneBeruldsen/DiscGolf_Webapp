@@ -3,7 +3,7 @@ Denne filen viser en klubbside med en navigasjonsbar for valg mellom klubbens ny
 medlemmer, turneringer eller baner. Disse vises ved bruk av egne liste-komponenter.
 */
 
-// Author: Bjarne Hovd Beruldsen
+// Author: Bjarne Hovd Beruldsen.
 
 import { useParams, useHistory } from 'react-router-dom';
 import UseFetch from './UseFetch';
