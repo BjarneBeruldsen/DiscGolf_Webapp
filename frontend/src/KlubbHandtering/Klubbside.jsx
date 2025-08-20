@@ -1,3 +1,8 @@
+/* 
+Denne filen viser en klubbside med en navigasjonsbar for valg mellom klubbens nyheter, 
+medlemmer, turneringer eller baner. Disse vises ved bruk av egne liste-komponenter.
+*/
+
 // Author: Bjarne Hovd Beruldsen
 
 import { useParams, useHistory } from 'react-router-dom';
@@ -27,6 +32,7 @@ const Klubbside = () => {
     const {bruker, venter} = HentBruker();
     const [erMedlem, setErMedlem] = useState(false);
 
+    //Henter brukerdata 
     useEffect(() => {
         if(bruker) {
             console.log("bruker:", bruker);
@@ -42,33 +48,13 @@ const Klubbside = () => {
     }, [erMedlem, klubb, bruker]);
 
 
-    const handleLiker = (nyhetId) => {
-        fetch(`${process.env.REACT_APP_API_BASE_URL}/nyheter/${nyhetId}/like`, {
-            method: 'PATCH',
-            headers: { "Content-Type": "application/json" },
-        })
-        .then(res => {
-            if (!res.ok) {
-                throw new Error('Feil ved oppdatering av likes');
-            }
-            return res.json();
-        })
-        .then(data => {
-            console.log('Likes oppdatert:', data);
-            window.location.reload(); // Oppdaterer siden for å vise oppdaterte likes
-        })
-        .catch(error => {
-            console.error('Feil ved oppdatering av likes:', error);
-        });
-    };
-
+    //metode for å legge til nytt medlem i klubben 
     const handleUpdate = () => {
         const nyttMedlem = bruker;
 
         setErrorMelding('');
         const medlemmer = klubb.medlemmer || [];
 
-        // Check if the user is already a member
         const erAlleredeMedlem = medlemmer.some(medlem => medlem.id === nyttMedlem.id);
         if (erAlleredeMedlem) {
             alert('Du er allerede medlem av denne klubben.');
@@ -92,6 +78,7 @@ const Klubbside = () => {
         });
     };
 
+    //styrer visning av nyheter, baner, turneringer og medlemmer
     const handleVis = (seksjon) => {
         setValgtSeksjon(seksjon);
         setVisNyheter(seksjon === 'nyheter');
@@ -100,6 +87,7 @@ const Klubbside = () => {
         setVisMedlemmer(seksjon === 'medlemmer');
     };
 
+    //metode for å slette klubb
     const handleDelete = () => {
         if (window.confirm('Er du sikker på at du vil slette klubben?')) {
             fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}`, {
@@ -116,9 +104,7 @@ const Klubbside = () => {
         }
     };
 
-    const handleBliMedlem = () => {
 
-    }
 
      return (
         <div className="bg-gray-200 flex flex-col min-h-screen">

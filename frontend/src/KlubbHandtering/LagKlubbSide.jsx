@@ -1,3 +1,7 @@
+/*  
+Denne filen viser informasjon om en spesifikk klubb, lar brukeren legge til 
+nyheter, baner, turneringer, og redigere eksisterende baner. 
+*/
 // Author: Bjarne Hovd Beruldsen
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -24,6 +28,7 @@ const LagKlubbside = () => {
     const [fil, setFil] = useState(null);
     
 
+    // Henter klubbdata fra API
     useEffect(() => {
         fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}`)
             .then(res => res.json())
@@ -37,6 +42,7 @@ const LagKlubbside = () => {
             });
     }, [id]);
 
+    //legger til nyheter samt pdf-fil, visst den eksisterer
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -100,6 +106,7 @@ const LagKlubbside = () => {
             });
     };
 
+    //styrer visning av nyheter, baner, turneringer og rediger bane
     const behandleVisning = (seksjon) => {
         setVisNyhetForm(seksjon === 'nyhet'); 
         setVisBaneForm(seksjon === 'bane');
@@ -107,16 +114,13 @@ const LagKlubbside = () => {
         setVisRedigerBane(seksjon === 'redigerBane');
     }
 
-    const behandleVisningBane = () => {
-        setVisBaneForm(!visBaneForm);
-        setVisNyhetForm(false); 
-    }
-
+    //varsler om at bane er lagt til og skjuler skjemaet
     const handleBaneLagtTil = () => {
         setVisBaneForm(false);
         alert('Ny bane lagt til');
     }
 
+    //henter filen som er valgt
     const handleEndring = (e) => {
         const filListe = e.target.files;
         setFil(filListe[0]);

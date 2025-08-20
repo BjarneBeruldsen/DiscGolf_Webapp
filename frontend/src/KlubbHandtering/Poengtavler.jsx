@@ -1,3 +1,7 @@
+/*  
+Denne filen viser brukerens poengtavler og statistikk, inkludert antall runder, 
+gjennomsnittlig score og beste score. 
+*/
 // Author: Bjarne Hovd Beruldsen
 import { useEffect, useState } from "react";
 import HentBruker from "../BrukerHandtering/HentBruker";
@@ -19,6 +23,7 @@ const PoengTavler = () => {
     const [besteScore, setBesteScore] = useState(0);
     const [antHoleInOne, setAntHoleInOne] = useState(0);
 
+    // Henter brukerdata
     useEffect(() => {
         if (bruker && bruker.poengkort && bruker.poengkort.length > 0) {
             setPoengTavler(bruker.poengkort);
@@ -26,6 +31,7 @@ const PoengTavler = () => {
         }
     }, [bruker]);
 
+    // beregner statistikk når poengTavler basert på brukerens poengkort
     useEffect(() => {
         let totalScore = 0;
         let totalKast = 0;
@@ -60,12 +66,14 @@ const PoengTavler = () => {
         })
     }, [poengTavler]);
 
+    // Funksjon for å håndtere visning av seksjoner
     const handleVis = (seksjon) => {
         setValgtSeksjon(seksjon);
         setVisPoengtavler(seksjon === 'poengtavler');
         setVisStatistikk(seksjon === 'statistikk');
     };
 
+    // beregner antall kast for hver spiller
     const sumKast = (spiller) => {
         let sum = 0;
         if (spiller.antallKast) {

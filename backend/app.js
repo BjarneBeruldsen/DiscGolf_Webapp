@@ -29,6 +29,9 @@ const systemloggRouter = require("./ruter/systemlogger");
 const http = require('http');
 const { Server } = require('socket.io');
 const { sjekkBrukerAktiv, beskyttetRute } = require('./ruter/brukerhandtering/funksjoner');
+// Swagger UI for API-dokumentasjon
+const swaggerUi = require('swagger-ui-express');
+const fs = require('fs');
 
 const app = express();
 //Lese html skjema i req.body hvis nødvendig
@@ -108,6 +111,34 @@ app.use(
 );
 
 app.use(express.json());
+
+// Swagger/OpenAPI dokumentasjon
+// Merk: Vi legger denne under /api slik at den ikke fanges av React-router wildcard lenger ned
+try {
+  const openapiSpec = JSON.parse(
+    fs.readFileSync(path.join(__dirname, 'openapi.json'), 'utf8')
+  );
+  // Løs opp CSP kun for Swagger UI slik at inline skript og styles fungerer
+  app.use(
+    '/api/docs',
+    helmet({
+      contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+          defaultSrc: ["'self'"],
+          imgSrc: ["'self'", 'data:'],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+          connectSrc: ["'self'"],
+        },
+      },
+    })
+  );
+  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openapiSpec));
+  app.get('/api/openapi.json', (req, res) => res.json(openapiSpec));
+} catch (e) {
+  console.warn('Swagger/OpenAPI kunne ikke lastes:', e.message);
+}
 
 //Deployment under
 //Legger serving fra statiske filer fra REACT applikasjonen

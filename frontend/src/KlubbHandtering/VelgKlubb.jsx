@@ -1,3 +1,7 @@
+/*  
+Denne filen lar brukeren velge en klubb for å redigere dens side 
+eller opprette en ny klubb. 
+*/
 //Author: Bjarne Hovd Beruldsen
 import { Link, useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -13,6 +17,7 @@ const VelgKlubb = () => {
     const { t } = useTranslation();
 
 
+    // Henter klubber fra API når komponenten lastes inn
     useEffect(() => {
         setLaster(true);
 
@@ -38,6 +43,7 @@ const VelgKlubb = () => {
             });
     }, [bruker]);
 
+    //sender bruker til valgt klubbside
     const handleSubmit = (e) => {
         e.preventDefault();
         if (valgtKlubb) {

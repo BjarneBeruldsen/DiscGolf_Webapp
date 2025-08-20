@@ -1,3 +1,8 @@
+/* 
+Denne filen henter bane-data fra API ved bruk av UseFetch-hooket 
+og sender dataene til BaneListe-komponenten for visning.
+*/
+
 // Author: Bjarne Hovd Beruldsen
 import React from "react";
 import BaneListe from "./Baneliste";

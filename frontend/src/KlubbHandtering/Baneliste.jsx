@@ -1,5 +1,12 @@
 // Author: Bjarne Hovd Beruldsen & Abdinasir Ali
 // ObZoner er ikke helt funskjonell, spessielt på baneliste så blir ikke alle zoner vist, men de blir oprettet korrekt
+
+/*
+Denne filen inneholder komponentene for å vise baner og deres detaljer. 
+Den er gjennbrukt på flere sider i applikasjonen, 
+inkludert klubbens side og redigeringsside.
+ */
+
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
@@ -13,6 +20,7 @@ import '../App.css';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import Review from './Reviews';
 import { useTranslation } from 'react-i18next';
+
 
 const BaneListe = ({ baner, rediger, klubbId }) => {
     const { t } = useTranslation();
@@ -100,6 +108,7 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
         }
     }, [baner, locationFilter, hullFilter, aktivBaneIndex, visNæreBaner, brukerPos, avstandKm]);
 
+    //Linker til scoreboard eller redigeringsside avhengig av om redigeringsmodus er aktivert
     const handleClick = (bane) => {
         if (bruker === null) {
             alert('logginn/registrer deg for å spille');

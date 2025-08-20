@@ -1,3 +1,7 @@
+/*  
+Denne filen inneholder valideringsfunksjoner for klubbnavn, 
+kontaktinformasjon, nyhetstitler og nyheter. 
+*/
 //Author: Bjarne Hovd Beruldsen
 
 export const validering = (tekst, minLengde, maxLengde) => {

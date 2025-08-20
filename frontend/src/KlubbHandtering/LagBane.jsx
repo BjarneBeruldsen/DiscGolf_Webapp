@@ -1,3 +1,8 @@
+/*
+Denne filen lar brukeren opprette en ny bane for en klubb. 
+Brukeren kan legge til hull med start- og sluttposisjoner, 
+OB-soner og annen informasjon.
+*/
 // Author: Bjarne Hovd Beruldsen & Abdinasir Ali
 import { useState } from 'react';
 import { validering } from './validation';
@@ -51,6 +56,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
         setCurrentObZoner([]); 
     };
 
+    //validerer og lagrer banen i databasen
     const handleLagreBane = () => {
         setErrorMelding('');
         if (hull.length < 2) {
@@ -89,6 +95,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
         window.location.reload(false);
     };
 
+    //håndterer visning av av ulike seksjoner i skjemaet
     const handleVisning = (seksjon) => {
         if (seksjon === 'bane' && hull.length < 2) {
             setErrorMelding('Du må legge til minst 2 hull før du kan fullføre registreringen.');

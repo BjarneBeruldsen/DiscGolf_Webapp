@@ -17,7 +17,7 @@ function setSocketIO(socketIOInstance) {
     io = socketIOInstance;
 }
 
-// Configure multer for file uploads
+// Konfigurer multer for filopplastinger
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.join(__dirname, '../../filer'));
@@ -28,7 +28,8 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Route for file uploads
+// Rute for opplasting av filer
+// Denne ruten håndterer opplasting av PDF-filer og lagrer dem på serveren
 klubbRouter.post('/upload', upload.single('pdf'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: 'Ingen fil ble lastet opp' });
@@ -36,7 +37,8 @@ klubbRouter.post('/upload', upload.single('pdf'), (req, res) => {
     res.status(200).json({ filePath: req.file.filename });
 });
 
-//Klubbhåndterings ruter 
+// Rute for å hente alle klubber
+// Denne ruten henter en liste over alle klubber fra databasen
 klubbRouter.get('/klubber', (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -52,6 +54,8 @@ klubbRouter.get('/klubber', (req, res) => {
     })
 })
 
+// Rute for å hente en spesifikk klubb
+// Denne ruten henter en klubb basert på dens ID
 klubbRouter.get('/klubber/:id', (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -70,6 +74,8 @@ klubbRouter.get('/klubber/:id', (req, res) => {
     }
 })
 
+// Rute for å opprette en ny klubb
+// Denne ruten validerer og lagrer en ny klubb i databasen
 klubbRouter.post('/klubber', lagKlubbValidering, (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -89,6 +95,8 @@ klubbRouter.post('/klubber', lagKlubbValidering, (req, res) => {
     });
 })
 
+// Rute for å slette en klubb
+// Denne ruten sletter en klubb basert på dens ID
 klubbRouter.delete('/klubber/:id', (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -108,6 +116,8 @@ klubbRouter.delete('/klubber/:id', (req, res) => {
     }
 })
 
+// Rute for å oppdatere en klubb
+// Denne ruten oppdaterer informasjonen til en klubb basert på dens ID
 klubbRouter.patch('/klubber/:id', (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -127,7 +137,8 @@ klubbRouter.patch('/klubber/:id', (req, res) => {
     }
 })
 
-//Rute som legger nyheter til klubben sin klubbside
+// Rute for å legge til nyheter til en klubb
+// Denne ruten legger til en nyhet til en spesifikk klubb
 klubbRouter.post('/klubber/:id/nyheter', (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -157,7 +168,8 @@ klubbRouter.post('/klubber/:id/nyheter', (req, res) => {
     }
 });
 
-// Rute for å legge til likes og kommentarer til en nyhet
+// Rute for å oppdatere likes og kommentarer på en nyhet
+// Denne ruten håndterer oppdatering av likes og kommentarer for en spesifikk nyhet
 klubbRouter.patch('/klubber/:klubbId/nyheter/:nyhetId', async (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({ error: 'Ingen database tilkobling' });
@@ -193,7 +205,8 @@ klubbRouter.patch('/klubber/:klubbId/nyheter/:nyhetId', async (req, res) => {
     }
 });
 
-//rute som legger til bane til git klubb
+// Rute for å legge til en bane til en klubb
+// Denne ruten legger til en ny bane til en spesifikk klubb
 klubbRouter.post('/klubber/:id/baner', (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -215,9 +228,8 @@ klubbRouter.post('/klubber/:id/baner', (req, res) => {
     }
 });
 
-
-
-//rute for henting av alle nyheter
+// Rute for å hente alle nyheter
+// Denne ruten henter en liste over alle nyheter fra alle klubber
 klubbRouter.get('/nyheterListe', (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -237,8 +249,8 @@ klubbRouter.get('/nyheterListe', (req, res) => {
     });
 })
 
-
-//rute for henting av alle baner 
+// Rute for å hente alle baner
+// Denne ruten henter en liste over alle baner fra alle klubber
 klubbRouter.get('/banerListe', (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -258,7 +270,8 @@ klubbRouter.get('/banerListe', (req, res) => {
     }); 
 })
 
-//rute for henting av spesifikk bane 
+// Rute for å hente en spesifikk bane
+// Denne ruten henter en bane basert på dens ID
 klubbRouter.get('/baner/:id', async (req, res) => {
     try {
         const db = getDb();
@@ -282,6 +295,8 @@ klubbRouter.get('/baner/:id', async (req, res) => {
     }
 });
 
+// Rute for å oppdatere en bane
+// Denne ruten oppdaterer informasjonen til en bane basert på dens ID
 klubbRouter.patch('/klubber/:klubbId/baner/:baneId', (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -304,7 +319,8 @@ klubbRouter.patch('/klubber/:klubbId/baner/:baneId', (req, res) => {
     }
 })
 
-//Rute for å lagre poengkort for en bruker
+// Rute for å lagre poengkort for en bruker
+// Denne ruten legger til et poengkort for en spesifikk bruker
 klubbRouter.post('/brukere/:id/poengkort', async (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -327,7 +343,8 @@ klubbRouter.post('/brukere/:id/poengkort', async (req, res) => {
     }
 })
 
-//Rute for å lagre invitasjoner for en bruker 
+// Rute for å lagre invitasjoner for en bruker
+// Denne ruten legger til en invitasjon for en spesifikk bruker
 klubbRouter.post('/brukere/:id/invitasjoner', async (req, res) => {
     const db = getDb(); 
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -351,7 +368,8 @@ klubbRouter.post('/brukere/:id/invitasjoner', async (req, res) => {
     }
 })
 
-//Rute for å slette invitasjon 
+// Rute for å slette en invitasjon
+// Denne ruten sletter en invitasjon basert på runde-ID
 klubbRouter.delete('/brukere/:id/invitasjoner/:rundeId', async (req, res) => {
     const db = getDb(); 
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -375,7 +393,8 @@ klubbRouter.delete('/brukere/:id/invitasjoner/:rundeId', async (req, res) => {
     }
 });
 
-//rute for å lagre runde 
+// Rute for å lagre en runde
+// Denne ruten lagrer en ny runde i databasen
 klubbRouter.post('/runder', async (req, res) => {
     const db = getDb(); 
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
@@ -392,7 +411,8 @@ klubbRouter.post('/runder', async (req, res) => {
     })
 })
 
-//rute for å lagre antall aksepterte invitasjoner 
+// Rute for å oppdatere antall aksepterte invitasjoner
+// Denne ruten øker antall aksepterte invitasjoner for en runde
 klubbRouter.patch('/runder/:id', async (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({ error: 'Ingen database tilkobling' });
@@ -417,7 +437,8 @@ klubbRouter.patch('/runder/:id', async (req, res) => {
     }
 });
 
-//lagrute for å oppdatere antall ferdig spillere
+// Rute for å oppdatere antall ferdig spillere
+// Denne ruten øker antall ferdig spillere for en runde
 klubbRouter.patch('/runder/ferdig/:id', async (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({ error: 'Ingen database tilkobling' });
@@ -443,7 +464,8 @@ klubbRouter.patch('/runder/ferdig/:id', async (req, res) => {
     }
 })
 
-// Rute for å legge til poengkort til runde
+// Rute for å legge til poengkort til en runde
+// Denne ruten legger til et poengkort for en spesifikk runde
 klubbRouter.post('/runder/:rundeId/poengkort', async (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({ error: 'Ingen database tilkobling' });
@@ -467,7 +489,8 @@ klubbRouter.post('/runder/:rundeId/poengkort', async (req, res) => {
     }
 });
 
-//rute for å hente runder
+// Rute for å hente en spesifikk runde
+// Denne ruten henter en runde basert på dens ID
 klubbRouter.get('/runder/:rundeId', async (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({ error: 'Ingen database tilkobling' });
@@ -483,8 +506,8 @@ klubbRouter.get('/runder/:rundeId', async (req, res) => {
     }
 })
 
-
-//rute for å hente spillere
+// Rute for å hente alle spillere
+// Denne ruten henter en liste over alle spillere fra databasen
 klubbRouter.get('/spillere', async (req, res) => {
     try {
         const db = getDb();
@@ -497,7 +520,8 @@ klubbRouter.get('/spillere', async (req, res) => {
     }
 })
 //Author: Ylli Ujkani
-//Rute for å hente alle anmeldelser for en bane
+// Rute for å hente alle anmeldelser for en bane
+// Denne ruten henter anmeldelser for en spesifikk bane basert på dens ID
 klubbRouter.get('/baner/:id/reviews', async (req, res) => {
     try {
         const db = getDb();
@@ -511,7 +535,8 @@ klubbRouter.get('/baner/:id/reviews', async (req, res) => {
     }
 });
 
-//Rute for å legge til en anmeldelse for en bane
+// Rute for å legge til en anmeldelse for en bane
+// Denne ruten legger til en anmeldelse for en spesifikk bane
 klubbRouter.post('/baner/:id/reviews', sjekkBrukerAktiv, beskyttetRute, async (req, res) => {
     try {
         const db = getDb();

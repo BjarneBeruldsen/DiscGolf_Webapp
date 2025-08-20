@@ -1,4 +1,8 @@
-//Author: Bjarne Hovd Beruldsen
+/*  
+Denne filen lar brukeren velge spillere til en bane, inkludert gjestespillere, 
+og sende invitasjoner. 
+*/
+// Author: Bjarne Hovd Beruldsen
 import { useState, useEffect } from "react";
 import { validering } from './validation';
 import UseFetch from "./UseFetch";
@@ -22,6 +26,7 @@ const VelgSpillere = (props) => {
     const minne = useHistory();
 
 
+    // Henter brukeren og sjekker om den er logget inn
     useEffect(() => {
         if (bruker) {
             setSpillere(prevSpillere => {
@@ -34,6 +39,7 @@ const VelgSpillere = (props) => {
         }
     }, [bruker]);
 
+    // Henter spillere fra API når komponenten lastes inn
     useEffect(() => {
         if (brukere && brukere.length > 0) {
             setFiltrerteBrukere(
@@ -44,6 +50,7 @@ const VelgSpillere = (props) => {
         }
     }, [sok, brukere]);
 
+    //legger til spiller i listen
     const handleLeggTilBruker = (bruker) => {
         if(bruker._id === props.bruker.id) {
             setErrorMelding('Du kan ikke invitere deg selv');
@@ -59,6 +66,7 @@ const VelgSpillere = (props) => {
         setSok('');
     };
 
+    //legger valgte spillere i en liste som sendes til Scoreboard
     const handleBekreftSpillere = () => {
         setErrorMelding('');
         if (spillere.length < 1) {
@@ -69,6 +77,7 @@ const VelgSpillere = (props) => {
         console.log('spillere bekreftet:', spillere);
     };
 
+    //legger til gjestespiller i listen
     const handleSubmitNySpiller = (e) => {
         e.preventDefault();
         if (nySpiller.trim() === '') {

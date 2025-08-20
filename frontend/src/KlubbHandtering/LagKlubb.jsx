@@ -1,3 +1,8 @@
+/*  
+Denne filen lar brukeren opprette en ny klubb. 
+Brukeren kan legge inn klubbnavn, kontaktinformasjon og 
+blir automatisk lagt til som klubbleder. 
+*/
 // Author: Bjarne Hovd Beruldsen
 import { useState } from 'react';   
 import { useHistory } from 'react-router-dom';
@@ -15,6 +20,7 @@ const LagKlubb = () => {
     const [errorMelding, setErrorMelding] = useState('');
     const { bruker } = HentBruker(); // Henter brukerdata fra HentBruker-hooket
 
+    //metode som legger til ny klubb i databasen
     const handleSubmit = (e) => {
         e.preventDefault(); 
         setErrorMelding('');
@@ -30,7 +36,7 @@ const LagKlubb = () => {
 
 
         const medlemmer = [{ id: klubbleder.id, navn: klubbleder.brukernavn, 
-            rolle: "Klubbleder", kontaktinfo: klubbleder.epost }]; // Legger til den innloggede brukeren som medlem
+            rolle: "Klubbleder", kontaktinfo: klubbleder.epost }]; // Legger til den innloggede brukeren som klubbleder
 
         const klubb = { klubbnavn, kontaktinfo, medlemmer }; 
 
