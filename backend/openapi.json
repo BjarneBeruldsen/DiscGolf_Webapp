@@ -1,0 +1,167 @@
+{
+	"openapi": "3.0.3",
+	"info": {
+		"title": "APP2000 API",
+		"version": "1.0.0",
+		"description": "Full API-dokumentasjon for brukere, klubber, turneringer, systemlogg m.m."
+	},
+	"servers": [
+		{ "url": "/" }
+	],
+	"paths": {
+			"/sjekk-session": {
+				"get": {
+					"summary": "Sjekk om session er aktiv og hent brukerdata",
+					"security": [{ "cookieAuth": [] }],
+					"responses": {
+						"200": { "description": "Innlogget", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SessionBruker" } } } },
+						"401": { "description": "Ingen aktiv session" },
+						"500": { "description": "Serverfeil" }
+					}
+				}
+			},
+		"/bruker": {
+			"post": {
+				"summary": "Registrer bruker",
+				"requestBody": {
+					"required": true,
+					"content": { "application/json": { "schema": { "$ref": "#/components/schemas/RegistreringInput" } } }
+				},
+				"responses": { "201": { "description": "Opprettet" }, "400": { "description": "Valideringsfeil" } }
+			}
+		},
+		"/session": {
+			"post": {
+				"summary": "Logg inn",
+				"requestBody": {
+					"required": true,
+					"content": { "application/json": { "schema": { "$ref": "#/components/schemas/InnloggingInput" } } }
+				},
+				"responses": { "200": { "description": "Innlogget" }, "400": { "description": "Valideringsfeil" }, "401": { "description": "Feil brukernavn/passord" } }
+			},
+			"delete": {
+				"summary": "Logg ut",
+				"security": [{ "cookieAuth": [] }],
+				"responses": { "200": { "description": "Utlogget" } }
+			}
+		},
+		"/bruker/{id}": {
+			"delete": {
+				"summary": "Slett egen bruker",
+				"security": [{ "cookieAuth": [] }],
+				"parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+				"requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SlettBrukerInput" } } } },
+				"responses": { "200": { "description": "Slettet" }, "400": { "description": "Valideringsfeil" } }
+			},
+			"patch": {
+				"summary": "Oppdater egen bruker",
+				"security": [{ "cookieAuth": [] }],
+				"parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+				"requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/BrukerEgenOppdatering" } } } },
+				"responses": { "200": { "description": "Oppdatert" }, "400": { "description": "Valideringsfeil" } }
+			}
+		},
+		"/passord/glemt": { "post": { "summary": "Initier glemt passord", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/GlemtPassordInput" } } } }, "responses": { "200": { "description": "Sendt" } } } },
+		"/passord/valider": { "post": { "summary": "Valider reset-token", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ValiderTokenInput" } } } }, "responses": { "200": { "description": "Gyldig" }, "400": { "description": "Ugyldig" } } } },
+		"/passord/tilbakestill": { "post": { "summary": "Tilbakestill passord", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TilbakestillPassordInput" } } } }, "responses": { "200": { "description": "Oppdatert" }, "400": { "description": "Valideringsfeil" } } } },
+
+		"/api/turneringer": {
+			"get": { "summary": "Hent alle turneringer", "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Turnering" } } } } } } },
+			"post": { "summary": "Opprett turnering", "security": [{ "cookieAuth": [] }], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TurneringInput" } } } }, "responses": { "201": { "description": "Opprettet" }, "400": { "description": "Valideringsfeil" }, "401": { "description": "Ikke autentisert" }, "403": { "description": "Mangler tilgang" } } }
+		},
+
+		"/api/systemlogg": {
+			"get": { "summary": "Hent systemlogg", "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Systemlogg" } } } } } } },
+			"post": { "summary": "Logg hendelse", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SystemloggInput" } } } }, "responses": { "201": { "description": "Opprettet" }, "400": { "description": "Mangler felt" } } }
+		},
+
+		"/api/brukere": { "get": { "summary": "Hent alle brukere (hoved-admin)", "security": [{ "cookieAuth": [] }], "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Bruker" } } } } }, "403": { "description": "Forbudt" } } } },
+		"/api/brukere/{id}": {
+			"get": { "summary": "Hent bruker (eksempel)", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "OK" } } },
+			"patch": { "summary": "Oppdater bruker (hoved-admin)", "security": [{ "cookieAuth": [] }], "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/BrukerPartial" } } } }, "responses": { "200": { "description": "Oppdatert" }, "404": { "description": "Ikke funnet" } } },
+			"delete": { "summary": "Slett bruker (hoved-admin)", "security": [{ "cookieAuth": [] }], "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "Slettet" }, "404": { "description": "Ikke funnet" } } }
+		},
+		"/api/bruker/rolle": { "get": { "summary": "Hent innlogget brukers rolle", "security": [{ "cookieAuth": [] }], "responses": { "200": { "description": "OK" }, "401": { "description": "Ikke autentisert" } } } },
+		"/api/admin/systeminnstillinger": { "get": { "summary": "Systeminnstillinger (hoved-admin)", "security": [{ "cookieAuth": [] }], "responses": { "200": { "description": "OK" }, "403": { "description": "Forbudt" } } } },
+		"/api/test": { "get": { "summary": "Test rute", "responses": { "200": { "description": "OK" } } } },
+
+		"/upload": { "post": { "summary": "Last opp PDF", "requestBody": { "required": true, "content": { "multipart/form-data": { "schema": { "type": "object", "properties": { "pdf": { "type": "string", "format": "binary" } }, "required": ["pdf"] } } } }, "responses": { "200": { "description": "Lastet opp" }, "400": { "description": "Ingen fil" } } } },
+			"/KontaktOss": {
+				"post": {
+					"summary": "Send kontaktskjema",
+					"requestBody": {
+						"required": true,
+						"content": { "application/json": { "schema": { "$ref": "#/components/schemas/KontaktInput" } } }
+					},
+					"responses": { "200": { "description": "E-post sendt" }, "400": { "description": "Valideringsfeil" }, "500": { "description": "E-postfeil" } }
+				}
+			},
+			"/byer": { "get": { "summary": "Hent byer", "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "type": "array", "items": { "type": "object", "additionalProperties": true } } } } }, "500": { "description": "Serverfeil" } } } },
+			"/BetaleAbo": { "post": { "summary": "Marker abonnement som betalt", "security": [{ "cookieAuth": [] }], "responses": { "200": { "description": "Registrert" }, "404": { "description": "Ingen endringer" }, "500": { "description": "Serverfeil" } } } },
+			"/AvslutteAbo": { "post": { "summary": "Avslutt abonnement", "security": [{ "cookieAuth": [] }], "responses": { "200": { "description": "Avsluttet" }, "404": { "description": "Ingen endringer" }, "500": { "description": "Serverfeil" } } } },
+			"/tommeTestdata": { "delete": { "summary": "Tøm testdata (Klubber og Reviews)", "responses": { "200": { "description": "Tømt" }, "500": { "description": "Serverfeil" } } } },
+		"/klubber": {
+			"get": { "summary": "Hent alle klubber", "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Klubb" } } } } } } },
+			"post": { "summary": "Opprett klubb", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Klubb" } } } }, "responses": { "201": { "description": "Opprettet" }, "400": { "description": "Valideringsfeil" } } }
+		},
+		"/klubber/{id}": {
+			"get": { "summary": "Hent klubb", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Klubb" } } } }, "400": { "description": "Ugyldig id" } } },
+			"patch": { "summary": "Oppdater klubb", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "additionalProperties": true } } } }, "responses": { "200": { "description": "Oppdatert" }, "400": { "description": "Ugyldig id" } } },
+			"delete": { "summary": "Slett klubb", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "Slettet" }, "400": { "description": "Ugyldig id" } } }
+		},
+		"/klubber/{id}/nyheter": { "post": { "summary": "Legg til nyhet i klubb", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/NyhetInput" } } } }, "responses": { "201": { "description": "Opprettet" }, "400": { "description": "Ugyldig id" } } } },
+		"/klubber/{klubbId}/nyheter/{nyhetId}": { "patch": { "summary": "Oppdater likes/kommentarer på nyhet", "parameters": [ { "name": "klubbId", "in": "path", "required": true, "schema": { "type": "string" } }, { "name": "nyhetId", "in": "path", "required": true, "schema": { "type": "string" } } ], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/NyhetOppdatering" } } } }, "responses": { "200": { "description": "Oppdatert" }, "400": { "description": "Ugyldig id" }, "404": { "description": "Ikke funnet" } } } },
+		"/klubber/{id}/baner": { "post": { "summary": "Legg til bane i klubb", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Bane" } } } }, "responses": { "201": { "description": "Opprettet" }, "400": { "description": "Ugyldig id" } } } },
+		"/nyheterListe": { "get": { "summary": "Hent alle nyheter", "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Nyhet" } } } } } } } },
+		"/banerListe": { "get": { "summary": "Hent alle baner", "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Bane" } } } } } } } },
+		"/baner/{id}": { "get": { "summary": "Hent bane", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "OK" }, "404": { "description": "Ikke funnet" } } } },
+		"/klubber/{klubbId}/baner/{baneId}": { "patch": { "summary": "Oppdater bane", "parameters": [ { "name": "klubbId", "in": "path", "required": true, "schema": { "type": "string" } }, { "name": "baneId", "in": "path", "required": true, "schema": { "type": "string" } } ], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Bane" } } } }, "responses": { "200": { "description": "Oppdatert" }, "400": { "description": "Ugyldig id" } } } },
+		"/brukere/{id}/poengkort": { "post": { "summary": "Legg til poengkort for bruker", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Poengkort" } } } }, "responses": { "201": { "description": "Opprettet" }, "400": { "description": "Ugyldig id" } } } },
+		"/brukere/{id}/invitasjoner": { "post": { "summary": "Legg til invitasjon for bruker", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Invitasjon" } } } }, "responses": { "201": { "description": "Opprettet" }, "400": { "description": "Ugyldig id" } } } },
+		"/brukere/{id}/invitasjoner/{rundeId}": { "delete": { "summary": "Slett invitasjon for bruker", "parameters": [ { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }, { "name": "rundeId", "in": "path", "required": true, "schema": { "type": "string" } } ], "responses": { "200": { "description": "Slettet" }, "404": { "description": "Ikke funnet" } } } },
+		"/runder": { "post": { "summary": "Opprett runde", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Runde" } } } }, "responses": { "201": { "description": "Opprettet" } } } },
+		"/runder/{id}": { "patch": { "summary": "Øk antall akseptert for runde", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "Oppdatert" }, "404": { "description": "Runde ikke funnet" } } } },
+		"/runder/ferdig/{id}": { "patch": { "summary": "Øk antall ferdig for runde", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "Oppdatert" }, "404": { "description": "Runde ikke funnet" } } } },
+		"/runder/{rundeId}": { "get": { "summary": "Hent runde", "parameters": [{ "name": "rundeId", "in": "path", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Runde" } } } }, "404": { "description": "Ikke funnet" } } } },
+		"/runder/{rundeId}/poengkort": { "post": { "summary": "Legg til poengkort for runde", "parameters": [{ "name": "rundeId", "in": "path", "required": true, "schema": { "type": "string" } }], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Poengkort" } } } }, "responses": { "201": { "description": "Opprettet" }, "404": { "description": "Runde ikke funnet" } } } },
+		"/spillere": { "get": { "summary": "Hent alle spillere", "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Bruker" } } } } } } } },
+		"/baner/{id}/reviews": {
+			"get": { "summary": "Hent anmeldelser for bane", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Review" } } } } } } },
+			"post": { "summary": "Opprett anmeldelse for bane", "security": [{ "cookieAuth": [] }], "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ReviewInput" } } } }, "responses": { "201": { "description": "Opprettet" }, "400": { "description": "Valideringsfeil" } } }
+		}
+	},
+	"components": {
+		"securitySchemes": {
+			"cookieAuth": { "type": "apiKey", "in": "cookie", "name": "connect.sid" }
+		},
+		"schemas": {
+			"Turnering": { "type": "object", "properties": { "_id": { "type": "string" }, "navn": { "type": "string" }, "dato": { "type": "string" }, "bane": { "type": "string" }, "beskrivelse": { "type": "string" }, "opprettetAv": { "type": "string" } } },
+			"TurneringInput": { "type": "object", "required": ["navn", "dato", "bane"], "properties": { "navn": { "type": "string" }, "dato": { "type": "string" }, "bane": { "type": "string" }, "beskrivelse": { "type": "string" } } },
+			"Systemlogg": { "type": "object", "properties": { "_id": { "type": "string" }, "tidspunkt": { "type": "string", "format": "date-time" }, "bruker": { "type": "string" }, "handling": { "type": "string" }, "detaljer": { "type": "string" } } },
+			"SystemloggInput": { "type": "object", "required": ["bruker", "handling"], "properties": { "bruker": { "type": "string" }, "handling": { "type": "string" }, "detaljer": { "type": "string" } } },
+			"RegistreringInput": { "type": "object", "required": ["brukernavn", "epost", "passord"], "properties": { "brukernavn": { "type": "string" }, "epost": { "type": "string" }, "passord": { "type": "string" } } },
+			"InnloggingInput": { "type": "object", "required": ["brukernavn", "passord"], "properties": { "brukernavn": { "type": "string" }, "passord": { "type": "string" } } },
+			"SlettBrukerInput": { "type": "object", "required": ["brukerInput", "passord"], "properties": { "brukerInput": { "type": "string" }, "passord": { "type": "string" } } },
+			"BrukerEgenOppdatering": { "type": "object", "additionalProperties": true },
+			"GlemtPassordInput": { "type": "object", "required": ["epost"], "properties": { "epost": { "type": "string" } } },
+			"ValiderTokenInput": { "type": "object", "required": ["token"], "properties": { "token": { "type": "string" } } },
+			"TilbakestillPassordInput": { "type": "object", "required": ["token", "nyttPassord"], "properties": { "token": { "type": "string" }, "nyttPassord": { "type": "string" } } },
+			"Bruker": { "type": "object", "properties": { "_id": { "type": "string" }, "brukernavn": { "type": "string" }, "epost": { "type": "string" }, "rolle": { "type": "string" } } },
+			"BrukerPartial": { "type": "object", "additionalProperties": true },
+			"SessionBruker": { "type": "object", "properties": { "bruker": { "$ref": "#/components/schemas/BrukerDetalj" } } },
+			"BrukerDetalj": { "type": "object", "properties": { "id": { "type": "string" }, "brukernavn": { "type": "string" }, "epost": { "type": "string" }, "fornavn": { "type": "string" }, "etternavn": { "type": "string" }, "telefonnummer": { "type": "string" }, "bosted": { "type": "string" }, "rolle": { "type": "string" }, "poengkort": { "type": "array", "items": { "$ref": "#/components/schemas/Poengkort" } }, "invitasjoner": { "type": "array", "items": { "$ref": "#/components/schemas/Invitasjon" } }, "betalt": { "type": "boolean" } } },
+			"KontaktInput": { "type": "object", "required": ["navn", "epost", "melding"], "properties": { "navn": { "type": "string" }, "epost": { "type": "string" }, "melding": { "type": "string" } } },
+			"Klubb": { "type": "object", "properties": { "_id": { "type": "string" }, "navn": { "type": "string" }, "beskrivelse": { "type": "string" }, "by": { "type": "string" }, "nyheter": { "type": "array", "items": { "$ref": "#/components/schemas/Nyhet" } }, "baner": { "type": "array", "items": { "$ref": "#/components/schemas/Bane" } } } },
+			"Nyhet": { "type": "object", "properties": { "_id": { "type": "string" }, "tittel": { "type": "string" }, "innhold": { "type": "string" }, "likes": { "type": "integer" }, "kommentarer": { "type": "array", "items": { "$ref": "#/components/schemas/Kommentar" } }, "fil": { "type": "string" } }, "additionalProperties": true },
+			"NyhetInput": { "type": "object", "required": ["tittel", "innhold"], "properties": { "tittel": { "type": "string" }, "innhold": { "type": "string" }, "fil": { "type": "string" } } },
+			"NyhetOppdatering": { "type": "object", "properties": { "liker": { "type": "boolean" }, "kommentar": { "type": "string" }, "brukernavn": { "type": "string" } } },
+			"Kommentar": { "type": "object", "properties": { "brukernavn": { "type": "string" }, "kommentar": { "type": "string" }, "dato": { "type": "string", "format": "date-time" } } },
+			"Bane": { "type": "object", "properties": { "_id": { "type": "string" }, "navn": { "type": "string" } }, "additionalProperties": true },
+			"Poengkort": { "type": "object", "additionalProperties": true },
+			"Invitasjon": { "type": "object", "additionalProperties": true },
+			"Runde": { "type": "object", "properties": { "rundeId": { "type": "string" }, "antallAkseptert": { "type": "integer" }, "antallFerdig": { "type": "integer" }, "poengkort": { "type": "array", "items": { "$ref": "#/components/schemas/Poengkort" } } }, "additionalProperties": true },
+			"Review": { "type": "object", "properties": { "_id": { "type": "string" }, "baneId": { "type": "string" }, "brukerId": { "type": "string" }, "navn": { "type": "string" }, "rating": { "type": "integer", "minimum": 1, "maximum": 5 }, "kommentar": { "type": "string" }, "dato": { "type": "string", "format": "date-time" } } },
+			"ReviewInput": { "type": "object", "required": ["rating"], "properties": { "rating": { "type": "integer", "minimum": 1, "maximum": 5 }, "kommentar": { "type": "string" } } }
+		}
+	}
+}
