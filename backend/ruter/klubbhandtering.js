@@ -582,5 +582,69 @@ klubbRouter.post('/baner', async (req, res) => {
     }
 });
 
+// Rute for å hente alle baner fra Baner-samlingen
+// Denne ruten henter en liste over alle baner fra Baner-dokumentsamlingen
+klubbRouter.get('/baner', async (req, res) => {
+    try {
+        const db = getDb();
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+        
+        const baner = await db.collection('Baner').find({}).toArray();
+        res.status(200).json(baner);
+    } catch (error) {
+        res.status(500).json({error: 'Feil ved henting av baner'});
+    }
+});
+
+// Rute for å hente en spesifikk bane fra Baner-samlingen
+// Denne ruten henter en bane basert på dens ID fra Baner-dokumentsamlingen
+klubbRouter.get('/baner/:id', async (req, res) => {
+    try {
+        const db = getDb();
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+        
+        if (!ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({error: 'Ugyldig dokument-id'});
+        }
+        
+        const bane = await db.collection('Baner').findOne({ _id: new ObjectId(req.params.id) });
+        
+        if (!bane) {
+            return res.status(404).json({error: 'Bane ikke funnet'});
+        }
+        
+        res.status(200).json(bane);
+    } catch (error) {
+        res.status(500).json({error: 'Feil ved henting av bane'});
+    }
+});
+
+// Rute for å oppdatere en bane i Baner-samlingen
+// Denne ruten oppdaterer en bane basert på dens ID
+klubbRouter.patch('/baner/:id', async (req, res) => {
+    try {
+        const db = getDb();
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+        
+        if (!ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({error: 'Ugyldig dokument-id'});
+        }
+        
+        const oppdatering = req.body;
+        const result = await db.collection('Baner').updateOne(
+            { _id: new ObjectId(req.params.id) },
+            { $set: oppdatering }
+        );
+        
+        if (result.matchedCount === 0) {
+            return res.status(404).json({error: 'Bane ikke funnet'});
+        }
+        
+        res.status(200).json({ message: 'Bane oppdatert', result });
+    } catch (error) {
+        res.status(500).json({error: 'Feil ved oppdatering av bane'});
+    }
+});
+
 
 module.exports = { klubbRouter, setSocketIO };
