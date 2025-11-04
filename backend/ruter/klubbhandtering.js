@@ -562,5 +562,25 @@ klubbRouter.post('/baner/:id/reviews', sjekkBrukerAktiv, beskyttetRute, async (r
     }
 });
 
+// Rute for å legge til en ny bane til egen banedokumentsamling
+// Denne ruten lagrer banen som objekt - felt kan variere
+klubbRouter.post('/baner', async (req, res) => {
+    try {
+        const db = getDb();
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+        
+        const nyBane = {
+            _id: new ObjectId(),
+            ...req.body,
+            opprettetDato: new Date()
+        };
+        
+        const result = await db.collection('Baner').insertOne(nyBane);
+        res.status(201).json({ message: 'Bane opprettet', result });
+    } catch (error) {
+        res.status(500).json({error: 'Feil ved lagring av bane'});
+    }
+});
+
 
 module.exports = { klubbRouter, setSocketIO };

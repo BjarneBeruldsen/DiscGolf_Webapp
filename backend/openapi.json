@@ -114,6 +114,9 @@
 		"/klubber/{id}/baner": { "post": { "summary": "Legg til bane i klubb", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Bane" } } } }, "responses": { "201": { "description": "Opprettet" }, "400": { "description": "Ugyldig id" } } } },
 		"/nyheterListe": { "get": { "summary": "Hent alle nyheter", "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Nyhet" } } } } } } } },
 		"/banerListe": { "get": { "summary": "Hent alle baner", "responses": { "200": { "description": "OK", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Bane" } } } } } } } },
+		"/baner": { 
+			"post": { "summary": "Opprett ny bane i egen samling", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/BaneInput" } } } }, "responses": { "201": { "description": "Opprettet" }, "400": { "description": "Valideringsfeil" }, "500": { "description": "Serverfeil" } } } 
+		},
 		"/baner/{id}": { "get": { "summary": "Hent bane", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "responses": { "200": { "description": "OK" }, "404": { "description": "Ikke funnet" } } } },
 		"/klubber/{klubbId}/baner/{baneId}": { "patch": { "summary": "Oppdater bane", "parameters": [ { "name": "klubbId", "in": "path", "required": true, "schema": { "type": "string" } }, { "name": "baneId", "in": "path", "required": true, "schema": { "type": "string" } } ], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Bane" } } } }, "responses": { "200": { "description": "Oppdatert" }, "400": { "description": "Ugyldig id" } } } },
 		"/brukere/{id}/poengkort": { "post": { "summary": "Legg til poengkort for bruker", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Poengkort" } } } }, "responses": { "201": { "description": "Opprettet" }, "400": { "description": "Ugyldig id" } } } },
@@ -157,6 +160,7 @@
 			"NyhetOppdatering": { "type": "object", "properties": { "liker": { "type": "boolean" }, "kommentar": { "type": "string" }, "brukernavn": { "type": "string" } } },
 			"Kommentar": { "type": "object", "properties": { "brukernavn": { "type": "string" }, "kommentar": { "type": "string" }, "dato": { "type": "string", "format": "date-time" } } },
 			"Bane": { "type": "object", "properties": { "_id": { "type": "string" }, "navn": { "type": "string" } }, "additionalProperties": true },
+			"BaneInput": { "type": "object", "additionalProperties": true },
 			"Poengkort": { "type": "object", "additionalProperties": true },
 			"Invitasjon": { "type": "object", "additionalProperties": true },
 			"Runde": { "type": "object", "properties": { "rundeId": { "type": "string" }, "antallAkseptert": { "type": "integer" }, "antallFerdig": { "type": "integer" }, "poengkort": { "type": "array", "items": { "$ref": "#/components/schemas/Poengkort" } } }, "additionalProperties": true },
