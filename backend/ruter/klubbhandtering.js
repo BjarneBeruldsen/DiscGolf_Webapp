@@ -81,8 +81,7 @@ klubbRouter.post('/klubber', lagKlubbValidering, (req, res) => {
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
       const klubb = {
         ...req.body,
-        etablert: new Date().getFullYear(),  
-        opprettetDato: new Date(),        
+        etablert: new Date().getFullYear(),       
     };
     const error = validationResult(req);
     if (!error.isEmpty()) { //Henter validering
