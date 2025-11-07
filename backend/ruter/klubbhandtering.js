@@ -650,4 +650,65 @@ klubbRouter.patch('/baner/:id', async (req, res) => {
 });
 
 
+// Bli medlem i klubb
+klubbRouter.post('/medlemskap', async (req, res) => {
+  try {
+    const { brukerId, klubbId } = req.body;
+    
+    // Sjekk om bruker allerede er medlem
+    const eksisterende = await Medlemskap.findOne({ brukerId, klubbId });
+    if (eksisterende) {
+      return res.status(400).json({ error: 'Allerede medlem' });
+    }
+    
+    // Opprett nytt medlemskap
+    const nyttMedlemskap = new Medlemskap({
+      brukerId,
+      klubbId
+    });
+    
+    await nyttMedlemskap.save();
+    res.json({ success: true, message: 'Ble medlem!' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Hent antall medlemmer i en klubb
+klubbRouter.get('/klubb/:klubbId/medlemmer/antall', async (req, res) => {
+  try {
+    const antall = await Medlemskap.countDocuments({ klubbId: req.params.klubbId });
+    res.json({ antall });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Hent alle medlemmer i en klubb
+klubbRouter.get('/klubb/:klubbId/medlemmer', async (req, res) => {
+  try {
+    const medlemmer = await Medlemskap.find({ klubbId: req.params.klubbId });
+    res.json(medlemmer);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Hent brukerens klubb
+klubbRouter.get('/bruker/:brukerId/klubb', async (req, res) => {
+  try {
+    const medlemskap = await Medlemskap.findOne({ brukerId: req.params.brukerId });
+    if (!medlemskap) {
+      return res.status(404).json({ error: 'Ikke medlem i noen klubb' });
+    }
+    
+    const klubb = await Klubb.findById(medlemskap.klubbId);
+    res.json(klubb);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
 module.exports = { klubbRouter, setSocketIO };
