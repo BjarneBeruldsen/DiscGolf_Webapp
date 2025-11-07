@@ -82,8 +82,6 @@ klubbRouter.post('/klubber', lagKlubbValidering, (req, res) => {
       const klubb = {
         ...req.body,
         brukerId: new ObjectId(req.body.brukerId),
-            klubbId: new ObjectId(klubbId),
-            rolle: 'admin',
         etablert: new Date().getFullYear(),       
     };
     const error = validationResult(req);
