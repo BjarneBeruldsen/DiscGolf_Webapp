@@ -62,7 +62,11 @@
 					"required": true,
 					"content": { "application/json": { "schema": { "$ref": "#/components/schemas/InnloggingInput" } } }
 				},
-				"responses": { "200": { "description": "Innlogget" }, "400": { "description": "Valideringsfeil" }, "401": { "description": "Feil brukernavn/passord" } }
+				"responses": { 
+					"200": { "description": "Innlogget", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/InnloggingResponse" } } } }, 
+					"400": { "description": "Valideringsfeil" }, 
+					"401": { "description": "Feil brukernavn/passord" } 
+				}
 			},
 			"delete": {
 				"summary": "Logg ut",
@@ -164,6 +168,7 @@
 			"TilbakestillPassordInput": { "type": "object", "required": ["token", "nyttPassord"], "properties": { "token": { "type": "string" }, "nyttPassord": { "type": "string" } } },
 			"Bruker": { "type": "object", "properties": { "_id": { "type": "string" }, "brukernavn": { "type": "string" }, "epost": { "type": "string" }, "rolle": { "type": "string" } } },
 			"BrukerPartial": { "type": "object", "additionalProperties": true },
+			"InnloggingResponse": { "type": "object", "properties": { "message": { "type": "string" }, "userId": { "type": "string" }, "name": { "type": "string" }, "email": { "type": "string" }, "role": { "type": "string" } } },
 			"SessionBruker": { "type": "object", "properties": { "bruker": { "$ref": "#/components/schemas/BrukerDetalj" } } },
 			"BrukerDetalj": { "type": "object", "properties": { "id": { "type": "string" }, "brukernavn": { "type": "string" }, "epost": { "type": "string" }, "fornavn": { "type": "string" }, "etternavn": { "type": "string" }, "telefonnummer": { "type": "string" }, "bosted": { "type": "string" }, "rolle": { "type": "string" }, "poengkort": { "type": "array", "items": { "$ref": "#/components/schemas/Poengkort" } }, "invitasjoner": { "type": "array", "items": { "$ref": "#/components/schemas/Invitasjon" } }, "betalt": { "type": "boolean" } } },
 			"KontaktInput": { "type": "object", "required": ["navn", "epost", "melding"], "properties": { "navn": { "type": "string" }, "epost": { "type": "string" }, "melding": { "type": "string" } } },

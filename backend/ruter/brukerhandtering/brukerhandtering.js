@@ -110,13 +110,11 @@ brukerRouter.post("/session", innloggingValidering, loggeInnStopp, async (req, r
                 console.log(`Session aktiv med ID: ${req.sessionID}`);
                 //Returnerer brukerdata
                 return res.status(200).json({
-                    message: "Innlogging vellykket", 
-                    bruker: {
-                        id: bruker._id,
-                        brukernavn: bruker.brukernavn,
-                        epost: bruker.epost,
-                        rolle: bruker.rolle,
-                    }
+                    message: "Innlogging vellykket",
+                    userId: bruker._id,
+                    name: bruker.brukernavn,
+                    email: bruker.epost,
+                    role: bruker.rolle
                 });
             });
         });
