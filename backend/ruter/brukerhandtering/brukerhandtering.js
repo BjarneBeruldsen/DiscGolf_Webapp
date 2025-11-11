@@ -30,36 +30,6 @@ const brukerRouter = express.Router(); //Opprettelse av router for å så bruke 
 //Kort forklart:
 //Legger til bruker i databasen ved å hente inputene fra frontend, deretter sjekke om det ikke er noen med samme brukernavn eller e-post.
 //Deretter kryptere passordet og lagre det i databasen, altså hashingen.
-// Rute for å hente bruker med ID uten autentisering
-// Denne ruten henter en bruker basert på dens ID fra databasen
-brukerRouter.get("/brukerInnlogget/:id", async (req, res) => {
-    try {
-        const db = getDb();
-        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
-        
-        const { ObjectId } = require('mongodb');
-        
-        if (!ObjectId.isValid(req.params.id)) {
-            return res.status(400).json({error: 'Ugyldig bruker-id'});
-        }
-        
-        const bruker = await db.collection("Brukere").findOne({ _id: new ObjectId(req.params.id) });
-        
-        if (!bruker) {
-            return res.status(404).json({error: 'Bruker ikke funnet'});
-        }
-        
-        return res.status(200).json(bruker);
-    } catch (error) {
-        console.error("Feil ved henting av bruker:", error);
-        return res.status(500).json({error: 'Feil ved henting av bruker'});
-    }
-});
-
-//Rute for registrering av bruker
-//Kort forklart:
-//Legger til bruker i databasen ved å hente inputene fra frontend, deretter sjekke om det ikke er noen med samme brukernavn eller e-post.
-//Deretter kryptere passordet og lagre det i databasen, altså hashingen.
 brukerRouter.post("/bruker", registreringValidering, registreringStopp, async (req, res) => {
     try {
         const db = getDb();
