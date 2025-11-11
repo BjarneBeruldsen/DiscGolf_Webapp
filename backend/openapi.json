@@ -30,22 +30,16 @@
 				"responses": { "201": { "description": "Opprettet" }, "400": { "description": "Valideringsfeil" } }
 			}
 		},
-		"/session": {
-			"post": {
-				"summary": "Logg inn",
-				"requestBody": {
-					"required": true,
-					"content": { "application/json": { "schema": { "$ref": "#/components/schemas/InnloggingInput" } } }
-				},
-				"responses": { "200": { "description": "Innlogget" }, "400": { "description": "Valideringsfeil" }, "401": { "description": "Feil brukernavn/passord" } }
-			},
-			"delete": {
-				"summary": "Logg ut",
-				"security": [{ "cookieAuth": [] }],
-				"responses": { "200": { "description": "Utlogget" } }
-			}
-		},
 		"/bruker/{id}": {
+			"get": {
+				"summary": "Hent bruker med ID",
+				"parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+				"responses": { 
+					"200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Bruker" } } } },
+					"400": { "description": "Ugyldig id" },
+					"404": { "description": "Bruker ikke funnet" }
+				}
+			},
 			"delete": {
 				"summary": "Slett egen bruker",
 				"security": [{ "cookieAuth": [] }],
@@ -59,6 +53,21 @@
 				"parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
 				"requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/BrukerEgenOppdatering" } } } },
 				"responses": { "200": { "description": "Oppdatert" }, "400": { "description": "Valideringsfeil" } }
+			}
+		},
+		"/session": {
+			"post": {
+				"summary": "Logg inn",
+				"requestBody": {
+					"required": true,
+					"content": { "application/json": { "schema": { "$ref": "#/components/schemas/InnloggingInput" } } }
+				},
+				"responses": { "200": { "description": "Innlogget" }, "400": { "description": "Valideringsfeil" }, "401": { "description": "Feil brukernavn/passord" } }
+			},
+			"delete": {
+				"summary": "Logg ut",
+				"security": [{ "cookieAuth": [] }],
+				"responses": { "200": { "description": "Utlogget" } }
 			}
 		},
 		"/passord/glemt": { "post": { "summary": "Initier glemt passord", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/GlemtPassordInput" } } } }, "responses": { "200": { "description": "Sendt" } } } },
