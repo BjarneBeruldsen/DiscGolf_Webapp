@@ -30,7 +30,7 @@
 				"responses": { "201": { "description": "Opprettet" }, "400": { "description": "Valideringsfeil" } }
 			}
 		},
-		"/bruker/{id}": {
+		"/brukerInnlogget/{id}": {
 			"get": {
 				"summary": "Hent bruker med ID",
 				"parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],

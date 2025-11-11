@@ -32,7 +32,7 @@ const brukerRouter = express.Router(); //Opprettelse av router for å så bruke 
 //Deretter kryptere passordet og lagre det i databasen, altså hashingen.
 // Rute for å hente bruker med ID uten autentisering
 // Denne ruten henter en bruker basert på dens ID fra databasen
-brukerRouter.get("/bruker/:id", async (req, res) => {
+brukerRouter.get("/brukerInnlogget/:id", async (req, res) => {
     try {
         const db = getDb();
         if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
