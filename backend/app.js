@@ -33,6 +33,8 @@ const { sjekkBrukerAktiv, beskyttetRute } = require('./ruter/brukerhandtering/fu
 const swaggerUi = require('swagger-ui-express');
 const fs = require('fs');
 
+app.use(express.json({ limit: '10mb' }));
+
 const app = express();
 //Lese html skjema i req.body hvis nødvendig
 app.use(express.urlencoded({ extended: true }));
