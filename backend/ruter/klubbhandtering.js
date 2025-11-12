@@ -650,6 +650,30 @@ klubbRouter.patch('/baner/:id', async (req, res) => {
     }
 });
 
+// Rute for å hente bruker med ID uten autentisering
+// Denne ruten henter en bruker basert på dens ID fra databasen
+klubbRouter.get("/brukerInnlogget/:id", async (req, res) => {
+    try {
+        const db = getDb();
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+        
+        if (!ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({error: 'Ugyldig bruker-id'});
+        }
+        
+        const bruker = await db.collection("Brukere").findOne({ _id: new ObjectId(req.params.id) });
+        
+        if (!bruker) {
+            return res.status(404).json({error: 'Bruker ikke funnet'});
+        }
+        
+        return res.status(200).json(bruker);
+    } catch (error) {
+        console.error("Feil ved henting av bruker:", error);
+        return res.status(500).json({error: 'Feil ved henting av bruker'});
+    }
+});
+
 
 // Bli medlem i klubb
 klubbRouter.post('/medlemskap', async (req, res) => {
