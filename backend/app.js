@@ -33,9 +33,10 @@ const { sjekkBrukerAktiv, beskyttetRute } = require('./ruter/brukerhandtering/fu
 const swaggerUi = require('swagger-ui-express');
 const fs = require('fs');
 
-app.use(express.json({ limit: '10mb' }));
 
 const app = express();
+
+app.use(express.json({ limit: '10mb' }));
 //Lese html skjema i req.body hvis nødvendig
 app.use(express.urlencoded({ extended: true }));
 //Skulle egentlig bli brukt til samtykke til cookies, den gjør at man får tilgang til eksisterende cookies via req.cookies + sjekke samtykke med connect.sid, men vi kan bare ha den her.
