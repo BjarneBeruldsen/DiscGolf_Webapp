@@ -674,7 +674,7 @@ klubbRouter.get("/brukerInnlogget/:id", async (req, res) => {
     }
 });
 
-
+/*
 // Bli medlem i klubb
 klubbRouter.post('/medlemskap', async (req, res) => {
   try {
@@ -734,6 +734,6 @@ klubbRouter.get('/bruker/:brukerId/klubb', async (req, res) => {
   }
 });
 
-
+*/
 
 module.exports = { klubbRouter, setSocketIO };
