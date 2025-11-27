@@ -679,6 +679,29 @@ klubbRouter.patch('/baner/:id', async (req, res) => {
     }
 });
 
+// Rute for å slette en bane fra Baner-samlingen
+// Denne ruten sletter en bane basert på dens ID
+klubbRouter.delete('/baner/:id', async (req, res) => {
+    try {
+        const db = getDb();
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+        
+        if (!ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({error: 'Ugyldig dokument-id'});
+        }
+        
+        const result = await db.collection('Baner').deleteOne({ _id: new ObjectId(req.params.id) });
+        
+        if (result.deletedCount === 0) {
+            return res.status(404).json({error: 'Bane ikke funnet'});
+        }
+        
+        res.status(200).json({ message: 'Bane slettet', result });
+    } catch (error) {
+        res.status(500).json({error: 'Feil ved sletting av bane'});
+    }
+});
+
 // Rute for å hente bruker med ID uten autentisering
 // Denne ruten henter en bruker basert på dens ID fra databasen
 klubbRouter.get("/brukerInnlogget/:id", async (req, res) => {
