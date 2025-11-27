@@ -347,6 +347,31 @@ klubbRouter.post('/brukere/:id/poengkort', async (req, res) => {
     }
 })
 
+// Rute for å hente poengkort for en bruker
+// Denne ruten henter alle poengkort for en spesifikk bruker
+klubbRouter.get('/brukere/:id/poengkort', async (req, res) => {
+    const db = getDb();
+    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+    if(ObjectId.isValid(req.params.id) === false) {
+        return res.status(400).json({error: 'Ugyldig dokument-id'});
+    }
+    
+    try {
+        const bruker = await db.collection('Brukere').findOne(
+            { _id: new ObjectId(req.params.id) },
+            { projection: { poengkort: 1 } }
+        );
+        
+        if (!bruker) {
+            return res.status(404).json({error: 'Bruker ikke funnet'});
+        }
+        
+        res.status(200).json(bruker.poengkort || []);
+    } catch (err) {
+        res.status(500).json({error: 'Feil ved henting av poengkort'});
+    }
+})
+
 // Rute for å lagre invitasjoner for en bruker
 // Denne ruten legger til en invitasjon for en spesifikk bruker
 klubbRouter.post('/brukere/:id/invitasjoner', async (req, res) => {
