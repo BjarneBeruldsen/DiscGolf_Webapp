@@ -649,7 +649,7 @@ klubbRouter.get('/baner/:id', async (req, res) => {
 });
 
 // Rute for å oppdatere en bane i Baner-samlingen
-// Denne ruten oppdaterer en bane basert på dens ID
+// Denne ruten erstatter hele baneobjektet med det nye objektet
 klubbRouter.patch('/baner/:id', async (req, res) => {
     try {
         const db = getDb();
@@ -659,10 +659,14 @@ klubbRouter.patch('/baner/:id', async (req, res) => {
             return res.status(400).json({error: 'Ugyldig dokument-id'});
         }
         
-        const oppdatering = req.body;
-        const result = await db.collection('Baner').updateOne(
+        const nyBane = {
+            ...req.body,
+            _id: new ObjectId(req.params.id)
+        };
+        
+        const result = await db.collection('Baner').replaceOne(
             { _id: new ObjectId(req.params.id) },
-            { $set: oppdatering }
+            nyBane
         );
         
         if (result.matchedCount === 0) {
