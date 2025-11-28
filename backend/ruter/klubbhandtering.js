@@ -625,6 +625,20 @@ klubbRouter.get('/baner', async (req, res) => {
     }
 });
 
+// Rute for å hente alle brukere fra Brukere-samlingen
+// Denne ruten henter en liste over alle brukere fra Brukere-dokumentsamlingen
+klubbRouter.get('/brukere', async (req, res) => {
+    try {
+        const db = getDb();
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+        
+        const brukere = await db.collection('Brukere').find({}).toArray();
+        res.status(200).json(brukere);
+    } catch (error) {
+        res.status(500).json({error: 'Feil ved henting av brukere'});
+    }
+});
+
 // Rute for å hente en spesifikk bane fra Baner-samlingen
 // Denne ruten henter en bane basert på dens ID fra Baner-dokumentsamlingen
 klubbRouter.get('/baner/:id', async (req, res) => {
