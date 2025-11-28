@@ -73,14 +73,28 @@ module.exports = turneringRouter;
 // ===== MOBILE APP TURNERINGER   =====
 
 // Opprett ny turnering (MOBILE - ALLE KAN LAGE)
-turneringRouter.post("/api/mobile/turneringer", mobilTurneringOpprettelseStopp, beskyttetRute, mobileTurneringValidering, async (req, res) => {
+// Opprett ny turnering (MOBILE - ALLE KAN LAGE)
+// Fjernet 'beskyttetRute', sjekker userId manuelt
+turneringRouter.post("/api/mobile/turneringer", mobilTurneringOpprettelseStopp, mobileTurneringValidering, async (req, res) => {
     const db = getDb();
-    const { navn, dato, beskrivelse, sted, adresse, deltakere, premiepott, kontakt } = req.body;
+    const { navn, dato, beskrivelse, sted, adresse, deltakere, premiepott, kontakt, userId } = req.body;
     
-    const error = validationResult(req);
-    if (!error.isEmpty()) {
-        return res.status(400).json({ error: error.array()[0].msg });
+    // Fallback: Bruker session hvis tilgjengelig, ellers userId fra appen
+    let oppretterId = (req.user && req.user._id) ? req.user._id : userId;
+
+    if (!oppretterId) {
+        return res.status(401).json({ error: "Mangler bruker-ID. Du må være logget inn." });
     }
+
+    // Konverter string-ID til ObjectId hvis den kommer fra appen
+    try {
+        if (typeof oppretterId === 'string') oppretterId = new ObjectId(oppretterId);
+    } catch (e) {
+        return res.status(400).json({ error: "Ugyldig bruker-ID format" });
+    }
+
+    const error = validationResult(req);
+    if (!error.isEmpty()) return res.status(400).json({ error: error.array()[0].msg });
 
     if (!navn || !dato || !sted || !adresse || !deltakere || !premiepott || !kontakt) {
         return res.status(400).json({ error: "Mangler påkrevde felt" });
@@ -96,7 +110,7 @@ turneringRouter.post("/api/mobile/turneringer", mobilTurneringOpprettelseStopp, 
             deltakere: parseInt(deltakere),
             premiepott,
             kontakt,
-            opprettetAv: req.user._id,
+            opprettetAv: oppretterId, // Bruker ID-en vi fant over
             opprettetDato: new Date(),
             status: "Oppkommende",
             registreringer: [],
@@ -148,20 +162,27 @@ turneringRouter.get("/api/mobile/turneringer/:id", async (req, res) => {
         res.status(500).json({ error: "Kunne ikke hente turnering" });
     }
 });
-
 // Oppdater mobil turnering (kun oppretteren)
-turneringRouter.patch("/api/mobile/turneringer/:id", beskyttetRute, async (req, res) => {
+// Fjernet 'beskyttetRute', sjekker userId manuelt
+turneringRouter.patch("/api/mobile/turneringer/:id", async (req, res) => {
     try {
         const db = getDb();
         const turneringId = req.params.id;
+        const { userId } = req.body; // Appen må sende userId her også
+
+        // Sjekk hvem som spør
+        const requestUserId = (req.user && req.user._id) ? req.user._id.toString() : userId;
+
+        if (!requestUserId) {
+            return res.status(401).json({ error: "Mangler bruker-ID." });
+        }
         
         const turnering = await db.collection("Turneringer").findOne({ _id: new ObjectId(turneringId) });
         
-        if (!turnering) {
-            return res.status(404).json({ error: "Turnering ikke funnet" });
-        }
+        if (!turnering) return res.status(404).json({ error: "Turnering ikke funnet" });
 
-        if (turnering.opprettetAv.toString() !== req.user._id.toString()) {
+        // Sjekk at ID matcher eieren av turneringen
+        if (turnering.opprettetAv.toString() !== requestUserId) {
             return res.status(403).json({ error: "Du har ikke tilgang til å oppdatere denne turneringen" });
         }
 
@@ -170,37 +191,38 @@ turneringRouter.patch("/api/mobile/turneringer/:id", beskyttetRute, async (req, 
             { $set: req.body }
         );
 
-        if (resultat.matchedCount === 0) {
-            return res.status(404).json({ error: "Turnering ikke funnet" });
-        }
-
         res.status(200).json({ message: "Turnering oppdatert" });
     } catch (err) {
         console.error("Feil ved oppdatering av turnering (mobil):", err);
         res.status(500).json({ error: "Kunne ikke oppdatere turnering" });
     }
 });
-
 // Slett mobil turnering (kun oppretteren)
-turneringRouter.delete("/api/mobile/turneringer/:id", beskyttetRute, async (req, res) => {
+// Fjernet 'beskyttetRute', sjekker userId manuelt
+turneringRouter.delete("/api/mobile/turneringer/:id", async (req, res) => {
     try {
         const db = getDb();
+        // Sjekker body først, så query-param (?userId=...)
+        const userIdInput = req.body.userId || req.query.userId;
+        
+        const requestUserId = (req.user && req.user._id) ? req.user._id.toString() : userIdInput;
+
+        if (!requestUserId) {
+            return res.status(401).json({ error: "Mangler bruker-ID for verifisering." });
+        }
         
         const turnering = await db.collection("Turneringer").findOne({ _id: new ObjectId(req.params.id) });
         
-        if (!turnering) {
-            return res.status(404).json({ error: "Turnering ikke funnet" });
-        }
+        if (!turnering) return res.status(404).json({ error: "Turnering ikke funnet" });
 
-        if (turnering.opprettetAv.toString() !== req.user._id.toString()) {
+        // Sjekk eierskap
+        if (turnering.opprettetAv.toString() !== requestUserId) {
             return res.status(403).json({ error: "Du har ikke tilgang til å slette denne turneringen" });
         }
 
         const resultat = await db.collection("Turneringer").deleteOne({ _id: new ObjectId(req.params.id) });
 
-        if (resultat.deletedCount === 0) {
-            return res.status(404).json({ error: "Turnering ikke funnet" });
-        }
+        if (resultat.deletedCount === 0) return res.status(404).json({ error: "Turnering ikke funnet" });
 
         res.status(200).json({ message: "Turnering slettet" });
     } catch (err) {
@@ -208,5 +230,6 @@ turneringRouter.delete("/api/mobile/turneringer/:id", beskyttetRute, async (req,
         res.status(500).json({ error: "Kunne ikke slette turnering" });
     }
 });
+
 
 module.exports = turneringRouter;
