@@ -197,6 +197,7 @@ turneringRouter.patch("/api/mobile/turneringer/:id", async (req, res) => {
         res.status(500).json({ error: "Kunne ikke oppdatere turnering" });
     }
 });
+
 // Slett mobil turnering (kun oppretteren)
 // Fjernet 'beskyttetRute', sjekker userId manuelt
 turneringRouter.delete("/api/mobile/turneringer/:id", async (req, res) => {
