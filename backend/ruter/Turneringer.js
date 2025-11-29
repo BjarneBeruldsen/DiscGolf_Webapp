@@ -315,6 +315,40 @@ turneringRouter.post("/api/mobile/turneringer/:id/pamelding", async (req, res) =
 });
 
 
+// Meld AV bruker fra turnering
+turneringRouter.delete("/api/mobile/turneringer/:id/pamelding", async (req, res) => {
+    try {
+        const db = getDb();
+        const turneringId = req.params.id;
+        
+        // Vi henter userId fra query string (URL) fordi DELETE requests sjelden har body
+        const userId = req.query.userId; 
+
+        if (!ObjectId.isValid(turneringId)) {
+            return res.status(400).json({ error: "Ugyldig turnering-ID" });
+        }
+
+        if (!userId) {
+            return res.status(401).json({ error: "Mangler bruker-ID" });
+        }
+
+        // Bruk $pull for å fjerne objektet fra listen der userId matcher
+        const resultat = await db.collection("Turneringer").updateOne(
+            { _id: new ObjectId(turneringId) },
+            { $pull: { registreringer: { userId: userId } } }
+        );
+
+        if (resultat.modifiedCount === 0) {
+            return res.status(400).json({ error: "Du var ikke påmeldt eller turnering finnes ikke" });
+        }
+
+        res.status(200).json({ message: "Du er nå meldt av!" });
+
+    } catch (err) {
+        console.error("Feil ved avmelding:", err);
+        res.status(500).json({ error: "Kunne ikke melde av turnering" });
+    }
+});
 
 
 
