@@ -639,6 +639,37 @@ klubbRouter.get('/brukere', async (req, res) => {
     }
 });
 
+// Rute for å oppdatere en bruker i Brukere-samlingen
+// Denne ruten erstatter hele brukerobjektet med det nye objektet
+klubbRouter.patch('/brukere/:id', async (req, res) => {
+    try {
+        const db = getDb();
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+        
+        if (!ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({error: 'Ugyldig dokument-id'});
+        }
+        
+        const nyBruker = {
+            ...req.body,
+            _id: new ObjectId(req.params.id)
+        };
+        
+        const result = await db.collection('Brukere').replaceOne(
+            { _id: new ObjectId(req.params.id) },
+            nyBruker
+        );
+        
+        if (result.matchedCount === 0) {
+            return res.status(404).json({error: 'Bruker ikke funnet'});
+        }
+        
+        res.status(200).json({ message: 'Bruker oppdatert', result });
+    } catch (error) {
+        res.status(500).json({error: 'Feil ved oppdatering av bruker'});
+    }
+});
+
 // Rute for å hente en spesifikk bane fra Baner-samlingen
 // Denne ruten henter en bane basert på dens ID fra Baner-dokumentsamlingen
 klubbRouter.get('/baner/:id', async (req, res) => {
