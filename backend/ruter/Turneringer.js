@@ -154,6 +154,8 @@ turneringRouter.get("/api/mobile/turneringer/:id", async (req, res) => {
         res.status(500).json({ error: "Kunne ikke hente turnering" });
     }
 });
+
+
 // Oppdater mobil turnering (kun oppretteren)
 // Fjernet 'beskyttetRute', sjekker userId manuelt
 turneringRouter.patch("/api/mobile/turneringer/:id", async (req, res) => {
@@ -246,5 +248,77 @@ turneringRouter.delete("/api/mobile/turneringer/:id", async (req, res) => {
         res.status(500).json({ error: "Intern serverfeil: " + err.message });
     }
 });
+
+
+
+// Meld på bruker til turnering (MOBILE)
+turneringRouter.post("/api/mobile/turneringer/:id/pamelding", async (req, res) => {
+    try {
+        const db = getDb();
+        const turneringId = req.params.id;
+        const { userId } = req.body; 
+
+        if (!ObjectId.isValid(turneringId)) {
+            return res.status(400).json({ error: "Ugyldig turnering-ID" });
+        }
+
+        if (!userId) {
+            return res.status(401).json({ error: "Mangler bruker-ID" });
+        }
+
+
+        const turnering = await db.collection("Turneringer").findOne({ _id: new ObjectId(turneringId) });
+        if (!turnering) {
+            return res.status(404).json({ error: "Turnering ikke funnet" });
+        }
+
+        const erAlleredePameldt = turnering.registreringer && turnering.registreringer.some(reg => reg.userId === userId);
+        
+        if (erAlleredePameldt) {
+            return res.status(400).json({ error: "Du er allerede påmeldt denne turneringen" });
+        }
+
+ 
+        const antallPameldte = turnering.registreringer ? turnering.registreringer.length : 0;
+        if (turnering.deltakere && antallPameldte >= turnering.deltakere) {
+            return res.status(400).json({ error: "Turneringen er full" });
+        }
+
+ 
+        let brukerNavn = "Ukjent";
+        try {
+            if (ObjectId.isValid(userId)) {
+                const bruker = await db.collection("Brukere").findOne({ _id: new ObjectId(userId) });
+                if (bruker) brukerNavn = bruker.brukernavn || bruker.fornavn;
+            }
+        } catch (e) {
+            console.log("Kunne ikke hente brukernavn, fortsetter med ID");
+        }
+
+        const nyRegistrering = {
+            userId: userId,
+            navn: brukerNavn,
+            dato: new Date()
+        };
+
+        await db.collection("Turneringer").updateOne(
+            { _id: new ObjectId(turneringId) },
+            { $push: { registreringer: nyRegistrering } }
+        );
+
+        res.status(200).json({ message: "Du er nå påmeldt!" });
+
+    } catch (err) {
+        console.error("Feil ved påmelding:", err);
+        res.status(500).json({ error: "Kunne ikke melde på turnering" });
+    }
+});
+
+
+
+
+
+
+
 
 module.exports = turneringRouter;
