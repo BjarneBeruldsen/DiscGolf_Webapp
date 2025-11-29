@@ -73,7 +73,6 @@ module.exports = turneringRouter;
 // ===== MOBILE APP TURNERINGER   =====
 
 // Opprett ny turnering (MOBILE - ALLE KAN LAGE)
-// Opprett ny turnering (MOBILE - ALLE KAN LAGE)
 // Fjernet 'beskyttetRute', sjekker userId manuelt
 turneringRouter.post("/api/mobile/turneringer", mobilTurneringOpprettelseStopp, mobileTurneringValidering, async (req, res) => {
     const db = getDb();
@@ -84,13 +83,6 @@ turneringRouter.post("/api/mobile/turneringer", mobilTurneringOpprettelseStopp, 
 
     if (!oppretterId) {
         return res.status(401).json({ error: "Mangler bruker-ID. Du må være logget inn." });
-    }
-
-    // Konverter string-ID til ObjectId hvis den kommer fra appen
-    try {
-        if (typeof oppretterId === 'string') oppretterId = new ObjectId(oppretterId);
-    } catch (e) {
-        return res.status(400).json({ error: "Ugyldig bruker-ID format" });
     }
 
     const error = validationResult(req);
@@ -198,39 +190,61 @@ turneringRouter.patch("/api/mobile/turneringer/:id", async (req, res) => {
     }
 });
 
-// Slett mobil turnering (kun oppretteren)
-// Fjernet 'beskyttetRute', sjekker userId manuelt
+// Slett turnering
 turneringRouter.delete("/api/mobile/turneringer/:id", async (req, res) => {
     try {
         const db = getDb();
-        // Sjekker body først, så query-param (?userId=...)
-        const userIdInput = req.body.userId || req.query.userId;
         
+        // 1. SIKRERE ID-SJEKK:
+        // Sjekker om ID-en ser ut som en gyldig MongoDB ID før vi prøver å bruke den
+        if (!ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Ugyldig turnering-ID format" });
+        }
+
+        // 2. SIKRERE BRUKER-SJEKK:
+        // Vi bruker ?. (optional chaining) i tilfelle req.body er undefined
+        // Android sender 'userId' i query (URL), så vi sjekker den først/også.
+        const userIdInput = req.query.userId || (req.body && req.body.userId);
+        
+        // Sjekker session først, deretter input fra appen
         const requestUserId = (req.user && req.user._id) ? req.user._id.toString() : userIdInput;
 
         if (!requestUserId) {
+            console.log("Sletting feilet: Mangler userId");
             return res.status(401).json({ error: "Mangler bruker-ID for verifisering." });
         }
         
+        // Hent turneringen
         const turnering = await db.collection("Turneringer").findOne({ _id: new ObjectId(req.params.id) });
         
-        if (!turnering) return res.status(404).json({ error: "Turnering ikke funnet" });
+        if (!turnering) {
+            return res.status(404).json({ error: "Turnering ikke funnet" });
+        }
 
-        // Sjekk eierskap
-        if (turnering.opprettetAv.toString() !== requestUserId) {
+        // 3. SJEKK OM ID MATCHER (String sammenligning):
+        // Vi konverterer begge til string for å være helt sikre
+        const eierId = turnering.opprettetAv.toString();
+        const requesterIdString = requestUserId.toString();
+
+        if (eierId !== requesterIdString) {
+            console.log(`Sletting nektet. Eier: ${eierId}, Forsøkte: ${requesterIdString}`);
             return res.status(403).json({ error: "Du har ikke tilgang til å slette denne turneringen" });
         }
 
+        // Slett
         const resultat = await db.collection("Turneringer").deleteOne({ _id: new ObjectId(req.params.id) });
 
-        if (resultat.deletedCount === 0) return res.status(404).json({ error: "Turnering ikke funnet" });
+        if (resultat.deletedCount === 0) {
+            return res.status(404).json({ error: "Kunne ikke slette (ikke funnet)" });
+        }
 
         res.status(200).json({ message: "Turnering slettet" });
+
     } catch (err) {
-        console.error("Feil ved sletting av turnering (mobil):", err);
-        res.status(500).json({ error: "Kunne ikke slette turnering" });
+        // Her ser du den faktiske feilen i server-loggen din
+        console.error("KRITISK FEIL ved sletting:", err); 
+        res.status(500).json({ error: "Intern serverfeil: " + err.message });
     }
 });
-
 
 module.exports = turneringRouter;
