@@ -640,7 +640,7 @@ klubbRouter.get('/brukere', async (req, res) => {
 });
 
 // Rute for å oppdatere en bruker i Brukere-samlingen
-// Denne ruten erstatter hele brukerobjektet med det nye objektet
+// Denne ruten oppdaterer kun tillatte felt for en bruker
 klubbRouter.patch('/brukere/:id', async (req, res) => {
     try {
         const db = getDb();
@@ -650,14 +650,23 @@ klubbRouter.patch('/brukere/:id', async (req, res) => {
             return res.status(400).json({error: 'Ugyldig dokument-id'});
         }
         
-        const nyBruker = {
-            ...req.body,
-            _id: new ObjectId(req.params.id)
-        };
+        // Kun tillatte felt som kan oppdateres
+        const tillateFelt = ['brukernavn', 'epost', 'rolle', 'telefon', 'postnummer', 'fodselsaar'];
+        const oppdatering = {};
         
-        const result = await db.collection('Brukere').replaceOne(
+        for (const felt of tillateFelt) {
+            if (req.body[felt] !== undefined) {
+                oppdatering[felt] = req.body[felt];
+            }
+        }
+        
+        if (Object.keys(oppdatering).length === 0) {
+            return res.status(400).json({error: 'Ingen gyldige felt å oppdatere'});
+        }
+        
+        const result = await db.collection('Brukere').updateOne(
             { _id: new ObjectId(req.params.id) },
-            nyBruker
+            { $set: oppdatering }
         );
         
         if (result.matchedCount === 0) {
