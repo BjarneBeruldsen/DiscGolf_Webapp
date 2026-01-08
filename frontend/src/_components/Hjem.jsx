@@ -36,7 +36,7 @@ const Hjem = () => {
                     </Link>
                 </div>
 
-                <h2 className="text-3xl font-bold text-gray-800 mt-20">{t('Øk diskgolf opplevelsen din 🥏')}</h2>
+                <h2 className="text-3xl font-bold text-gray-800 mt-20">{t('Øk diskgolf opplevelsen din')}</h2>
                 <div className="justify-items-center grid xl:grid-cols-3 mt-10 gap-3">
                     <div
                         className="relative h-[500px] w-[470px] bg-cover bg-no-repeat rounded-lg"

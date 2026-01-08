@@ -100,7 +100,7 @@
     "Over 5,000 Baner": "Over 5,000 Courses",
     "Registrer resultater og forbedre din spillopplevelse": "Record scores and enhance your gaming experience",
     "Finn Bane": "Find Course",
-    "Øk diskgolf opplevelsen din 🥏": "Enhance your disc golf experience 🥏",
+    "Øk diskgolf opplevelsen din": "Enhance your disc golf experience",
     "Utforsk baner med venner": "Explore courses with friends",
     "Finn nye disc golf-baner, planlegg turer med venner, og opplev spennende utfordringer sammen!": "Discover new disc golf courses, plan trips with friends, and experience exciting challenges together!",
     "Delta i en klubb": "Join a club",
@@ -476,5 +476,15 @@
     "Vi er dedikerte til å skape en plattform som er enkel å bruke, men samtidig kraftig nok til å møte behovene til både nybegynnere og erfarne spillere. Vårt fokus er på fellesskap, læring og gode opplevelser på banen.":
         "We are dedicated to creating a platform that is easy to use yet powerful enough to meet the needs of both beginners and experienced players. Our focus is on community, learning, and great experiences on the course.",
     "Har du spørsmål, tilbakemeldinger eller ønsker å samarbeide med oss? Ta gjerne kontakt oss via:":
-        "Do you have questions, feedback, or want to collaborate with us? Feel free to reach out to us via:"
+        "Do you have questions, feedback, or want to collaborate with us? Feel free to reach out to us via:",
+    "Navn": "Name",
+    "E-post": "Email",
+    "Max": "Max",
+    "tegn": "characters",
+    "Send": "Send",
+    "Sender...": "Sending...",
+    "Sendt": "Sent",
+    "Error": "Error",
+    "Sender meldingen...": "Sending message...",
+    "Kunne ikke sende melding": "Could not send message"
 }

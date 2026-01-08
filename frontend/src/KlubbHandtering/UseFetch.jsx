@@ -10,7 +10,13 @@ const UseFetch = (url) => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch(url)
+        let isCancelled = false;
+        setLaster(true);
+        setError(null);
+        
+        fetch(url, {
+            credentials: 'include'
+        })
          .then(res => {
             if(!res.ok) {
                 throw Error('Kunne ikke hente data');
@@ -18,17 +24,24 @@ const UseFetch = (url) => {
             return res.json(); 
          })
          .then((data)  => {
-            console.log(data);
-            setData(data);
-            setLaster(false); 
-            setError(null);
+            if (!isCancelled) {
+                setData(data);
+                setLaster(false); 
+                setError(null);
+            }
          })
          .catch(error => {
-            setLaster(false); 
-            setError(error.message);
-         })
+            if (!isCancelled) {
+                setLaster(false); 
+                setError(error.message);
+            }
+         });
+         
+        return () => {
+            isCancelled = true;
+        };
     }, [url]); 
-    return { data, laster, error };
+    return { data, laster, error, isPending: laster };
 }
  
 export default UseFetch;

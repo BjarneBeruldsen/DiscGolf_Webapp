@@ -111,7 +111,7 @@ const ScoreBoard = () => {
             setVisScoreboard(false);
             setVisOppsummering(false);
         }
-    });
+    }, [rundeId]);
 
     //metode som kommuniserer med server via socket.io
     useEffect(() => {
@@ -266,12 +266,12 @@ const ScoreBoard = () => {
         const oppdatertInvitasjon = {
             avsender: bruker.brukernavn,
             baneId: baneId,
-            rundeId: nyRundeId, // Use the generated rundeId
+            rundeId: nyRundeId, // Bruker den genererte rundeId
             tid: new Date().getTime() / 1000,
         };
         setInvitasjon(oppdatertInvitasjon);
     
-        // Wait for the invitation to update
+        // Vent på at invitasjonen oppdateres
         await new Promise(resolve => setTimeout(resolve, 0));
 
     

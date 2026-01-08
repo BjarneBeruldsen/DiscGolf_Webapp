@@ -1,7 +1,9 @@
 //Author: Abdinasir Ali
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const KontaktOss = () => {
+  const { t } = useTranslation();
  
   const [epostForm, setEpostForm] = useState({
     navn: "",
@@ -10,7 +12,7 @@ const KontaktOss = () => {
   });  
   
   
-  const [status, setStatus] = useState("Send");
+  const [status, setStatus] = useState(t("Send"));
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -23,7 +25,7 @@ const KontaktOss = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus("Sender...");
+    setStatus(t("Sender..."));
 
     try {
       const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/KontaktOss`, {
@@ -36,7 +38,7 @@ const KontaktOss = () => {
       });
 
       if (response.ok) {
-        setStatus("Sendt");
+        setStatus(t("Sendt"));
         setEpostForm({
           navn: '',
           epost: '',
@@ -44,14 +46,14 @@ const KontaktOss = () => {
         });
 
         setTimeout(() => {
-          setStatus("Send");
+          setStatus(t("Send"));
         }, 3000);
       } else {
-        throw new Error('Kunne ikke sende melding');
+        throw new Error(t('Kunne ikke sende melding'));
       }
     } catch (error) {
       console.error('Error:', error);
-      setStatus("Error");
+      setStatus(t("Error"));
     }
   };
  
@@ -65,7 +67,7 @@ const KontaktOss = () => {
     >
       <form
         onSubmit={handleSubmit}className="flex flex-col items-center bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
-        <h1 className="text-4xl font-bold text-black mb-8">Kontakt oss</h1>
+        <h1 className="text-4xl font-bold text-black mb-8">{t("Kontakt oss")}</h1>
         <div className="space-y-4 w-full">
           <input
             name="navn"
@@ -73,7 +75,7 @@ const KontaktOss = () => {
             onChange={handleInputChange}
             className="w-full h-12 px-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 transition"
             type="text"
-            placeholder="Navn*"
+            placeholder={t("Navn") + "*"}
             required
           />
           
@@ -84,7 +86,7 @@ const KontaktOss = () => {
             onChange={handleInputChange}
             className="w-full h-12 px-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 transition"
             type="email"
-            placeholder="Epost*"
+            placeholder={t("E-post") + "*"}
             required
           />
 
@@ -95,7 +97,7 @@ const KontaktOss = () => {
             onChange={handleInputChange}
             className="w-full h-32 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 transition resize-none"
             maxLength={300}
-            placeholder="Max 300 tegn*"
+            placeholder={`${t("Max")} 300 ${t("tegn")}*`}
             required
           ></textarea>
 
@@ -105,7 +107,7 @@ const KontaktOss = () => {
             className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl w-full transition shadow"
           >
             {status}
-          </button>{status === 'Sender...' && (<p className="text-center text-gray-500 text-sm mt-2">Sender meldingen...</p>)}
+          </button>{status === t("Sender...") && (<p className="text-center text-gray-500 text-sm mt-2">{t("Sender meldingen...")}</p>)}
         </div>
       </form>
     </div>

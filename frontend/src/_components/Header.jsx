@@ -81,9 +81,9 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling, refreshVa
     // Rydde opp ved avmontering av komponenten
     return () => {
         socket.off('nyhetOppdatert'); // Fjern lytteren når komponenten avmonteres
-        socket.off('invitasjonOppdatert')
+        socket.off('invitasjonOppdatert');
     };
-}, )
+}, [loggetInnBruker, antInvitasjoner, refreshVarsling]);
 
   const loggUt = async () => {
     const utloggingVellykket = await loggUtBruker(setLoggetInnBruker); //Funksjon for å logge ut bruker fra utlogging.jsx

@@ -81,10 +81,6 @@ function App() {
     return <p className="text-center text-gray-700 mt-10">{t("Laster inn...")}</p>;
   }
 
-  const sendMessage = (melding) => {
-    socket.emit('sendMessage', { text: 'Hei fra frontend!' });
-  };
-
   const toggleVarsling = () => {
     setVisVarsling(!visVarsling); 
   };
@@ -169,7 +165,7 @@ function App() {
                 <Redirect to="/Innlogging" />
               )}
             </Route>
-            <Route exact path="/brukeradministrasjon">
+            <Route exact path="/systemlogg">
               {loggetInnBruker?.rolle === "hoved-admin" ? (
                 <SystemLogg />
               ) : (
