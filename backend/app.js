@@ -190,6 +190,11 @@ app.use((req, res, next) => {
   csrfProtection(req, res, next);
 });
 
+// Generell rate limiting for alle API-ruter
+// Dette beskytter mot DoS-angrep og overflødig ressursbruk
+const { generellApiStopp } = require('./ruter/brukerhandtering/validering');
+app.use(generellApiStopp);
+
 //Henter klubbhåndterings ruter
 app.use(klubbRouter);
 

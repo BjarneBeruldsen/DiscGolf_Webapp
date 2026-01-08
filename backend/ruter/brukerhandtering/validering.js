@@ -60,6 +60,27 @@ const mobilTurneringOpprettelseStopp = rateLimit({
     message: { error: "For mange turneringer opprettet, prøv igjen senere" },
 });
 
+// Generell rate limiting for alle API-ruter
+// Dette beskytter mot DoS-angrep og overflødig ressursbruk
+const generellApiStopp = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutter
+    max: 100, // Maks 100 requests fra samme IP per 15 minutter
+    message: { error: "For mange forespørsler, prøv igjen senere" },
+    standardHeaders: true,
+    legacyHeaders: false,
+    skipSuccessfulRequests: false, // Tell alle requests, også vellykkede
+});
+
+// Rate limiting for autentiserte ruter (høyere grense siden brukeren er verifisert)
+const autentisertApiStopp = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutter
+    max: 200, // Maks 200 requests fra samme IP per 15 minutter
+    message: { error: "For mange forespørsler, prøv igjen senere" },
+    standardHeaders: true,
+    legacyHeaders: false,
+    skipSuccessfulRequests: false,
+});
+
 
 
 //Validering av registering 
@@ -329,5 +350,7 @@ module.exports = {
     lagKlubbValidering,
     mobileTurneringValidering,
     webTurneringOpprettelseStopp,
-    mobilTurneringOpprettelseStopp
+    mobilTurneringOpprettelseStopp,
+    generellApiStopp,
+    autentisertApiStopp
 };
