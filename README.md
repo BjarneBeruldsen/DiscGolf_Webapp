@@ -5,12 +5,6 @@ Med **runde-spilling**, **scoreboard i sanntid**, **kartvisning**, **klubbsider 
 
 ---
 
-## 🌐 Live-versjon
-
-[**Åpne DiscGolf Hub**](https://disk-applikasjon-39f504b7af19.herokuapp.com/)
-
----
-
 ## 🚀 Komme i gang
 
 ### Forutsetninger
