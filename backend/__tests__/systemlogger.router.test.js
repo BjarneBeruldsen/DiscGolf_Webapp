@@ -81,4 +81,24 @@ describe('Systemlogg router', () => {
     expect(response.status).toBe(500);
     expect(response.body.error).toBe('Kunne ikke hente systemlogg');
   });
+
+  it('skal returnere 500 når database ikke er tilgjengelig', async () => {
+    getDb.mockReturnValue(null);
+
+    const response = await request(app).get('/api/systemlogg');
+
+    expect(response.status).toBe(500);
+    expect(response.body.error).toBe('Ingen database tilkobling');
+  });
+
+  it('skal returnere 500 når database ikke er tilgjengelig ved POST', async () => {
+    getDb.mockReturnValue(null);
+
+    const response = await request(app)
+      .post('/api/systemlogg')
+      .send({ bruker: 'testuser', handling: 'Test' });
+
+    expect(response.status).toBe(500);
+    expect(response.body.error).toBe('Ingen database tilkobling');
+  });
 });

@@ -14,6 +14,8 @@ const systemloggRouter = express.Router();
 // Legg til en ny systemloggoppføring
 systemloggRouter.post("/", async (req, res) => {
     const db = getDb();
+    if (!db) return res.status(500).json({ error: "Ingen database tilkobling" });
+    
     const { bruker, handling, detaljer } = req.body;
 
     // Sjekk at nødvendige felt er inkludert
@@ -41,6 +43,7 @@ systemloggRouter.post("/", async (req, res) => {
 // Hent alle systemloggoppføringer
 systemloggRouter.get("/", async (req, res) => {
     const db = getDb();
+    if (!db) return res.status(500).json({ error: "Ingen database tilkobling" });
 
     try {
       const systemlogg = await db.collection("Systemlogg").find().toArray();
@@ -55,6 +58,7 @@ systemloggRouter.get("/", async (req, res) => {
 // Slett alle systemloggoppføringer (kun for hoved-admin)
 systemloggRouter.delete("/", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
     const db = getDb();
+    if (!db) return res.status(500).json({ error: "Ingen database tilkobling" });
 
     try {
       const resultat = await db.collection("Systemlogg").deleteMany({});

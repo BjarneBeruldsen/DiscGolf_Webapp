@@ -1,53 +1,74 @@
-name: Tests
+name: Tester
 
 on:
   push:
-    branches: [ main, master, develop ]
+    branches: [ main, master, laurentViteJS ]
   pull_request:
-    branches: [ main, master, develop ]
+    branches: [ main, master, laurentViteJS ]
   workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
 
 jobs:
   backend-tests:
-    name: Backend Tests
+    name: Backend-tester
     runs-on: ubuntu-latest
+    
+    services:
+      mongodb:
+        image: mongo:7.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     
     strategy:
       matrix:
         node-version: [20.16.0]
     
     steps:
-    - name: Checkout code
+    - name: Hent kode
       uses: actions/checkout@v4
     
-    - name: Setup Node.js ${{ matrix.node-version }}
+    - name: Sett opp Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: backend/package-lock.json
     
-    - name: Install backend dependencies
+    - name: Installer backend-avhengigheter
       working-directory: ./backend
       run: npm ci
     
-    - name: Run backend tests
+    - name: Verifiser MongoDB-tilkobling
+      run: |
+        echo "Verifiserer at MongoDB er tilgjengelig..."
+        # Health checks i services skal sikre at MongoDB er klar, men vi verifiserer
+        timeout 10 bash -c 'until echo > /dev/tcp/localhost/27017; do sleep 1; done' || echo "MongoDB port-sjekk fullført"
+    
+    - name: Kjør backend-tester
       working-directory: ./backend
       run: npm test
       env:
         NODE_ENV: test
-        MONGODB_URI: ${{ secrets.MONGODB_URI || 'mongodb://localhost:27017/test' }}
+        MONGODB_URI: mongodb://localhost:27017/test
     
-    - name: Upload test results
+    - name: Last opp testresultater
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: backend-test-results
+        name: backend-testresultater
         path: backend/coverage
         retention-days: 7
 
   frontend-tests:
-    name: Frontend Tests
+    name: Frontend-tester
     runs-on: ubuntu-latest
     
     strategy:
@@ -55,21 +76,21 @@ jobs:
         node-version: [20.16.0]
     
     steps:
-    - name: Checkout code
+    - name: Hent kode
       uses: actions/checkout@v4
     
-    - name: Setup Node.js ${{ matrix.node-version }}
+    - name: Sett opp Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: frontend/package-lock.json
     
-    - name: Install frontend dependencies
+    - name: Installer frontend-avhengigheter
       working-directory: ./frontend
       run: npm ci
     
-    - name: Run frontend tests
+    - name: Kjør frontend-tester
       working-directory: ./frontend
       run: npm test -- --run
       env:
@@ -77,22 +98,22 @@ jobs:
         VITE_API_BASE_URL: http://localhost:8000
         REACT_APP_API_BASE_URL: http://localhost:8000
     
-    - name: Upload test results
+    - name: Last opp testresultater
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: frontend-test-results
+        name: frontend-testresultater
         path: frontend/coverage
         retention-days: 7
 
   all-tests:
-    name: All Tests Summary
+    name: Testoppsummering
     runs-on: ubuntu-latest
     needs: [backend-tests, frontend-tests]
     
     steps:
-    - name: Check test results
+    - name: Sjekk testresultater
       run: |
-        echo "All tests completed successfully!"
-        echo "Backend tests: ${{ needs.backend-tests.result }}"
-        echo "Frontend tests: ${{ needs.frontend-tests.result }}"
+        echo "Alle tester fullført!"
+        echo "Backend-tester: ${{ needs.backend-tests.result }}"
+        echo "Frontend-tester: ${{ needs.frontend-tests.result }}"
