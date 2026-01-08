@@ -1,4 +1,5 @@
 //Author: Severin Waller Sørensen
+//Changed by: Laurent Zogaj
 
 /* Denne filen definerer en komponent for å vise en liste over brukere.
  * Komponenten/filen henter brukerlisten via backend-API kall.

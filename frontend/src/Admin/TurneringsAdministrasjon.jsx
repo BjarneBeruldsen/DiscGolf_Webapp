@@ -1,4 +1,5 @@
 //Author: Severin Waller Sørensen
+//Changed by: Laurent Zogaj
 
 /* Denne filen er en React-komponent som gir funksjonalitet for å
  * administrere turneringer. Den lar brukeren opprette nye turneringer

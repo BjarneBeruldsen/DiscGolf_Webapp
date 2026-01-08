@@ -1,3 +1,4 @@
+//Author: Laurent Zogaj
 const {
   registreringValidering,
   innloggingValidering,

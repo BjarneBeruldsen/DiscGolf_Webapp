@@ -4,6 +4,7 @@ Denne listen brukes i Klubbsider-komponenten.
 */
 
 // Author: Bjarne Hovd Beruldsen
+//Changed by: Laurent Zogaj
 
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';

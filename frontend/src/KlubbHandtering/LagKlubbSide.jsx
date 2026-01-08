@@ -3,6 +3,7 @@ Denne filen viser informasjon om en spesifikk klubb, lar brukeren legge til
 nyheter, baner, turneringer, og redigere eksisterende baner. 
 */
 // Author: Bjarne Hovd Beruldsen
+//Changed by: Laurent Zogaj
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';

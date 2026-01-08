@@ -4,6 +4,7 @@ og sende det til KlubbListe-komponenten.
 */
 
 // Author: Bjarne Hovd Beruldsen
+//Changed by: Laurent Zogaj
 import UseFetch from "./UseFetch";
 import KlubbListe from "./KlubbListe";
 import HentBruker from "../BrukerHandtering/HentBruker";

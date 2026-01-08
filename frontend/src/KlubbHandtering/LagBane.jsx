@@ -4,6 +4,7 @@ Brukeren kan legge til hull med start- og sluttposisjoner,
 OB-soner og annen informasjon.
 */
 // Author: Bjarne Hovd Beruldsen & Abdinasir Ali
+//Changed by: Laurent Zogaj
 import { useState } from 'react';
 import { validering } from './validation';
 import React, { useEffect, useRef } from "react";

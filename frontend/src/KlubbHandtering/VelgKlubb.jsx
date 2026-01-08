@@ -3,6 +3,7 @@ Denne filen lar brukeren velge en klubb for å redigere dens side
 eller opprette en ny klubb. 
 */
 //Author: Bjarne Hovd Beruldsen
+//Changed by: Laurent Zogaj
 import { Link, useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
 import HentBruker from "../BrukerHandtering/HentBruker";

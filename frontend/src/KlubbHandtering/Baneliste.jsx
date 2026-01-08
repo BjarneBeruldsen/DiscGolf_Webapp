@@ -1,4 +1,6 @@
 // Author: Bjarne Hovd Beruldsen & Abdinasir Ali
+//Changed by: Laurent Zogaj
+
 // ObZoner er ikke helt funskjonell, spessielt på baneliste så blir ikke alle zoner vist, men de blir oprettet korrekt
 
 /*

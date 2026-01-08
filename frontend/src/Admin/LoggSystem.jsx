@@ -1,4 +1,5 @@
 //Author: Severin Waller Sørensen
+//Changed by: Laurent Zogaj
 
 /* Denne filen er en React-komponent som henter og viser systemloggdata
  * fra backend i en tabell.

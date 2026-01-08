@@ -1,9 +1,9 @@
+// Author: Bjarne Hovd Beruldsen
+
 /* 
 Denne filen inneholder en tooltip-komponent som er gjenbrukbar 
 og viser tekst når brukeren holder musen over ikonet.
 */
-
-// Author: Bjarne Hovd Beruldsen
 
 import { useState } from "react";
 

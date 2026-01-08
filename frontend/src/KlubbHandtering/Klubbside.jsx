@@ -4,6 +4,7 @@ medlemmer, turneringer eller baner. Disse vises ved bruk av egne liste-komponent
 */
 
 // Author: Bjarne Hovd Beruldsen.
+//Changed by: Laurent Zogaj
 
 import { useParams, useHistory } from 'react-router-dom';
 import UseFetch from './UseFetch';

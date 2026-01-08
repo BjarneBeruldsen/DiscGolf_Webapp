@@ -3,6 +3,7 @@ Denne filen viser en liste over nyheter,
 lar brukeren kommentere og åpne vedlagte PDF-dokumenter. 
 */
 // Author: Bjarne Hovd Beruldsen
+//Changed by: Laurent Zogaj
 import React, { useEffect, useState } from 'react';
 import HentBruker from '../BrukerHandtering/HentBruker';
 import { useTranslation } from 'react-i18next';

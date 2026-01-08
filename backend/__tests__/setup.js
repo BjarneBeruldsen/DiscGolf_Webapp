@@ -1,3 +1,5 @@
+//Author: Laurent Zogaj
+
 // Testoppsett for mocking av database og andre avhengigheter
 const { MongoClient } = require('mongodb');
 const { jest } = require('@jest/globals');

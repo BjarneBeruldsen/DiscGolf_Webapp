@@ -1,3 +1,4 @@
+//Author: Laurent Zogaj
 const { getDb } = require('../db');
 
 jest.mock('../db');

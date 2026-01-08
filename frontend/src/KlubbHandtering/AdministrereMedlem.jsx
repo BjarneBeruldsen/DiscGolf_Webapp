@@ -1,4 +1,5 @@
 //Author: Severin Waller Sørensen
+//Changed by: Laurent Zogaj
 
 /* Denne filen er en enkel komponent for administrering av klubbmedlem
  */

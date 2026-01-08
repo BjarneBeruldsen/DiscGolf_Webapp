@@ -1,4 +1,5 @@
 //Author: Bjarne Hovd Beruldsen
+//Changed by: Laurent Zogaj
 
 import UseFetch from "../KlubbHandtering/UseFetch";
 import { useState, useEffect } from "react";

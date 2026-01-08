@@ -1,3 +1,4 @@
+//Author: Laurent Zogaj
 const request = require('supertest');
 const express = require('express');
 const tilgangRouter = require('../ruter/brukerhandtering/tilgangskontroll');

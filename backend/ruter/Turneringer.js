@@ -1,4 +1,5 @@
 //Author: Severin Waller Sørensen
+//Changed by: Laurent Zogaj
 
 /* Denne filen definerer API-ruter for å håndtere turneringer.
  * Filen håndterer CRUD-operasjoner for turneringer, og sjekker at kun

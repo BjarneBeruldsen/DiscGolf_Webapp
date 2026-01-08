@@ -1,4 +1,5 @@
 //Author: Severin Waller Sørensen
+//Changed by: Laurent Zogaj
 
 /* Denne filen definerer API-ruter for håndtering av brukere og tilgangskontroll.
  * Den inkluderer CRUD-operasjoner som oppdatering og sletting av brukere,

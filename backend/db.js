@@ -1,3 +1,5 @@
+//Author: Bjarne Beruldsen
+//Changed by: Laurent Zogaj
 const { MongoClient} = require('mongodb');
 
 let dbKobling; 

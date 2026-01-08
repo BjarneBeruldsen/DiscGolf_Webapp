@@ -2,6 +2,7 @@
 Denne filen er en custom hook som brukes til å hente data fra en gitt URL og håndtere lasting og feil.
 */
 // Author: Bjarne Hovd Beruldsen
+//Changed by: Laurent Zogaj
 import { useEffect, useState } from 'react';
 import { apiKall } from '../utils/api';
 

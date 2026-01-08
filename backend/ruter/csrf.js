@@ -1,3 +1,5 @@
+//Author: Laurent Zogaj
+
 /**
  * CSRF Middleware
  */

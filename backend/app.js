@@ -5,6 +5,7 @@ Dette er app.js filen som er hovedfilen for backend applikasjonen vår.
 Her starter vi opp serveren og setter opp de ulike rutene som skal brukes i applikasjonen ved å hente dem fra de ulike filene i backend.
 Vi setter opp blant annet express, express-session, cors og andre viktige middlewares for å få det hele til å fungere.
 */
+
 // Henter miljøvariabler fra .env filen
 require('dotenv').config();
 const express = require('express');

@@ -1,3 +1,4 @@
+//Author: Laurent Zogaj
 const { beskyttetRute, sjekkBrukerAktiv, sjekkRolle } = require('../ruter/brukerhandtering/funksjoner');
 const { getDb } = require('../db');
 

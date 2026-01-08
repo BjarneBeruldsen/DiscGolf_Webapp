@@ -1,4 +1,5 @@
 // Author: Bjarne Beruldsen & Abdinasir Ali
+//Changed by: Laurent Zogaj
 
 import React from 'react';
 import { Link } from "react-router-dom";

@@ -3,6 +3,8 @@ Denne filen lar brukeren redigere informasjon om en bane,
 inkludert hull, avstand, par og posisjoner. 
 */
 // Author: Bjarne Hovd Beruldsen & Abdinasir Ali
+//Changed by: Laurent Zogaj
+
 //redigering av Obzonerer ikke helt funksjonelt /:
 import { useState, useEffect, useRef } from "react";
 import BaneListe from "./Baneliste";

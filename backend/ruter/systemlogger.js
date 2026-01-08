@@ -1,4 +1,5 @@
 //Author: Severin Waller Sørensen
+//Changed by: Laurent Zogaj
 
 /* Denne filen definerer API-ruter for å håndtere systemlogg.
  * Den håndterer logging av hendelser og henting av systemloggdata.

@@ -3,6 +3,8 @@ Denne filen viser et scoreboard for en bane,
 lar brukeren oppdatere poeng og avslutte runden. 
 */
 // Author: Bjarne Hovd Beruldsen & Abdinasir Ali
+//Changed by: Laurent Zogaj
+
 import { useEffect, useState, useRef } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import UseFetch from './UseFetch';

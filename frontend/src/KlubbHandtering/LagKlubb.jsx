@@ -4,6 +4,7 @@ Brukeren kan legge inn klubbnavn, kontaktinformasjon og
 blir automatisk lagt til som klubbleder. 
 */
 // Author: Bjarne Hovd Beruldsen
+//Changed by: Laurent Zogaj
 import { useState } from 'react';   
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';

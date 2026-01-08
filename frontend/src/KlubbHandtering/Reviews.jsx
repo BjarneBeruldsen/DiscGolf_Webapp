@@ -1,4 +1,5 @@
 // Author: Ylli Ujkani
+//Changed by: Laurent Zogaj
 
 import React, { useState, useEffect } from 'react';
 import HentBruker from '../BrukerHandtering/HentBruker';
