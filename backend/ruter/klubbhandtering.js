@@ -347,6 +347,31 @@ klubbRouter.post('/brukere/:id/poengkort', async (req, res) => {
     }
 })
 
+// Rute for å hente poengkort for en bruker
+// Denne ruten henter alle poengkort for en spesifikk bruker
+klubbRouter.get('/brukere/:id/poengkort', async (req, res) => {
+    const db = getDb();
+    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+    if(ObjectId.isValid(req.params.id) === false) {
+        return res.status(400).json({error: 'Ugyldig dokument-id'});
+    }
+    
+    try {
+        const bruker = await db.collection('Brukere').findOne(
+            { _id: new ObjectId(req.params.id) },
+            { projection: { poengkort: 1 } }
+        );
+        
+        if (!bruker) {
+            return res.status(404).json({error: 'Bruker ikke funnet'});
+        }
+        
+        res.status(200).json(bruker.poengkort || []);
+    } catch (err) {
+        res.status(500).json({error: 'Feil ved henting av poengkort'});
+    }
+})
+
 // Rute for å lagre invitasjoner for en bruker
 // Denne ruten legger til en invitasjon for en spesifikk bruker
 klubbRouter.post('/brukere/:id/invitasjoner', async (req, res) => {
@@ -600,6 +625,60 @@ klubbRouter.get('/baner', async (req, res) => {
     }
 });
 
+// Rute for å hente alle brukere fra Brukere-samlingen
+// Denne ruten henter en liste over alle brukere fra Brukere-dokumentsamlingen
+klubbRouter.get('/brukere', async (req, res) => {
+    try {
+        const db = getDb();
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+        
+        const brukere = await db.collection('Brukere').find({}).toArray();
+        res.status(200).json(brukere);
+    } catch (error) {
+        res.status(500).json({error: 'Feil ved henting av brukere'});
+    }
+});
+
+// Rute for å oppdatere en bruker i Brukere-samlingen
+// Denne ruten oppdaterer kun tillatte felt for en bruker
+klubbRouter.patch('/brukere/:id', async (req, res) => {
+    try {
+        const db = getDb();
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+        
+        if (!ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({error: 'Ugyldig dokument-id'});
+        }
+        
+        // Kun tillatte felt som kan oppdateres
+        const tillateFelt = ['brukernavn', 'epost', 'rolle', 'telefon', 'postnummer', 'fodselsaar'];
+        const oppdatering = {};
+        
+        for (const felt of tillateFelt) {
+            if (req.body[felt] !== undefined) {
+                oppdatering[felt] = req.body[felt];
+            }
+        }
+        
+        if (Object.keys(oppdatering).length === 0) {
+            return res.status(400).json({error: 'Ingen gyldige felt å oppdatere'});
+        }
+        
+        const result = await db.collection('Brukere').updateOne(
+            { _id: new ObjectId(req.params.id) },
+            { $set: oppdatering }
+        );
+        
+        if (result.matchedCount === 0) {
+            return res.status(404).json({error: 'Bruker ikke funnet'});
+        }
+        
+        res.status(200).json({ message: 'Bruker oppdatert', result });
+    } catch (error) {
+        res.status(500).json({error: 'Feil ved oppdatering av bruker'});
+    }
+});
+
 // Rute for å hente en spesifikk bane fra Baner-samlingen
 // Denne ruten henter en bane basert på dens ID fra Baner-dokumentsamlingen
 klubbRouter.get('/baner/:id', async (req, res) => {
@@ -624,7 +703,7 @@ klubbRouter.get('/baner/:id', async (req, res) => {
 });
 
 // Rute for å oppdatere en bane i Baner-samlingen
-// Denne ruten oppdaterer en bane basert på dens ID
+// Denne ruten erstatter hele baneobjektet med det nye objektet
 klubbRouter.patch('/baner/:id', async (req, res) => {
     try {
         const db = getDb();
@@ -634,10 +713,14 @@ klubbRouter.patch('/baner/:id', async (req, res) => {
             return res.status(400).json({error: 'Ugyldig dokument-id'});
         }
         
-        const oppdatering = req.body;
-        const result = await db.collection('Baner').updateOne(
+        const nyBane = {
+            ...req.body,
+            _id: new ObjectId(req.params.id)
+        };
+        
+        const result = await db.collection('Baner').replaceOne(
             { _id: new ObjectId(req.params.id) },
-            { $set: oppdatering }
+            nyBane
         );
         
         if (result.matchedCount === 0) {
@@ -647,6 +730,29 @@ klubbRouter.patch('/baner/:id', async (req, res) => {
         res.status(200).json({ message: 'Bane oppdatert', result });
     } catch (error) {
         res.status(500).json({error: 'Feil ved oppdatering av bane'});
+    }
+});
+
+// Rute for å slette en bane fra Baner-samlingen
+// Denne ruten sletter en bane basert på dens ID
+klubbRouter.delete('/baner/:id', async (req, res) => {
+    try {
+        const db = getDb();
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+        
+        if (!ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({error: 'Ugyldig dokument-id'});
+        }
+        
+        const result = await db.collection('Baner').deleteOne({ _id: new ObjectId(req.params.id) });
+        
+        if (result.deletedCount === 0) {
+            return res.status(404).json({error: 'Bane ikke funnet'});
+        }
+        
+        res.status(200).json({ message: 'Bane slettet', result });
+    } catch (error) {
+        res.status(500).json({error: 'Feil ved sletting av bane'});
     }
 });
 
