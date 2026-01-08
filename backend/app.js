@@ -32,6 +32,8 @@ const { sjekkBrukerAktiv, beskyttetRute } = require('./ruter/brukerhandtering/fu
 // Swagger UI for API-dokumentasjon
 const swaggerUi = require('swagger-ui-express');
 const fs = require('fs');
+const rateLimit = require('express-rate-limit');
+const { csrfProtection, getCsrfToken } = require('./ruter/csrf');
 
 
 const app = express();
@@ -113,8 +115,6 @@ app.use(
     })
 );
 
-app.use(express.json());
-
 // Swagger/OpenAPI dokumentasjon
 // Merk: Vi legger denne under /api slik at den ikke fanges av React-router wildcard lenger ned
 try {
@@ -144,8 +144,8 @@ try {
 }
 
 //Deployment under
-//Legger serving fra statiske filer fra REACT applikasjonen
-app.use(express.static(path.join(__dirname, '../frontend/build')));
+//Legger serving fra statiske filer fra Vite applikasjonen
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 // Serve static files from the "filer" directory
 app.use('/filer', express.static(path.join(__dirname, '../filer')));
@@ -175,14 +175,34 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.get('/api/csrf-token', getCsrfToken);
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api/docs') || req.path === '/api/csrf-token') {
+    return next();
+  }
+  csrfProtection(req, res, next);
+});
+
 //Henter klubbhåndterings ruter
 app.use(klubbRouter);
+
+//Henter brukerhåndterings ruter
+app.use(brukerRouter);
+
+//Henter turneringshåndterings ruter
+app.use(turneringRouter);
+
+//Henter tilgangskontroll ruter
+app.use('/api', tilgangRouter);
+
+//Henter systemlogg ruter
+app.use('/api/systemlogg', systemloggRouter);
 
 // Opprett en HTTP-server for å bruke med socket.io
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["http://localhost:3000", process.env.REACT_APP_API_BASE_URL], // Tillat frontend-URL
+        origin: ["http://localhost:3000", process.env.REACT_APP_API_BASE_URL],
         methods: ["GET", "POST"],
         credentials: true,
     },
@@ -192,10 +212,9 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
     console.log('En bruker koblet til:', socket.id);
 
-    // Eksempel: Lytt til en melding fra klienten
     socket.on('chat melding', (data) => {
         console.log('Melding mottatt:', data);
-        io.emit('chat melding', data); // Send meldingen til alle tilkoblede klienter
+        io.emit('chat melding', data);
     });
 
     socket.on('disconnect', () => {
@@ -211,26 +230,16 @@ let db
 kobleTilDB((err) => {
     if(!err) {
         db = getDb();
-
-//Henter brukerhåndterings ruter
-app.use(brukerRouter);
-
-//Henter turneringshåndterings ruter
-app.use(turneringRouter);
-
-//Henter tilgangskontroll ruter
-app.use('/api', tilgangRouter);
-
-//Henter systemlogg ruter
-app.use('/api/systemlogg', systemloggRouter);
-
-// Endre serverstart til å bruke HTTP-serveren
-server.listen(PORT, () => {
-    console.log(`Server kjører på port ${PORT}`);
-});
+        console.log('Database tilkoblet');
     } else {
         console.error("Feil ved oppkobling til databasen", err);
     }
+});
+
+// Start server uavhengig av database-tilkobling
+// Rutene vil returnere feil hvis databasen ikke er tilkoblet
+server.listen(PORT, () => {
+    console.log(`Server kjører på port ${PORT}`);
 });
 
 //Sjekk av session (en "auth-check" rute. Denne sjekker hver gang nettsiden blir åpnet av en besøker om bruker er logget inn eller ikke. Dersom logget inn returnerer den brukerdata som da kan bli hentet globalt på nettsiden av ulike rutere for innlogga brukere).
@@ -385,7 +394,15 @@ app.get('/byer', async (req, res) => {
       }
     });
 
+const fileOperationLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 1000,
+    message: { error: 'For mange forespørsler, prøv igjen senere' },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
 //Håndter alle andre ruter med React Router
-app.get(/^(?!\/api).+/, (req, res) => { //Tilgangskontroll ruter funker ikke med wildcard. Dette er en workaround generert av copilot. Der man setter opp en regex som matcher alt som ikke starter med /api.
-  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+app.get(/^(?!\/api).+/, fileOperationLimiter, (req, res) => { //Tilgangskontroll ruter funker ikke med wildcard. Dette er en workaround generert av copilot. Der man setter opp en regex som matcher alt som ikke starter med /api. 
+  res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
 });

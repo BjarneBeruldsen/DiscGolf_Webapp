@@ -41,10 +41,12 @@ brukerRouter.post("/bruker", registreringValidering, registreringStopp, async (r
         }
         //Sjekker om brukernavn eller e-post allerede finnes i databasen
         const {brukernavn, epost, passord, bekreftPassord} = req.body; //Inputene fra frontend
+        const brukernavnStr = typeof brukernavn === 'string' ? brukernavn.trim().toLowerCase() : String(brukernavn || '').trim().toLowerCase();
+        const epostStr = typeof epost === 'string' ? epost.trim().toLowerCase() : String(epost || '').trim().toLowerCase();
         const funnetBruker = await db.collection("Brukere").findOne({
                 $or: [
-                    {brukernavn: brukernavn.trim().toLowerCase()},
-                    {epost: epost.trim().toLowerCase()}
+                    {brukernavn: brukernavnStr},
+                    {epost: epostStr}
                 ]
             });  
         //Returnerer feil hvis brukernavn eller e-post er i bruk
@@ -57,9 +59,9 @@ brukerRouter.post("/bruker", registreringValidering, registreringStopp, async (r
         const hashetPassord = await bcrypt.hash(passord, salt);
         //Lagrer ny bruker i databasen
         const nyBruker = {
-            brukernavn: brukernavn.trim().toLowerCase(),
+            brukernavn: brukernavnStr,
             passord: hashetPassord, //Kryptert passord blir lagret i databasen, det ekte passordet blir aldri synlig noen steder
-            epost: epost.trim().toLowerCase(),
+            epost: epostStr,
             rolle: "loggetInn",
         };
         await db.collection("Brukere").insertOne(nyBruker);
@@ -170,10 +172,11 @@ brukerRouter.delete("/bruker", beskyttetRute, sletteValidering, sjekkBrukerAktiv
         }
         //Finner bruker enten via brukernavn eller e-post
         const { brukerInput, passord } = req.body; //Fra frontend
+        const brukerInputStr = typeof brukerInput === 'string' ? brukerInput.trim().toLowerCase() : String(brukerInput || '').trim().toLowerCase();
         const bruker = await db.collection("Brukere").findOne({
             $or: [
-                { brukernavn: brukerInput.trim().toLowerCase() }, 
-                { epost: brukerInput.trim().toLowerCase() }
+                { brukernavn: brukerInputStr }, 
+                { epost: brukerInputStr }
             ]
         });
         if (!bruker) {
@@ -230,27 +233,29 @@ brukerRouter.patch("/bruker", beskyttetRute, sjekkBrukerAktiv, redigeringValider
         let sjekkeEndringer = false;
         //Sjekker om nytt brukernavn allerede finnes hvis bruker vil endre det 
         if (nyttBrukernavn && nyttBrukernavn !== brukernavn) {
+            const nyttBrukernavnStr = typeof nyttBrukernavn === 'string' ? nyttBrukernavn.trim().toLowerCase() : String(nyttBrukernavn || '').trim().toLowerCase();
             const funnetBruker = await db.collection("Brukere").findOne({
-                brukernavn: nyttBrukernavn.trim().toLowerCase()
+                brukernavn: nyttBrukernavnStr
             });
             if (funnetBruker) {
                 return res.status(400).json({ error: "Brukernavn er allerede tatt" });
             } else {
                 console.log(`Nytt brukernavn registrert for bruker: ${bruker.brukernavn}, nytt brukernavn: ${nyttBrukernavn}, med epost: ${epost}`);
-                oppdatering.brukernavn = nyttBrukernavn.trim().toLowerCase();
+                oppdatering.brukernavn = nyttBrukernavnStr;
                 sjekkeEndringer = true;
             }
         }
         //Sjekker om ny epost allerede finnes hvis bruker vil endre det
         if (nyEpost && nyEpost !== epost) {
+            const nyEpostStr = typeof nyEpost === 'string' ? nyEpost.trim().toLowerCase() : String(nyEpost || '').trim().toLowerCase();
             const funnetBruker = await db.collection("Brukere").findOne({
-                epost: nyEpost.trim().toLowerCase()
+                epost: nyEpostStr
             });
             if (funnetBruker) {
                 return res.status(400).json({ error: "E-post er allerede tatt" });
             } else {
                 console.log(`Ny epost registrert for bruker: ${bruker.brukernavn}, gammel epost: ${epost}, ny epost: ${nyEpost}`);
-                oppdatering.epost = nyEpost.trim().toLowerCase();
+                oppdatering.epost = nyEpostStr;
                 sjekkeEndringer = true;
             }
         }
@@ -281,28 +286,32 @@ brukerRouter.patch("/bruker", beskyttetRute, sjekkBrukerAktiv, redigeringValider
         //Så etter en samtale med copilot så anbefalte den å legge til null og "" i if setningene også.
         //Men fieldsene var fortsatt til stede. Så da la jeg til else if og implementerte en fjerning av "ubrukelige" fields.
         if (fornavn !== undefined && fornavn !== null && fornavn !== "") {
-            oppdatering.fornavn = fornavn.trim();
+            const fornavnStr = typeof fornavn === 'string' ? fornavn.trim() : String(fornavn || '').trim();
+            oppdatering.fornavn = fornavnStr;
             sjekkeEndringer = true;
         } else if (fornavn !== undefined) {
             fjerning.fornavn = 1;
             sjekkeEndringer = true;
         }
         if (etternavn !== undefined && etternavn !== null && etternavn !== "") {
-            oppdatering.etternavn = etternavn.trim();
+            const etternavnStr = typeof etternavn === 'string' ? etternavn.trim() : String(etternavn || '').trim();
+            oppdatering.etternavn = etternavnStr;
             sjekkeEndringer = true;
         } else if (etternavn !== undefined) {
             fjerning.etternavn = 1;
             sjekkeEndringer = true;
         }
         if (telefonnummer !== undefined && telefonnummer !== null && telefonnummer !== "") {
-            oppdatering.telefonnummer = telefonnummer.trim();
+            const telefonnummerStr = typeof telefonnummer === 'string' ? telefonnummer.trim() : String(telefonnummer || '').trim();
+            oppdatering.telefonnummer = telefonnummerStr;
             sjekkeEndringer = true;
         } else if (telefonnummer !== undefined) {
             fjerning.telefonnummer = 1;
             sjekkeEndringer = true;
         }
         if (bosted !== undefined && bosted !== null && bosted !== "") {
-            oppdatering.bosted = bosted.trim();
+            const bostedStr = typeof bosted === 'string' ? bosted.trim() : String(bosted || '').trim();
+            oppdatering.bosted = bostedStr;
             sjekkeEndringer = true;
         } else if (bosted !== undefined) {
             fjerning.bosted = 1;
@@ -356,11 +365,12 @@ brukerRouter.post("/passord/glemt", sendingAvMailStopp, async (req, res) => {
         const db = getDb();
         if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
         const { brukerInput } = req.body; //Input fra frontend
+        const brukerInputStr = typeof brukerInput === 'string' ? brukerInput.trim().toLowerCase() : String(brukerInput || '').trim().toLowerCase();
         //Finner brukeren i databasen via brukernavn eller epost
         const bruker = await db.collection("Brukere").findOne({
             $or: [
-                { brukernavn: brukerInput.trim().toLowerCase() },
-                { epost: brukerInput.trim().toLowerCase() }
+                { brukernavn: brukerInputStr },
+                { epost: brukerInputStr }
             ]
         });
         if (!bruker) {
@@ -428,10 +438,11 @@ brukerRouter.post("/passord/valider", async (req, res) => {
         if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
         //Henter token og e-post fra frontend
         const { token, epost } = req.body;
+        const epostStr = typeof epost === 'string' ? epost.trim().toLowerCase() : String(epost || '').trim().toLowerCase();
         //Finner brukeren med det tokenet og eposten
         const bruker = await db.collection("Brukere").findOne({
             resetToken: token,
-            epost: epost.trim().toLowerCase()
+            epost: epostStr
         });
         //Sjekk hvis ingen bruker blir funnet
         if (!bruker) {
@@ -470,10 +481,11 @@ brukerRouter.post("/passord/tilbakestill", nyttPassordStopp, nyttPassordValideri
         if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
         //Henter token, e-post og nytt passord fra frontend
         const { token, epost, nyttPassord } = req.body;
+        const epostStr = typeof epost === 'string' ? epost.trim().toLowerCase() : String(epost || '').trim().toLowerCase();
         //Finner brukeren med token og eposten
         const bruker = await db.collection("Brukere").findOne({
             resetToken: token,
-            epost: epost.trim().toLowerCase()
+            epost: epostStr
         });
         //Hvis ingen bruker blir funnet
         if (!bruker) {

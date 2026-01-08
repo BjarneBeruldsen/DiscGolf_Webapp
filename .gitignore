@@ -6,6 +6,8 @@ node_modules/
 # Build output
 build/
 frontend/build/
+frontend/dist/
+dist/
 
 # Logs
 npm-debug.log*
@@ -27,3 +29,8 @@ yarn-error.log*
 
 # Coverage (test)
 coverage/
+# Snyk Security Extension - AI Rules (auto-generated)
+.cursor/rules/snyk_rules.mdc
+
+# Snyk Security Extension - AI Rules (auto-generated)
+.github/instructions/snyk_rules.instructions.md

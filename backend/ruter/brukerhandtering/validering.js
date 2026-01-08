@@ -12,11 +12,13 @@ const { body } = require("express-validator");
 const rateLimit = require("express-rate-limit");
 
 //Kunne egt gjenbrukt en, siden de gjør det samme men gjør det enklere å forstå hva som skjer
-//Tidsbegrensning og antall(max) er satt til en litt snillere beskyttelse med tanke på sensur/testing.
 const loggeInnStopp = rateLimit({
-    windowMs: 30 * 60 * 1000, //30 minutter
-    max: 50, //Maks 50 logg inn fra samme IP
+    windowMs: 15 * 60 * 1000, //15 minutter
+    max: 5, //Maks 5 innloggingsforsøk fra samme IP per 15 minutter
     message: { error: "For mange innloggingsforsøk, prøv igjen senere" },
+    standardHeaders: true,
+    legacyHeaders: false,
+    skipSuccessfulRequests: true,
 });
 
 const registreringStopp = rateLimit({

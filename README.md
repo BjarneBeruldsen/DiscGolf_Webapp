@@ -10,6 +10,60 @@ Med **runde-spilling**, **scoreboard i sanntid**, **kartvisning**, **klubbsider 
 
 ---
 
+## 🚀 Komme i gang
+
+### Forutsetninger
+- Node.js 20.16.0
+- npm
+
+### Installasjon
+
+1. **Klon repositoryet**
+   ```bash
+   git clone <repository-url>
+   cd DiscGolf_Webapp
+   ```
+
+2. **Installer avhengigheter**
+   ```bash
+   npm install
+   npm install --prefix backend
+   npm install --prefix frontend
+   ```
+
+3. **Konfigurer miljøvariabler**
+   
+   Opprett `.env` fil i `backend/` mappen:
+   ```env
+   MONGODB_URI=mongodb://localhost:27017/discgolf
+   SESSION_SECRET=ditt-session-secret
+   NODE_ENV=development
+   PORT=8000
+   ```
+
+### Kjøre prosjektet
+
+**Utvikling:**
+```bash
+npm run dev
+```
+Starter både backend (port 8000) og frontend (port 3000).
+
+**Produksjon:**
+```bash
+cd frontend && npm run build
+npm start
+```
+
+### Testing
+
+```bash
+cd backend && npm test
+cd frontend && npm test -- --run
+```
+
+---
+
 ## 🚀 Funksjoner
 
 - **Runder & Scoreboard**  
@@ -67,5 +121,20 @@ Applikasjonen følger **MERN-stackens trelagsmodell**:
 | Lagleder     | Administrere lag, invitere spillere |
 | Klubbadmin   | Opprette baner, administrere klubbside og nyheter |
 | Superadmin   | Full tilgang til alle ressurser og innstillinger |
+
+---
+
+## 📄 Lisens
+
+Dette prosjektet er lisensiert under MIT License.
+
+**Forfattere:**
+- Bjarne Hovd Beruldsen
+- Laurent Zogaj
+- Abdinasir Ali
+- Severin Waller Sørensen
+- Ylli Ujkani
+
+Se [LICENSE](LICENSE) filen for detaljer.
 
 
