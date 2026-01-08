@@ -66,10 +66,6 @@ turneringRouter.get("/api/turneringer", async (req, res) => {
   }
 });
 
-module.exports = turneringRouter;
-
-
-
 // ===== MOBILE APP TURNERINGER   =====
 
 // Opprett ny turnering (MOBILE - ALLE KAN LAGE)
@@ -209,7 +205,7 @@ turneringRouter.delete("/api/mobile/turneringer/:id", async (req, res) => {
         const userIdInput = req.query.userId || (req.body && req.body.userId);
         
         // Sjekker session først, deretter input fra appen
-        const requestUserId = (req.user && req.user._id) ? req.user._id.toString() : userIdInput;
+        const requestUserId = (req.user && req.user._id) ? String(req.user._id) : userIdInput;
 
         if (!requestUserId) {
             console.log("Sletting feilet: Mangler userId");
@@ -226,7 +222,7 @@ turneringRouter.delete("/api/mobile/turneringer/:id", async (req, res) => {
         // 3. SJEKK OM ID MATCHER (String sammenligning):
         // Vi konverterer begge til string for å være helt sikre
         const eierId = turnering.opprettetAv.toString();
-        const requesterIdString = requestUserId.toString();
+        const requesterIdString = String(requestUserId);
 
         if (eierId !== requesterIdString) {
             console.log(`Sletting nektet. Eier: ${eierId}, Forsøkte: ${requesterIdString}`);

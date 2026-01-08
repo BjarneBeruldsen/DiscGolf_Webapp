@@ -6,24 +6,34 @@ Brukeren nullstilles i state og blir sendt til hjemmesiden
 */
 
 import i18n from '../i18n';
+import { apiKall, resetCsrfToken } from '../utils/api';
 
 //Funksjon for å logge ut bruker
 const loggUtBruker = async (setLoggetInnBruker, setMelding) => {
 
 //Kontakter backend for å logge ut bruker
     try {
-        const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/session`, {
+        const respons = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/session`, {
             method: "DELETE",
-            credentials: "include",
-            headers: {"Content-Type": "application/json"},
+            headers: {
+                "Content-Type": "application/json"
+            },
         });
-        const data = await respons.json();
+        
+        // Nullstill CSRF token etter utlogging
+        resetCsrfToken();
         if (respons.ok) {
             setLoggetInnBruker(null); //Logger ut bruker
             window.location.reload(); //Tvinger en refresh for å sikre at alt blir "freshet opp"
             window.location.href = "/Hjem"; 
         } else {
-            setMelding(i18n.t(data.error || "Utlogging feilet. Prøv igjen."));
+            let errorData;
+            try {
+                errorData = await respons.json();
+            } catch {
+                errorData = { error: "Utlogging feilet. Prøv igjen." };
+            }
+            setMelding(i18n.t(errorData.error || "Utlogging feilet. Prøv igjen."));
             return;
         }
     } catch (error) {

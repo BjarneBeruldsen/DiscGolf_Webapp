@@ -1,3 +1,7 @@
+/**
+ * CSRF Middleware
+ */
+
 const crypto = require('crypto');
 
 const generateToken = () => {
@@ -21,7 +25,7 @@ const csrfProtection = (req, res, next) => {
     res.cookie('csrf-token', req.session.csrfToken, {
       httpOnly: true, 
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
       maxAge: 1000 * 60 * 60 * 24
     });
   }
@@ -43,7 +47,7 @@ const getCsrfToken = (req, res) => {
   res.cookie('csrf-token', req.session.csrfToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
     maxAge: 1000 * 60 * 60 * 24
   });
   res.json({ csrfToken: req.session.csrfToken });

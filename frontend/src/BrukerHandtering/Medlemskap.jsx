@@ -3,10 +3,9 @@
 /* Denne filen er en React-kompoonent som fungerer som en sentral side for
  * for brukere til å administrere sine innstillinger samt at den
  * også gir brukeren tilgang til ulike funksjoner avhengig av brukerens rolle.
- * Engelsk oversettelse her har ikke fungert dessverre. 
  */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../App.css";
 import BrukerInnstillinger from "./Komponenter/BrukerInnstillinger.jsx";
 import Personvern from "./Komponenter/Personvern.jsx";
@@ -30,7 +29,7 @@ const Medlemskap = () => {
   const [underKategoriOpen, setUnderKategoriOpen] = useState(true);
 
   //Definerer hovedkategorier
-  const hovedKategorier = (() => {
+  const hovedKategorierKeys = (() => {
     if (bruker?.rolle === "hoved-admin") {
       return [
         "Systeminnstillinger",
@@ -81,7 +80,7 @@ const Medlemskap = () => {
   })();
 
   //Definerer underkategorier
-  const underKategorier = {
+  const underKategorierKeys = {
     Systeminnstillinger: ["Globale innstillinger", "Brukeradministrasjon", "Systemlogg"],
     Administrasjon: ["AdminDashboard", "Administrere klubber"],
     Klubbinnstillinger: ["Administrere medlem"],
@@ -99,9 +98,25 @@ const Medlemskap = () => {
     } else {
       setValgtKategori(kategori);
       setUnderKategoriOpen(true);
+      // Sett første underkategori automatisk hvis den finnes
+      const førsteUnderKategori = underKategorierKeys[kategori]?.[0];
+      if (førsteUnderKategori) {
+        setValgtUnderKategori(førsteUnderKategori);
+      } else {
+        setValgtUnderKategori("");
+      }
     }
-    setValgtUnderKategori("");
   };
+
+  // Sørg for at første underkategori settes når komponenten lastes eller kategori endres
+  useEffect(() => {
+    if (valgtKategori && !valgtUnderKategori) {
+      const førsteUnderKategori = underKategorierKeys[valgtKategori]?.[0];
+      if (førsteUnderKategori) {
+        setValgtUnderKategori(førsteUnderKategori);
+      }
+    }
+  }, [valgtKategori, bruker]);
 
   //Design og Styling for menyer og innhold i Medlemskap 
   return (
@@ -115,7 +130,7 @@ const Medlemskap = () => {
       <div className="menu-box">
         <h2 className="text-lg font-bold mb-4">{t("Innstillinger")}</h2>
         <ul className="space-y-4">
-          {hovedKategorier.map((kat) => (
+          {hovedKategorierKeys.map((kat) => (
             <li key={kat}>
               <button
                 className={`w-full text-left p-2 rounded transition duration-200 ${
@@ -125,11 +140,11 @@ const Medlemskap = () => {
                 }`}
                 onClick={() => toggleUnderKategori(kat)}
               >
-                {kat}
+                {t(kat)}
               </button>
-              {valgtKategori === kat && underKategoriOpen && underKategorier[kat] && (
+              {valgtKategori === kat && underKategoriOpen && underKategorierKeys[kat] && (
                 <ul className="ml-4 space-y-2 mt-2">
-                  {underKategorier[kat].map((underkategori) => (
+                  {underKategorierKeys[kat].map((underkategori) => (
                     <li key={underkategori}>
                       <button
                         className={`w-full text-left p-2 rounded transition duration-200 ${
@@ -139,7 +154,7 @@ const Medlemskap = () => {
                         }`}
                         onClick={() => setValgtUnderKategori(underkategori)}
                       >
-                        {underkategori}
+                        {t(underkategori)}
                       </button>
                     </li>
                   ))}

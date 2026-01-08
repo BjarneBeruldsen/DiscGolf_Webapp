@@ -24,14 +24,14 @@ Eventuelt også en "toggle" for å skru av og på samtykker osv.
 
 
 //Styling og design for hver funksjon/komponent
-return (
+  return (
   <div className="bg-white shadow-xl rounded-lg p-6 w-full max-w-[500px] flex flex-col items-center">
     {!underKategorier.includes(valgtUnderKategori) && (
       <p className="text-gray-600">{t("Velg en underkategori for ditt behov")}</p>
     )}
 
-    {valgtUnderKategori === t("Informasjonskapsler") && <p>{t("Ikke implementert")}</p>}
-    {valgtUnderKategori === t("Synlighet") && <p>{t("Ikke implementert")}</p>}
+    {valgtUnderKategori === "Informasjonskapsler" && <p>{t("Ikke implementert")}</p>}
+    {valgtUnderKategori === "Synlighet" && <p>{t("Ikke implementert")}</p>}
   </div>
 );
 };

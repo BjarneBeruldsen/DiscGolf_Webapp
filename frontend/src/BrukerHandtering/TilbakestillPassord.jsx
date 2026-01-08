@@ -10,6 +10,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+import { apiKall } from '../utils/api';
 
 const TilbakestillPassord = () => {
   const { token } = useParams(); //Henter token fra URL (copilot)
@@ -37,11 +38,12 @@ const TilbakestillPassord = () => {
         return;
       }
       try { //Kontakter backend
-        const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/passord/valider`, {
+        const respons = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/passord/valider`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify({ token, epost }), //Sender token og epost til backend
-          credentials: "include",
         });
         //Henter respons fra backend
         const data = await respons.json();
@@ -80,11 +82,12 @@ const TilbakestillPassord = () => {
       return;
     }
     try { //Kontakter backend for å oppdatere passordet
-      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/passord/tilbakestill`, {
+      const respons = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/passord/tilbakestill`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({ token, epost, nyttPassord }), //Sender token, epost og nytt passord til backend
-        credentials: "include",
       });
       const data = await respons.json();
       if (!respons.ok) { //Henter respons fra backend

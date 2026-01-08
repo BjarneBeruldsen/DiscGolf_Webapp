@@ -10,6 +10,7 @@ const { ObjectId } = require('mongodb');
 const { kobleTilDB, getDb } = require('../../db'); 
 const { MongoClient } = require('mongodb');
 const { beskyttetRute, sjekkBrukerAktiv, sjekkRolle } = require('./funksjoner');
+const { leggTilSystemlogg } = require("../../models/Systemlogg");
 const tilgangRouter = express.Router();
 
 
@@ -28,6 +29,13 @@ tilgangRouter.patch("/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), 
             return res.status(400).json({ error: "Ugyldig bruker-ID" });
         }
 
+        // Hent informasjon om brukeren som oppdateres
+        const brukerSomOppdateres = await db.collection("Brukere").findOne({ _id: new ObjectId(brukerId) });
+        
+        if (!brukerSomOppdateres) {
+            return res.status(404).json({ error: "Bruker ikke funnet" });
+        }
+
         const oppdateringer = req.body;
         const resultat = await db.collection("Brukere").updateOne(
             { _id: new ObjectId(brukerId) },
@@ -37,6 +45,15 @@ tilgangRouter.patch("/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]), 
         if (resultat.matchedCount === 0) {
             return res.status(404).json({ error: "Bruker ikke funnet" });
         }
+
+        // Logg oppdateringen i systemloggen
+        const endringer = Object.keys(oppdateringer).map(key => `${key}: '${oppdateringer[key]}'`).join(', ');
+        await leggTilSystemlogg({
+            tidspunkt: new Date(),
+            bruker: req.user.brukernavn, // Brukernavn til admin som utførte oppdateringen
+            handling: "Oppdaterte bruker",
+            detaljer: `Admin '${req.user.brukernavn}' oppdaterte brukeren '${brukerSomOppdateres.brukernavn}' (ID: ${brukerId}). Endringer: ${endringer}`
+        });
 
         res.status(200).json({ message: "Bruker oppdatert" });
     } catch (err) {
@@ -56,12 +73,27 @@ tilgangRouter.delete("/brukere/:id", beskyttetRute, sjekkRolle(["hoved-admin"]),
             return res.status(400).json({ error: "Ugyldig bruker-ID" });
         }
 
+        // Hent informasjon om brukeren som skal slettes før sletting
+        const brukerSomSkalSlettes = await db.collection("Brukere").findOne({ _id: new ObjectId(brukerId) });
+        
+        if (!brukerSomSkalSlettes) {
+            return res.status(404).json({ error: "Bruker ikke funnet" });
+        }
+
         // Slett brukeren fra databasen
         const resultat = await db.collection("Brukere").deleteOne({ _id: new ObjectId(brukerId) });
 
         if (resultat.deletedCount === 0) {
             return res.status(404).json({ error: "Bruker ikke funnet" });
         }
+
+        // Logg slettingen i systemloggen
+        await leggTilSystemlogg({
+            tidspunkt: new Date(),
+            bruker: req.user.brukernavn, // Brukernavn til admin som utførte slettingen
+            handling: "Slettet bruker",
+            detaljer: `Admin '${req.user.brukernavn}' slettet brukeren '${brukerSomSkalSlettes.brukernavn}' (ID: ${brukerId})`
+        });
 
         res.status(200).json({ message: "Bruker slettet" });
     } catch (err) {

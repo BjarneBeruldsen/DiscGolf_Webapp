@@ -5,6 +5,7 @@
 
 import { useState } from "react";
 import { useTranslation } from 'react-i18next';
+import { apiKall } from '../utils/api';
 
 const LagTurnering = () => {
   const { t } = useTranslation();
@@ -30,13 +31,14 @@ const LagTurnering = () => {
     setIsLoading(true);
     setMelding({ text: "", type: "" });
     try {
-      const respons = await fetch(
+      const respons = await apiKall(
         `${process.env.REACT_APP_API_BASE_URL}/api/turneringer`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify(nyTurnering),
-          credentials: "include",
         }
       );
       const data = await respons.json();

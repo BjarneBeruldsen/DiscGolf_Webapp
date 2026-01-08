@@ -20,6 +20,7 @@ import '../App.css';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import Review from './Reviews';
 import { useTranslation } from 'react-i18next';
+import { apiKall } from '../utils/api';
 
 
 const BaneListe = ({ baner, rediger, klubbId }) => {
@@ -53,8 +54,18 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
          // yr idene i db er generert av copilot
          // kunne blir gjort manuelt men hadde flere timer
         const hentYrIdForBaner = async () => {
+            // Sjekk at baner er en array før vi fortsetter
+            if (!baner || !Array.isArray(baner) || baner.length === 0) {
+                return;
+            }
+
             try {
-                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/byer`);
+                const response = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/byer`, {
+                    method: 'GET',
+                });
+                if (!response.ok) {
+                    throw new Error('Kunne ikke hente byer');
+                }
                 const byer = await response.json();
 
                 const yr_Id = {};
@@ -358,7 +369,7 @@ const BaneListe = ({ baner, rediger, klubbId }) => {
                             const antallHull = bane.hull ? bane.hull.length : 0;
                             return (
                                 <div
-                                    key={bane._id || index}
+                                    key={bane._id ? `${bane._id}-${index}` : `bane-${index}-${uuidv4()}`}
                                     className={`border border-gray-200 rounded-xl p-5 cursor-pointer hover:shadow-md ${aktivBaneIndex === index ? "bg-blue-50 border-blue-200 shadow-md" : "bg-white"}`}
                                     onClick={() => {
                                             setAktivBane(filteredBaner[index]);

@@ -7,6 +7,11 @@ export default defineConfig(({ mode }) => {
   const viteEnv = loadEnv(mode, process.cwd(), 'VITE_');
   const reactAppEnv = loadEnv(mode, process.cwd(), 'REACT_APP_');
   
+  // Sørg for at REACT_APP_API_BASE_URL alltid er definert
+  if (!reactAppEnv.REACT_APP_API_BASE_URL) {
+    reactAppEnv.REACT_APP_API_BASE_URL = 'http://localhost:8000';
+  }
+  
   const env = { ...viteEnv, ...reactAppEnv };
   
   const define = {

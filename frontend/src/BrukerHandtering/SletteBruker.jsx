@@ -7,16 +7,18 @@ Denne filen blir brukt i BrukerInnstillinger.jsx filen også.
 */
 
 import i18n from '../i18n';
+import { apiKall } from '../utils/api';
 
 //Funksjon for å slette bruker
 const SletteBruker = async (brukerInput, passord, setBruker, setMelding, minne) => {
 
   //Kontakter backend for å slette bruker
   try {
-    const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/bruker`, {
+    const respons = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/bruker`, {
       method: "DELETE",
-      headers: {"Content-Type": "application/json"},
-      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({brukerInput, passord}), 
     });
     const data = await respons.json();

@@ -6,6 +6,7 @@
 
 import React, { useEffect, useState } from "react";
 import "../App.css";
+import { apiKall } from '../utils/api';
 
 const BrukerListe = () => {
   const [brukere, setBrukere] = useState([]);
@@ -14,13 +15,7 @@ const BrukerListe = () => {
 
   const hentBrukere = async () => {
     try {
-      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/brukere`, {
-        method: "GET",
-        credentials: "include", 
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const respons = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/api/brukere`);
       if (!respons.ok) {
         throw new Error("Kunne ikke hente brukere");
       }
@@ -43,11 +38,12 @@ const BrukerListe = () => {
     try {
         console.log("Oppdaterer bruker:", redigerBruker); // Logg dataene som sendes til backend
 
-        const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/brukere/${redigerBruker._id}`, {
+        const respons = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/api/brukere/${redigerBruker._id}`, {
           method: "PATCH",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+              "Content-Type": "application/json"
+            },
             body: JSON.stringify({ rolle: redigerBruker.rolle }), // Oppdater rolle
-            credentials: "include",
         });
 
         if (!respons.ok) {
@@ -55,18 +51,6 @@ const BrukerListe = () => {
             console.error("Feil fra backend:", errorData); // Logg feilmeldingen fra backend
             throw new Error("Kunne ikke oppdatere bruker");
         }
-
-        // Logg handlingen i systemloggen
-        await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/systemlogg`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({
-            bruker: "brukernavn", // Må endre/lage funksjon for å hente ut brukernavn for den som utfører operasjonen
-            handling: "Oppdaterte brukerrolle",
-            detaljer: `Endret rolle til '${redigerBruker.rolle}' for bruker '${redigerBruker.brukernavn}'`,
-          }),
-        });
 
         setRedigerBruker(null); // Lukk redigeringsskjemaet
         hentBrukere(); // Oppdater listen over brukere
@@ -84,26 +68,16 @@ const BrukerListe = () => {
     const bekreft = window.confirm(`Er du sikker på at du vil slette brukeren "${brukernavn}"?`);
     if (!bekreft) return;
     try {
-      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/brukere/${brukerId}`, {
+      const respons = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/api/brukere/${brukerId}`, {
         method: "DELETE",
-        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
       });
     
       if (!respons.ok) {
         throw new Error("Kunne ikke slette brukeren");
       }
-
-      // Logg slettingen i systemloggen
-      await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/systemlogg`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({
-              bruker: "brukernavn", // Må endre/lage funksjon for å hente ut brukernavn for den som utfører operasjonen
-              handling: "Slettet bruker",
-              detaljer: `Slettet brukeren '${brukernavn}' med ID '${brukerId}'`,
-          }),
-      });
     
       // Oppdater listen etter sletting
       hentBrukere();

@@ -5,8 +5,11 @@
  */
 
 import React, { useEffect, useState } from "react";
+import { useTranslation } from 'react-i18next';
+import { apiKall } from '../../utils/api';
 
 const MinKlubb = ({ valgtUnderKategori }) => {
+  const { t } = useTranslation();
   const [rolle, setRolle] = useState(null);
 //const [hovedAdmin, setHovedAdmin] = useState(false);
   const underKategorier = ["Min klubb", "Søk etter klubb", "Avregistrer"];
@@ -14,12 +17,21 @@ const MinKlubb = ({ valgtUnderKategori }) => {
   useEffect(() => {
     const fetchBrukerInfo = async () => {
       try {
-        const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/brukere/rolle`, {
-          withCredentials: true, // Sender cookies for autentisering
+        const respons = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/api/bruker/rolle`, {
+          method: 'GET',
         });
-        console.log("API-respons:", respons.data); // Legg til logging
-        setRolle(respons.data.rolle);
-     // setHovedAdmin(respons.data.hovedAdmin);
+        
+        if (!respons.ok) {
+          throw new Error('Kunne ikke hente brukerens rolle');
+        }
+        
+        const data = await respons.json();
+        console.log("API-respons:", data);
+        
+        if (data && data.rolle) {
+          setRolle(data.rolle);
+        }
+     // setHovedAdmin(data.hovedAdmin);
       } catch (error) {
         console.error("Feil ved henting av brukerens rolle:", error);
       }
@@ -35,10 +47,10 @@ const MinKlubb = ({ valgtUnderKategori }) => {
         <p className="text-gray-600"></p>
       )}
 
-      {valgtUnderKategori === "Min klubb" && <p>Ikke implementert</p>}
-      {valgtUnderKategori === "Søk etter klubb" && <p>Ikke implementert</p>}
-      {valgtUnderKategori === "Søk etter brukere" && <p>Ikke implementert</p>}
-      {valgtUnderKategori === "Avregistrer" && <p>Ikke implementert</p>}
+      {valgtUnderKategori === "Min klubb" && <p>{t("Ikke implementert")}</p>}
+      {valgtUnderKategori === "Søk etter klubb" && <p>{t("Ikke implementert")}</p>}
+      {valgtUnderKategori === "Søk etter brukere" && <p>{t("Ikke implementert")}</p>}
+      {valgtUnderKategori === "Avregistrer" && <p>{t("Ikke implementert")}</p>}
 
       {/* Dynamisk innhold basert på rolle
       {rolle === "admin" && (

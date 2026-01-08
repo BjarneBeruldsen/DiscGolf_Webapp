@@ -20,13 +20,13 @@ To-faktor autentisering = f.eks. autentisering via sms eller e-post eller begge.
 
 
 //Styling og design for hver funksjon/komponent
-return (
+  return (
   <div className="bg-white shadow-xl rounded-lg p-6 w-full max-w-[500px] flex flex-col items-center">
       {!underKategorier.includes(valgtUnderKategori) && (
       <p className="text-gray-600">{t("Velg en underkategori for ditt behov")}</p>
     )}
-      {valgtUnderKategori === t("To-faktor autentisering") && <p>{t("Ikke implementert")}</p>}
-      {valgtUnderKategori === t("Gjennoppretting") && <p>{t("Ikke implementert")}</p>}
+      {valgtUnderKategori === "To-faktor autentisering" && <p>{t("Ikke implementert")}</p>}
+      {valgtUnderKategori === "Gjennoppretting" && <p>{t("Ikke implementert")}</p>}
     </div>
   );
 };

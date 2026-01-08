@@ -3,22 +3,30 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+import { apiKall } from '../utils/api';
 
 const Hjem = () => {
     const { t } = useTranslation();
 
-    const handleTommeTestdata = () => {
+    const handleTommeTestdata = async () => {
         if (window.confirm(t('Er du sikker på at du vil tømme all testdata?'))) {
-            fetch(`${process.env.REACT_APP_API_BASE_URL}/tommeTestdata`, {
-                method: 'DELETE'
+            apiKall(`${process.env.REACT_APP_API_BASE_URL}/tommeTestdata`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             })
-            .then(res => res.json())
-            .then(data => {
+            .then(async (res) => {
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.error || t('Feil ved tømming av testdata'));
+                }
                 alert(data.message);
                 window.location.reload();
             })
             .catch(error => {
                 console.error(t('Feil ved tømming av testdata:'), error);
+                alert(error.message || t('Du må være hoved-admin for å slette testdata'));
             });
         }
     };

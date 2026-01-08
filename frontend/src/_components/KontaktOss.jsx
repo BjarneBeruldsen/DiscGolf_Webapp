@@ -1,6 +1,7 @@
 //Author: Abdinasir Ali
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { apiKall } from '../utils/api';
 
 const KontaktOss = () => {
   const { t } = useTranslation();
@@ -28,12 +29,11 @@ const KontaktOss = () => {
     setStatus(t("Sender..."));
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/KontaktOss`, {
+      const response = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/KontaktOss`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        credentials: 'include',
         body: JSON.stringify(epostForm),
       });
 

@@ -55,10 +55,9 @@ passport.use(
 //Serialiserer brukeren ved å lagre brukerens ID i session
 passport.serializeUser((bruker, done) => {
     try {
-        const db = getDb();
-        if (!db) return done(new Error("Ingen database tilkobling"));
         //Lagrer brukerens ID i session/cookie
         done(null, bruker._id);
+        // Logg kun ved innlogging (serialisering skjer kun ved innlogging)
         console.log(`Bruker med ID ${bruker._id} logget inn (serialisering velykket)`);
     } catch (err) { 
         console.error("Feil under serialisering:", err);
@@ -66,6 +65,7 @@ passport.serializeUser((bruker, done) => {
     }
 });
 //Deserialiserer brukeren ved å hente brukerdata fra databasen basert på ID
+// Dette kalles ved hver request, så vi logger kun ved feil for å unngå spam
 passport.deserializeUser(async (id, done) => {
     try {
         const db = getDb();
@@ -79,10 +79,10 @@ passport.deserializeUser(async (id, done) => {
 
         //Hvis brukeren ikke finnes, returnerer vi en feilmelding
         if (!bruker) {
+            console.error(`Deserialisering feilet: Bruker med ID ${id} ikke funnet`);
             return done(null, false, { message: "Bruker ikke funnet" });
         } else {
-        //Hvis brukeren blir funnet returnerer vi den
-            console.log(`Bruker med ID ${id} logget inn (deserialisering velykket)`);
+        //Hvis brukeren blir funnet returnerer vi den (uten logging for å unngå spam)
             return done(null, bruker);
         }
     } catch (err) {

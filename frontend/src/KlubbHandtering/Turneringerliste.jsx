@@ -5,6 +5,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
+import { apiKall } from '../utils/api';
 
 const Turneringerliste = () => {
   const [turneringer, setTurneringer] = useState([]);
@@ -15,10 +16,7 @@ const Turneringerliste = () => {
   const hentTurneringer = async () => {
     setIsLoading(true); 
     try {
-      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/turneringer`, {
-        method: "GET",
-        credentials: "include",
-      });
+      const respons = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/api/turneringer`);
 
       // Sjekker om responsen er vellykket
       if (!respons.ok) {

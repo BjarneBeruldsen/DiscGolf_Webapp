@@ -10,7 +10,8 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import i18n from "../i18n";
-import { useTranslation } from 'react-i18next'; 
+import { useTranslation } from 'react-i18next';
+import { apiKall } from '../utils/api'; 
 
 const Innlogging = ({ setLoggetInnBruker }) => { //Propp som kan brukes i andre komponenter
   const [brukernavn, setBrukernavn] = useState("");
@@ -52,26 +53,38 @@ const Innlogging = ({ setLoggetInnBruker }) => { //Propp som kan brukes i andre 
     }
     //Enkel captcha hvis feil tall kan ikke brukeren logge seg inn
     if (parseInt(tallInput) !== tall) {
+      setMelding(i18n.t("Feil tall. Prøv igjen."));
+      setTall(Math.floor(Math.random() * 99) + 1); //Genererer nytt tall
+      setTallInput(""); //Nullstiller feltet
       return;
     }
     setLaster(true);
     //Kontakter backend for innlogging
     try {
-      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/session`, {
+      const respons = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/session`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({ brukernavn, passord }),
-        credentials: "include",
       });
       //Henter respons fra backend
-      const data = await respons.json();
       if (!respons.ok) { //Hvis responsen ikke er ok fra backend
-        console.error("Innloggingsfeil:", data);
+        let errorData;
+        try {
+          errorData = await respons.json();
+        } catch {
+          errorData = { error: "Feil ved innlogging. Sjekk brukernavn og passord, prøv igjen deretter." };
+        }
+        console.error("Innloggingsfeil:", errorData);
         setTall(Math.floor(Math.random() * 99) + 1); //Genererer nytt tall
         setTallInput(""); //Nullstiller feltet
-        setMelding(i18n.t(data.error || "Feil ved innlogging. Sjekk brukernavn og passord, prøv igjen deretter."));
+        setMelding(i18n.t(errorData.error || "Feil ved innlogging. Sjekk brukernavn og passord, prøv igjen deretter."));
+        setLaster(false);
         return;
-      } else {
+      }
+      const data = await respons.json();
+      {
         setMelding(i18n.t("Innlogging vellykket!"));
         setTimeout(() => {
           setLoggetInnBruker(data.bruker); //Setter innlogget bruker i state (brukerdata blir lagret i state)

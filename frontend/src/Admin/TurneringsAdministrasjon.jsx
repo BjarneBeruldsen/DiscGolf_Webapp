@@ -6,6 +6,7 @@
  
 
 import React, { useEffect, useState } from "react";
+import { apiKall } from '../utils/api';
 
 const TurneringsAdministrasjon = () => {
   const [turneringer, setTurneringer] = useState([]);
@@ -28,11 +29,10 @@ const TurneringsAdministrasjon = () => {
   const opprettTurnering = async () => {
     setIsLoading(true);
     try {
-      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/turneringer`, {
+      const respons = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/api/turneringer`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nyTurnering),
-        credentials: "include",
       });
 
       if (!respons.ok) throw new Error("Kunne ikke opprette turnering");
@@ -51,10 +51,7 @@ const TurneringsAdministrasjon = () => {
   const hentTurneringer = async () => {
     setIsLoading(true);
     try {
-      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/turneringer`, {
-        method: "GET",
-        credentials: "include",
-      });
+      const respons = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/api/turneringer`);
       if (!respons.ok) throw new Error("Kunne ikke hente turneringer");
 
       const data = await respons.json();

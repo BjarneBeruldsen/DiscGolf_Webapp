@@ -5,6 +5,7 @@ Den kontakter da sjekk-session i backend for å sjekke om brukeren er logget inn
 og deretter returnerer den brukerdataen som er definert i backend.
 */
 import { useEffect, useState } from "react";
+import { apiKall } from '../utils/api';
 
 const HentBruker = () => {
     const [bruker, setBruker] = useState(null); //Holder på brukerinfo
@@ -15,11 +16,7 @@ const HentBruker = () => {
         const sjekkSession = async () => {
             try {
                 //Henter brukerdata fra sjekk-session i backend
-                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/sjekk-session`, {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" },
-                    credentials: "include", 
-                });
+                const response = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/sjekk-session`);
                 //Hvis forespørselen er ok setter vi brukerdata
                 if (response.ok) {
                     const data = await response.json();

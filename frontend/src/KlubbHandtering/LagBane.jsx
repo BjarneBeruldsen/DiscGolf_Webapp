@@ -13,6 +13,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import InfoTooltip from './infoTooltip';
+import { apiKall } from '../utils/api';
 import { useTranslation } from 'react-i18next';
 
 const LagBane = ({ klubbId, onBaneLagtTil }) => {
@@ -57,7 +58,7 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
     };
 
     //validerer og lagrer banen i databasen
-    const handleLagreBane = () => {
+    const handleLagreBane = async () => {
         setErrorMelding('');
         if (hull.length < 2) {
             setErrorMelding('Du må legge til minst 2 hull før du kan lagre banen.');
@@ -73,9 +74,11 @@ const LagBane = ({ klubbId, onBaneLagtTil }) => {
 
         const nyBane = { baneNavn, hull, vanskelighet, beskrivelse, plassering };
 
-        fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${klubbId}/baner`, {
+        apiKall(`${process.env.REACT_APP_API_BASE_URL}/klubber/${klubbId}/baner`, {
             method: 'POST',
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify(nyBane)
         }).then((response) => {
             if (!response.ok) {

@@ -51,5 +51,31 @@ systemloggRouter.get("/", async (req, res) => {
   }
 );
 
+// Slett alle systemloggoppføringer (kun for hoved-admin)
+systemloggRouter.delete("/", beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
+    const db = getDb();
+
+    try {
+      const resultat = await db.collection("Systemlogg").deleteMany({});
+      
+      // Logg at systemloggen ble tømt
+      await db.collection("Systemlogg").insertOne({
+        tidspunkt: new Date(),
+        bruker: req.user.brukernavn,
+        handling: "Tømte systemlogg",
+        detaljer: `Admin '${req.user.brukernavn}' tømte systemloggen. ${resultat.deletedCount} oppføringer ble slettet.`
+      });
+
+      res.status(200).json({ 
+        message: "Systemlogg tømt", 
+        slettetAntall: resultat.deletedCount 
+      });
+    } catch (error) {
+      console.error("Feil ved sletting av systemlogg:", error.message);
+      res.status(500).json({ error: "Kunne ikke tømme systemlogg" });
+    }
+  }
+);
+
 // Eksporter routeren
 module.exports = systemloggRouter;

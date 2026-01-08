@@ -11,6 +11,7 @@ import LagBane from './LagBane';
 import LagTurnering from './LagTurnering';
 import RedigerBane from './RedigerBane';
 import { useTranslation } from 'react-i18next';
+import { apiKall } from '../utils/api';
 
 const LagKlubbside = () => {
     const { t } = useTranslation();
@@ -30,8 +31,15 @@ const LagKlubbside = () => {
 
     // Henter klubbdata fra API
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}`)
-            .then(res => res.json())
+        apiKall(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}`, {
+            method: 'GET',
+        })
+            .then(async (res) => {
+                if (!res.ok) {
+                    throw new Error('Kunne ikke hente klubb');
+                }
+                return res.json();
+            })
             .then(data => {
                 console.log('Klubb hentet:', data);
                 setLaster(false);
@@ -57,16 +65,25 @@ const LagKlubbside = () => {
 
         let filPath = null;
         if (fil) {
+            // Ekstra validering før opplasting
+            if (fil.type !== 'application/pdf' || !fil.name.toLowerCase().endsWith('.pdf')) {
+                setErrorMelding(t('Kun PDF-filer er tillatt'));
+                setLaster(false);
+                return;
+            }
+            
             const formData = new FormData();
             formData.append('pdf', fil);
 
-            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/upload`, {
+            // For FormData, ikke sett Content-Type header (la browseren sette det automatisk)
+            const response = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/upload`, {
                 method: 'POST',
                 body: formData,
             });
 
             if (!response.ok) {
                 setErrorMelding('Feil ved opplasting av fil');
+                setLaster(false);
                 return;
             }
 
@@ -82,9 +99,11 @@ const LagKlubbside = () => {
             klubbId: id, 
         };
 
-        fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}/nyheter`, {
+        apiKall(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}/nyheter`, {
             method: 'POST',
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify(nyNyhet),
         })
             .then((response) => {
@@ -120,11 +139,41 @@ const LagKlubbside = () => {
         alert('Ny bane lagt til');
     }
 
-    //henter filen som er valgt
+    //henter filen som er valgt og validerer at det er en PDF
     const handleEndring = (e) => {
         const filListe = e.target.files;
-        setFil(filListe[0]);
-        console.log('fil:', filListe[0]);
+        if (filListe && filListe.length > 0) {
+            const valgtFil = filListe[0];
+            
+            // Valider filtype
+            if (valgtFil.type !== 'application/pdf') {
+                setErrorMelding(t('Kun PDF-filer er tillatt'));
+                e.target.value = ''; // Nullstill input
+                setFil(null);
+                return;
+            }
+            
+            // Valider filendelse
+            if (!valgtFil.name.toLowerCase().endsWith('.pdf')) {
+                setErrorMelding(t('Kun PDF-filer er tillatt'));
+                e.target.value = ''; // Nullstill input
+                setFil(null);
+                return;
+            }
+            
+            // Valider filstørrelse (10MB maks)
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            if (valgtFil.size > maxSize) {
+                setErrorMelding(t('Filen er for stor. Maksimal størrelse er 10MB'));
+                e.target.value = ''; // Nullstill input
+                setFil(null);
+                return;
+            }
+            
+            setFil(valgtFil);
+            setErrorMelding(''); // Nullstill feilmelding hvis alt er OK
+            console.log('Fil valgt:', valgtFil.name, 'Type:', valgtFil.type, 'Størrelse:', valgtFil.size);
+        }
     }
 
 

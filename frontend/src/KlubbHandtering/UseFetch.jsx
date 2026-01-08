@@ -1,46 +1,45 @@
-/*  
-Denne filen er en custom hook som brukes til å hente data fra en gitt URL og håndtere lasting og feil. 
+/*
+Denne filen er en custom hook som brukes til å hente data fra en gitt URL og håndtere lasting og feil.
 */
 // Author: Bjarne Hovd Beruldsen
 import { useEffect, useState } from 'react';
+import { apiKall } from '../utils/api';
 
 const UseFetch = (url) => {
-    const [data, setData] = useState(); 
-    const [laster, setLaster] = useState(false); 
+    const [data, setData] = useState();
+    const [laster, setLaster] = useState(false);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         let isCancelled = false;
         setLaster(true);
         setError(null);
-        
-        fetch(url, {
-            credentials: 'include'
-        })
+
+        apiKall(url)
          .then(res => {
             if(!res.ok) {
                 throw Error('Kunne ikke hente data');
             }
-            return res.json(); 
+            return res.json();
          })
          .then((data)  => {
             if (!isCancelled) {
                 setData(data);
-                setLaster(false); 
+                setLaster(false);
                 setError(null);
             }
          })
          .catch(error => {
             if (!isCancelled) {
-                setLaster(false); 
+                setLaster(false);
                 setError(error.message);
             }
          });
-         
+
         return () => {
             isCancelled = true;
         };
-    }, [url]); 
+    }, [url]);
     return { data, laster, error, isPending: laster };
 }
  

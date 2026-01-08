@@ -13,6 +13,7 @@ import mapboxgl from "mapbox-gl";
 import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import { apiKall } from '../utils/api';
 import InfoTooltip from "./infoTooltip";
 import { useTranslation } from 'react-i18next';
 
@@ -66,7 +67,7 @@ const RedigerBane = ({ klubb }) => {
         };
     
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${klubbId}/baner/${baneId}`, {
+            const response = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/klubber/${klubbId}/baner/${baneId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'

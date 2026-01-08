@@ -1,14 +1,15 @@
 //Authors: Bjarne Beruldsen, Abdinasir Ali & Laurent Zogaj
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from 'react-i18next'; 
 import { Link } from "react-router-dom";
 import loggUtBruker from "../BrukerHandtering/Utlogging";
 import UseFetch from "../KlubbHandtering/UseFetch";
 import socket from '../socket';
 import HentBruker from "../BrukerHandtering/HentBruker";
+import { apiKall } from '../utils/api';
 
-const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling, refreshVarsling }) => {
+const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling, refreshVarsling, setAntallVarslingerRef }) => {
   const { t } = useTranslation();
   const [menyÅpen, setMenyÅpen] = useState(false);
   const [antallVarslinger, setAntallVarslinger] = useState(0);
@@ -16,43 +17,70 @@ const Header = ({ loggetInnBruker, setLoggetInnBruker, toggleVarsling, refreshVa
   const { bruker, venter } = HentBruker();
   const [antInvitasjoner, setAntInvitasjoner] = useState(0);
   const [erMedlem, setErMedlem] = useState(false);
+  
+  // Eksponer setAntallVarslinger via ref
+  useEffect(() => {
+    if (setAntallVarslingerRef) {
+      setAntallVarslingerRef.current = setAntallVarslinger;
+    }
+  }, [setAntallVarslingerRef]);
 
 
   useEffect(() => {
     if(bruker) {
       console.log("Bruker:", bruker);
       setAntInvitasjoner((bruker.invitasjoner && bruker.invitasjoner.length) || 0);
-    
+    }
 
     const hentNyheter = async () => {
+      if (!bruker) return;
+      
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber`);
+        const response = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/klubber`, {
+          method: 'GET',
+        });
+        if (!response.ok) {
+          throw new Error('Kunne ikke hente klubber');
+        }
         const klubber = await response.json();
     
+        const settNyheter = bruker?.settNyheter || [];
+        
         const nyheterMedKlubb = klubber
           .filter((klubb) => {
-            // Sjekk om brukeren er medlem av klubben
-            return Array.isArray(klubb.medlemmer) && klubb.medlemmer.some(medlem => medlem.id === loggetInnBruker?.id);
+            // Sjekk om brukeren er medlem av klubben og at klubben har nyheter
+            return Array.isArray(klubb.medlemmer) && 
+                   klubb.medlemmer.some(medlem => medlem.id === loggetInnBruker?.id) &&
+                   Array.isArray(klubb.nyheter) &&
+                   klubb.nyheter.length > 0;
           })
           .flatMap((klubb) =>
-            klubb.nyheter.map((nyhet) => ({
-              ...nyhet,
-              klubbNavn: klubb.klubbnavn,
-              klubbId: klubb._id,
-            }))
+            klubb.nyheter
+              .map((nyhet) => {
+                const nyhetIdentifikator = `${klubb._id}-${nyhet._id}`;
+                // Filtrer bort sett nyheter
+                if (settNyheter.includes(nyhetIdentifikator)) {
+                  return null;
+                }
+                return {
+                  ...nyhet,
+                  klubbNavn: klubb.klubbnavn,
+                  klubbId: klubb._id,
+                };
+              })
+              .filter(nyhet => nyhet !== null) // Fjern null-verdier
           );
     
         setNyheter(nyheterMedKlubb);
-        setAntallVarslinger(nyheterMedKlubb.length + antInvitasjoner);
+        const nyttAntall = nyheterMedKlubb.length + antInvitasjoner;
+        setAntallVarslinger(nyttAntall);
       } catch (error) {
         console.error("Feil ved henting av nyheter:", error);
       }
     };
+    
     hentNyheter(); 
-    }
-
-
-  }, [bruker]);
+  }, [bruker, antInvitasjoner, loggetInnBruker]);
 
   useEffect(() => {
     // Lytt til meldinger fra serveren

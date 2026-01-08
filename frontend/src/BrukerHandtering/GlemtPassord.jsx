@@ -11,7 +11,8 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import i18n from "../i18n";
-import { useTranslation } from 'react-i18next'; 
+import { useTranslation } from 'react-i18next';
+import { apiKall } from '../utils/api'; 
 
 const GlemtPassord = () => {
   //Ulike states som holder på verdier
@@ -55,11 +56,12 @@ const GlemtPassord = () => {
     }
     //Kontakter backend for glemt passord
     try {
-      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/passord/glemt`, {
+      const respons = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/passord/glemt`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({brukerInput}),
-        credentials: "include",
       });
       //Henter respons fra backend
       const data = await respons.json();

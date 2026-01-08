@@ -41,7 +41,7 @@ function sjekkRolle(roller) {
     return (req, res, next) => {
         const brukerRolle = req.user?.rolle; 
         if (!brukerRolle || !roller.includes(brukerRolle)) {
-            return res.status(403).json({ error: "Ingen tilgang" })
+            return res.status(403).json({ error: "Ingen tilgang, kontakt administrator" })
         }
         next();
     }

@@ -15,6 +15,7 @@ import Turneringerliste from './Turneringerliste';
 import Medlemmerliste from './Medlemmerliste';
 import HentBruker from '../BrukerHandtering/HentBruker';
 import { useTranslation } from 'react-i18next';
+import { apiKall } from '../utils/api';
 
 const Klubbside = () => {
     const { t } = useTranslation();
@@ -63,13 +64,18 @@ const Klubbside = () => {
 
         const oppdatertMedlemmer = [...medlemmer, { id: nyttMedlem.id, navn: bruker.brukernavn }];
 
-        fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}`, {
+        apiKall(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}`, {
             method: 'PATCH',
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({ medlemmer: oppdatertMedlemmer })
         })
-        .then(res => res.json())
-        .then(data => {
+        .then(async (res) => {
+            if (!res.ok) {
+                throw new Error('Feil ved oppdatering av klubb');
+            }
+            const data = await res.json();
             console.log('Klubb oppdatert:', data);
             window.location.reload();
         })
@@ -90,16 +96,23 @@ const Klubbside = () => {
     //metode for å slette klubb
     const handleDelete = () => {
         if (window.confirm('Er du sikker på at du vil slette klubben?')) {
-            fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}`, {
-                method: 'DELETE'
+            apiKall(`${process.env.REACT_APP_API_BASE_URL}/klubber/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    "Content-Type": "application/json"
+                }
             })
-            .then(res => res.json())
-            .then(data => {
+            .then(async (res) => {
+                if (!res.ok) {
+                    throw new Error('Feil ved sletting av klubb');
+                }
+                const data = await res.json();
                 alert('Klubb slettet');
                 history.push('/VelgKlubb');
             })
             .catch(error => {
                 console.error('Feil ved sletting av klubb:', error);
+                alert('Feil ved sletting av klubb. Prøv igjen.');
             });
         }
     };

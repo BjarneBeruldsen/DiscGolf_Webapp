@@ -46,11 +46,18 @@
   "main": "index.js",
   "scripts": {
     "start": "cd backend && node app.js",
-    "dev": "concurrently \"npm start --prefix backend\" \"npm start --prefix frontend\"",
-    "backend": "npm start --prefix backend",
-    "frontend": "npm start --prefix frontend",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "concurrently -n \"backend,frontend\" -c \"blue,green\" \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "build:frontend": "npm run build --prefix frontend",
+    "preview": "npm run preview --prefix frontend",
+    "test": "concurrently -n \"backend,frontend\" -c \"blue,green\" \"npm test --prefix backend\" \"npm test --prefix frontend -- --run\"",
+    "test:backend": "npm test --prefix backend",
+    "test:frontend": "npm test --prefix frontend -- --run",
+    "test:watch": "concurrently -n \"backend,frontend\" -c \"blue,green\" \"npm test --prefix backend\" \"npm test --prefix frontend\"",
+    "install:all": "npm install && npm install --prefix backend && npm install --prefix frontend",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
   },
   "engines": {
     "node": "20.16.0"

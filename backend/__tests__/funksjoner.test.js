@@ -96,7 +96,7 @@ describe('Funksjoner - Tilgangskontroll', () => {
       const middleware = sjekkRolle(['hoved-admin']);
       middleware(req, res, next);
       expect(res.status).toHaveBeenCalledWith(403);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Ingen tilgang' });
+      expect(res.json).toHaveBeenCalledWith({ error: 'Ingen tilgang, kontakt administrator' });
     });
 
     it('skal avvise hvis bruker ikke har rolle', () => {

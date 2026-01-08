@@ -5,7 +5,8 @@ Dette er app.js filen som er hovedfilen for backend applikasjonen vår.
 Her starter vi opp serveren og setter opp de ulike rutene som skal brukes i applikasjonen ved å hente dem fra de ulike filene i backend.
 Vi setter opp blant annet express, express-session, cors og andre viktige middlewares for å få det hele til å fungere.
 */
-
+// Henter miljøvariabler fra .env filen
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -18,7 +19,6 @@ const MongoStore = require('connect-mongo');
 const { kobleTilDB, getDb } = require('./db');  
 const PORT = process.env.PORT || 8000;
 const path = require('path');
-require('dotenv').config();
 const passport = require('passport');
 require('./ruter/brukerhandtering/passport')(passport);
 const { klubbRouter, setSocketIO } = require('./ruter/klubbhandtering'); 
@@ -28,13 +28,12 @@ const turneringRouter = require("./ruter/Turneringer");
 const systemloggRouter = require("./ruter/systemlogger");
 const http = require('http');
 const { Server } = require('socket.io');
-const { sjekkBrukerAktiv, beskyttetRute } = require('./ruter/brukerhandtering/funksjoner');
+const { sjekkBrukerAktiv, beskyttetRute, sjekkRolle } = require('./ruter/brukerhandtering/funksjoner');
 // Swagger UI for API-dokumentasjon
 const swaggerUi = require('swagger-ui-express');
 const fs = require('fs');
 const rateLimit = require('express-rate-limit');
 const { csrfProtection, getCsrfToken } = require('./ruter/csrf');
-
 
 const app = express();
 
@@ -72,7 +71,12 @@ app.use("/ValideringToken", nocache());
 //Aller først hadde vi app use cors og kun det. Men etter lesing om sikkerhet fant vi ut at dette var en dårlig løsning, og at det var best å sette opp cors med spesifikke domener.
 //https://auth0.com/blog/cors-tutorial-a-guide-to-cross-origin-resource-sharing/
 app.use(cors({
-    origin: [process.env.REACT_APP_API_BASE_URL, "http://localhost:3000", "http://localhost:8000"], 
+    origin: [
+        process.env.REACT_APP_API_BASE_URL, 
+        "http://localhost:3000", 
+        "http://localhost:3001", 
+        "http://localhost:8000"
+    ], 
     credentials: true,
 }));
 
@@ -175,7 +179,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// CSRF Token endepunkt - tilatter frontend henting av CSRF token
 app.get('/api/csrf-token', getCsrfToken);
+// CSRF Middleware
 app.use((req, res, next) => {
   if (req.path.startsWith('/api/docs') || req.path === '/api/csrf-token') {
     return next();
@@ -202,7 +208,11 @@ app.use('/api/systemlogg', systemloggRouter);
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ["http://localhost:3000", process.env.REACT_APP_API_BASE_URL],
+        origin: [
+            "http://localhost:3000", 
+            "http://localhost:3001", 
+            process.env.REACT_APP_API_BASE_URL
+        ],
         methods: ["GET", "POST"],
         credentials: true,
     },
@@ -268,6 +278,7 @@ app.get("/sjekk-session", async (req, res) => {
                     poengkort: bruker.poengkort, 
                     invitasjoner: bruker.invitasjoner,
                     betalt : bruker.betalt,
+                    settNyheter: bruker.settNyheter || [], 
                 },
             });
         } catch (err) { //Logging
@@ -277,12 +288,16 @@ app.get("/sjekk-session", async (req, res) => {
     return res.status(401).json({ error: "Ingen aktiv session" });
 });
 
-//Tilbakestille testdata fra klubb og reviews collection 
-app.delete('/tommeTestdata', async (req, res) => {
+//Tilbakestille testdata fra klubb, reviews, turneringer og baner collection 
+// Krever at brukeren er logget inn og har hoved-admin rolle
+app.delete('/tommeTestdata', beskyttetRute, sjekkRolle(["hoved-admin"]), async (req, res) => {
   try {
+      const db = getDb();
+      if (!db) return res.status(500).json({ error: 'Ingen database tilkobling' });
       await db.collection('Klubb').deleteMany({});
       await db.collection('Reviews').deleteMany({});
       await db.collection('Turneringer').deleteMany({});
+      await db.collection('Baner').deleteMany({});
       res.status(200).json({ message: 'Testdata tømt' });
   } catch (error) {
       console.error("Feil ved tømming av testdata:", error);
@@ -393,7 +408,7 @@ app.get('/byer', async (req, res) => {
           res.status(500).json({ error: "Noe gikk galt" });
       }
     });
-
+// Rate limiting middleware for filoperasjoner
 const fileOperationLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 1000,

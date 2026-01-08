@@ -7,6 +7,7 @@ import { Link, useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
 import HentBruker from "../BrukerHandtering/HentBruker";
 import { useTranslation } from 'react-i18next';
+import { apiKall } from '../utils/api';
 
 const VelgKlubb = () => {
     const [klubber, setKlubber] = useState([]);
@@ -19,16 +20,28 @@ const VelgKlubb = () => {
 
     // Henter klubber fra API når komponenten lastes inn
     useEffect(() => {
+        // Vent til bruker er lastet før vi henter klubber
+        if (!bruker) {
+            return;
+        }
+
         setLaster(true);
 
         console.log('Henter klubber');
-        fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber`)
-            .then(res => res.json())
+        apiKall(`${process.env.REACT_APP_API_BASE_URL}/klubber`, {
+            method: 'GET',
+        })
+            .then(async (res) => {
+                if (!res.ok) {
+                    throw new Error('Kunne ikke hente klubber');
+                }
+                return res.json();
+            })
             .then(data => {
                 console.log(data);
 
                 let filtrerteKlubber = data;
-                if (bruker.rolle !== 'admin' && bruker.rolle !== 'hoved-admin') {
+                if (bruker && bruker.rolle !== 'admin' && bruker.rolle !== 'hoved-admin') {
                     filtrerteKlubber = data.filter(klubb =>
                         klubb.medlemmer?.some(medlem => medlem.id === bruker.id && medlem.rolle === 'Klubbleder')
                     );
@@ -55,8 +68,12 @@ const VelgKlubb = () => {
         <div className="velg bg-gray-100 p-6 flex justify-center min-h-[100vh]">
             <div className="innhold bg-white p-6 mt-12 rounded-2xl shadow-lg w-full max-w-2xl">
                 <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">{t('Velg en klubb')}</h2>
-                <p className="text-center text-gray-600 mb-2">{t('Ikke registrert klubb?')}</p>
-                <Link to="/LagKlubb" className="text-center text-blue-600 hover:text-blue-800 underline mb-6 block transition-colors">{t('Opprett ny klubb her')}</Link>
+                {bruker && (bruker.rolle === 'klubbleder' || bruker.rolle === 'admin' || bruker.rolle === 'hoved-admin') && (
+                    <>
+                        <p className="text-center text-gray-600 mb-2">{t('Ikke registrert klubb?')}</p>
+                        <Link to="/LagKlubb" className="text-center text-blue-600 hover:text-blue-800 underline mb-6 block transition-colors">{t('Opprett ny klubb her')}</Link>
+                    </>
+                )}
                 <p className="text-center text-gray-700 mb-6">{t('Velg en klubb du skal redigere side for:')}</p>
                 <div className="nyhet-form mt-8 sm:mx-auto sm:w-full sm:max-w-md form-container">
                     <form onSubmit={handleSubmit} className="bg-white py-8 px-6 shadow-md rounded-2xl sm:px-10 border border-gray-200">

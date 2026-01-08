@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 import { sjekkKlubbnavn, sjekkKontaktinfo } from './validation';
 import HentBruker from '../BrukerHandtering/HentBruker';
 import { useTranslation } from 'react-i18next';
+import { apiKall } from '../utils/api';
 
 const LagKlubb = () => {
     const { t } = useTranslation();
@@ -21,9 +22,22 @@ const LagKlubb = () => {
     const { bruker } = HentBruker(); // Henter brukerdata fra HentBruker-hooket
 
     //metode som legger til ny klubb i databasen
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault(); 
         setErrorMelding('');
+
+        // Sjekk om brukeren er logget inn og har riktig rolle
+        if (!bruker || !bruker.id) {
+            setErrorMelding(t('Du må være logget inn for å opprette en klubb'));
+            return;
+        }
+        
+        // Sjekk om brukeren har riktig rolle (klubbleder eller høyere, ikke loggetInn eller klubbmedlem)
+        const tillatteRoller = ['klubbleder', 'admin', 'hoved-admin'];
+        if (!bruker.rolle || !tillatteRoller.includes(bruker.rolle)) {
+            setErrorMelding(t('Du må ha rolle som klubbleder eller høyere for å opprette en klubb'));
+            return;
+        }
 
         try {
             sjekkKlubbnavn(klubbnavn);
@@ -42,13 +56,25 @@ const LagKlubb = () => {
 
         setLaster(true); 
 
-        fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber`, {
-            method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(klubb)
-        })
-        .then(res => res.json())
-        .then(data => {
+        try {
+            const response = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/klubber`, {
+                method: 'POST',
+                headers: { 
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(klubb)
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Feil ved lagring av klubb:', errorData);
+                setErrorMelding(errorData.error || t('Feil ved lagring av klubb'));
+                setLaster(false);
+                return;
+            }
+            
+            const data = await response.json();
+            
             if (data.errors) {
                 console.error('Feil ved lagring av klubb:', data.errors);
                 setErrorMelding(data.errors[0].msg);
@@ -56,17 +82,41 @@ const LagKlubb = () => {
             } else {
                 console.log('Ny klubb lagt til', data);
                 setLaster(false);
-                alert('Ny klubb lagt til');
-                minne.push(`/LagKlubbSide/${data.insertedId}`);
+                alert(t('Ny klubb lagt til'));
+                // Bruk insertedId hvis tilgjengelig, ellers bruk _id
+                const klubbId = data.insertedId || data._id || (data.acknowledged && data.insertedId);
+                if (klubbId) {
+                    minne.push(`/LagKlubbSide/${klubbId}`);
+                } else {
+                    // Hvis ingen ID, last inn på nytt for å hente den nye klubben
+                    window.location.reload();
+                }
             }
-        })
-        .catch(error => {
+        } catch (error) {
             console.error('Feil ved lagring av klubb:', error);
             setLaster(false); 
-            setErrorMelding(error.message);
-        });
+            setErrorMelding(error.message || t('Feil ved lagring av klubb'));
+        }
     }
 
+
+    // Sjekk om brukeren har riktig rolle for å opprette klubb
+    const tillatteRoller = ['klubbleder', 'admin', 'hoved-admin'];
+    const harRettighet = bruker && bruker.rolle && tillatteRoller.includes(bruker.rolle);
+
+    // Hvis brukeren ikke har riktig rolle, vis melding
+    if (bruker && !harRettighet) {
+        return (
+            <div className="lag bg-gray-200 p-4 flex justify-center min-h-screen">
+                <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
+                    <h2 className="text-2xl font-bold mb-4 text-center text-red-600">{t('Ingen tilgang')}</h2>
+                    <p className="text-gray-600 mb-4 text-center">{t('Du har ikke tilgang til å opprette en klubb med din nåværende rolle.')}</p>
+                    <p className="text-gray-500 text-sm mb-4 text-center">{t('Kun brukere med rolle som klubbleder, admin eller hoved-admin kan opprette klubber.')}</p>
+                    <p className="text-gray-500 text-sm text-center">{t('Kontakt en administrator for å få oppgradert din rolle hvis du skal ha tilgang.')}</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="lag bg-gray-200 p-4 flex justify-center min-h-screen">

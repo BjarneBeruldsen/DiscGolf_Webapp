@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import HentBruker from '../BrukerHandtering/HentBruker';
 import { useTranslation } from 'react-i18next';
+import { apiKall } from '../utils/api';
 
 const Review = ({ baneId }) => {
     const { bruker } = HentBruker();
@@ -29,11 +30,7 @@ const Review = ({ baneId }) => {
     const fetchReviews = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/baner/${baneId}/reviews`, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include'
-            });
+            const response = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/baner/${baneId}/reviews`);
             if (!response.ok) {
                 throw new Error('Kunne ikke hente anmeldelser');
             }
@@ -62,10 +59,11 @@ const Review = ({ baneId }) => {
         }
 
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/baner/${baneId}/reviews`, {
+            const response = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/baner/${baneId}/reviews`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
+                headers: { 
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({ rating, kommentar })
             });
             if (!response.ok) {

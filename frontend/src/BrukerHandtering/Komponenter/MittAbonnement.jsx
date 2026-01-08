@@ -4,11 +4,12 @@ Denne filen viser frem abonnementet til brukeren og gir mulighet for å betale e
 */
 
 import React, { useState } from "react";
-import { useTranslation } from 'react-i18next'; 
+import { useTranslation } from 'react-i18next';
+import { apiKall } from '../../utils/api'; 
 
 const MittAbonnement = ({ valgtUnderKategori, bruker }) => {
   const { t } = useTranslation();
-  const underKategorier = [t("Mitt abonnement")];
+  const underKategorier = ["Mitt abonnement"]; // Bruk rå nøkkel, ikke oversatt verdi
   const [harBetalt, setHarBetalt] = useState(bruker?.betalt || false); //Lagres i lokal state henter fra bruker objektet
   const [laster, setLaster] = useState(false);
 
@@ -16,10 +17,11 @@ const MittAbonnement = ({ valgtUnderKategori, bruker }) => {
   const handleBetaling = async () => {
     try {
       setLaster(true);
-      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/BetaleAbo`, {
+      const respons = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/BetaleAbo`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include"
+        headers: { 
+          "Content-Type": "application/json"
+        }
       });
       const data = await respons.json();
       if (respons.ok) { 
@@ -38,10 +40,11 @@ const MittAbonnement = ({ valgtUnderKategori, bruker }) => {
   const handleAvslutt = async () => {
     try {
       setLaster(true); 
-      const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/AvslutteAbo`, {
+      const respons = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/AvslutteAbo`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include"
+        headers: { 
+          "Content-Type": "application/json"
+        }
       });
       const data = await respons.json();
       if (respons.ok) {
@@ -65,7 +68,7 @@ const MittAbonnement = ({ valgtUnderKategori, bruker }) => {
         <p className="text-gray-600">{t("Velg en underkategori for ditt behov")}</p>
       )}
 
-      {valgtUnderKategori === t("Mitt abonnement") && (
+      {valgtUnderKategori === "Mitt abonnement" && (
         <div className="w-full flex flex-col gap-4">
           <p className="text-xl font-semibold text-center">{t("Abonnementsinformasjon")}</p>
 

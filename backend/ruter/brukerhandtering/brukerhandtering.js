@@ -191,6 +191,14 @@ brukerRouter.delete("/bruker", beskyttetRute, sletteValidering, sjekkBrukerAktiv
         const slettet = await db.collection("Brukere").deleteOne({ _id: bruker._id });
         console.log(`Bruker slettet, brukernavn: ${bruker.brukernavn}, e-post: ${bruker.epost}, ID: ${bruker._id}`); 
         if (slettet.deletedCount === 1) {           //Fant ut av dette med deletedcount via documentasjonen til mongodb. 
+            // Logg slettingen i systemloggen før session blir slettet
+            await leggTilSystemlogg({
+                tidspunkt: new Date(),
+                bruker: req.user.brukernavn, // Brukernavn til brukeren som slettet seg selv
+                handling: "Slettet bruker",
+                detaljer: `Bruker '${req.user.brukernavn}' slettet sin egen bruker (ID: ${bruker._id})`
+            });
+            
             //Logger ut og sletter session/cookie (bruker funksjoner som medfølger fra express-session)
             req.session.destroy((err) => {
                 if (err) {
@@ -527,6 +535,41 @@ brukerRouter.post("/passord/tilbakestill", nyttPassordStopp, nyttPassordValideri
     } catch (error) { 
         console.error("Feil ved tilbakestilling av passord:", error);
         return res.status(500).json({ error: "Noe gikk galt. Prøv igjen senere" });
+    }
+});
+
+// Rute for å markere en nyhet som sett
+// Denne ruten legger til nyhet-ID i brukerens settNyheter array
+brukerRouter.post("/bruker/sett-nyhet", beskyttetRute, sjekkBrukerAktiv, async (req, res) => {
+    try {
+        const db = getDb();
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+        
+        const { nyhetId, klubbId } = req.body;
+        const brukerId = req.user._id;
+
+        if (!nyhetId || !klubbId) {
+            return res.status(400).json({ error: "nyhetId og klubbId er påkrevd" });
+        }
+
+        // Opprett en unik identifikator for nyheten (klubbId + nyhetId)
+        const nyhetIdentifikator = `${klubbId}-${nyhetId}`;
+
+        // Legg til nyhet-ID i settNyheter array hvis den ikke allerede finnes
+        const result = await db.collection("Brukere").updateOne(
+            { _id: brukerId },
+            { $addToSet: { settNyheter: nyhetIdentifikator } } // $addToSet legger bare til hvis den ikke allerede finnes
+        );
+
+        if (result.modifiedCount === 0 && result.matchedCount === 1) {
+            // Nyheten var allerede markert som sett
+            return res.status(200).json({ message: "Nyhet allerede markert som sett" });
+        }
+
+        res.status(200).json({ message: "Nyhet markert som sett" });
+    } catch (error) {
+        console.error("Feil ved markering av nyhet som sett:", error);
+        res.status(500).json({ error: "Feil ved markering av nyhet som sett" });
     }
 });
 

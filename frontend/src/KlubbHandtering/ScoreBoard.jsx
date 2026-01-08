@@ -16,6 +16,7 @@ import { useHistory } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import socket from "../socket";
 import { useTranslation } from 'react-i18next';
+import { apiKall } from '../utils/api';
 
 const ScoreBoard = () => {
     const { t } = useTranslation();
@@ -300,7 +301,7 @@ const ScoreBoard = () => {
             poengkort: [],
         };
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/runder`, {
+            const response = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/runder`, {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(runde),
@@ -325,7 +326,7 @@ const ScoreBoard = () => {
             mottakerId: brukerId  // eller "mottaker": { id: brukerId } hvis det forventes
         };
 
-        fetch(`${process.env.REACT_APP_API_BASE_URL}/brukere/${brukerId}/invitasjoner`, {
+        apiKall(`${process.env.REACT_APP_API_BASE_URL}/brukere/${brukerId}/invitasjoner`, {
             method: 'POST', 
             headers: { "Content-Type": "application/json" },
             body : JSON.stringify({ invitasjon: invitasjonMedMottaker })
@@ -354,7 +355,7 @@ const ScoreBoard = () => {
                 baneId: baneId
             };
             //lagrer poengkort pr.bruker
-            fetch(`${process.env.REACT_APP_API_BASE_URL}/brukere/${bruker.id}/poengkort`, {
+            apiKall(`${process.env.REACT_APP_API_BASE_URL}/brukere/${bruker.id}/poengkort`, {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ nyPoengkort })
@@ -369,7 +370,7 @@ const ScoreBoard = () => {
 
 
             //lagrer poengkort i runde 
-            fetch(`${process.env.REACT_APP_API_BASE_URL}/runder/${rundeId}/poengkort`, {
+            apiKall(`${process.env.REACT_APP_API_BASE_URL}/runder/${rundeId}/poengkort`, {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ nyPoengkort })
@@ -383,7 +384,7 @@ const ScoreBoard = () => {
             });
             setLagretPoengkort(true);
 
-            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/runder/ferdig/${rundeId}`, {
+            const response = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/runder/ferdig/${rundeId}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
             });

@@ -3,9 +3,7 @@
 const express = require('express');
 const { ObjectId } = require('mongodb');
 const { kobleTilDB, getDb } = require('../db'); 
-const { sjekkBrukerAktiv, beskyttetRute } = require('./brukerhandtering/funksjoner');
-const { MongoClient } = require('mongodb');
-const db = require('../db');
+const { sjekkBrukerAktiv, beskyttetRute, sjekkRolle } = require('./brukerhandtering/funksjoner');
 const klubbRouter = express.Router();
 const { lagKlubbValidering } = require("./brukerhandtering/validering");
 const { validationResult } = require("express-validator");
@@ -26,32 +24,53 @@ const storage = multer.diskStorage({
         cb(null, `${Date.now()}-${file.originalname}`);
     },
 });
-const upload = multer({ storage });
+
+// Filtype-validering for PDF
+const fileFilter = (req, file, cb) => {
+    // Sjekk at filen er en PDF
+    if (file.mimetype === 'application/pdf') {
+        cb(null, true);
+    } else {
+        cb(new Error('Kun PDF-filer er tillatt'), false);
+    }
+};
+
+const upload = multer({ 
+    storage,
+    fileFilter,
+    limits: {
+        fileSize: 10 * 1024 * 1024 // 10MB maks filstørrelse
+    }
+});
 
 // Rute for opplasting av filer
 // Denne ruten håndterer opplasting av PDF-filer og lagrer dem på serveren
 klubbRouter.post('/upload', upload.single('pdf'), (req, res) => {
     if (!req.file) {
-        return res.status(400).json({ error: 'Ingen fil ble lastet opp' });
+        return res.status(400).json({ error: 'Ingen fil ble lastet opp eller ugyldig filtype. Kun PDF-filer er tillatt.' });
     }
+    
+    // Ekstra validering: sjekk at filendelsen er .pdf
+    if (!req.file.originalname.toLowerCase().endsWith('.pdf')) {
+        return res.status(400).json({ error: 'Kun PDF-filer er tillatt' });
+    }
+    
     res.status(200).json({ filePath: req.file.filename });
 });
 
 // Rute for å hente alle klubber
 // Denne ruten henter en liste over alle klubber fra databasen
-klubbRouter.get('/klubber', (req, res) => {
-    const db = getDb();
-    if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
-    let klubber = []
-    db.collection('Klubb')
-    .find()
-    .forEach(klubb => klubber.push(klubb))
-    .then(() => {
-        res.status(200).json(klubber)
-    })
-    .catch(() => {
-        res.status(500).json({error: 'Feil ved henting av klubber'})
-    })
+klubbRouter.get('/klubber', async (req, res) => {
+    try {
+        const db = getDb();
+        if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
+        
+        const klubber = await db.collection('Klubb').find().toArray();
+        res.status(200).json(klubber);
+    } catch (err) {
+        console.error('Feil ved henting av klubber:', err);
+        res.status(500).json({error: 'Feil ved henting av klubber'});
+    }
 })
 
 // Rute for å hente en spesifikk klubb
@@ -76,7 +95,8 @@ klubbRouter.get('/klubber/:id', (req, res) => {
 
 // Rute for å opprette en ny klubb
 // Denne ruten validerer og lagrer en ny klubb i databasen
-klubbRouter.post('/klubber', lagKlubbValidering, (req, res) => {
+// Krever at brukeren er logget inn og har rolle klubbleder eller høyere (ikke loggetInn eller klubbmedlem)
+klubbRouter.post('/klubber', beskyttetRute, sjekkRolle(["klubbleder", "admin", "hoved-admin"]), lagKlubbValidering, (req, res) => {
     const db = getDb();
     if (!db) return res.status(500).json({error: 'Ingen database tilkobling'});
       const klubb = {

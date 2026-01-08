@@ -5,13 +5,16 @@ Dette er da en asykron funksjon. Med parametere som holder på de nye verdiene s
 Denne tar i mot det som kommer fra brukerinnstillinger.jsx og sender det videre til backend.
 */
 
+import { apiKall } from '../utils/api';
+
 //Kontakter backend for å endre brukerinformasjon
 async function endreBruker(nyttBrukernavn, nyEpost, nyttPassord, passord, fornavn, etternavn, telefonnummer, bosted, minne, setMelding) {
   try {
-    const respons = await fetch(`${process.env.REACT_APP_API_BASE_URL}/bruker`, {
+    const respons = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/bruker`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
+      headers: { 
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify({ nyttBrukernavn, nyEpost, nyttPassord, passord, fornavn, etternavn, telefonnummer, bosted }),
     });
     //Henter respons fra backend

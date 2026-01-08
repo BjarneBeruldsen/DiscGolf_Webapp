@@ -8,8 +8,9 @@
  * - Tilkobling til backend via API-kall og socket
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './i18n';
+import { getCsrfToken } from './utils/api';
 import LagKlubb from './KlubbHandtering/LagKlubb';
 import VelgKlubb from './KlubbHandtering/VelgKlubb';
 import LagKlubbSide from './KlubbHandtering/LagKlubbSide';
@@ -52,44 +53,38 @@ import { useTranslation } from 'react-i18next';
 function App() {
   const { bruker, venter } = HentBruker();
   const [loggetInnBruker, setLoggetInnBruker] = useState(null);
-  const [sessionLastet, setSessionLastet] = useState(false); 
   const [visVarsling, setVisVarsling] = useState(false);
-  const { t } = useTranslation(); //Oversettelse 
+  const setAntallVarslingerRef = useRef(null);
+  const { t } = useTranslation();
 
-  // Setter loggetInnBruker til bruker og angir sessionLastet til true når brukeren er lastet og venter er false
+  // Hent CSRF token når appen starter
+  useEffect(() => {
+    getCsrfToken().catch(error => {
+      console.error('Feil ved henting av CSRF token:', error);
+    });
+  }, []);
+
+  // Oppdater loggetInnBruker når bruker endres
   useEffect(() => {
     if (!venter) {
-      setLoggetInnBruker(bruker);  // Oppdaterer loggetInnBruker med bruker
-      setSessionLastet(true);  // Setter sessionLastet til true fordi brukeren er lastet
+      setLoggetInnBruker(bruker);
     }
-  }, [bruker, venter]); // Kjører når bruker eller venter endres
+  }, [bruker, venter]);
 
-  // Flytt useEffect utenfor betingelsen
+  // Lytt til socket-meldinger
   useEffect(() => {
-    // Lytt til meldinger fra serveren
     socket.on('receiveMessage', (data) => {
       console.log('Melding fra server:', data);
     });
 
-    // Rydd opp når komponenten demonteres
     return () => {
       socket.off('receiveMessage');
     };
   }, []);
 
-  if (!sessionLastet) { //Legger til en laster inn tilstand hvis siden "tenker" litt.
+  // Vis laster-melding mens session lastes
+  if (venter) {
     return <p className="text-center text-gray-700 mt-10">{t("Laster inn...")}</p>;
-  }
-
-  const toggleVarsling = () => {
-    setVisVarsling(!visVarsling); 
-  };
-
-  const refreshVarsling = () => {
-    setVisVarsling(false); 
-    setTimeout(() => {
-      setVisVarsling(true); 
-    }, 100); 
   }
 
   //Hovedkomponent som håndterer routing og visning av forskjellige sider i applikasjonen
@@ -99,15 +94,18 @@ function App() {
         <Header 
           loggetInnBruker={loggetInnBruker} 
           setLoggetInnBruker={setLoggetInnBruker} 
-          toggleVarsling={toggleVarsling}
-          refreshVarsling={refreshVarsling}
+          toggleVarsling={() => setVisVarsling(!visVarsling)}
+          refreshVarsling={() => {
+            setVisVarsling(false);
+            setTimeout(() => setVisVarsling(true), 100);
+          }}
+          setAntallVarslingerRef={setAntallVarslingerRef}
         />
         {visVarsling && (
-          <div>
-            <Varsling 
-              toggleVarsling={toggleVarsling}
-            />
-          </div>
+          <Varsling
+            toggleVarsling={() => setVisVarsling(false)}
+            setAntallVarslingerRef={setAntallVarslingerRef}
+          />
         )}
         <Kjeks />
         <div className="innhold">
@@ -145,8 +143,19 @@ function App() {
               <OmOss />
             </Route>
             <Route exact path="/medlemskap">
-              {loggetInnBruker ? (
-                <Medlemskap loggetInnBruker={loggetInnBruker} />
+              {venter ? (
+                <p className="text-center text-gray-700 mt-10">{t("Laster inn...")}</p>
+              ) : bruker ? (
+                <Medlemskap loggetInnBruker={bruker} />
+              ) : (
+                <Redirect to="/Innlogging" />
+              )}
+            </Route>
+            <Route exact path="/Medlemskap">
+              {venter ? (
+                <p className="text-center text-gray-700 mt-10">{t("Laster inn...")}</p>
+              ) : bruker ? (
+                <Medlemskap loggetInnBruker={bruker} />
               ) : (
                 <Redirect to="/Innlogging" />
               )}
@@ -181,7 +190,9 @@ function App() {
              )}
             </Route>
             <Route exact path="/Innlogging">
-              {loggetInnBruker ? (
+              {venter ? (
+                <p className="text-center text-gray-700 mt-10">{t("Laster inn...")}</p>
+              ) : bruker ? (
                 <Redirect to="/Hjem" />
               ) : (
                 <Innlogging 

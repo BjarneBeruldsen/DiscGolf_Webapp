@@ -6,6 +6,7 @@ lar brukeren kommentere og åpne vedlagte PDF-dokumenter.
 import React, { useEffect, useState } from 'react';
 import HentBruker from '../BrukerHandtering/HentBruker';
 import { useTranslation } from 'react-i18next';
+import { apiKall } from '../utils/api';
 
 const Nyhetsliste = ({ nyheter, handleLiker }) => {
     const [kommentar, setKommentar] = useState('');
@@ -33,9 +34,11 @@ const Nyhetsliste = ({ nyheter, handleLiker }) => {
         }
 
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/klubber/${nyhet.klubbId}/nyheter/${nyhet._id}`, {
+            const response = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/klubber/${nyhet.klubbId}/nyheter/${nyhet._id}`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({ kommentar, brukernavn: bruker.brukernavn }),
             });
 

@@ -6,10 +6,12 @@ Ikke fått oversetting til å funke her dessverre, fikk heller ikke tid til å d
 */
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 import SletteBruker from "../SletteBruker.jsx";
 import endreBruker from "../endringAvBruker.jsx";
 
 const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
+  const { t } = useTranslation();
   const [visSlettBoks, setVisSlettBoks] = useState(false); //Viser eller skjuler slettingsboksen
   const [laster, setLaster] = useState(false); //En laster som brukes for å vise at noe skjer
   //Default verdier som er satt til tomme strenger
@@ -117,22 +119,28 @@ const BrukerInnstillinger = ({ bruker, valgtUnderKategori, setBruker }) => {
       {/* Min informasjon */}
       {valgtUnderKategori === "Min informasjon" && (
         <div className="space-y-4 w-full max-w-[400px]">
-          <input
-            type="text"
-            value={bruker.brukernavn}
-            readOnly
-            className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
-          />
-          <input
-            type="email"
-            value={bruker.epost}
-            readOnly
-            className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
-          />
-          <p className="text-gray-600">Her er din registrerte brukerinformasjon</p>
-          {/* Viser hva slags rolle bruker har */}
-          {bruker && bruker.rolle && (
-          <p className="text-blue-600">Du er registrert som: {bruker.rolle} og har tilgang til ulike funksjoner.</p>
+          {!bruker ? (
+            <p className="text-gray-600">{t("Laster brukerinformasjon...")}</p>
+          ) : (
+            <>
+              <input
+                type="text"
+                value={bruker.brukernavn || ''}
+                readOnly
+                className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
+              />
+              <input
+                type="email"
+                value={bruker.epost || ''}
+                readOnly
+                className="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100"
+              />
+              <p className="text-gray-600">Her er din registrerte brukerinformasjon</p>
+              {/* Viser hva slags rolle bruker har */}
+              {bruker && bruker.rolle && (
+                <p className="text-blue-600">Du er registrert som: {bruker.rolle} og har tilgang til ulike funksjoner.</p>
+              )}
+            </>
           )}
         </div>
       )}

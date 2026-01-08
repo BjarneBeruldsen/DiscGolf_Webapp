@@ -4,12 +4,14 @@
  */
 
 import React from "react";
+import { useTranslation } from 'react-i18next';
 
 const MedlemsAdministrasjon = () => {
+  const { t } = useTranslation();
   return (
     <div className="p-4">
       <p className="mt-4 text-gray-600">
-        Ikke implementert
+        {t("Ikke implementert")}
       </p>
       {/* Flere funksjoner for, TBC */}
     </div>

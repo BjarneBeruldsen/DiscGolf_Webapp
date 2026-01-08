@@ -6,28 +6,23 @@ import { Link } from "react-router-dom";
 import HentBruker from "../BrukerHandtering/HentBruker";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+import { apiKall } from '../utils/api';
 
-const Varsling = ({ toggleVarsling }) => {
+const Varsling = ({ toggleVarsling, setAntallVarslingerRef }) => {
     const { t } = useTranslation();
     const { data: klubber, error, isPending } = UseFetch(`${process.env.REACT_APP_API_BASE_URL}/klubber`);
-    const [nyheter, setNyheter] = useState([]);
-    const [invitasjoner, setInvitasjoner] = useState([]);
-    const [currentPage, setCurrentPage] = useState(0); 
-    const [laster, setLaster] = useState(true); 
+    const [currentPage, setCurrentPage] = useState(0);
+    const [laster, setLaster] = useState(true);
     const [varslinger, setVarslinger] = useState([]);
-    const { bruker, venter } = HentBruker();
-    const [spillere, setSpillere] = useState([]);
+    const { bruker } = HentBruker();
     const minne = useHistory();
     const itemsPerPage = 4; 
 
 
     useEffect(() => {
-        if(bruker) {
-            console.log("Bruker:", bruker);
-            setInvitasjoner(bruker.invitasjoner || []);
-        }
-
         if (klubber && klubber.length > 0) {
+            const settNyheter = bruker?.settNyheter || [];
+            
             const nyheterMedKlubb = klubber
                 .filter(klubb => Array.isArray(klubb.nyheter))
                 .map(klubb => {
@@ -35,12 +30,21 @@ const Varsling = ({ toggleVarsling }) => {
                     const erMedlem = Array.isArray(klubb.medlemmer) && klubb.medlemmer.some(medlem => medlem.id === bruker?.id);
                     if (!erMedlem) return []; // Hvis brukeren ikke er medlem, ekskluder nyheter
 
-                    return klubb.nyheter.map(nyhet => ({
-                        ...nyhet,
-                        klubbNavn: klubb.klubbnavn,
-                        klubbId: klubb._id,
-                        tid: nyhet.tid || 0 // Hvis nyhet ikke har tid, bruk 0 som fallback
-                    }));
+                    return klubb.nyheter
+                        .map(nyhet => {
+                            const nyhetIdentifikator = `${klubb._id}-${nyhet._id}`;
+                            // Filtrer bort sett nyheter
+                            if (settNyheter.includes(nyhetIdentifikator)) {
+                                return null;
+                            }
+                            return {
+                                ...nyhet,
+                                klubbNavn: klubb.klubbnavn,
+                                klubbId: klubb._id,
+                                tid: nyhet.tid || 0 // Hvis nyhet ikke har tid, bruk 0 som fallback
+                            };
+                        })
+                        .filter(nyhet => nyhet !== null); // Fjern null-verdier
                 })
                 .flat();
 
@@ -73,9 +77,11 @@ const Varsling = ({ toggleVarsling }) => {
         console.log("invitasjon: ", invitasjon);
         try {
             if (godkjenn) {
-                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/runder/${invitasjon.rundeId}`, {
+                const response = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/runder/${invitasjon.rundeId}`, {
                     method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
                 });
 
                 if (!response.ok) {
@@ -92,9 +98,11 @@ const Varsling = ({ toggleVarsling }) => {
             }
 
             // Slett invitasjonen etter godkjenning eller avslag
-            const deleteResponse = await fetch(`${process.env.REACT_APP_API_BASE_URL}/brukere/${bruker.id}/invitasjoner/${invitasjon.rundeId}`, {
+            const deleteResponse = await apiKall(`${process.env.REACT_APP_API_BASE_URL}/brukere/${bruker.id}/invitasjoner/${invitasjon.rundeId}`, {
                 method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json'
+                },
             });
 
             if (!deleteResponse.ok) {
@@ -142,7 +150,37 @@ const Varsling = ({ toggleVarsling }) => {
                     <h2 className="text-md font-bold">{varsling.nyhetTittel || t('Ukjent tittel')}</h2>
                     <p className="text-sm">{t('Klubb')}: {varsling.klubbNavn || t('Ukjent klubb')}</p>
                     <Link
-                        onClick={toggleVarsling}
+                        onClick={async () => {
+                            // Oppdater badge umiddelbart ved klikk
+                            if (setAntallVarslingerRef && setAntallVarslingerRef.current) {
+                                setAntallVarslingerRef.current(prev => Math.max(0, prev - 1));
+                            }
+
+                            // Fjern varslingen fra listen umiddelbart
+                            setVarslinger(prevVarslinger =>
+                                prevVarslinger.filter(v =>
+                                    !(v.nyhetTittel && v.klubbId === varsling.klubbId && v._id === varsling._id)
+                                )
+                            );
+
+                            // Marker nyheten som sett i backend
+                            if (bruker && varsling.klubbId && varsling._id) {
+                                try {
+                                    await apiKall(`${process.env.REACT_APP_API_BASE_URL}/bruker/sett-nyhet`, {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            nyhetId: varsling._id,
+                                            klubbId: varsling.klubbId
+                                        })
+                                    });
+                                } catch (error) {
+                                    console.error('Feil ved markering av nyhet som sett:', error);
+                                }
+                            }
+
+                            toggleVarsling();
+                        }}
                         to={`/KlubbSide/${varsling.klubbId}`}
                         className="underline text-sm"
                     >
